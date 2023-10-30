@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AzureAD.Example.Controllers;
 
-[Route("client/account/[controller]")]
+[Route("client/api/[controller]")]
 public class AuthenticationController : ControllerBase
 {
 
