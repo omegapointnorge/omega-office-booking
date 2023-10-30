@@ -74,6 +74,7 @@ app.UseCookiePolicy();
 app.UseCors("Client Origin");
 app.UseRouting();
 
+// Authentication middleware
 app.UseAuthentication();
 app.UseAuthorization();
 
