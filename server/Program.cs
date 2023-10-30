@@ -8,7 +8,7 @@ using Microsoft.ApplicationInsights;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-/*builder.Services.AddAuthentication(options =>
+builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
@@ -48,7 +48,7 @@ builder.Services.AddAuthorization(options =>
     options.DefaultPolicy = defaultPolicy;
     options.FallbackPolicy = defaultPolicy;
 });
-
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddCors(options =>
 {
@@ -60,7 +60,7 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod()
     );
-});*/
+});
 
 var app = builder.Build();
 
@@ -72,13 +72,17 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCookiePolicy();
-//app.UseCors("Client Origin");
+app.UseCors("Client Origin");
 app.UseStaticFiles();
 app.UseRouting();
 
 // Authentication middleware
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("index.html");
 

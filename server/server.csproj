@@ -32,6 +32,12 @@
     <None Update="..\client\src\setupProxy.js">
       <Link>src\setupProxy.js</Link>
     </None>
+    <None Update="..\client\src\overview.js">
+      <Link>src\overview.js</Link>
+    </None>
+    <None Update="..\client\src\loginpage.js">
+      <Link>src\loginpage.js</Link>
+    </None>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
