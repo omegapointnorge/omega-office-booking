@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.ApplicationInsights;
+using Microsoft.EntityFrameworkCore;
+
+using server.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +64,8 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
     );
 });
+
+builder.Services.AddDbContext<OfficeDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
 
 var app = builder.Build();
 
