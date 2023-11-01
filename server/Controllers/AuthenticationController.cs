@@ -35,4 +35,13 @@ public class AuthenticationController : ControllerBase
             CookieAuthenticationDefaults.AuthenticationScheme,
             OpenIdConnectDefaults.AuthenticationScheme);
     }
+
+    //[HttpGet("")]
+    //public ActionResult Login(string? returnUrl)
+    //{
+    //    var redirectUri = !string.IsNullOrEmpty(returnUrl) ? returnUrl : "/";
+    //    var properties = new AuthenticationProperties { RedirectUri = redirectUri };
+
+    //    return Challenge(properties);
+    //}
 }
