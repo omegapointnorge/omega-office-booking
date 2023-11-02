@@ -48,7 +48,7 @@ builder.Services.AddAuthorization(options =>
     options.DefaultPolicy = defaultPolicy;
     options.FallbackPolicy = defaultPolicy;
 });
-
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddCors(options =>
 {
@@ -73,10 +73,17 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCookiePolicy();
 app.UseCors("Client Origin");
+app.UseStaticFiles();
 app.UseRouting();
 
 // Authentication middleware
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller}/{action=Index}/{id?}");
+
+app.MapFallbackToFile("index.html");
 
 app.Run();

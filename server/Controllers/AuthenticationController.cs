@@ -4,25 +4,19 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AzureAD.Example.Controllers;
+namespace server.Controllers;
 
-[Route("client/account/[controller]")]
-public class AuthenticationController : ControllerBase
+[Route("api/Account")]
+[ApiController]
+public class AuthenticationController : Controller
 {
-
-    // Challenge the request from the user
-    /// <summary>
-    /// Challenge the authentication request from the User.
-    /// </summary>
-    /// <param name="returnUri"></param>
-    /// <returns></returns>
     [AllowAnonymous]
-    [HttpGet("login")]
+    [HttpGet("Login")]
     public ActionResult Login(string? returnUrl)
     {
         var redirectUri = !string.IsNullOrEmpty(returnUrl) ? returnUrl : "/";
         var properties = new AuthenticationProperties { RedirectUri = redirectUri };
-
+        
         return Challenge(properties);
     }
 
