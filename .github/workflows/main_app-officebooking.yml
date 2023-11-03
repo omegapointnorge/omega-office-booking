@@ -26,7 +26,6 @@ jobs:
         with:
           node-version: 20
 
-      - name:  
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
