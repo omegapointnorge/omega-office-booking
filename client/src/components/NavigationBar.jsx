@@ -1,4 +1,3 @@
-
 import { Navbar, Nav, NavbarBrand, NavItem, NavLink } from 'reactstrap';
 import { useLocation } from "react-router-dom";
 import { Link } from 'react-router-dom';
@@ -6,14 +5,13 @@ import React from 'react';
 
 export const NavigationBar = () => {
 
-    const { location }= useLocation();
- 
 
 // var username = activeAccount.name : 'Unknown'
     /**
      *   const linkUrl = "https://localhost:5001/api/Account/Login";
      * Most applications will need to conditionally render certain components based on whether a user is signed in or not.
      */
+    const location = useLocation();
     const baseUrl = "https://localhost:5001";
     const LoginUrl = baseUrl+"/api/Account/Login";
     const LogoutUrl = baseUrl+"/api/Account/Logout";
@@ -27,7 +25,7 @@ export const NavigationBar = () => {
                     Login
                 </a>
                 <a className="btn btn-primary" href={LogoutUrl}>
-                    Sign out
+                    Logout
                 </a>
                
          
