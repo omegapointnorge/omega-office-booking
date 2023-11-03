@@ -14,7 +14,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>OfficeBooking</AssemblyName>
     <noWarn>1591</noWarn>
-    <UserSecretsId>cedb4a03-8ab1-4986-ad36-f1de494d5ae3</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
