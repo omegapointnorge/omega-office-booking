@@ -66,7 +66,6 @@ builder.Services.AddCors(options =>
     );
 });
 
-//builder.Services.AddDbContext<OfficeDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
 
 builder.Services.AddDbContext<OfficeDbContext>(options => {
     SqlAuthenticationProvider.SetProvider(
