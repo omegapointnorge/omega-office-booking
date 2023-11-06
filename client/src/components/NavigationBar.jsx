@@ -12,7 +12,7 @@ export const NavigationBar = () => {
      * Most applications will need to conditionally render certain components based on whether a user is signed in or not.
      */
     const location = useLocation();
-    const baseUrl = "https://localhost:5001";
+    const baseUrl = location;
     const LoginUrl = baseUrl+"/api/Account/Login";
     const LogoutUrl = baseUrl+"/api/Account/Logout";
     return (
