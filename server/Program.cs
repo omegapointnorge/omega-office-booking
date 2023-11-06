@@ -11,6 +11,12 @@ using server.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Set our ClientId and ClientSecret in appsettings to user-secrets values
+builder.Configuration["AzureAD:ClientId"] = builder.Configuration["AzureAd__ClientId"];
+builder.Configuration["AzureAD:ClientSecret"] = builder.Configuration["AzureAd__ClientSecret"];
+builder.Configuration["AzureAD:TenantId"] = builder.Configuration["AzureAd__TenantId"];
+
+
 // Add services to the container.
 builder.Services.AddAuthentication(options =>
 {
