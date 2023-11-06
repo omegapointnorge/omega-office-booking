@@ -4,7 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 # Ignore workflows
-* .github/workflows
+*.github/workflows
 
 # User-specific files
 *.rsuser
