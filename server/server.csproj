@@ -63,6 +63,9 @@
     <None Update="..\client\src\Pages\Overview\OverviewPage.jsx">
       <Link>src\Pages\Overview\OverviewPage.jsx</Link>
     </None>
+    <None Update="..\client\src\Pages\Login\IsAuthenticated.jsx">
+      <Link>src\Pages\Login\IsAuthenticated.jsx</Link>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

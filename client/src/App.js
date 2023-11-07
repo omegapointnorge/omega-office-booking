@@ -3,13 +3,14 @@ import './App.css';
 import LoginPage from './Pages/Login/LoginPage'
 import  {Route, Routes} from 'react-router-dom';
 import OverviewPage from "./Pages/Overview/OverviewPage";
+import {IsAuthenticated} from "./Pages/Login/IsAuthenticated";
 
 export default function App() {
     return (
         <div className="App">
-            <LoginPage />
             <Routes>
-                <Route path="/" element={<LoginPage />}></Route>
+                <Route path="/" element={<IsAuthenticated />}></Route>
+                <Route path="/login" element={<LoginPage />}></Route>
                 <Route path="/overview" element={<OverviewPage />}></Route>
             </Routes>
         </div>)
