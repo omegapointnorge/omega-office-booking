@@ -4,15 +4,23 @@ import LoginPage from './Pages/Login/LoginPage'
 import  {Route, Routes} from 'react-router-dom';
 import OverviewPage from "./Pages/Overview/OverviewPage";
 import {IsAuthenticated} from "./Pages/Login/IsAuthenticated";
+import {
+    QueryClient,
+    QueryClientProvider,
+    useQuery,
+} from '@tanstack/react-query'
 
+const queryClient = new QueryClient()
 export default function App() {
     return (
+        <QueryClientProvider client={queryClient}>
         <div className="App">
             <Routes>
                 <Route path="/" element={<IsAuthenticated />}></Route>
                 <Route path="/login" element={<LoginPage />}></Route>
                 <Route path="/overview" element={<OverviewPage />}></Route>
             </Routes>
-        </div>)
+        </div>
+        </QueryClientProvider>)
 }
 App.displayName = App.name

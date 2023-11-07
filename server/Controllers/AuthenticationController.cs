@@ -31,18 +31,13 @@ public class AuthenticationController : Controller
             OpenIdConnectDefaults.AuthenticationScheme);
     }
 
-    [HttpGet]
     [AllowAnonymous]
+    [HttpGet("IsAuthenticated")]
     public ActionResult IsAuthenticated()
     {
-        if (User?.Identity?.IsAuthenticated is null || !User.Identity.IsAuthenticated) return Unauthorized();
-        
-        if(IsUserFoundOrCreated())
-        {
-            return Ok();
-        }
+        //if (User?.Identity?.IsAuthenticated is null || !User.Identity.IsAuthenticated) return Unauthorized();
 
-        return Unauthorized();
+        return Ok();
     }
     
     private bool IsUserFoundOrCreated()
@@ -51,7 +46,7 @@ public class AuthenticationController : Controller
         var userEmail = User?.FindFirst("email")?.Value;
 
         if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentNullException("Could not find userID");
-        if (string.IsNullOrWhiteSpace(userEmail)) throw new ArgumentNullException("Could not find user email");
+        //if (string.IsNullOrWhiteSpace(userEmail)) throw new ArgumentNullException("Could not find user email");
 
         return true;             
     }

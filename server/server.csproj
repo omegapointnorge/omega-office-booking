@@ -66,6 +66,9 @@
     <None Update="..\client\src\Pages\Login\IsAuthenticated.jsx">
       <Link>src\Pages\Login\IsAuthenticated.jsx</Link>
     </None>
+    <None Update="..\client\src\api\useIsAuthenticated.jsx">
+      <Link>src\api\useIsAuthenticated.jsx</Link>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
