@@ -1,23 +1,21 @@
 import logo from './logo.svg';
 import './App.css';
+import OfficeRoom from './components/OfficeRoom';
 
 export default function App() {
+     // Sample data representing seat availability
+  const seats = [
+    { seatNumber: 1, isAvailable: true },
+    { seatNumber: 2, isAvailable: false },
+    { seatNumber: 3, isAvailable: true },
+    // Add more seats as needed
+  ];
+  
     return (
         <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                    Edit <code>src/App.js</code> and save to reload.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-            </header>
+            <OfficeRoom>
+
+            </OfficeRoom>
         </div>)
 }
 App.displayName = App.name

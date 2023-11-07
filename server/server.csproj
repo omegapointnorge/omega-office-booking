@@ -14,7 +14,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>OfficeBooking</AssemblyName>
     <noWarn>1591</noWarn>
-    <UserSecretsId>cedb4a03-8ab1-4986-ad36-f1de494d5ae3</UserSecretsId>
+    <>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +29,7 @@
     <PackageReference Include="Microsoft.Identity.Web" Version="2.15.3" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.1" />
+    <PackageReference Include="System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;" />
   </ItemGroup>
 
   <ItemGroup>

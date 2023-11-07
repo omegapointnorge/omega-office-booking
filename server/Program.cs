@@ -23,6 +23,8 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
 })
+
+
 .AddMicrosoftIdentityWebApp(options =>
 {
     builder.Configuration.Bind("AzureAd", options);
@@ -84,6 +86,8 @@ builder.Services.AddDbContext<OfficeDbContext>(options => {
     var sqlConnection = new SqlConnection(connectionString);
     options.UseSqlServer(sqlConnection);
 });
+
+System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 
 var app = builder.Build();
 
