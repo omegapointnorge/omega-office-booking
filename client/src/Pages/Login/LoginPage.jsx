@@ -1,9 +1,12 @@
 import Heading from '../../components/Heading'
 import Button from '../../components/Button'
 import { IoMdClose } from "react-icons/io";
+import {Link, useNavigate} from "react-router-dom"
 export default function LoginPage() {
-    
-    
+    let navigate = useNavigate();
+    const LoginUrl = "https://localhost:5001"+"/api/Account/Login";
+    const LogoutUrl = "https://localhost:5001"+"/api/Account/Logout";
+
     return (
         <>
         <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto 
@@ -16,8 +19,13 @@ export default function LoginPage() {
                     <div >
                         <Heading title="Welcome to OfficeBooking" subTitle="Please login below"/>
                         <div className="flex flex-col gap-2 p-6">
-                        <div className="flex flex-row items-center gap-4 w-full">
-                            <Button label="Login"/>
+                        <div className="flex flex-row items-center gap-4">
+                            <Link className="flex flex-row items-center gap-4 w-full" to={LoginUrl}>
+                                <Button label="Login"/>
+                            </Link>
+                            <Link className="flex flex-row items-center gap-4 w-full" to={LogoutUrl}>
+                                <Button alert label="Logout"/>
+                            </Link>
                         </div>
                         </div>
                     </div>

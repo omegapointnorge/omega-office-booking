@@ -1,6 +1,6 @@
 import {IconType} from "react-icons"
 
-const Button = ({label, onClick, disabled, outline, small, icon:Icon }) =>{
+const Button = ({label, onClick, disabled, outline, small, alert, icon:Icon }) =>{
     return (
         <button className={`
       relative
@@ -17,6 +17,8 @@ const Button = ({label, onClick, disabled, outline, small, icon:Icon }) =>{
       ${small ? "text-sm" : "text-md"}
       ${small ? "font-light" : "font-semibold"}
       ${small ? "border-[1px]" : "border-2"}
+      ${alert ? "bg-red-800" : "bg-blue-900"}
+      ${alert ? "border-red-800" : "border-blue-900"}
 `}> {label}
             {Icon && <Icon size={24} className="absolute left-4 top-3" />}</button>
     )
