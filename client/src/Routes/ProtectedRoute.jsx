@@ -1,11 +1,10 @@
 import { useAuthContext } from "../api/useAuthContext";
-import { Navigate } from "react-router-dom";
 import Heading from "../components/Heading";
 
 type ProtectedRouteProps = {
     outlet: JSX.element;
 }
-export const ProtectedRoute = ({outlet}) => {
+export const ProtectedRoute = ({outlet} : ProtectedRouteProps) => {
   const context = useAuthContext();
   
   if (context?.user?.isAuthenticated) {

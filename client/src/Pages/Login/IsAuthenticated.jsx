@@ -1,5 +1,4 @@
 import { CircularProgress } from "@mui/material";
-import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../api/useAuthContext";
 export const IsAuthenticated = () => {
