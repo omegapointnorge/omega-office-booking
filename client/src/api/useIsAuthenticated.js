@@ -11,10 +11,12 @@ export const getIsAuthenticated = async () => {
         },
     };
     
-    const isAuthenticated = await fetch('https://localhost:5001/api/Account/IsAuthenticated', requestOptions);
+    const isAuthenticated = await fetch('https://localhost:5001/api/Account/IsAuthenticated', 
+        requestOptions);
     
     if(isAuthenticated.ok || isAuthenticated.status === 200){
-      return ;
+        console.log(isAuthenticated.status)
+      return true;
     }
     
     return Promise.reject(new Error('Could not authenticate user'));
