@@ -7,7 +7,7 @@ import {Link} from "react-router-dom";
 export default function OverviewPage() {
     const context = useAuthContext();
     const name = context?.user?.claims?.find(x => x.key === 'name')?.value;
-    const LogoutUrl = "https://localhost:5001/api/Account/Logout";
+    const LogoutUrl = "/api/Account/Logout";
     return (
         <>
             <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto 
@@ -17,6 +17,7 @@ export default function OverviewPage() {
                     <Link
                         className="flex flex-row items-center gap-4 w-full"
                         to={LogoutUrl}
+                        reloadDocument
                     >
                         <Button alert label="Logout" />
                     </Link>

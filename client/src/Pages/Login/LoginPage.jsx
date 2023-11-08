@@ -5,7 +5,7 @@ import {useAuthContext} from "../../api/useAuthContext";
 import {useEffect} from "react";
 
 export default function LoginPage() {
-  const LoginUrl = "https://localhost:5001/api/Account/Login";
+  const LoginUrl = "/api/Account/Login";
   const context = useAuthContext();
   const navigate = useNavigate();
 
@@ -39,6 +39,7 @@ export default function LoginPage() {
                   <Link
                     className="flex flex-row items-center gap-4 w-full"
                     to={LoginUrl}
+                    reloadDocument
                   >
                     <Button label="Login" />
                   </Link>
