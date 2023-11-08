@@ -1,9 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
-import LoginPage from './Pages/Login/LoginPage'
+import LoginPage from './pages/Login/LoginPage'
 import  {Route, Routes} from 'react-router-dom';
-import OverviewPage from "./Pages/Overview/OverviewPage";
-import {IsAuthenticated} from "./Pages/Login/IsAuthenticated";
+import OverviewPage from "./pages/Overview/OverviewPage";
+import {IsAuthenticated} from "./pages/Login/IsAuthenticated";
 import {BigRoom} from "./pages/Rooms/BigRoom";
 
 export default function App() {

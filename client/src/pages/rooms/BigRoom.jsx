@@ -1,10 +1,9 @@
 import React from "react";
 import OfficeRoom from "../../components/OfficeRoom";
-import Seat from "../../components/seat";
 
-export default function BigRoom() {
+export function BigRoom() {
     
-    const bigRoomConfig = [
+    const bigRoomSeatData = [
         {
             seatNumber: 1,
             isAvailable: true
@@ -31,7 +30,7 @@ export default function BigRoom() {
     return (
         <div>
             <h1>Hello and welcome to the big office room</h1>
-            <OfficeRoom seatData={bigRoomConfig}>
+            <OfficeRoom seatData={bigRoomSeatData}>
 
             </OfficeRoom>
         </div>
