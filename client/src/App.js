@@ -3,20 +3,12 @@ import './App.css';
 import LoginPage from './Pages/Login/LoginPage'
 import  {Route, Routes} from 'react-router-dom';
 import OverviewPage from "./Pages/Overview/OverviewPage";
-import { IsAuthenticated } from "./Pages/Login/IsAuthenticated";
+import {IsAuthenticated} from "./Pages/Login/IsAuthenticated";
 import {BigRoom} from "./pages/Rooms/BigRoom";
 
-import {
-    QueryClient,
-    QueryClientProvider,
-    useQuery,
-} from '@tanstack/react-query'
-
-const queryClient = new QueryClient()
 export default function App() {
 
     return (
-        <QueryClientProvider client={queryClient}>
         <div className="App">
             <Routes>
                 <Route path="/" element={<IsAuthenticated />}></Route>
@@ -24,7 +16,6 @@ export default function App() {
                 <Route path="/overview" element={<OverviewPage />}></Route>
                 <Route path='/bigroom' element={<BigRoom />}></Route>
             </Routes>
-        </div>
-        </QueryClientProvider>)
+        </div>)
 }
 App.displayName = App.name

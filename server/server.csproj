@@ -20,12 +20,14 @@
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="6.2.0" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.13">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.13" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Identity.Web" Version="2.15.3" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.1" />
@@ -69,6 +71,18 @@
     <None Update="..\client\src\api\useIsAuthenticated.jsx">
       <Link>src\api\useIsAuthenticated.jsx</Link>
     </None>
+    <None Update="..\client\src\auth\AuthContext.js">
+      <Link>src\auth\AuthContext.js</Link>
+    </None>
+    <None Update="..\client\src\auth\AuthProvider.js">
+      <Link>src\auth\AuthProvider.js</Link>
+    </None>
+    <None Update="..\client\src\api\useAuthContext.js">
+      <Link>src\api\useAuthContext.js</Link>
+    </None>
+    <None Update="..\client\src\api\userService.js">
+      <Link>src\api\userService.js</Link>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -95,7 +109,7 @@
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
       <DistFiles Include="$(SpaRoot)build\**" />
-      <ResolvedFileToPublish Include="@(DistFiles-&gt;'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>

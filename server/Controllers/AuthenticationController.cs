@@ -23,19 +23,23 @@ public class AuthenticationController : Controller
 
     [Authorize]
     [HttpGet("Logout")]
-    public IActionResult Logout()
+    public async Task Logout()
     {
-        return SignOut(
-            new AuthenticationProperties { RedirectUri = "/" },
-            CookieAuthenticationDefaults.AuthenticationScheme,
-            OpenIdConnectDefaults.AuthenticationScheme);
+        
+        await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme, new AuthenticationProperties
+        {
+            RedirectUri = "/",
+        });
+
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     }
 
     [AllowAnonymous]
     [HttpGet("IsAuthenticated")]
     public ActionResult IsAuthenticated()
     {
-        //if (User?.Identity?.IsAuthenticated is null || !User.Identity.IsAuthenticated) return Unauthorized();
+        Console.WriteLine(User?.Identity?.AuthenticationType);
+        if (User?.Identity?.IsAuthenticated is null || !User.Identity.IsAuthenticated) return Unauthorized();
 
         return Ok();
     }
