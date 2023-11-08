@@ -5,18 +5,13 @@ import { useAuthContext } from "../../api/useAuthContext";
 export const IsAuthenticated = () => {
   const navigate = useNavigate();
   const context = useAuthContext();
-  const isMounted = useRef(false);
-  useEffect(() => {
-    isMounted.current = true;
+
     if (context?.user?.isAuthenticated) {
       console.log("User is authenticated, redirecting to overview..");
-      isMounted.current = false;
       navigate("/overview");
     } else {
-      isMounted.current = false;
       navigate("/login");
     }
-  });
 
   return (
     <div className="flex flex-col">
