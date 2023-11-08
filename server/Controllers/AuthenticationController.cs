@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web;
 
 namespace server.Controllers;
 
@@ -28,5 +29,25 @@ public class AuthenticationController : Controller
             new AuthenticationProperties { RedirectUri = "/" },
             CookieAuthenticationDefaults.AuthenticationScheme,
             OpenIdConnectDefaults.AuthenticationScheme);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("IsAuthenticated")]
+    public ActionResult IsAuthenticated()
+    {
+        //if (User?.Identity?.IsAuthenticated is null || !User.Identity.IsAuthenticated) return Unauthorized();
+
+        return Ok();
+    }
+    
+    private bool IsUserFoundOrCreated()
+    {
+        var userId = User?.FindFirst(ClaimConstants.ObjectId)?.Value;
+        var userEmail = User?.FindFirst("email")?.Value;
+
+        if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentNullException("Could not find userID");
+        //if (string.IsNullOrWhiteSpace(userEmail)) throw new ArgumentNullException("Could not find user email");
+
+        return true;             
     }
 }
