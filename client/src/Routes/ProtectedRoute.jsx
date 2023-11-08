@@ -1,10 +1,15 @@
 import { useAuthContext } from "../api/useAuthContext";
 import { Navigate } from "react-router-dom";
 import Heading from "../components/Heading";
-export const ProtectedRoute = () => {
+
+type ProtectedRouteProps = {
+    outlet: JSX.element;
+}
+export const ProtectedRoute = ({outlet}) => {
   const context = useAuthContext();
+  
   if (context?.user?.isAuthenticated) {
-    return <Navigate to="/overview" replace />;
+    return outlet;
   }
 
   return (

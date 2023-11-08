@@ -22,7 +22,5 @@ export default function OverviewPage() {
                     </Link>
                 </div>
             </div>
-            
-            
         </>)
 }

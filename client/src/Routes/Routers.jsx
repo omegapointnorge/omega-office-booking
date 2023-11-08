@@ -11,7 +11,7 @@ const Routers = () => {
         <Route path="/login" element={<LoginPage />}></Route>
 
         {/* PROTECTED ROUTES */}
-        <Route path="/overview" element={<ProtectedRoute />}></Route>
+        <Route path="/overview" element={<ProtectedRoute outlet={<OverviewPage />} />}></Route>
     </Routes>)
 }
 
