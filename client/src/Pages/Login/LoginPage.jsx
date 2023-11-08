@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 export default function LoginPage() {
   const LoginUrl = "https://localhost:5001/api/Account/Login";
-  const LogoutUrl = "https://localhost:5001/api/Account/Logout";
 
   return (
     <>
@@ -31,12 +30,6 @@ export default function LoginPage() {
                     to={LoginUrl}
                   >
                     <Button label="Login" />
-                  </Link>
-                  <Link
-                    className="flex flex-row items-center gap-4 w-full"
-                    to={LogoutUrl}
-                  >
-                    <Button alert label="Logout" />
                   </Link>
                 </div>
               </div>
