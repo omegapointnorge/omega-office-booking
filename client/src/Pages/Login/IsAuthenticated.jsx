@@ -11,7 +11,6 @@ export const IsAuthenticated = () => {
       console.log("User is authenticated, redirecting to overview..");
       navigate("/overview");
     } else {
-      console.log(context.user);
       navigate("/login");
     }
   }, [context?.user?.isAuthenticated, navigate]);
