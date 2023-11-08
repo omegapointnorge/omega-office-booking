@@ -2,15 +2,19 @@ import Heading from "../../components/Heading";
 import Button from "../../components/Button";
 import {Link, useNavigate} from "react-router-dom";
 import {useAuthContext} from "../../api/useAuthContext";
+import {useEffect} from "react";
 
 export default function LoginPage() {
   const LoginUrl = "https://localhost:5001/api/Account/Login";
   const context = useAuthContext();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (context?.user?.isAuthenticated) {
+      navigate("/overview");
+    }
+  }, [context?.user?.isAuthenticated, navigate]);
   
-  if (context?.user?.isAuthenticated) {
-    navigate("/overview");
-  }
   
   return (
     <>
