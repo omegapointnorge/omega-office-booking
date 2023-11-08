@@ -1,18 +1,23 @@
 import { CircularProgress } from "@mui/material";
-import { useEffect } from "react";
+import {useEffect, useRef} from "react";
 import { useNavigate } from "react-router-dom";
-import { useIsAuthenticated } from "../../api/useIsAuthenticated";
 import {useAuthContext} from "../../api/useAuthContext";
 export const IsAuthenticated = () => {
   const navigate = useNavigate();
   const context = useAuthContext();
-  
-    if (context?.user?.isAuthenticated) {
-        console.log('User is authenticated, redirecting to overview..')
-        navigate("/overview");
-    }else{
-        navigate("/login");
-    }
+  const isMounted = useRef(false)
+    useEffect(() => {
+        isMounted.current = true;
+        if (context?.user?.isAuthenticated) {
+            console.log('User is authenticated, redirecting to overview..')
+            isMounted.current = false;
+            navigate("/overview");
+        }else{
+            isMounted.current = false;
+            navigate("/login");
+        }
+    }, [navigate]);
+    
     
   return (
     <div className="flex flex-col">

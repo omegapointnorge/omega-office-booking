@@ -19,7 +19,8 @@ module.exports = function (app) {
         onError: onError,
         secure: false,
         headers: {
-            Connection: 'Keep-Alive'
+            Connection: 'Keep-Alive',
+            'Access-Control-Allow-Origin': '*',
         }
     });
 

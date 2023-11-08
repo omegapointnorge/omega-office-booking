@@ -34,24 +34,4 @@ public class AuthenticationController : Controller
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     }
 
-    [AllowAnonymous]
-    [HttpGet("IsAuthenticated")]
-    public ActionResult IsAuthenticated()
-    {
-        Console.WriteLine(User?.Identity?.AuthenticationType);
-        if (User?.Identity?.IsAuthenticated is null || !User.Identity.IsAuthenticated) return Unauthorized();
-
-        return Ok();
-    }
-    
-    private bool IsUserFoundOrCreated()
-    {
-        var userId = User?.FindFirst(ClaimConstants.ObjectId)?.Value;
-        var userEmail = User?.FindFirst("email")?.Value;
-
-        if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentNullException("Could not find userID");
-        //if (string.IsNullOrWhiteSpace(userEmail)) throw new ArgumentNullException("Could not find user email");
-
-        return true;             
-    }
 }
