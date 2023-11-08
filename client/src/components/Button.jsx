@@ -2,7 +2,10 @@ import {IconType} from "react-icons"
 
 const Button = ({label, onClick, disabled, outline, small, alert, icon:Icon }) =>{
     return (
-        <button className={`
+        <button 
+            onClick={onClick}
+            disabled={disabled}
+            className={`
       relative
       disabled:opacity-70
       disabled:cursor-not-allowed
