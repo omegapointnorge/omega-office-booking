@@ -83,12 +83,9 @@
     <None Update="..\client\src\api\userService.js">
       <Link>src\api\userService.js</Link>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="..\client\src\Routes\">
-      <Link>src\Routes</Link>
-    </Folder>
+    <None Update="..\client\src\Routes\Routers.jsx">
+      <Link>src\Routes\Routes.jsx</Link>
+    </None>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
