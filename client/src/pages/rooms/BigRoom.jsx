@@ -1,38 +1,19 @@
-import React from "react";
-import OfficeRoom from "../../components/OfficeRoom";
+import { Routes, Route } from "react-router-dom";
+import {IsAuthenticated} from "../Pages/Login/IsAuthenticated";
+import LoginPage from "../Pages/Login/LoginPage";
+import OverviewPage from "../Pages/Overview/OverviewPage";
+import {ProtectedRoute} from "./ProtectedRoute";
+import { BigRoom } from "../pages/Rooms/BigRoom";
 
-export function BigRoom() {
-    
-    const bigRoomSeatData = [
-        {
-            seatNumber: 1,
-            isAvailable: true
-        },
-        {
-            seatNumber: 2,
-            isAvailable: false
-        },
-        {
-            seatNumber: 3,
-            isAvailable: true
-        },
-        {
-            seatNumber: 4,
-            isAvailable: true
-        },
-        {
-            seatNumber: 5,
-            isAvailable: true
-        },
-    ];
+const Routers = () => {
+    return (<Routes>
+        <Route path="/" element={<IsAuthenticated />}></Route>
+        <Route path="/login" element={<LoginPage />}></Route>
 
-
-    return (
-        <div>
-            <h1>Hello and welcome to the big office room</h1>
-            <OfficeRoom seatData={bigRoomSeatData}>
-
-            </OfficeRoom>
-        </div>
-    )
+        {/* PROTECTED ROUTES */}
+        <Route path="/overview" element={<ProtectedRoute outlet={<OverviewPage />} />}></Route>
+        <Route path="/bigroom" element={<ProtectedRoute outlet={<BigRoom />} />}></Route>
+    </Routes>)
 }
+
+export default Routers;
