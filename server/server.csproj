@@ -92,6 +92,21 @@
     <None Update="..\client\src\components\Navbar\Navbar.jsx">
       <Link>src\components\Navbar\Navbar.jsx</Link>
     </None>
+    <None Update="..\client\src\components\Logo.jsx">
+      <Link>src\components\Logo.jsx</Link>
+    </None>
+    <None Update="..\client\src\components\Navbar\Logo.jsx">
+      <Link>src\components\Navbar\Logo.jsx</Link>
+    </None>
+    <None Update="..\client\src\components\Buttons\LogoutButton.jsx">
+      <Link>src\components\Buttons\LogoutButton.jsx</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="..\client\public\images\">
+      <Link>public\images</Link>
+    </Folder>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
