@@ -14,11 +14,11 @@ class OverviewStore {
     makeAutoObservable(this);
 }
 
-    addBooking() {
+    addBooking(name: string) {
         this.bookings.push(
             {
             id: "2",
-            name: "Mostafa Aziz",
+            name: name ?? 'Nameless',
         });
     }
 
