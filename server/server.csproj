@@ -91,6 +91,12 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="..\client\src\components\Buttons\">
+      <Link>src\components\Buttons</Link>
+    </Folder>
+  </ItemGroup>
+
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">

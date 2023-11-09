@@ -15,7 +15,6 @@ export const getIsAuthenticated = async () => {
         requestOptions);
     
     if(isAuthenticated.ok || isAuthenticated.status === 200){
-        console.log(isAuthenticated.status)
       return true;
     }
     

@@ -10,6 +10,8 @@ export const ProtectedRoute = ({outlet} : ProtectedRouteProps) => {
   if (context?.user?.isAuthenticated) {
     return outlet;
   }
+  
+  console.log("You are not authenticated, please login first");
 
   return (
     <div className="h-[60vh] flex flex-col gap-2 justify-center items-center">

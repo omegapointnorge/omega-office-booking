@@ -8,4 +8,3 @@ export default function App() {
             <Routers />
         </div>)
 }
-App.displayName = App.name
