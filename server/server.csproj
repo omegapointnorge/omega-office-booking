@@ -101,6 +101,9 @@
     <None Update="..\client\src\components\Buttons\LogoutButton.jsx">
       <Link>src\components\Buttons\LogoutButton.jsx</Link>
     </None>
+    <None Update="..\client\src\components\Navbar\NavbarItem.jsx">
+      <Link>src\components\Navbar\NavbarItem.jsx</Link>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
