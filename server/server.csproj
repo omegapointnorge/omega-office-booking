@@ -89,6 +89,9 @@
     <None Update="..\client\src\Routes\ProtectedRoute.jsx">
       <Link>src\Routes\ProtectedRoute.jsx</Link>
     </None>
+    <None Update="..\client\src\components\Navbar\Navbar.jsx">
+      <Link>src\components\Navbar\Navbar.jsx</Link>
+    </None>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
