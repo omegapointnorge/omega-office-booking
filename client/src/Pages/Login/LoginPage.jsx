@@ -3,8 +3,9 @@ import Button from "../../components/Button";
 import {Link, useNavigate} from "react-router-dom";
 import {useAuthContext} from "../../api/useAuthContext";
 import {useEffect} from "react";
+import OverviewPage from "../Overview/OverviewPage";
 
-export default function LoginPage() {
+const LoginPage = () => {
   const LoginUrl = "/api/Account/Login";
   const context = useAuthContext();
   const navigate = useNavigate();
@@ -52,3 +53,5 @@ export default function LoginPage() {
     </>
   );
 }
+
+export default LoginPage;
