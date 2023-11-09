@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.ApplicationInsights;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
@@ -84,6 +83,7 @@ builder.Services.AddDbContext<OfficeDbContext>(options => {
     var sqlConnection = new SqlConnection(connectionString);
     options.UseSqlServer(sqlConnection);
 });
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();
 

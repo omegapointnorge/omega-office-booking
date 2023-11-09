@@ -20,12 +20,14 @@
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="6.2.0" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.13">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.13" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Identity.Web" Version="2.15.3" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.1" />
@@ -45,6 +47,54 @@
     <None Update="..\client\src\loginpage.js">
       <Link>src\loginpage.js</Link>
     </None>
+    <None Update="..\client\src\Pages\Login\LoginPage.jsx">
+      <Link>src\Pages\Login\LoginPage.jsx</Link>
+    </None>
+    <None Update="..\client\src\components\Heading.jsx">
+      <Link>src\components\Heading.jsx</Link>
+    </None>
+    <None Update="..\client\src\components\Buttons\LoginButton.jsx">
+      <Link>src\components\Buttons\LoginButton.jsx</Link>
+    </None>
+    <None Update="..\client\src\components\Buttons\Button.jsx">
+      <Link>src\components\Buttons\Button.jsx</Link>
+    </None>
+    <None Update="..\client\src\components\Button.jsx">
+      <Link>src\components\Button.jsx</Link>
+    </None>
+    <None Update="..\client\src\Pages\Overview\OverviewPage.jsx">
+      <Link>src\Pages\Overview\OverviewPage.jsx</Link>
+    </None>
+    <None Update="..\client\src\Pages\Login\IsAuthenticated.jsx">
+      <Link>src\Pages\Login\IsAuthenticated.jsx</Link>
+    </None>
+    <None Update="..\client\src\api\useIsAuthenticated.jsx">
+      <Link>src\api\useIsAuthenticated.jsx</Link>
+    </None>
+    <None Update="..\client\src\auth\AuthContext.js">
+      <Link>src\auth\AuthContext.js</Link>
+    </None>
+    <None Update="..\client\src\auth\AuthProvider.js">
+      <Link>src\auth\AuthProvider.js</Link>
+    </None>
+    <None Update="..\client\src\api\useAuthContext.js">
+      <Link>src\api\useAuthContext.js</Link>
+    </None>
+    <None Update="..\client\src\api\userService.js">
+      <Link>src\api\userService.js</Link>
+    </None>
+    <None Update="..\client\src\Routes\Routers.jsx">
+      <Link>src\Routes\Routes.jsx</Link>
+    </None>
+    <None Update="..\client\src\Routes\ProtectedRoute.jsx">
+      <Link>src\Routes\ProtectedRoute.jsx</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="..\client\src\components\Buttons\">
+      <Link>src\components\Buttons</Link>
+    </Folder>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
@@ -65,7 +115,7 @@
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
       <DistFiles Include="$(SpaRoot)build\**" />
-      <ResolvedFileToPublish Include="@(DistFiles-&gt;'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
