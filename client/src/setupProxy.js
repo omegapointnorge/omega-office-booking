@@ -18,6 +18,7 @@ module.exports = function (app) {
         target: target,
         onError: onError,
         secure: false,
+        changeOrigin: true,
         headers: {
             Connection: 'Keep-Alive',
             'Access-Control-Allow-Origin': '*',
