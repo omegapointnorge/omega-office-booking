@@ -1,0 +1,1 @@
+public record SeatDto(int Id, string? Room, string? Country, int Price);

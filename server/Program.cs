@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.ApplicationInsights;
-using Microsoft.Data.SqlClient;
+
 using Microsoft.EntityFrameworkCore;
 
 using server.Context;
+using Microsoft.Data.SqlClient;
+using server.Repository;
+using server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,7 +61,8 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = defaultPolicy;
 });
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
 
@@ -73,19 +76,38 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.AddDbContext<OfficeDbContext>(options => {
-    SqlAuthenticationProvider.SetProvider(
-        SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
-        new server.Helpers.AzureSqlAuthProvider());
+//builder.Services.AddDbContext<OfficeDbContext>(options => {
+//    SqlAuthenticationProvider.SetProvider(
+//        SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
+//        new server.Helpers.AzureSqlAuthProvider());
 
-    var connectionString = "Server=tcp:" + builder.Configuration["SqlServerName"] + 
-                           ".database.windows.net;Database=" + builder.Configuration["SqlDatabaseName"] +
-                           ";TrustServerCertificate=True;Authentication=Active Directory Default";
-    var sqlConnection = new SqlConnection(connectionString);
-    options.UseSqlServer(sqlConnection);
-});
+//    var connectionString = "Server=tcp:" + builder.Configuration["SqlServerName"] + 
+//                           ".database.windows.net;Database=" + builder.Configuration["SqlDatabaseName"] +
+//                           ";TrustServerCertificate=True;Authentication=Active Directory Default";
+//    var sqlConnection = new SqlConnection(connectionString);
+//    options.UseSqlServer(sqlConnection);
+//});
 
+//TODO: change to sqldatabase in the end
+//builder.Services.AddDbContext<OfficeDbContext>(options => {
+//    SqlAuthenticationProvider.SetProvider(
+//        SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
+//        new server.Helpers.AzureSqlAuthProvider());
+
+//    var connectionString = "Server=tcp:" + builder.Configuration["SqlServerName"] +
+//                           ".database.windows.net;Database=" + builder.Configuration["SqlDatabaseName"] +
+//                           ";TrustServerCertificate=True;Authentication=Active Directory Default";
+//    var sqlConnection = new SqlConnection(connectionString);
+//    options.UseSqlServer(sqlConnection);
+//});
+builder.Services.AddDbContext<OfficeDbContext>(options => options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+builder.Services.AddScoped<ISeatRepository, SeatRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+//builder.Services.AddScoped<IUserRepository, UserRepository>();
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -97,6 +119,7 @@ app.UseHttpsRedirection();
 app.UseCookiePolicy();
 app.UseCors("Client Origin");
 app.UseStaticFiles();
+app.MapSeatEndpoints();
 app.UseRouting();
 
 // Authentication middleware
