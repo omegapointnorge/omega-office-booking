@@ -1,7 +1,5 @@
 import Heading from "../../components/Heading";
 import {useAuthContext} from "../../api/useAuthContext";
-import Button from "../../components/Button";
-import {Link} from "react-router-dom";
 
 
 export default function OverviewPage() {

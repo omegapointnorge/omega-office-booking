@@ -1,5 +1,3 @@
-import {Link} from "react-router-dom";
-import Button from "../Button";
 import {Logo} from "./Logo";
 import {LogoutButton} from "../Buttons/LogoutButton";
 
