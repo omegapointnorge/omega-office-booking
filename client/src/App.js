@@ -9,7 +9,7 @@ export default function App() {
     const context = useAuthContext();
     return (
         <div className="App">
-            {context?.user?.isAuthenticated ? <Navbar /> : ''}
+            {context?.user?.isAuthenticated ? <Navbar /> : undefined}
             <Routers />
         </div>)
 }
