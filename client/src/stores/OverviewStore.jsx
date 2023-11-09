@@ -21,6 +21,14 @@ class OverviewStore {
             name: "Mostafa Aziz",
         });
     }
+
+    deleteBooking() {
+        this.bookings.pop(
+            {
+                id: "2",
+                name: "Mostafa Aziz",
+            });
+    }
 }
 
 export default OverviewStore;

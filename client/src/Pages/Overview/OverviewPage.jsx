@@ -11,8 +11,12 @@ const OverviewPage = observer(() => {
     const [booking, setBooking] = useState();
     const {overviewStore} = useStores();
     
-    const onClick = () =>{
-        overviewStore.addBooking()
+    const onAddBooking = () =>{
+        overviewStore.addBooking();
+    }
+    
+    const onRemoveBooking = () => {
+        overviewStore.deleteBooking();
     }
     
     return (
@@ -22,7 +26,8 @@ const OverviewPage = observer(() => {
                 <div className="flex flex-col gap-10">
                     <Heading title="Overview page" subTitle={`Velkommen ${name}`}/>
                     {overviewStore.bookings.map((booking) => (<div key={booking.id}> {booking.name} </div>))}
-                    <Button label="Perform a booking" onClick={onClick} />
+                    <Button label="Perform a booking" onClick={onAddBooking} />
+                    <Button alert label="Remove a booking" onClick={onRemoveBooking} />
                 </div>
             </div>
         </>)
