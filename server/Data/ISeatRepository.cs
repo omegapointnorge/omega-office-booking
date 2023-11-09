@@ -18,16 +18,15 @@ namespace server.Data
 
         private static SeatDetailDto EntityToDetailDto(SeatEntity e)
         {
-            return new SeatDetailDto(e.Id, e.Room, e.Country, e.Description, e.Price, e.Photo);
+            return new SeatDetailDto(e.Id, e.Room, e.Price);
         }
 
         private static void DtoToEntity(SeatDetailDto dto, SeatEntity e)
         {
             e.Room = dto.Room;
-            e.Country = dto.Country;
-            e.Description = dto.Description;
+      
             e.Price = dto.Price;
-            e.Photo = dto.Photo;
+  
         }
 
         public SeatRepository(OfficeDbContext context)
@@ -37,7 +36,7 @@ namespace server.Data
 
         public async Task<List<SeatDto>> GetAll()
         {
-            return await context.Seats.Select(e => new SeatDto(e.Id, e.Room, e.Country, e.Price)).ToListAsync();
+            return await context.Seats.Select(e => new SeatDto(e.Id, e.Room, e.Price)).ToListAsync();
         }
 
         public async Task<SeatDetailDto?> Get(int id)

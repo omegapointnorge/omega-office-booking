@@ -15,32 +15,200 @@ namespace server.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            modelBuilder.Entity("BookingEntity", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("INTEGER");
 
-            modelBuilder.Entity("server.Models.Domain.User", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                b.Property<int>("Amount")
+                    .HasColumnType("INTEGER");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Bookingder")
+                    .IsRequired()
+                    .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<int>("SeatId")
+                    .HasColumnType("INTEGER");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                b.HasKey("Id");
 
-                    b.HasKey("Id");
+                b.HasIndex("SeatId");
 
-                    b.ToTable("Users");
-                });
+                b.ToTable("Bookings", (string)null);
+
+                b.HasData(
+                    new
+                    {
+                        Id = 1,
+                        Amount = 200000,
+                        Bookingder = "Sonia Reading",
+                        SeatId = 1
+                    },
+                    new
+                    {
+                        Id = 2,
+                        Amount = 202400,
+                        Bookingder = "Dick Johnson",
+                        SeatId = 1
+                    },
+                    new
+                    {
+                        Id = 3,
+                        Amount = 302400,
+                        Bookingder = "Mohammed Vahls",
+                        SeatId = 2
+                    },
+                    new
+                    {
+                        Id = 4,
+                        Amount = 310500,
+                        Bookingder = "Jane Williams",
+                        SeatId = 2
+                    },
+                    new
+                    {
+                        Id = 5,
+                        Amount = 315400,
+                        Bookingder = "John Kepler",
+                        SeatId = 2
+                    },
+                    new
+                    {
+                        Id = 6,
+                        Amount = 201000,
+                        Bookingder = "Bill Mentor",
+                        SeatId = 3
+                    },
+                    new
+                    {
+                        Id = 7,
+                        Amount = 410000,
+                        Bookingder = "Melissa Kirk",
+                        SeatId = 4
+                    },
+                    new
+                    {
+                        Id = 8,
+                        Amount = 450000,
+                        Bookingder = "Scott Max",
+                        SeatId = 4
+                    },
+                    new
+                    {
+                        Id = 9,
+                        Amount = 470000,
+                        Bookingder = "Christine James",
+                        SeatId = 4
+                    },
+                    new
+                    {
+                        Id = 10,
+                        Amount = 450000,
+                        Bookingder = "Omesh Carim",
+                        SeatId = 5
+                    },
+                    new
+                    {
+                        Id = 11,
+                        Amount = 150000,
+                        Bookingder = "Charlotte Max",
+                        SeatId = 5
+                    },
+                    new
+                    {
+                        Id = 12,
+                        Amount = 170000,
+                        Bookingder = "Marcus Scott",
+                        SeatId = 5
+                    });
+            });
+
+            modelBuilder.Entity("SeatEntity", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("INTEGER");
+
+                b.Property<string>("Address")
+                    .HasColumnType("TEXT");
+
+                b.Property<string>("Room")
+                    .HasColumnType("TEXT");
+
+                b.Property<string>("Description")
+                    .HasColumnType("TEXT");
+
+                b.Property<string>("Photo")
+                    .HasColumnType("TEXT");
+
+                b.Property<int>("Price")
+                    .HasColumnType("INTEGER");
+
+                b.HasKey("Id");
+
+                b.ToTable("Seats", (string)null);
+
+                b.HasData(
+                    new
+                    {
+                        Id = 1,
+                        Address = "12 Valley of Kings, Geneva",
+                        Room = "Switzerland",
+                        Description = "A superb detached Victorian property on one of the town's finest roads, within easy reach of Barnes Village. The property has in excess of 6000 sq/ft of accommodation, a driveway and landscaped garden.",
+                        Price = 900000
+                    },
+                    new
+                    {
+                        Id = 2,
+                        Address = "89 Road of Forks, Bern",
+                        Room = "Switzerland",
+                        Description = "This impressive family home, which dates back to approximately 1840, offers original period features throughout and is set back from the road with off street parking for up to six cars and an original Coach Seat, which has been incorporated into the main Seat to provide further accommodation. ",
+                        Price = 500000
+                    },
+                    new
+                    {
+                        Id = 3,
+                        Address = "Grote Hof 12, Amsterdam",
+                        Room = "The Netherlands",
+                        Description = "This Seat has been designed and built to an impeccable standard offering luxurious and elegant living. The accommodation is arranged over four floors comprising a large entrance hall, living room with tall sash windows, dining room, study and WC on the ground floor.",
+                        Price = 200500
+                    },
+                    new
+                    {
+                        Id = 4,
+                        Address = "Meel Kade 321, The Hague",
+                        Room = "The Netherlands",
+                        Description = "Discreetly situated a unique two storey period home enviably located on the corner of Krom Road and Recht Road offering seclusion and privacy. The Seat features a magnificent double height reception room with doors leading directly out onto a charming courtyard garden.",
+                        Price = 259500
+                    },
+                    new
+                    {
+                        Id = 5,
+                        Address = "Oude Gracht 32, Utrecht",
+                        Room = "The Netherlands",
+                        Description = "This luxurious three bedroom flat is contemporary in style and benefits from the use of a gymnasium and a reserved underground parking space.",
+                        Price = 400500
+                    });
+            });
+
+            modelBuilder.Entity("BookingEntity", b =>
+            {
+                b.HasOne("SeatEntity", "Seat")
+                    .WithMany("Bookings")
+                    .HasForeignKey("SeatId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Seat");
+            });
+
+            modelBuilder.Entity("SeatEntity", b =>
+            {
+                b.Navigation("Bookings");
+            });
 #pragma warning restore 612, 618
         }
     }

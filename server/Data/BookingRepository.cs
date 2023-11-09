@@ -20,7 +20,7 @@ public class BookingRepository: IBookingRepository
     public async Task<List<BookingDto>> Get(int SeatId)
     {
         return await context.Bookings.Where(b => b.SeatId == SeatId)
-            .Select(b => new BookingDto(b.Id, b.SeatId, b.Bookingder, b.Amount))
+            .Select(b => new BookingDto(b.Id, b.SeatId, b.Bookingder))
             .ToListAsync();
     }
 
@@ -29,10 +29,9 @@ public class BookingRepository: IBookingRepository
         var entity = new BookingEntity();
         entity.SeatId = dto.SeatId;
         entity.Bookingder = dto.Bookingder;
-        entity.Amount = dto.Amount;
         context.Bookings.Add(entity);
         await context.SaveChangesAsync();
         return new BookingDto(entity.Id, entity.SeatId, 
-            entity.Bookingder, entity.Amount);
+            entity.Bookingder);
     }
 }
