@@ -6,12 +6,12 @@ import { observer } from "mobx-react-lite";
 import BookingItem from "../../components/Bookings/BookingItem";
 
 const HistoryPage = observer(() => {
-    const {overviewStore, roomStore} = useStores();
+    const {overviewStore} = useStores();
     const context = useAuthContext();
     const name = context?.user?.claims?.find(x => x.key === 'name')?.value;
 
 
-    if(roomStore.myBookings.length === 0){
+    if(overviewStore.bookings.length === 0){
         return <>
             <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto 
      fixed inset-0 outline-none focus:outline-none" >
@@ -26,7 +26,7 @@ const HistoryPage = observer(() => {
      fixed inset-0 outline-none focus:outline-none" >
                 <div className="flex flex-col gap-10">
                     <Heading title="Your bookings" subTitle="A summary of your bookings"/>
-                    {roomStore.myBookings.map((booking) =>
+                    {overviewStore.bookings.map((booking) =>
                         (<BookingItem key={booking.id}
                                       seatNr={booking.seatId}
 

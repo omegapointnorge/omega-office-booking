@@ -1,6 +1,6 @@
 import { makeAutoObservable} from "mobx";
 import {RootStore, useStores} from "./";
-import type {Booking} from "../domain/booking";
+import toast from "react-hot-toast";
 class RoomStore {
     seats = [
         { "id": 1, "seatId": 1, "isTaken": false },
@@ -19,10 +19,6 @@ class RoomStore {
         { "id": 14, "seatId": 14, "isTaken": false },
         { "id": 15, "seatId": 15, "isTaken": false }
     ];
-    
-    myBookings : Booking[] = [
-
-    ];
     constructor(rootStore: RootStore) {
         makeAutoObservable(this);
     }
@@ -32,13 +28,10 @@ class RoomStore {
 
         if (seatToUpdate) {
             seatToUpdate.isTaken = isTaken;
-            this.myBookings.push({
-                id: "2",
-                seatId: seatToUpdate.seatId,
-            });
-            console.log(`Seat with ID ${id} has been marked as ${isTaken ? 'taken' : 'available'}.`);
+            toast.success('Booked seat')
         } else {
             console.log(`Seat with ID ${id} not found.`);
+            toast.error('Seat not found');
         }
     }
 }
