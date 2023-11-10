@@ -24,7 +24,7 @@ public class BookingRepository: IBookingRepository
     public async Task<List<BookingDetailDto>> Get(int SeatId)
     {
         return await context.Bookings.Where(b => b.SeatId == SeatId)
-            .Select(b => new BookingDetailDto(b.Id, b.SeatId, b.Bookingder, b.Seat.Room, DateTime.Today.AddDays(1).ToShortTimeString()))
+            .Select(b => new BookingDetailDto(b.Id, b.SeatId, b.Bookingder, b.Seat.Room, DateTime.Today.AddDays(1).ToLongDateString()))
             .ToListAsync();
     }
 
