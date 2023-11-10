@@ -1,7 +1,9 @@
 import { makeAutoObservable} from "mobx";
 import { RootStore } from "./";
+import {useAuthContext} from "../api/useAuthContext";
 
 class OverviewStore {
+    
     bookings = [
         {
             id: "1",
