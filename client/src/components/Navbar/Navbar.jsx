@@ -16,9 +16,6 @@ export const Navbar = () => {
                         <NavbarItem label="Overview" onClick={() => {
                             navigate("/overview");
                         }} />
-                        <NavbarItem label="Rooms" onClick={() => {
-                            navigate("/rooms");
-                        }} />
                         <NavbarItem label="History" onClick={() => {
                             navigate("/history");
                         }} />

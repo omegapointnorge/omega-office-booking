@@ -8,6 +8,16 @@ import BookingItem from "../../components/Bookings/BookingItem";
 const HistoryPage = observer(() => {
     const {overviewStore} = useStores();
 
+    
+    if(overviewStore.bookings.length === 0){
+        return <>
+            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto 
+     fixed inset-0 outline-none focus:outline-none" >
+                <Heading title="You dont have any bookings"/>
+            </div>
+        </>
+    }
+    
     return (
         <>
             <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto 
