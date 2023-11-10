@@ -82,12 +82,13 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.AddDbContext<OfficeDbContext>(options => {
+builder.Services.AddDbContext<OfficeDbContext>(options =>
+{
     SqlAuthenticationProvider.SetProvider(
         SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
         new server.Helpers.AzureSqlAuthProvider());
 
-    var connectionString = "Server=tcp:" + builder.Configuration["SqlServerName"] + 
+    var connectionString = "Server=tcp:" + builder.Configuration["SqlServerName"] +
                            ".database.windows.net;Database=" + builder.Configuration["SqlDatabaseName"] +
                            ";TrustServerCertificate=True;Authentication=Active Directory Default";
     var sqlConnection = new SqlConnection(connectionString);
@@ -118,5 +119,15 @@ app.MapControllerRoute(
     pattern: "{controller}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("index.html");
+
+// Temporary fix to apply migrations on startup
+// since we dont apply them in our pipeline
+// (inb4 this is a permanent fix)
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
+    dbContext.Database.Migrate();
+}
+
 
 app.Run();
