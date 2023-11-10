@@ -4,11 +4,13 @@
 name: Build and deploy ASP.Net Core app to Azure Web App - app-dev-officebooking
 
 on:
-  push:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - closed
     branches:
       - develop
-  pull_request:
-  workflow_dispatch:
 
 jobs:
   build:
