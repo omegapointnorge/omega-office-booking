@@ -4,11 +4,13 @@
 name: Build and deploy ASP.Net Core app to Azure Web App - app-dev-officebooking
 
 on:
-  push:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - closed
     branches:
       - develop
-  pull_request:
-  workflow_dispatch:
 
 jobs:
   build:
@@ -39,14 +41,14 @@ jobs:
           dotnet ef migrations script --idempotent --no-build --configuration Release --project ./server/server.csproj --output ${{env.DOTNET_ROOT}}/dbMigrations.sql --verbose
 
       - name: Upload artifact for deployment job
-        if: github.event.pull_request.merged
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
         uses: actions/upload-artifact@v3
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload EF migration script artifact for deployment job
-        if: github.event.pull_request.merged
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
         uses: actions/upload-artifact@v3
         with:
           name: dbmigrationscript
@@ -55,7 +57,7 @@ jobs:
   deploy:
     runs-on: windows-latest
     needs: build
-    if: github.event.pull_request.merged
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
     environment:
       name: "Development"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
