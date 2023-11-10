@@ -7,8 +7,6 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
 
 using server.Context;
-using Microsoft.Data.SqlClient;
-using server.Repository;
 using server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -92,7 +90,7 @@ builder.Services.AddSwaggerGen();
 //    options.UseSqlServer(sqlConnection);
 //});
 builder.Services.AddDbContext<OfficeDbContext>(options => options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
-builder.Services.AddScoped<SeatRepository, SeatRepository>();
+builder.Services.AddScoped<ISeatRepository, SeatRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 //builder.Services.AddScoped<IUserRepository, UserRepository>();
 var app = builder.Build();
@@ -113,18 +111,18 @@ app.UseStaticFiles();
 app.MapSeatEndpoints();
 app.UseRouting();
 //after routing before authentication
-app.UseCors(p => p.WithOrigins("https://appmodelv2-webapp-openidconnect-dotnet20231017.azurewebsites.net", "https://localhost:5001")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials());
+//app.UseCors(p => p.WithOrigins("https://appmodelv2-webapp-openidconnect-dotnet20231017.azurewebsites.net", "https://localhost:5001")
+//            .AllowAnyHeader()
+//            .AllowAnyMethod()
+//            .AllowCredentials());
 // Authentication middleware
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller}/{action=Index}/{id?}");
+app.UseEndpoints(e => e.MapDefaultControllerRoute());
 app.MapFallbackToFile("index.html");
 
 app.Run();
