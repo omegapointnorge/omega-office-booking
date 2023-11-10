@@ -56,6 +56,7 @@ app.UseAuthentication();
 //app.UseCors(p => p.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod());
 
 app.MapSeatEndpoints();
+app.MapBookingEndpoints();
 app.UseRouting();
 app.UseAuthorization();
 app.UseEndpoints(e => e.MapDefaultControllerRoute());
