@@ -17,7 +17,6 @@ namespace server.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             // Booking setup
 
             modelBuilder.Entity<Booking>()
