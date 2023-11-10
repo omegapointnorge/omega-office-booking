@@ -80,6 +80,7 @@ jobs:
           files: "${{ steps.downloadapp.outputs.download-path }}/appsettings.json"
         env:
           KeyVaultName: ${{ vars.KEY_VAULT_NAME }}
+          ConnectionStrings.DefaultConnection: ${{ vars.DB_CONNECTION_STRING }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp

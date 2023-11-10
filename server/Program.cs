@@ -88,11 +88,7 @@ builder.Services.AddDbContext<OfficeDbContext>(options =>
         SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
         new server.Helpers.AzureSqlAuthProvider());
 
-    var connectionString = "Server=tcp:" + builder.Configuration["SqlServerName"] +
-                           ".database.windows.net;Database=" + builder.Configuration["SqlDatabaseName"] +
-                           ";TrustServerCertificate=True;Authentication=Active Directory Default";
-    var sqlConnection = new SqlConnection(connectionString);
-    options.UseSqlServer(sqlConnection);
+    options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
