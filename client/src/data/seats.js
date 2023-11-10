@@ -46,5 +46,16 @@ export const rooms = [
         "seats": [
             smallRoomSeats
         ]
+    },
+    {
+        "id": 3,
+        "name": "Salg",
+        "capacity": 6,
+        "office": "OSLO",
+        "image": "small-room.png",
+        "route": "/smallroom",
+        "seats": [
+            smallRoomSeats
+        ]
     }
 ]
