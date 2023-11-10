@@ -69,12 +69,12 @@ jobs:
         with:
           name: .net-app
 
-      - name: Download EF migration script artifact from build job
-        id: downloadbundle
-        uses: actions/download-artifact@v2
-        with:
-          name: dbmigrationscript
-          path: dbmigrationscript
+      # - name: Download EF migration script artifact from build job
+      #   id: downloadbundle
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: dbmigrationscript
+      #     path: dbmigrationscript
 
       # - name: Update DB using SQL script
       #   uses: azure/sql-action@v2.2
