@@ -63,17 +63,8 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options =>
-{
 
-    options.AddPolicy(name: "Client Origin",
-        builder => builder
-            .AllowAnyOrigin()
-            //.WithOrigins("https://app-prod-itv-officebooking.azurewebsites.net", "http://localhost:5002")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-    );
-});
+
 
 
 //builder.Services.AddDbContext<OfficeDbContext>(options => {
@@ -101,7 +92,7 @@ builder.Services.AddCors(options =>
 //    options.UseSqlServer(sqlConnection);
 //});
 builder.Services.AddDbContext<OfficeDbContext>(options => options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
-builder.Services.AddScoped<ISeatRepository, SeatRepository>();
+builder.Services.AddScoped<SeatRepository, SeatRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 //builder.Services.AddScoped<IUserRepository, UserRepository>();
 var app = builder.Build();
@@ -117,11 +108,15 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCookiePolicy();
-app.UseCors("Client Origin");
+
 app.UseStaticFiles();
 app.MapSeatEndpoints();
 app.UseRouting();
-
+//after routing before authentication
+app.UseCors(p => p.WithOrigins("https://appmodelv2-webapp-openidconnect-dotnet20231017.azurewebsites.net", "https://localhost:5001")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
 // Authentication middleware
 app.UseAuthentication();
 app.UseAuthorization();

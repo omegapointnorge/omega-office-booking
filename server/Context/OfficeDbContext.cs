@@ -17,8 +17,8 @@ namespace server.Context;
         options.UseSqlite($"Data Source={Path.Join(path, "Seats.db")}");
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        SeedData.Seed(modelBuilder);
+        SeedData.Seed(builder);
     }
 }

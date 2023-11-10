@@ -10,7 +10,6 @@ namespace server.Data;
             new SeatEntity {
                 Id = 1,
                 Room = "12",
-        
                 Price = 900000
             },
             new SeatEntity
