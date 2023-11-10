@@ -1,14 +1,11 @@
 import Heading from "../../components/Heading";
 import {useAuthContext} from "../../api/useAuthContext";
 import Button from "../../components/Button";
-import {useState} from "react";
 import {useStores} from "../../stores";
 import { observer } from "mobx-react-lite";
 import BookingItem from "../../components/Bookings/BookingItem";
 
 const HistoryPage = observer(() => {
-    const context = useAuthContext();
-    const name = context?.user?.claims?.find(x => x.key === 'name')?.value;
     const {overviewStore} = useStores();
 
     return (
@@ -26,6 +23,12 @@ const HistoryPage = observer(() => {
 
                         >
                         </BookingItem>))}
+                    <Button label="Perform a booking" onClick={() => {
+                        overviewStore.addBooking();
+                    }} />
+                    <Button alert label="Remove a booking" onClick={() => {
+                        overviewStore.deleteBooking();
+                    }} />
                 </div>
             </div>
         </>)
