@@ -4,10 +4,6 @@ import { RootStore } from "./";
 class OverviewStore {
     
     bookings = [
-        {
-            id: "1",
-            name: "Hanne Panne",
-        },
     ];
 
     constructor(rootStore: RootStore) {
