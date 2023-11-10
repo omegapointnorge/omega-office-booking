@@ -7,9 +7,6 @@ import MyDialog from "../../components/Dialog";
 
 const BigRoomPage = observer(() => {
     const {roomStore} = useStores();
-    /*const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };*/
     
     if(roomStore.seats.length === 0){
         return <div>
