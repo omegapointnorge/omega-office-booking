@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 using server.Context;
 using server.Data;
+using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 // Set our ClientId and ClientSecret in appsettings to user-secrets values
@@ -41,6 +42,19 @@ builder.Services.AddAuthorization(options =>
         .Build();
 
 });
+
+// TODO
+//builder.Services.AddDbContext<OfficeDbContext>(options => {
+//    SqlAuthenticationProvider.SetProvider(
+//        SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
+//        new server.Helpers.AzureSqlAuthProvider());
+
+//    var connectionString = "Server=tcp:" + builder.Configuration["SqlServerName"] +
+//                           ".database.windows.net;Database=" + builder.Configuration["SqlDatabaseName"] +
+//                           ";TrustServerCertificate=True;Authentication=Active Directory Default";
+//    var sqlConnection = new SqlConnection(connectionString);
+//    options.UseSqlServer(sqlConnection);
+//});
 
 builder.Services.AddDbContext<OfficeDbContext>(options => options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
