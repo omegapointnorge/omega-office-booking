@@ -31,7 +31,7 @@ export const rooms = [
         "capacity": 15,
         "office": "OSLO",
         "image": "big-room.png",
-        "route": "/bigroom",
+        "route": "bigroom",
         "seats": [
             bigRoomSeats
         ]
@@ -42,7 +42,7 @@ export const rooms = [
         "capacity": 5,
         "office": "OSLO",
         "image": "small-room.png",
-        "route": "/smallroom",
+        "route": "smallroom",
         "seats": [
             smallRoomSeats
         ]
@@ -53,7 +53,7 @@ export const rooms = [
         "capacity": 6,
         "office": "OSLO",
         "image": "small-room.png",
-        "route": "/smallroom",
+        "route": "salg",
         "seats": [
             smallRoomSeats
         ]

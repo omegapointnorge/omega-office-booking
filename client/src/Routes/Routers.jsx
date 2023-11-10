@@ -5,6 +5,7 @@ import OverviewPage from "../Pages/Overview/OverviewPage";
 import {ProtectedRoute} from "./ProtectedRoute";
 import HistoryPage from "../Pages/History/HistoryPage";
 import BigRoomPage from "../Pages/Rooms/BigRoomPage";
+import RoomPage from "../Pages/Rooms/RoomPage";
 
 
 const Routers = () => {
@@ -14,7 +15,8 @@ const Routers = () => {
 
         {/* PROTECTED ROUTES */}
         <Route path="/overview" element={<ProtectedRoute outlet={<OverviewPage />} />}></Route>
-        <Route path="/bigroom" element={<ProtectedRoute outlet={<BigRoomPage />} />}></Route>
+        {/*<Route path="/bigroom" element={<ProtectedRoute outlet={<BigRoomPage />} />}></Route>*/}
+        <Route path="/rooms/:roomId" element={<ProtectedRoute outlet={<RoomPage />} />}></Route>
         <Route path="/history" element={<ProtectedRoute outlet={<HistoryPage />} />}></Route>
     </Routes>)
 }

@@ -6,15 +6,11 @@ class RoomStore{
     
     rooms = [];
     
-    seats = [
-        
-    ];
+    seats = [];
     
     openDialog = false;
     constructor(rootStore: RootStore) {
         makeAutoObservable(this);
-        
-        this.seats = bigRoomSeats;
     }
 
     bookSeat(id, isTaken) {
@@ -27,6 +23,10 @@ class RoomStore{
             console.log(`Seat with ID ${id} not found.`);
             toast.error('Seat not found');
         }
+    }
+    
+    setSeats(chosenSeats) {
+        this.seats = chosenSeats;
     }
     
     /* DIALOG */
