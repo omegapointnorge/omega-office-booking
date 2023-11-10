@@ -8,9 +8,9 @@ type BookingItemProps = {
     seatNr: string;
     name: string;
 }
-const BookingItem = ({onClick, date, roomName, seatNr, name}) => {
+const BookingItem = ({onClick, date, roomName, seatNr, name}) : BookingItemProps => {
     return (
-        <ul role="list" className="divide-y divide-gray-100 p-4 rounded-[24px] bg-cyan-50">
+        <ul  className="divide-y divide-gray-100 p-4 rounded-[24px] bg-cyan-50">
             <li className="flex justify-between gap-x-6 py-5">
                 <div className="flex min-w-0 gap-x-4">
                         <div className="min-w-0 flex-auto">

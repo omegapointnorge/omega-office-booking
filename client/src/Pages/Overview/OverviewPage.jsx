@@ -1,15 +1,12 @@
 import Heading from "../../components/Heading";
 import {useAuthContext} from "../../api/useAuthContext";
-import {useStores} from "../../stores";
 import { observer } from "mobx-react-lite";
-import BookingItem from "../../components/Bookings/BookingItem";
 import {useNavigate} from "react-router-dom";
 
 const OverviewPage = observer(() => {
     const context = useAuthContext();
     const navigate = useNavigate();
     const name = context?.user?.claims?.find(x => x.key === 'name')?.value;
-    const {overviewStore} = useStores();
     
     return (
         <>
