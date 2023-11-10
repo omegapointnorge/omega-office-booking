@@ -47,17 +47,17 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
-      - name: Upload EF migration script artifact for deployment job
-        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
-        uses: actions/upload-artifact@v3
-        with:
-          name: dbmigrationscript
-          path: ${{env.DOTNET_ROOT}}/dbMigrations.sql
+      # - name: Upload EF migration script artifact for deployment job
+      #   if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: dbmigrationscript
+      #     path: ${{env.DOTNET_ROOT}}/dbMigrations.sql
 
   deploy:
     runs-on: windows-latest
     needs: build
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
+    if: github.event_name == 'pull_request' && github.event.ion == 'closed' && github.event.pull_request.merged
     environment:
       name: "Development"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
