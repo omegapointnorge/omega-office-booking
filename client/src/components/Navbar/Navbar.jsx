@@ -19,6 +19,9 @@ export const Navbar = () => {
                         <NavbarItem label="Rooms" onClick={() => {
                             navigate("/rooms");
                         }} />
+                        <NavbarItem label="History" onClick={() => {
+                            navigate("/history");
+                        }} />
                         <LogoutButton />
                     </div>
                 </div>

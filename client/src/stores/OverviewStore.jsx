@@ -23,11 +23,7 @@ class OverviewStore {
     }
 
     deleteBooking() {
-        this.bookings.pop(
-            {
-                id: "2",
-                name: "Mostafa Aziz",
-            });
+        this.bookings.pop();
     }
 }
 

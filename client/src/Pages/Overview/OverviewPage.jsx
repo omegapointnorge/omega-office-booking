@@ -16,10 +16,6 @@ const OverviewPage = observer(() => {
         overviewStore.addBooking(name);
     }
     
-    const onRemoveBooking = () => {
-        overviewStore.deleteBooking();
-    }
-    
     return (
         <>
             <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto 
@@ -32,11 +28,18 @@ const OverviewPage = observer(() => {
                                       seatNr="Sete nr: 2" 
                                       date="04.Oktober" 
                                       roomName="Store rommet"
+                                      onClick={() => {
+                                          overviewStore.deleteBooking()
+                                      }}
                                       
                         >
                         </BookingItem>))}
-                    <Button label="Perform a booking" onClick={onAddBooking} />
-                    <Button alert label="Remove a booking" onClick={onRemoveBooking} />
+                    <Button label="Perform a booking" onClick={() => {
+                        overviewStore.addBooking();
+                    }} />
+                    <Button alert label="Remove a booking" onClick={() => {
+                        overviewStore.deleteBooking();
+                    }} />
                 </div>
             </div>
         </>)
