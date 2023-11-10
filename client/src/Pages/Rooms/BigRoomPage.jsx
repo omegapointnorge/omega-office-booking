@@ -7,15 +7,9 @@ import MyDialog from "../../components/Dialog";
 
 const BigRoomPage = observer(() => {
     const {roomStore} = useStores();
-    const [openDialog, setOpenDialog] = useState(false);
-
-    const handleOpenDialog = (seatId, isTaken) => {
-        setOpenDialog(true);
-    };
-
-    const handleCloseDialog = () => {
+    /*const handleCloseDialog = () => {
         setOpenDialog(false);
-    };
+    };*/
     
     if(roomStore.seats.length === 0){
         return <div>
@@ -36,13 +30,13 @@ const BigRoomPage = observer(() => {
                                       isTaken={seat.isTaken}
                                       roomName="Store rommet"
                                    onClick={() => {
-                                       handleOpenDialog(seat.id, !seat.isTaken);
+                                       roomStore.handleOpenDialog();
                                        roomStore.bookSeat(seat.id, !seat.isTaken);
                                    }}
 
                         >
                         </SeatItem>))}
-                    <MyDialog open={openDialog} handleClose={handleCloseDialog} />
+                    <MyDialog open={roomStore.openDialog} handleClose={roomStore.handleCloseDialog}  />
                 </div>
             </div>
         </>)

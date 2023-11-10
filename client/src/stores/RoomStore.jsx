@@ -19,6 +19,8 @@ class RoomStore {
         { "id": 14, "seatId": 14, "isTaken": false },
         { "id": 15, "seatId": 15, "isTaken": false }
     ];
+    
+    openDialog = false;
     constructor(rootStore: RootStore) {
         makeAutoObservable(this);
     }
@@ -34,6 +36,15 @@ class RoomStore {
             toast.error('Seat not found');
         }
     }
+    
+    /* DIALOG */
+    handleOpenDialog = () => {
+        this.openDialog = !this.openDialog;
+    };
+
+    handleCloseDialog = () => {
+        this.openDialog = !this.openDialog;
+    };
 }
 
 export default RoomStore;
