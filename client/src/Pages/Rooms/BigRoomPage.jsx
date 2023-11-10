@@ -1,12 +1,22 @@
 import Heading from "../../components/Heading";
 import {seats} from "../../data/seats";
-import React from "react";
+import React, {useState} from "react";
 import SeatItem from "../../components/Seat/SeatItem";
 import {observer} from "mobx-react-lite";
 import {useStores} from "../../stores";
+import MyDialog from "../../components/Dialog";
 
 const BigRoomPage = observer(() => {
     const {roomStore} = useStores();
+    const [openDialog, setOpenDialog] = useState(false);
+
+    const handleOpenDialog = (seatId, isTaken) => {
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
     
     if(roomStore.seats.length === 0){
         return <div>
@@ -27,11 +37,13 @@ const BigRoomPage = observer(() => {
                                       isTaken={seat.isTaken}
                                       roomName="Store rommet"
                                    onClick={() => {
-                                       roomStore.bookSeat(seat.id, !seat.isTaken)
+                                       handleOpenDialog(seat.id, !seat.isTaken);
+                                       roomStore.bookSeat(seatId, isTaken);
                                    }}
 
                         >
                         </SeatItem>))}
+                    <MyDialog open={openDialog} handleClose={handleCloseDialog} />
                 </div>
             </div>
         </>)
