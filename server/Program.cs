@@ -70,6 +70,7 @@ app.UseAuthentication();
 //app.UseCors(p => p.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod());
 
 app.MapSeatEndpoints();
+//app.MapUserEndpoints();
 app.MapBookingEndpoints();
 app.UseRouting();
 app.UseAuthorization();

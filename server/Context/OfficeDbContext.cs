@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using server.Data;
-using server.Models.Domain;
 namespace server.Context;
 
     public class OfficeDbContext : DbContext
@@ -9,7 +8,7 @@ namespace server.Context;
     public DbSet<SeatEntity> Seats => Set<SeatEntity>();
     public DbSet<BookingEntity> Bookings => Set<BookingEntity>();
 
-
+    public DbSet<UserEntity> Users => Set<UserEntity>();
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;

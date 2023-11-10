@@ -49,6 +49,40 @@ namespace server.Migrations
                         });
                 });
 
+            modelBuilder.Entity("server.Data.BookingEntity", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("INTEGER");
+
+                b.Property<string>("Bookingder")
+                    .IsRequired()
+                    .HasColumnType("TEXT");
+
+                b.Property<int>("SeatId")
+                    .HasColumnType("INTEGER");
+
+                b.HasKey("Id");
+
+                b.HasIndex("SeatId");
+
+                b.ToTable("Bookings");
+
+                b.HasData(
+                    new
+                    {
+                        Id = 1,
+                        Bookingder = "Sonia Reading",
+                        SeatId = 1
+                    },
+                    new
+                    {
+                        Id = 2,
+                        Bookingder = "Dick Johnson",
+                        SeatId = 1
+                    });
+            });
+
             modelBuilder.Entity("server.Data.SeatEntity", b =>
                 {
                     b.Property<int>("Id")
