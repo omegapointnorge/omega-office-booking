@@ -1,5 +1,4 @@
 import Heading from "../../components/Heading";
-import {seats} from "../../data/seats";
 import React, {useState} from "react";
 import SeatItem from "../../components/Seat/SeatItem";
 import {observer} from "mobx-react-lite";
@@ -38,7 +37,7 @@ const BigRoomPage = observer(() => {
                                       roomName="Store rommet"
                                    onClick={() => {
                                        handleOpenDialog(seat.id, !seat.isTaken);
-                                       roomStore.bookSeat(seatId, isTaken);
+                                       roomStore.bookSeat(seat.id, !seat.isTaken);
                                    }}
 
                         >
