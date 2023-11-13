@@ -4,7 +4,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {useAuthContext} from "../../api/useAuthContext";
 import {useEffect} from "react";
 
-export default function LoginPage() {
+const LoginPage = () => {
   const LoginUrl = "/api/Account/Login";
   const context = useAuthContext();
   const navigate = useNavigate();
@@ -52,3 +52,5 @@ export default function LoginPage() {
     </>
   );
 }
+
+export default LoginPage;
