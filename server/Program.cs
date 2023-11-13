@@ -5,16 +5,26 @@ using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-
 using server.Context;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Set our ClientId and ClientSecret in appsettings to user-secrets values
-builder.Configuration["AzureAD:ClientId"] = builder.Configuration["AzureAd__ClientId"];
-builder.Configuration["AzureAD:ClientSecret"] = builder.Configuration["AzureAd__ClientSecret"];
-builder.Configuration["AzureAD:TenantId"] = builder.Configuration["AzureAd__TenantId"];
+if (builder.Environment.IsProduction())
+{
+    var keyVaultName = builder.Configuration.GetValue<string>("KeyVaultName");
+    builder.Configuration.AddAzureKeyVault(
+        new Uri($"https://{keyVaultName}.vault.azure.net/"),
+        new DefaultAzureCredential());
 
+    var clientId = builder.Configuration.GetValue<string>("AzureAd-ClientId");
+    var clientSecret = builder.Configuration.GetValue<string>("AzureAd-ClientSecret");
+    var tenantId = builder.Configuration.GetValue<string>("AzureAd-TenantId");
+
+    builder.Configuration["AzureAd:TenantId"] = tenantId;
+    builder.Configuration["AzureAd:ClientId"] = clientId;
+    builder.Configuration["AzureAd:ClientSecret"] = clientSecret;
+}
 
 // Add services to the container.
 builder.Services.AddAuthentication(options =>
@@ -72,16 +82,13 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.AddDbContext<OfficeDbContext>(options => {
+builder.Services.AddDbContext<OfficeDbContext>(options =>
+{
     SqlAuthenticationProvider.SetProvider(
         SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
         new server.Helpers.AzureSqlAuthProvider());
 
-    var connectionString = "Server=tcp:" + builder.Configuration["SqlServerName"] + 
-                           ".database.windows.net;Database=" + builder.Configuration["SqlDatabaseName"] +
-                           ";TrustServerCertificate=True;Authentication=Active Directory Default";
-    var sqlConnection = new SqlConnection(connectionString);
-    options.UseSqlServer(sqlConnection);
+    options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -108,5 +115,15 @@ app.MapControllerRoute(
     pattern: "{controller}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("index.html");
+
+// Temporary fix to apply migrations on startup
+// since we dont apply them in our pipeline
+// (inb4 this is a permanent fix)
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
+    dbContext.Database.Migrate();
+}
+
 
 app.Run();
