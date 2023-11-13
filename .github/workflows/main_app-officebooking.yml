@@ -29,10 +29,10 @@ jobs:
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp --no-build
 
-      - name: Generate EF migration script
-        run: |
-          dotnet tool install --global dotnet-ef
-          dotnet ef migrations script --idempotent --no-build --configuration Release --project ./server/server.csproj --output ${{env.DOTNET_ROOT}}/dbMigrations.sql --verbose
+      # - name: Generate EF migration script
+      #   run: |
+      #     dotnet tool install --global dotnet-ef
+      #     dotnet ef migrations script --idempotent --no-build --configuration Release --project ./server/server.csproj --output ${{env.DOTNET_ROOT}}/dbMigrations.sql --verbose
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -40,11 +40,11 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
-      - name: Upload EF migration script artifact for deployment job
-        uses: actions/upload-artifact@v3
-        with:
-          name: dbmigrationscript
-          path: ${{env.DOTNET_ROOT}}/dbMigrations.sql
+      # - name: Upload EF migration script artifact for deployment job
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: dbmigrationscript
+      #     path: ${{env.DOTNET_ROOT}}/dbMigrations.sql
 
   deploy:
     runs-on: windows-latest
@@ -60,12 +60,12 @@ jobs:
         with:
           name: .net-app
 
-      - name: Download EF migration script artifact from build job
-        id: downloadbundle
-        uses: actions/download-artifact@v2
-        with:
-          name: dbmigrationscript
-          path: dbmigrationscript
+      # - name: Download EF migration script artifact from build job
+      #   id: downloadbundle
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: dbmigrationscript
+      #     path: dbmigrationscript
 
       # - name: Update DB using SQL script
       #   uses: azure/sql-action@v2.2
@@ -80,6 +80,7 @@ jobs:
           files: "${{ steps.downloadapp.outputs.download-path }}/appsettings.json"
         env:
           KeyVaultName: ${{ vars.KEY_VAULT_NAME }}
+          ConnectionStrings.DefaultConnection: ${{ vars.DB_CONNECTION_STRING }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
