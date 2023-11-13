@@ -1,15 +1,11 @@
-import { makeAutoObservable} from "mobx";
-import { RootStore } from "./";
-import {rooms} from "../data/seats";
+import { makeAutoObservable } from "mobx";
 
 class HistoryStore {
+  myBookings = [];
 
-    myBookings = [
-    ];
-
-    constructor(rootStore: RootStore) {
-        makeAutoObservable(this);
-    }
+  constructor() {
+    makeAutoObservable(this);
+  }
 }
 
 export default HistoryStore;

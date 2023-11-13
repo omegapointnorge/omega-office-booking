@@ -1,5 +1,4 @@
 import { makeAutoObservable } from "mobx";
-import { RootStore } from "./";
 import toast from "react-hot-toast";
 class RoomStore {
   rooms = [];
@@ -7,7 +6,7 @@ class RoomStore {
   seats = [];
 
   openDialog = false;
-  constructor(rootStore: RootStore) {
+  constructor() {
     makeAutoObservable(this);
   }
 

@@ -1,18 +1,14 @@
-import { makeAutoObservable} from "mobx";
-import { RootStore } from "./";
-import {rooms} from "../data/seats";
+import { makeAutoObservable } from "mobx";
+import { rooms } from "../data/seats";
 
 class OverviewStore {
-    
-    rooms = [
-    ];
+  rooms = [];
 
-    constructor(rootStore: RootStore) {
-        makeAutoObservable(this);
-    
-        this.rooms = rooms;
-    
-    }
+  constructor() {
+    makeAutoObservable(this);
+
+    this.rooms = rooms;
+  }
 }
 
 export default OverviewStore;
