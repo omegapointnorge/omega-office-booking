@@ -71,6 +71,7 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = defaultPolicy;
 });
 builder.Services.AddControllersWithViews();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
@@ -93,6 +94,7 @@ builder.Services.AddDbContext<OfficeDbContext>(options =>
 
     options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
 });
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddReverseProxy()
@@ -110,6 +112,11 @@ builder.Services.AddReverseProxy()
     });
 
 var app = builder.Build();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -137,11 +144,11 @@ app.MapFallbackToFile("index.html");
 // Temporary fix to apply migrations on startup
 // since we dont apply them in our pipeline
 // (inb4 this is a permanent fix)
-/*using (var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
     dbContext.Database.Migrate();
-}*/
+}
 
 
 app.Run();
