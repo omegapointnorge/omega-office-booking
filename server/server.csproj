@@ -114,6 +114,9 @@
     <None Update="..\client\src\Pages\Rooms\BigRoomPage.jsx">
       <Link>src\Pages\Rooms\BigRoomPage.jsx</Link>
     </None>
+    <None Update="..\client\src\Pages\Rooms\RoomPage.jsx">
+      <Link>src\Pages\Rooms\RoomPage.jsx</Link>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
