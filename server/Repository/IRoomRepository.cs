@@ -1,6 +1,6 @@
-
-
 using server.DTOs;
+
+namespace server.Repository;
 
 public interface IRoomRepository
 {

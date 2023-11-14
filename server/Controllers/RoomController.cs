@@ -1,8 +1,5 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using server.DTOs;
-using server.Models.Domain;
 using server.Services;
 
 namespace server.Controllers
