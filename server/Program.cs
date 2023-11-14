@@ -7,6 +7,9 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
 using Azure.Identity;
+using Yarp.ReverseProxy.Transforms;
+using Microsoft.AspNetCore.Authentication;
+using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,6 +95,20 @@ builder.Services.AddDbContext<OfficeDbContext>(options =>
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+builder.Services.AddReverseProxy()
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
+    .AddTransforms(builderContext =>
+    {
+        builderContext.AddRequestTransform(async transformContext =>
+        {
+            var accessToken = await transformContext.HttpContext.GetTokenAsync("access_token");
+            if (accessToken != null)
+            {
+                transformContext.ProxyRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            }
+        });
+    });
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -113,17 +130,18 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
-
+app.MapControllers().RequireAuthorization("AuthenticatedUser");
+app.MapReverseProxy().RequireAuthorization("AuthenticatedUser");
 app.MapFallbackToFile("index.html");
 
 // Temporary fix to apply migrations on startup
 // since we dont apply them in our pipeline
 // (inb4 this is a permanent fix)
-using (var scope = app.Services.CreateScope())
+/*using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
     dbContext.Database.Migrate();
-}
+}*/
 
 
 app.Run();
