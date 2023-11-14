@@ -7,7 +7,7 @@ public static class WebApplicationBookingExtensions
 {
     public static void MapBookingEndpoints(this WebApplication app)
     {
-        app.MapGet("/seat/{seatId:int}/Bookings", async (int seatId, 
+        app.MapGet("/api/seat/{seatId:int}/Bookings", async (int seatId, 
             ISeatRepository seatRepo, IBookingRepository BookingRepo) =>
         {
             if (await seatRepo.Get(seatId) == null)
@@ -16,7 +16,7 @@ public static class WebApplicationBookingExtensions
             return Results.Ok(Bookings);
         }).ProducesProblem(404).Produces(StatusCodes.Status200OK);
 
-        app.MapPost("/seat/{seatId:int}/Bookings", async (int seatId, [FromBody] BookingDto dto, IBookingRepository repo) => 
+        app.MapPost("/api/seat/{seatId:int}/Bookings", async (int seatId, [FromBody] BookingDto dto, IBookingRepository repo) => 
         {   
             if (dto.SeatId != seatId)
                 return Results.Problem($"seat Id of DTO {dto.SeatId} doesn't match with URL data {seatId}", 

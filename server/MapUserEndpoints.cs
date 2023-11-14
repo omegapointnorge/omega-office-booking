@@ -6,10 +6,10 @@ public static class WebApplicationUserExtensions
 {
     public static void MapUserEndpoints(this WebApplication app)
     {
-        app.MapGet("/Users", (IUserRepository repo) => repo.GetAll())
+        app.MapGet("/api/Users", (IUserRepository repo) => repo.GetAll())
             .Produces<UserDto[]>(StatusCodes.Status200OK);
 
-        app.MapGet("/User/{UserId:int}", async (int UserId, IUserRepository repo) => 
+        app.MapGet("/api/User/{UserId:int}", async (int UserId, IUserRepository repo) => 
         {
             var User = await repo.Get(UserId);
             if (User == null)
@@ -17,7 +17,7 @@ public static class WebApplicationUserExtensions
             return Results.Ok(User);
         }).ProducesProblem(404).Produces<UserDto>(StatusCodes.Status200OK);
 
-        app.MapPost("/Users", async ([FromBody] UserDto dto, IUserRepository repo) => 
+        app.MapPost("/api/Users", async ([FromBody] UserDto dto, IUserRepository repo) => 
         {
             if (!MiniValidator.TryValidate(dto, out var errors))
                 return Results.ValidationProblem(errors);
@@ -25,7 +25,7 @@ public static class WebApplicationUserExtensions
             return Results.Created($"/User/{newUser.Id}", newUser);
         }).ProducesValidationProblem().Produces<UserDto>(StatusCodes.Status201Created);
 
-        app.MapPut("/Users", async ([FromBody] UserDto dto, IUserRepository repo) => 
+        app.MapPut("/api/Users", async ([FromBody] UserDto dto, IUserRepository repo) => 
         {       
             if (!MiniValidator.TryValidate(dto, out var errors))
                 return Results.ValidationProblem(errors);
@@ -35,7 +35,7 @@ public static class WebApplicationUserExtensions
             return Results.Ok(updatedUser);
         }).ProducesValidationProblem().ProducesProblem(404).Produces<UserDto>(StatusCodes.Status200OK);
 
-        app.MapDelete("/Users/{UserId:int}", async (int UserId, IUserRepository repo) => 
+        app.MapDelete("/api/Users/{UserId:int}", async (int UserId, IUserRepository repo) => 
         {
             if (await repo.Get(UserId) == null)
                 return Results.Problem($"User with Id {UserId} not found", statusCode: 404);
