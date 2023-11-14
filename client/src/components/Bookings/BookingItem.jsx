@@ -15,7 +15,7 @@ const BookingItem = ({onClick, date, roomName, seatNr, name}) : BookingItemProps
                 <div className="flex min-w-0 gap-x-4">
                         <div className="min-w-0 flex-auto">
                             <p className="text-sm font-semibold leading-6 text-gray-900">{name}</p>
-                            <p className="mt-1 truncate text-xs leading-5 text-gray-500">{roomName}</p>
+                            <p className="mt-1 truncate text-xs leading-5 text-gray-500">Sete: {seatNr}</p>
                         </div>
                 </div>
                 <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
