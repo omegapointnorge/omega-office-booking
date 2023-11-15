@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using server.Context;
 using server.Models.DTOs;
 
@@ -13,7 +14,9 @@ namespace server.Repository
         }
         public Task<List<BookingDto>> GetAllBookings()
         {
-            throw new NotImplementedException();
+            return dbContext.Bookings.Select(booking =>
+                new BookingDto(booking.Id, booking.UserId, booking.SeatId)
+            ).ToListAsync();
         }
     }
 }
