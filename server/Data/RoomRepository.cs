@@ -19,12 +19,6 @@ namespace server.Data
             return new RoomDto(e.Id, e.Name);
         }
 
-        private static void DtoToEntity(RoomDto dto, Room e)
-        {
-            e.Id = dto.Id;
-            e.Name = dto.Name;
-        }
-
         public RoomRepository(OfficeDbContextLokal context)
         {
             this.context = context;

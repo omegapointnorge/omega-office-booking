@@ -181,13 +181,5 @@ if (builder.Environment.IsDevelopment())
         dbContext.Database.Migrate();
     }
 }
-if (builder.Environment.IsProduction())
-{
-    using (var scope = app.Services.CreateScope())
-    {
-        var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
-        dbContext.Database.Migrate();
-    }
-}
 
 app.Run();
