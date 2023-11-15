@@ -75,17 +75,20 @@ builder.Services.AddAuthorization(options =>
     options.DefaultPolicy = defaultPolicy;
     options.FallbackPolicy = defaultPolicy;
 });
-builder.Services.AddCors(options =>
+if (builder.Environment.IsDevelopment())
 {
-//        new server.Helpers.AzureSqlAuthProvider());
-    options.AddPolicy(name: "Client Origin",
-        builder => builder
-            .AllowAnyOrigin()
-            //.WithOrigins("https://app-prod-itv-officebooking.azurewebsites.net", "http://localhost:5002")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-    );
-});
+    builder.Services.AddCors(options =>
+    {
+    //        new server.Helpers.AzureSqlAuthProvider());
+        options.AddPolicy(name: "Client Origin",
+            builder => builder
+                .AllowAnyOrigin()
+                //.WithOrigins("https://app-prod-itv-officebooking.azurewebsites.net", "http://localhost:5002")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+        );
+    });
+}
 
 
 
