@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.ApplicationInsights;
 using Microsoft.Data.SqlClient;
 
 using Microsoft.EntityFrameworkCore;
@@ -142,6 +141,7 @@ else
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 
@@ -156,6 +156,7 @@ app.UseAuthentication();
 app.MapSeatEndpoints();
 app.MapUserEndpoints();
 app.MapBookingEndpoints();
+app.MapRoomEndpoints();
 app.UseRouting();
 app.UseAuthorization();
 app.UseEndpoints(e => e.MapDefaultControllerRoute());
@@ -168,7 +169,7 @@ if (builder.Environment.IsProduction())
 {
     using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<server.Context.OfficeDbContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
     dbContext.Database.Migrate();
 }
 }
@@ -176,7 +177,7 @@ if (builder.Environment.IsDevelopment())
 {
     using (var scope = app.Services.CreateScope())
     {
-        var dbContext = scope.ServiceProvider.GetRequiredService<server.Context.OfficeDbContextLokal>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContextLokal>();
         dbContext.Database.Migrate();
     }
 }
@@ -184,7 +185,7 @@ if (builder.Environment.IsProduction())
 {
     using (var scope = app.Services.CreateScope())
     {
-        var dbContext = scope.ServiceProvider.GetRequiredService<server.Context.OfficeDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
         dbContext.Database.Migrate();
     }
 }

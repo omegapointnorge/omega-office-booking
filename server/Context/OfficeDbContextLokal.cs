@@ -11,6 +11,7 @@ namespace server.Context;
     public DbSet<Booking> Bookings => Set<Booking>();
 
     public DbSet<User> Users => Set<User>();
+    public DbSet<Room> Rooms => Set<Room>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
