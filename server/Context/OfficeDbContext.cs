@@ -11,15 +11,10 @@ namespace server.Context;
     public DbSet<Booking> Bookings => Set<Booking>();
 
     public DbSet<User> Users => Set<User>();
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
-    {
-        var folder = Environment.SpecialFolder.LocalApplicationData;
-        var path = Environment.GetFolderPath(folder);
-        options.UseSqlite($"Data Source={Path.Join(path, "Seats2.db")}");
-    }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        SeedData.Seed(builder);
+            SeedData.Seed(builder);
     }
 }

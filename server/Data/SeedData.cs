@@ -11,7 +11,6 @@ namespace server.Data;
         builder.Entity<Room>().HasData(new List<Room> {
             new Room {
                 Id = 1,
-
                 Name = "stor rom"
             },
             new Room
