@@ -71,17 +71,19 @@ builder.Services.AddControllersWithViews();
 
 if (builder.Environment.IsDevelopment())
 {
-builder.Services.AddCors(options =>
-{
+    builder.Services.AddCors(options =>
+    {
 
-    options.AddPolicy(name: "Client Origin",
-        builder => builder
-            .AllowAnyOrigin()
-            //.WithOrigins("https://app-prod-itv-officebooking.azurewebsites.net", "http://localhost:5002")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-    );
+        options.AddPolicy(name: "Client Origin",
+            builder => builder
+                .AllowAnyOrigin()
+                //.WithOrigins("https://app-prod-itv-officebooking.azurewebsites.net", "http://localhost:5002")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+        );
 });
+}
+
 
 
 builder.Services.AddDbContext<OfficeDbContext>(options =>
