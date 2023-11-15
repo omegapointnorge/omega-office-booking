@@ -75,11 +75,13 @@ builder.Services.AddAuthorization(options =>
     options.DefaultPolicy = defaultPolicy;
     options.FallbackPolicy = defaultPolicy;
 });
+builder.Services.AddControllersWithViews();
+
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddCors(options =>
     {
-    //        new server.Helpers.AzureSqlAuthProvider());
+
         options.AddPolicy(name: "Client Origin",
             builder => builder
                 .AllowAnyOrigin()
@@ -87,8 +89,9 @@ if (builder.Environment.IsDevelopment())
                 .AllowAnyHeader()
                 .AllowAnyMethod()
         );
-    });
+});
 }
+
 
 
 
