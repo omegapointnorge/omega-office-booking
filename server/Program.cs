@@ -116,14 +116,19 @@ if (builder.Environment.IsDevelopment())
 
 
 
-    if (builder.Environment.IsProduction())
-    {
+if (builder.Environment.IsProduction())
+{
     builder.Services.AddDbContext<OfficeDbContext>(options =>
     {
-     
+        SqlAuthenticationProvider.SetProvider(
+        SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
+        new server.Helpers.AzureSqlAuthProvider());
+
+        options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
+
     });
 }
-    else
+else
 {
     builder.Services.AddDbContext<OfficeDbContextLokal>(options =>
     {
