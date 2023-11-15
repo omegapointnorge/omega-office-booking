@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Context;
 
@@ -9,10 +10,12 @@ using server.Context;
 
 namespace server.Migrations
 {
-    [DbContext(typeof(OfficeDbContext))]
-    partial class OfficeDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(OfficeDbContextLokal))]
+    [Migration("20231115111922_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.13");
@@ -73,6 +76,20 @@ namespace server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Office");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Capacity = 1,
+                            Name = "stor office"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Capacity = 1,
+                            Name = "liten office"
+                        });
                 });
 
             modelBuilder.Entity("server.Models.Domain.Room", b =>
@@ -85,7 +102,7 @@ namespace server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("OfficeId")
+                    b.Property<int>("OfficeId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -98,17 +115,20 @@ namespace server.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "stor rom"
+                            Name = "stor rom",
+                            OfficeId = 1
                         },
                         new
                         {
                             Id = 2,
-                            Name = "liten rom"
+                            Name = "liten rom",
+                            OfficeId = 1
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Mellonstor rom"
+                            Name = "Mellonstor rom",
+                            OfficeId = 1
                         });
                 });
 
@@ -226,7 +246,9 @@ namespace server.Migrations
                 {
                     b.HasOne("server.Models.Domain.Office", "Office")
                         .WithMany("Rooms")
-                        .HasForeignKey("OfficeId");
+                        .HasForeignKey("OfficeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Office");
                 });

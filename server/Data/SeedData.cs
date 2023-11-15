@@ -8,20 +8,34 @@ namespace server.Data;
     public static void Seed(ModelBuilder builder)
     {
 
+        builder.Entity<Office>().HasData(new List<Office> {
+            new Office {
+                Id = 1,
+                Name = "stor office",
+                Capacity= 1
+            },
+            new Office
+            {
+                Id = 2,
+                Capacity= 1,
+                Name ="liten office"
+            }
+        });
         builder.Entity<Room>().HasData(new List<Room> {
             new Room {
                 Id = 1,
-                Name = "stor rom"
+                Name = "stor rom",
+                OfficeId= 1
             },
             new Room
             {
                 Id = 2,
-
+                OfficeId= 1,
                 Name ="liten rom"
             },
              new Room {
                 Id = 3,
-
+                OfficeId= 1,
                 Name = "Mellonstor rom"
             }
 

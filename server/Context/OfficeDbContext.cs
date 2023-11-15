@@ -12,6 +12,7 @@ namespace server.Context
 
         public OfficeDbContext(DbContextOptions options) : base(options)
         {
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

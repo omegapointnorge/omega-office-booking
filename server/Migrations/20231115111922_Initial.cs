@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace server.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,7 +49,7 @@ namespace server.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    OfficeId = table.Column<int>(type: "INTEGER", nullable: true)
+                    OfficeId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,7 +58,8 @@ namespace server.Migrations
                         name: "FK_Room_Office_OfficeId",
                         column: x => x.OfficeId,
                         principalTable: "Office",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -108,13 +109,12 @@ namespace server.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Room",
-                columns: new[] { "Id", "Name", "OfficeId" },
+                table: "Office",
+                columns: new[] { "Id", "Capacity", "Name" },
                 values: new object[,]
                 {
-                    { 1, "stor rom", null },
-                    { 2, "liten rom", null },
-                    { 3, "Mellonstor rom", null }
+                    { 1, 1, "stor office" },
+                    { 2, 1, "liten office" }
                 });
 
             migrationBuilder.InsertData(
@@ -126,6 +126,16 @@ namespace server.Migrations
                     { 2, "Reading@gmail.com", "Dick Johnson", "900944321" },
                     { 3, "Johnson@gmail.com", "Johnson Johnson", "900456321" },
                     { 4, "vicky.huangyuanxin@omegapoint.no", "vicky Yuanxin Huang", "900456321" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Room",
+                columns: new[] { "Id", "Name", "OfficeId" },
+                values: new object[,]
+                {
+                    { 1, "stor rom", 1 },
+                    { 2, "liten rom", 1 },
+                    { 3, "Mellonstor rom", 1 }
                 });
 
             migrationBuilder.InsertData(

@@ -2,8 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Context;
 
@@ -11,38 +9,28 @@ using server.Context;
 
 namespace server.Migrations
 {
-    [DbContext(typeof(OfficeDbContext))]
-    [Migration("20231110113625_InitialCreate")]
-    partial class InitialCreate
+    [DbContext(typeof(OfficeDbContextLokal))]
+    partial class OfficeDbContextLokalModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.13");
 
             modelBuilder.Entity("server.Models.Domain.Booking", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("BookingDateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("SeatId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -51,94 +39,185 @@ namespace server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BookingDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SeatId = 1,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BookingDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SeatId = 3,
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("server.Models.Domain.Office", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Capacity")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.ToTable("Office");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Capacity = 1,
+                            Name = "stor office"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Capacity = 1,
+                            Name = "liten office"
+                        });
                 });
 
             modelBuilder.Entity("server.Models.Domain.Room", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("OfficeId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OfficeId");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Room");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "stor rom",
+                            OfficeId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "liten rom",
+                            OfficeId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Mellonstor rom",
+                            OfficeId = 1
+                        });
                 });
 
             modelBuilder.Entity("server.Models.Domain.Seat", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("RoomId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("RoomId");
 
                     b.ToTable("Seats");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            RoomId = 3
+                        });
                 });
 
             modelBuilder.Entity("server.Models.Domain.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
-
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "abcReading@gmail.com",
+                            Name = "Soniauser Reading",
+                            PhoneNumber = "12344321"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "Reading@gmail.com",
+                            Name = "Dick Johnson",
+                            PhoneNumber = "900944321"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "Johnson@gmail.com",
+                            Name = "Johnson Johnson",
+                            PhoneNumber = "900456321"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Email = "vicky.huangyuanxin@omegapoint.no",
+                            Name = "vicky Yuanxin Huang",
+                            PhoneNumber = "900456321"
+                        });
                 });
 
             modelBuilder.Entity("server.Models.Domain.Booking", b =>

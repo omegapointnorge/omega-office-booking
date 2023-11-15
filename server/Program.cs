@@ -29,6 +29,25 @@ builder.Configuration["AzureAD:TenantId"] = builder.Configuration["AzureAd__Tena
     builder.Configuration["AzureAd:ClientId"] = clientId;
     builder.Configuration["AzureAd:ClientSecret"] = clientSecret;
 }
+else
+{   // Accessing development keyVault for local authorization 
+    builder.Configuration["AzureSetup:KeyVaultName"] = builder.Configuration["AzureSetup__KeyVaultName"];
+    var keyVaultName = builder.Configuration["AzureSetup__KeyVaultName"];
+    builder.Configuration.AddAzureKeyVault(
+        new Uri($"https://{keyVaultName}.vault.azure.net/"),
+        new DefaultAzureCredential());
+
+    var clientId = builder.Configuration.GetValue<string>("AzureAd-ClientId");
+    var clientSecret = builder.Configuration.GetValue<string>("AzureAd-ClientSecret");
+    var tenantId = builder.Configuration.GetValue<string>("AzureAd-TenantId");
+    var connectionString = builder.Configuration.GetValue<string>("AzureSql-ConnectionString");
+
+    builder.Configuration["AzureAd:TenantId"] = tenantId;
+    builder.Configuration["AzureAd:ClientId"] = clientId;
+    builder.Configuration["AzureAd:ClientSecret"] = clientSecret;
+    builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
+
+}
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
@@ -101,11 +120,7 @@ if (builder.Environment.IsDevelopment())
     {
     builder.Services.AddDbContext<OfficeDbContext>(options =>
     {
-        SqlAuthenticationProvider.SetProvider(
-            SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
-            new server.Helpers.AzureSqlAuthProvider());
-
-        options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
+     
     });
 }
     else
@@ -115,7 +130,7 @@ if (builder.Environment.IsDevelopment())
         options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
-        options.UseSqlite($"Data Source={Path.Join(path, "Seats2.db")}");
+        options.UseSqlite($"Data Source={Path.Join(path, "Seats4.db")}");
 });
        
 }
@@ -152,6 +167,21 @@ if (builder.Environment.IsProduction())
     dbContext.Database.Migrate();
 }
 }
-
+if (builder.Environment.IsDevelopment())
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<server.Context.OfficeDbContextLokal>();
+        dbContext.Database.Migrate();
+    }
+}
+if (builder.Environment.IsProduction())
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<server.Context.OfficeDbContext>();
+        dbContext.Database.Migrate();
+    }
+}
 
 app.Run();
