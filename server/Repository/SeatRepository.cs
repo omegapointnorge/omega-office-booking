@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
 using server.DTOs;
+using server.Models.Domain;
 using server.Models.DTOs;
 
 namespace server.Repository
@@ -18,9 +19,11 @@ namespace server.Repository
         
         public Task<List<SeatDto>> GetAllSeats()
         {
-            return dbContext.Seats.Select(seat =>
-                new SeatDto(seat.Id, seat.RoomId, seat.Room, seat.Bookings)
-            ).ToListAsync();
+            return dbContext.Seats
+                .Select(seat => new SeatDto(
+                        seat.Id,
+                        seat.RoomId)
+                ).ToListAsync();
         }
     }
 }

@@ -5,15 +5,13 @@ namespace server.Models.DTOs
     {
         public int Id { get; set; }
         public int RoomId { get; set; }
-        public Room Room { get; set; } = null!;
-        public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
+        public Room? Room { get; set; } = null!;
+        public ICollection<BookingDto>? Bookings { get; set; } = new List<BookingDto>();
         
-        public SeatDto(int id, int roomId, Room room, ICollection<Booking>? bookings)
+        public SeatDto(int id, int roomId)
         {
             Id = id;
             RoomId = roomId;
-            Room = room;
-            Bookings = bookings;
         }
     }
 }

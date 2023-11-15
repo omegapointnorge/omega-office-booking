@@ -8,12 +8,12 @@ namespace server.Controllers
     [Route("api/[controller]")]
     public class SeatController : ControllerBase
     {
-        private readonly ILogger<SeatController> _logger;
+        //private readonly ILogger<SeatController> _logger;
         private readonly SeatService _seatService;
 
-        public SeatController(ILogger<SeatController> logger, SeatService seatService)
+        public SeatController(/*ILogger<SeatController> logger,*/ SeatService seatService)
         {
-            _logger = logger;
+            //_logger = logger;
             _seatService = seatService;
         }
 
