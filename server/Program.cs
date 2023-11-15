@@ -69,6 +69,8 @@ builder.Services.AddAuthorization(options =>
 });
 builder.Services.AddControllersWithViews();
 
+if (builder.Environment.IsDevelopment())
+{
 builder.Services.AddCors(options =>
 {
 
