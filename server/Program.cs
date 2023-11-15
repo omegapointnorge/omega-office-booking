@@ -25,6 +25,25 @@ if (builder.Environment.IsProduction())
     builder.Configuration["AzureAd:ClientId"] = clientId;
     builder.Configuration["AzureAd:ClientSecret"] = clientSecret;
 }
+else
+{   // Accessing development keyVault for local authorization 
+    builder.Configuration["AzureSetup:KeyVaultName"] = builder.Configuration["AzureSetup__KeyVaultName"];
+    var keyVaultName = builder.Configuration["AzureSetup__KeyVaultName"];
+    builder.Configuration.AddAzureKeyVault(
+        new Uri($"https://{keyVaultName}.vault.azure.net/"),
+        new DefaultAzureCredential());
+    
+    var clientId = builder.Configuration.GetValue<string>("AzureAd-ClientId");
+    var clientSecret = builder.Configuration.GetValue<string>("AzureAd-ClientSecret");
+    var tenantId = builder.Configuration.GetValue<string>("AzureAd-TenantId");
+    var connectionString = builder.Configuration.GetValue<string>("AzureSql-ConnectionString");
+    
+    builder.Configuration["AzureAd:TenantId"] = tenantId;
+    builder.Configuration["AzureAd:ClientId"] = clientId;
+    builder.Configuration["AzureAd:ClientSecret"] = clientSecret;
+    builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
+
+}
 
 // Add services to the container.
 builder.Services.AddAuthentication(options =>
@@ -121,6 +140,7 @@ app.MapFallbackToFile("index.html");
 // (inb4 this is a permanent fix)
 using (var scope = app.Services.CreateScope())
 {
+    var defaultAzureCredential = new DefaultAzureCredential();
     var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
     dbContext.Database.Migrate();
 }
