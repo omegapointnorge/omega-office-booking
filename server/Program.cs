@@ -27,6 +27,25 @@ if (builder.Environment.IsProduction())
     builder.Configuration["AzureAd:ClientId"] = clientId;
     builder.Configuration["AzureAd:ClientSecret"] = clientSecret;
 }
+else
+{   // Accessing development keyVault for local authorization 
+    builder.Configuration["AzureSetup:KeyVaultName"] = builder.Configuration["AzureSetup__KeyVaultName"];
+    var keyVaultName = builder.Configuration["AzureSetup__KeyVaultName"];
+    builder.Configuration.AddAzureKeyVault(
+        new Uri($"https://{keyVaultName}.vault.azure.net/"),
+        new DefaultAzureCredential());
+    
+    var clientId = builder.Configuration.GetValue<string>("AzureAd-ClientId");
+    var clientSecret = builder.Configuration.GetValue<string>("AzureAd-ClientSecret");
+    var tenantId = builder.Configuration.GetValue<string>("AzureAd-TenantId");
+    var connectionString = builder.Configuration.GetValue<string>("AzureSql-ConnectionString");
+    
+    builder.Configuration["AzureAd:TenantId"] = tenantId;
+    builder.Configuration["AzureAd:ClientId"] = clientId;
+    builder.Configuration["AzureAd:ClientSecret"] = clientSecret;
+    builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
+
+}
 
 // Add services to the container.
 builder.Services.AddAuthentication(options =>
@@ -90,16 +109,20 @@ builder.Services.AddDbContext<OfficeDbContext>(options =>
         SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
         new server.Helpers.AzureSqlAuthProvider());
 
-    options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
+    options.UseSqlServer("name=ConnectionStrings:DefaultConnection")
+        .UseLoggerFactory(LoggerFactory.Create(b => b.AddConsole()));
+        
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
 
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<ISeatService, SeatService>();
 
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -107,8 +130,14 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
+    
 }
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 app.UseHttpsRedirection();
 app.UseCookiePolicy();
 app.UseCors("Client Origin");
@@ -133,6 +162,5 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
     dbContext.Database.Migrate();
 }
-
 
 app.Run();

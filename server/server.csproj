@@ -32,6 +32,7 @@
     <PackageReference Include="Microsoft.Identity.Web" Version="2.15.3" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -114,6 +115,11 @@
     <Folder Include="..\client\src\components\Buttons\">
       <Link>src\components\Buttons</Link>
     </Folder>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20231110113625_InitialCreate.cs" />
+    <Compile Remove="Migrations\20231110113625_InitialCreate.Designer.cs" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
