@@ -15,7 +15,7 @@ namespace server.Data
 
     public class UserRepository : IUserRepository
     {
-        private readonly OfficeDbContext context;
+        private readonly OfficeDbContextLokal context;
 
         private static UserDto EntityToDetailDto(User e)
         {
@@ -31,7 +31,7 @@ namespace server.Data
   
         }
 
-        public UserRepository(OfficeDbContext context)
+        public UserRepository(OfficeDbContextLokal context)
         {
             this.context = context;
         }

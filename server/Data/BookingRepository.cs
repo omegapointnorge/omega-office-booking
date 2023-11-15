@@ -15,9 +15,9 @@ public interface IBookingRepository
 
 public class BookingRepository: IBookingRepository
 {
-    private readonly OfficeDbContext context;
+    private readonly OfficeDbContextLokal context;
 
-    public BookingRepository(OfficeDbContext context)
+    public BookingRepository(OfficeDbContextLokal context)
     {
         this.context = context;
     }

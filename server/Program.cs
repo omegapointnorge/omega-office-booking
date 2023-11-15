@@ -92,23 +92,30 @@ if (builder.Environment.IsDevelopment())
 
 
 
-builder.Services.AddDbContext<OfficeDbContext>(options =>
-{
+
+
     if (builder.Environment.IsProduction())
     {
+    builder.Services.AddDbContext<OfficeDbContext>(options =>
+    {
         SqlAuthenticationProvider.SetProvider(
-        SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
-        new server.Helpers.AzureSqlAuthProvider());
+            SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
+            new server.Helpers.AzureSqlAuthProvider());
 
         options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
-    }
-    else { options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    });
+}
+    else
+{
+    builder.Services.AddDbContext<OfficeDbContextLokal>(options =>
+    {
+        options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
         options.UseSqlite($"Data Source={Path.Join(path, "Seats2.db")}");
-    }
-       
 });
+       
+}
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

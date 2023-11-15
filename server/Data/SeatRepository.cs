@@ -15,7 +15,7 @@ namespace server.Data
 
     public class SeatRepository : ISeatRepository
     {
-        private readonly OfficeDbContext context;
+        private readonly OfficeDbContextLokal context;
 
         private static SeatDetailDto EntityToDetailDto(Seat e)
         {
@@ -32,7 +32,7 @@ namespace server.Data
             e.RoomId = dto.RoomId;
         }
 
-        public SeatRepository(OfficeDbContext context)
+        public SeatRepository(OfficeDbContextLokal context)
         {
             this.context = context;
         }
