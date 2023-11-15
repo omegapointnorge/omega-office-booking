@@ -126,8 +126,68 @@ namespace server.Context
                 .HasPrincipalKey(office => office.Id);
 
             // End of Office setup
-
+            SeedData(modelBuilder);
             base.OnModelCreating(modelBuilder);
+        }
+
+        private void SeedData(ModelBuilder modelBuilder)
+        {   
+            modelBuilder.Entity<Office>()
+                .HasData(
+                    new Office(1, "Lille Grensen",20)
+                );
+            
+            modelBuilder.Entity<Room>()
+                .HasData(
+                    new Room(1, "Store Rommet",1)
+                );
+            
+            modelBuilder.Entity<Seat>()
+                .HasData(
+                    new Seat(1, 1)
+                );
+            modelBuilder.Entity<Seat>()
+                .HasData(
+                    new Seat(2, 1)
+                );
+            modelBuilder.Entity<Seat>()
+                .HasData(
+                    new Seat(3, 1)
+                );
+            modelBuilder.Entity<Seat>()
+                .HasData(
+                    new Seat(4, 1)
+                );
+            modelBuilder.Entity<Seat>()
+                .HasData(
+                    new Seat(5, 1)
+                );
+            
+            modelBuilder.Entity<User>()
+                .HasData(
+                    new User(1, "Mostafa", "Mostafa@omegapoint.no")
+                );
+            modelBuilder.Entity<User>()
+                .HasData(
+                    new User(2, "Vicky", "Vicky@omegapoint.no")
+                );
+            modelBuilder.Entity<User>()
+                .HasData(
+                    new User(3, "Hakon", "Hakon@omegapoint.no")
+                );
+            
+            modelBuilder.Entity<Booking>()
+                .HasData(
+                    new Booking(1, 1, 1, DateTime.Now.AddDays(-3))
+                );
+            modelBuilder.Entity<Booking>()
+                .HasData(
+                    new Booking(2, 2, 5, DateTime.Now.AddDays(-1))
+                );
+            modelBuilder.Entity<Booking>()
+                .HasData(
+                    new Booking(3, 3, 2, DateTime.Now.AddDays(-2))
+                );
         }
     }
 }
