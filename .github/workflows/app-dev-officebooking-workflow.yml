@@ -4,55 +4,98 @@
 name: Build and deploy ASP.Net Core app to Azure Web App - app-dev-officebooking
 
 on:
-  push:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - closed
     branches:
       - develop
-  pull_request:
-  workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '7.x'
+          dotnet-version: "7.x"
           include-prerelease: true
 
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build -c Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp --no-build
+
+      - name: Generate EF migration script
+        run: |
+          dotnet tool install --global dotnet-ef
+          dotnet ef migrations script --idempotent --no-build --configuration Release --project ./server/server.csproj --output ${{env.DOTNET_ROOT}}/dbMigrations.sql --verbose
 
       - name: Upload artifact for deployment job
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
         uses: actions/upload-artifact@v3
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
+      # - name: Upload EF migration script artifact for deployment job
+      #   if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: dbmigrationscript
+      #     path: ${{env.DOTNET_ROOT}}/dbMigrations.sql
+
   deploy:
     runs-on: windows-latest
     needs: build
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
     environment:
-      name: 'Production'
+      name: "Development"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
       - name: Download artifact from build job
+        id: downloadapp
         uses: actions/download-artifact@v3
         with:
           name: .net-app
+
+      # - name: Download EF migration script artifact from build job
+      #   id: downloadbundle
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: dbmigrationscript
+      #     path: dbmigrationscript
+
+      # - name: Update DB using SQL script
+      #   uses: azure/sql-action@v2.2
+      #   with:
+      #     connection-string: ${{ secrets.DB_CONNECTION_STRING }}
+      #     path: "${{ steps.downloadbundle.outputs.download-path }}/dbMigrations.sql"
+      #     action: "publish"
+
+      - name: App Settings Variable Substitution
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: "${{ steps.downloadapp.outputs.download-path }}/appsettings.json"
+        env:
+          KeyVaultName: ${{ vars.KEY_VAULT_NAME }}
+          ConnectionStrings.DefaultConnection: ${{ vars.DB_CONNECTION_STRING }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'app-dev-officebooking'
-          slot-name: 'Production'
+          app-name: "app-dev-officebooking"
+          slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A3049A8BA9BD439C8126A354B10CA669 }}
           package: .

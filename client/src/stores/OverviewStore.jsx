@@ -1,30 +1,14 @@
-import { makeAutoObservable} from "mobx";
-import { RootStore } from "./";
+import { makeAutoObservable } from "mobx";
+import { rooms } from "../data/seats";
 
 class OverviewStore {
-    
-    bookings = [
-        {
-            id: "1",
-            name: "Hanne Panne",
-        },
-    ];
+  rooms = [];
 
-    constructor(rootStore: RootStore) {
+  constructor() {
     makeAutoObservable(this);
-}
 
-    addBooking(name: string) {
-        this.bookings.push(
-            {
-            id: "2",
-            name: name ?? 'Nameless',
-        });
-    }
-
-    deleteBooking() {
-        this.bookings.pop();
-    }
+    this.rooms = rooms;
+  }
 }
 
 export default OverviewStore;
