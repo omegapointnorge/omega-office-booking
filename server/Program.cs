@@ -7,6 +7,8 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
 using Azure.Identity;
+using server.Repository;
+using server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -91,6 +93,13 @@ builder.Services.AddDbContext<OfficeDbContext>(options =>
     options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+
+builder.Services.AddScoped<ISeatRepository, SeatRepository>();
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<ISeatService, SeatService>();
+
 
 var app = builder.Build();
 
