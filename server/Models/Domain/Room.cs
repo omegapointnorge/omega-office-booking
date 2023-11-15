@@ -1,3 +1,5 @@
+using server.Services;
+
 namespace server.Models.Domain
 {
     public class Room
@@ -7,5 +9,12 @@ namespace server.Models.Domain
         public int OfficeId { get; set; }
         public Office Office { get; set; } = null!;
         public ICollection<Seat> Seats { get; set; } = new List<Seat>();
+        
+        public Room(int id, string name, int officeId)
+        {
+            Id = id;
+            Name = name;
+            OfficeId = officeId;
+        }
     }
 }

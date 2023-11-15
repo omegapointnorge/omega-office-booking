@@ -8,12 +8,12 @@ namespace server.Controllers
     [Route("/api/[controller]")]
     public class RoomController : ControllerBase
     {
-        readonly ILogger<RoomController> _logger;
-        readonly RoomService _roomService;
+        //readonly ILogger<RoomController> _logger;
+        readonly IRoomService _roomService;
 
-        public RoomController(ILogger<RoomController> logger, RoomService roomService)
+        public RoomController(/*ILogger<RoomController> logger,*/ IRoomService roomService)
         {
-            _logger = logger;
+            //_logger = logger;
             _roomService = roomService;
         }
 

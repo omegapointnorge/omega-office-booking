@@ -17,7 +17,7 @@ namespace server.Repository
         public Task<List<RoomDto>> GetAllRooms()
         {
             return dbContext.Rooms.Select(room =>
-                new RoomDto(room.Id, room.Name, room.Office, room.Seats))
+                new RoomDto(room.Id, room.Name, room.Office, null))
                 .ToListAsync();
         }
     }

@@ -1,4 +1,5 @@
 using server.Models.Domain;
+using server.Models.DTOs;
 
 namespace server.DTOs
 {
@@ -6,10 +7,10 @@ namespace server.DTOs
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public Office Office { get; set; }
-        public ICollection<Seat> Seats { get; set; }
+        public Office? Office { get; set; }
+        public ICollection<SeatDto>? Seats { get; set; }
 
-        public RoomDto(int id, string? name, Office office, ICollection<Seat> seats)
+        public RoomDto(int id, string name, Office? office, ICollection<SeatDto>? seats)
         {
             Id = id;
             Name = name;
