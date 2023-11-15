@@ -8,9 +8,9 @@ public static class WebApplicationSeatExtensions
     public static void MapSeatEndpoints(this WebApplication app)
     {
         app.MapGet("/api/Seats", (ISeatRepository repo) => repo.GetAll())
-            .Produces<SeatDto[]>(StatusCodes.Status200OK);
+            .Produces<SeatDetailDto[]>(StatusCodes.Status200OK);
 
-        app.MapGet("/api/Seat/{SeatId:int}", [Authorize] async (int SeatId, ISeatRepository repo) => 
+        app.MapGet("/api/Seat/{SeatId:int}", async (int SeatId, ISeatRepository repo) => 
         {
             var Seat = await repo.Get(SeatId);
             if (Seat == null)
@@ -18,13 +18,13 @@ public static class WebApplicationSeatExtensions
             return Results.Ok(Seat);
         }).ProducesProblem(404).Produces<SeatDetailDto>(StatusCodes.Status200OK);
 
-        app.MapPost("/api/Seats", [Authorize] async ([FromBody] SeatDetailDto dto, ISeatRepository repo) => 
+        app.MapPost("/api/Seats", async ([FromBody] SeatDetailDto dto, ISeatRepository repo) => 
         {
             if (!MiniValidator.TryValidate(dto, out var errors))
                 return Results.ValidationProblem(errors);
             var newSeat = await repo.Add(dto);
             return Results.Created($"/Seat/{newSeat.Id}", newSeat);
-        }).ProducesValidationProblem().Produces<SeatDetailDto>(StatusCodes.Status201Created);
+        }).ProducesValidationProblem().Produces<SeatDto>(StatusCodes.Status201Created);
 
         app.MapPut("/api/Seats", async ([FromBody] SeatDetailDto dto, ISeatRepository repo) => 
         {       
@@ -34,7 +34,7 @@ public static class WebApplicationSeatExtensions
                 return Results.Problem($"Seat with Id {dto.Id} not found", statusCode: 404);
             var updatedSeat = await repo.Update(dto);
             return Results.Ok(updatedSeat);
-        }).ProducesValidationProblem().ProducesProblem(404).Produces<SeatDetailDto>(StatusCodes.Status200OK);
+        }).ProducesValidationProblem().ProducesProblem(404).Produces<SeatDto>(StatusCodes.Status200OK);
 
         app.MapDelete("/api/Seats/{SeatId:int}", async (int SeatId, ISeatRepository repo) => 
         {

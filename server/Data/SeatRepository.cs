@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using server.Context;
+using server.Models.Domain;
 
 namespace server.Data
 {
     public interface ISeatRepository
     {
-        Task<List<SeatDto>> GetAll();
+        Task<List<SeatDetailDto>> GetAll();
         Task<SeatDetailDto?> Get(int id);
-        Task<SeatDetailDto> Add(SeatDetailDto Seat);
-        Task<SeatDetailDto> Update(SeatDetailDto Seat);
+        Task<SeatDto> Add(SeatDetailDto Seat);
+        Task<SeatDto> Update(SeatDetailDto Seat);
         Task Delete(int id);
     }
 
@@ -16,17 +17,19 @@ namespace server.Data
     {
         private readonly OfficeDbContext context;
 
-        private static SeatDetailDto EntityToDetailDto(SeatEntity e)
+        private static SeatDetailDto EntityToDetailDto(Seat e)
         {
-            return new SeatDetailDto(e.Id, e.Room, e.Price);
+            return new SeatDetailDto(e.Id, e.Room.Name, e.RoomId);
         }
 
-        private static void DtoToEntity(SeatDetailDto dto, SeatEntity e)
+        private static SeatDto EntityToDto(Seat e)
         {
-            e.Room = dto.Room;
-      
-            e.Price = dto.Price;
-  
+            return new SeatDto(e.Id, e.RoomId);
+        }
+
+        private static void DtoToEntity(SeatDetailDto dto, Seat e)
+        {
+            e.RoomId = dto.RoomId;
         }
 
         public SeatRepository(OfficeDbContext context)
@@ -34,29 +37,30 @@ namespace server.Data
             this.context = context;
         }
 
-        public async Task<List<SeatDto>> GetAll()
+        public async Task<List<SeatDetailDto>> GetAll()
         {
-            return await context.Seats.Select(e => new SeatDto(e.Id, e.Room, e.Price)).ToListAsync();
+            return await context.Seats.Select(e => new SeatDetailDto(e.Id, e.Room.Name, e.RoomId)).ToListAsync();
         }
 
         public async Task<SeatDetailDto?> Get(int id)
         {
-            var entity = await context.Seats.SingleOrDefaultAsync(h => h.Id == id);
-            if (entity == null)
+            var dto = await context.Seats.Where(h => h.Id == id)
+                .Select(e => new SeatDetailDto(e.Id, e.Room.Name, e.RoomId)).SingleOrDefaultAsync();
+            if (dto == null)
                 return null;
-            return EntityToDetailDto(entity);
+            return dto;
         }
 
-        public async Task<SeatDetailDto> Add(SeatDetailDto dto)
+        public async Task<SeatDto> Add(SeatDetailDto dto)
         {
-            var entity = new SeatEntity();
+            var entity = new Seat();
             DtoToEntity(dto, entity);
             context.Seats.Add(entity);
             await context.SaveChangesAsync();
-            return EntityToDetailDto(entity);
+            return EntityToDto(entity);
         }
 
-        public async Task<SeatDetailDto> Update(SeatDetailDto dto)
+        public async Task<SeatDto> Update(SeatDetailDto dto)
         {
             var entity = await context.Seats.FindAsync(dto.Id);
             if (entity == null)
@@ -64,7 +68,7 @@ namespace server.Data
             DtoToEntity(dto, entity);
             context.Entry(entity).State = EntityState.Modified;
             await context.SaveChangesAsync();
-            return EntityToDetailDto(entity);
+            return EntityToDto(entity);
         }
 
         public async Task Delete(int id)

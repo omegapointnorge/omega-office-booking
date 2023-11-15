@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using server.Context;
+using server.Models.Domain;
 
 namespace server.Data
 {
@@ -16,17 +17,17 @@ namespace server.Data
     {
         private readonly OfficeDbContext context;
 
-        private static UserDto EntityToDetailDto(UserEntity e)
+        private static UserDto EntityToDetailDto(User e)
         {
-            return new UserDto(e.Id, e.Name, e.Email, e.Phone);
+            return new UserDto(e.Id, e.Name, e.Email, e.PhoneNumber);
         }
 
-        private static void DtoToEntity(UserDto dto, UserEntity e)
+        private static void DtoToEntity(UserDto dto, User e)
         {
             e.Id = dto.Id;
             e.Name = dto.Name;
             e.Email = dto.Email;
-            e.Phone = dto.Phone;
+            e.PhoneNumber = dto.PhoneNumber;
   
         }
 
@@ -37,7 +38,7 @@ namespace server.Data
 
         public async Task<List<UserDto>> GetAll()
         {
-            return await context.Users.Select(e => new UserDto(e.Id, e.Name,e.Email, e.Phone)).ToListAsync();
+            return await context.Users.Select(e => new UserDto(e.Id, e.Name,e.Email, e.PhoneNumber)).ToListAsync();
         }
 
         public async Task<UserDto?> Get(int id)
@@ -50,7 +51,7 @@ namespace server.Data
 
         public async Task<UserDto> Add(UserDto dto)
         {
-            var entity = new UserEntity();
+            var entity = new User();
             DtoToEntity(dto, entity);
             context.Users.Add(entity);
             await context.SaveChangesAsync();

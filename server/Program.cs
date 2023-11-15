@@ -80,6 +80,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddDbContext<OfficeDbContext>(options => options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
@@ -91,7 +92,7 @@ app.UseAuthentication();
 //app.UseCors(p => p.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod());
 
 app.MapSeatEndpoints();
-//app.MapUserEndpoints();
+app.MapUserEndpoints();
 app.MapBookingEndpoints();
 app.UseRouting();
 app.UseAuthorization();

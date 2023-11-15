@@ -1,1 +1,1 @@
-public record SeatDto(int Id, string? Room, int Price);
+public record SeatDto(int Id, int RoomId);
