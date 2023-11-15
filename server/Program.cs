@@ -117,15 +117,16 @@ if (builder.Environment.IsDevelopment())
 
 if (builder.Environment.IsProduction())
 {
-    builder.Services.AddDbContext<OfficeDbContext>(options =>
-    {
-        SqlAuthenticationProvider.SetProvider(
-        SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
-        new server.Helpers.AzureSqlAuthProvider());
+    //TODO: add to officeDB in prod
+    //builder.Services.AddDbContext<OfficeDbContext>(options =>
+    //{
+    //    SqlAuthenticationProvider.SetProvider(
+    //    SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
+    //    new server.Helpers.AzureSqlAuthProvider());
 
-        options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
+    //    options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
 
-    });
+    //});
 }
 else
 {
@@ -169,8 +170,8 @@ if (builder.Environment.IsProduction())
 {
     using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
-    dbContext.Database.Migrate();
+    //var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
+    //dbContext.Database.Migrate();
 }
 }
 if (builder.Environment.IsDevelopment())
