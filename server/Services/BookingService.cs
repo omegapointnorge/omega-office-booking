@@ -1,10 +1,11 @@
 
+using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
 using server.Repository;
 
 namespace server.Services
 {
-    public class BookingService : IBookingRepository
+    public class BookingService : IBookingService
     {
         private readonly IBookingRepository _bookingRepository;
 
@@ -12,9 +13,9 @@ namespace server.Services
         {
             _bookingRepository = bookingRepository;
         }
-        public Task<List<BookingDto>> GetAllBookings()
+        public async Task<ActionResult<List<BookingDto>>> GetAllBookings()
         {
-            return _bookingRepository.GetAllBookings();
+            return await _bookingRepository.GetAllBookings();
         }
     }
 }
