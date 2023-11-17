@@ -76,7 +76,7 @@ if (builder.Environment.IsDevelopment())
                 .AllowAnyHeader()
                 .AllowAnyMethod()
         );
-});
+    });
 }
 
 
@@ -142,8 +142,9 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
-app.MapControllers().RequireAuthorization("AuthenticatedUser");
+
 app.MapReverseProxy().RequireAuthorization("AuthenticatedUser");
+
 app.MapFallbackToFile("index.html");
 
 // Temporary fix to apply migrations on startup
