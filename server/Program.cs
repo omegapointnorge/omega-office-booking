@@ -10,7 +10,7 @@ using Azure.Identity;
 using Yarp.ReverseProxy.Transforms;
 using Microsoft.AspNetCore.Authentication;
 using System.Net.Http.Headers;
-
+using Microsoft.AspNetCore.HttpOverrides;
 var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Environment.IsProduction())
@@ -49,16 +49,7 @@ builder.Services.AddAuthentication(options =>
     cookieOptions.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     cookieOptions.Cookie.SameSite = SameSiteMode.Strict;
 
-    cookieOptions.Events.OnRedirectToAccessDenied = c =>
-    {
-        c.Response.StatusCode = StatusCodes.Status403Forbidden;
-        return Task.CompletedTask;
-    };
-    cookieOptions.Events.OnRedirectToLogin = c =>
-    {
-        c.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        return Task.CompletedTask;
-    };
+    options.Events = new CustomCookieAuthenticationEvents();
 });
 builder.Services.AddAuthorization(options =>
 {
@@ -111,7 +102,17 @@ builder.Services.AddReverseProxy()
         });
     });
 
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
 var app = builder.Build();
+
+app.UseForwardedHeaders();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -149,6 +150,5 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
     dbContext.Database.Migrate();
 }
-
 
 app.Run();
