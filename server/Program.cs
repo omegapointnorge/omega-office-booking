@@ -129,10 +129,10 @@ app.MapFallbackToFile("index.html");
 // Temporary fix to apply migrations on startup
 // since we dont apply them in our pipeline
 // (inb4 this is a permanent fix)
-/*using (var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
     dbContext.Database.Migrate();
 }
-*/
+
 app.Run();
