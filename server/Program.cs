@@ -7,7 +7,10 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
 using Azure.Identity;
-
+using Yarp.ReverseProxy.Transforms;
+using Microsoft.AspNetCore.Authentication;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.HttpOverrides;
 var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Environment.IsProduction())
@@ -45,46 +48,34 @@ builder.Services.AddAuthentication(options =>
     cookieOptions.Cookie.IsEssential = true;
     cookieOptions.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     cookieOptions.Cookie.SameSite = SameSiteMode.Strict;
-
-    cookieOptions.Events.OnRedirectToAccessDenied = c =>
-    {
-        c.Response.StatusCode = StatusCodes.Status403Forbidden;
-        return Task.CompletedTask;
-    };
-    cookieOptions.Events.OnRedirectToLogin = c =>
-    {
-        c.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        return Task.CompletedTask;
-    };
 });
-builder.Services.AddAuthorization(options =>
-{
-    var defaultPolicy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
+// builder.Services.AddAuthorization(options =>
+// {
+//     var defaultPolicy = new AuthorizationPolicyBuilder()
+//         .RequireAuthenticatedUser()
+//         .Build();
 
-    options.AddPolicy("AuthenticatedUser", defaultPolicy);
-    options.DefaultPolicy = defaultPolicy;
-    options.FallbackPolicy = defaultPolicy;
-});
+//     options.AddPolicy("AuthenticatedUser", defaultPolicy);
+//     options.DefaultPolicy = defaultPolicy;
+//     options.FallbackPolicy = defaultPolicy;
+// });
+
 builder.Services.AddControllersWithViews();
+builder.Services.AddSwaggerGen();
 
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddCors(options =>
+builder.Services.AddCors(options =>
     {
 
         options.AddPolicy(name: "Client Origin",
             builder => builder
-                .AllowAnyOrigin()
-                //.WithOrigins("https://app-prod-itv-officebooking.azurewebsites.net", "http://localhost:5002")
+                .WithOrigins(
+                "https://app-officebooking.azurewebsites.net/",
+                "https://app-dev-officebooking.azurewebsites.net/",
+                "http://localhost:5001")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
         );
-});
-}
-
-
+    });
 
 builder.Services.AddDbContext<OfficeDbContext>(options =>
 {
@@ -94,9 +85,29 @@ builder.Services.AddDbContext<OfficeDbContext>(options =>
 
     options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
 });
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+/*builder.Services.AddReverseProxy()
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
+    });
+
+*/
+/*builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+*/
 var app = builder.Build();
+
+//app.UseForwardedHeaders();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -117,17 +128,18 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
+app.MapControllers();
+//app.MapReverseProxy().RequireAuthorization("AuthenticatedUser");
 
 app.MapFallbackToFile("index.html");
 
 // Temporary fix to apply migrations on startup
 // since we dont apply them in our pipeline
 // (inb4 this is a permanent fix)
-using (var scope = app.Services.CreateScope())
+/*using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
     dbContext.Database.Migrate();
 }
-
-
+*/
 app.Run();
