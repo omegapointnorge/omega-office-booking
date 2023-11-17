@@ -7,7 +7,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
 using Azure.Identity;
-using Yarp.ReverseProxy.Transforms;
 using Microsoft.AspNetCore.Authentication;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -61,7 +60,6 @@ builder.Services.AddAuthentication(options =>
 // });
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
     {
@@ -103,11 +101,6 @@ var app = builder.Build();
 
 //app.UseForwardedHeaders();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -130,7 +123,6 @@ app.MapControllerRoute(
     pattern: "{controller}/{action=Index}/{id?}");
 app.MapControllers();
 //app.MapReverseProxy().RequireAuthorization("AuthenticatedUser");
-
 
 app.MapFallbackToFile("index.html");
 
