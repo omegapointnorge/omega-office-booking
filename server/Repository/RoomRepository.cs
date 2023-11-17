@@ -1,7 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using server.Context;
-using server.DTOs;
+using server.Models.DTOs;
 
 namespace server.Repository
 {
@@ -17,7 +17,7 @@ namespace server.Repository
         public Task<List<RoomDto>> GetAllRooms()
         {
             return dbContext.Rooms.Select(room =>
-                new RoomDto(room.Id, room.Name, room.Office, null))
+                new RoomDto(room.Id, room.Name, null))
                 .ToListAsync();
         }
     }

@@ -1,4 +1,4 @@
-using server.DTOs;
+using server.Models.DTOs;
 
 namespace server.Repository;
 

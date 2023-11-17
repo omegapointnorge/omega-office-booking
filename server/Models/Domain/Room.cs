@@ -6,15 +6,11 @@ namespace server.Models.Domain
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public int OfficeId { get; set; }
-        public Office Office { get; set; } = null!;
         public ICollection<Seat> Seats { get; set; } = new List<Seat>();
-        
-        public Room(int id, string name, int officeId)
+
+        public Room(string name)
         {
-            Id = id;
             Name = name;
-            OfficeId = officeId;
         }
     }
 }

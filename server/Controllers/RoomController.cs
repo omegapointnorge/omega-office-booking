@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using server.DTOs;
+using server.Models.DTOs;
 using server.Services;
 
 namespace server.Controllers
@@ -8,12 +8,10 @@ namespace server.Controllers
     [Route("/api/[controller]")]
     public class RoomController : ControllerBase
     {
-        //readonly ILogger<RoomController> _logger;
         readonly IRoomService _roomService;
 
-        public RoomController(/*ILogger<RoomController> logger,*/ IRoomService roomService)
+        public RoomController(IRoomService roomService)
         {
-            //_logger = logger;
             _roomService = roomService;
         }
 

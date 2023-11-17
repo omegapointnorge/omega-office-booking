@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using server.DTOs;
 using server.Models.Domain;
+using server.Models.DTOs;
 
 namespace server.Services
 {

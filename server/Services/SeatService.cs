@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Context;
-using server.DTOs;
 using server.Models.DTOs;
 using server.Repository;
 

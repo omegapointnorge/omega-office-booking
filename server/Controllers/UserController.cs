@@ -8,6 +8,8 @@ namespace server.Controllers;
 [Route("client/[controller]")]
 public class UserController : ControllerBase
 {
+    readonly IUserSer 
+        
     [HttpGet]
     [ProducesResponseType(typeof(UserInfo), StatusCodes.Status200OK)]
     public IActionResult GetCurrentUser()
@@ -26,6 +28,9 @@ public class UserController : ControllerBase
 
         return Ok(user);
     }
+    
+    
+    
 }
 
 public record UserInfo(
