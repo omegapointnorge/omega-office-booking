@@ -131,6 +131,7 @@ app.MapControllerRoute(
 app.MapControllers();
 //app.MapReverseProxy().RequireAuthorization("AuthenticatedUser");
 
+
 app.MapFallbackToFile("index.html");
 
 // Temporary fix to apply migrations on startup
