@@ -49,7 +49,6 @@ builder.Services.AddAuthentication(options =>
     cookieOptions.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     cookieOptions.Cookie.SameSite = SameSiteMode.Strict;
 
-    options.Events = new CustomCookieAuthenticationEvents();
 });
 builder.Services.AddAuthorization(options =>
 {
