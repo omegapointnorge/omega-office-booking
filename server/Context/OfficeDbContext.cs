@@ -98,48 +98,31 @@ namespace server.Context
                 .Property(room => room.Id)
                 .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<Room>()
+        /*    modelBuilder.Entity<Room>()
                 .HasOne(room => room.Office)
                 .WithMany(office => office.Rooms)
                 .HasForeignKey(room => room.OfficeId)
                 .IsRequired();
-
+        */
             modelBuilder.Entity<Room>()
                 .HasMany(room => room.Seats)
                 .WithOne(seat => seat.Room)
                 .HasPrincipalKey(room => room.Id);
 
             // End of Room setup
-
-            // Office setup
-
-            modelBuilder.Entity<Office>()
-                .HasKey(room => room.Id);
-
-            modelBuilder.Entity<Office>()
-                .Property(room => room.Id)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<Office>()
-                .HasMany(office => office.Rooms)
-                .WithOne(room => room.Office)
-                .HasPrincipalKey(office => office.Id);
-
-            // End of Office setup
-            SeedData(modelBuilder);
-            base.OnModelCreating(modelBuilder);
         }
 
         private void SeedData(ModelBuilder modelBuilder)
-        {   
+        { 
+        /*
             modelBuilder.Entity<Office>()
                 .HasData(
                     new Office(1, "Lille Grensen",20)
                 );
-            
-            modelBuilder.Entity<Room>()
-                .HasData(
-                    new Room(1, "Store Rommet",1)
+        */
+        modelBuilder.Entity<Room>()
+            .HasData(
+                 new Room("Store Rommet")
                 );
             
             modelBuilder.Entity<Seat>()
