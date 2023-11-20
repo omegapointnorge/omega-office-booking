@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using server.Models.DTOs;
+using server.Services;
 
 namespace server.Controllers;
 
@@ -8,7 +10,12 @@ namespace server.Controllers;
 [Route("client/[controller]")]
 public class UserController : ControllerBase
 {
-    readonly IUserSer 
+    private readonly IUserService _userService;
+
+    public UserController(IUserService userService)
+    {
+        _userService = userService;
+    }
         
     [HttpGet]
     [ProducesResponseType(typeof(UserInfo), StatusCodes.Status200OK)]
@@ -28,8 +35,13 @@ public class UserController : ControllerBase
 
         return Ok(user);
     }
-    
-    
+
+    [HttpGet("users")]
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
+    {
+        var response = await _userService.GetAllUsers();
+        return new OkObjectResult(response);
+    }
     
 }
 
