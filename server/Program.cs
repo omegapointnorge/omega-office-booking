@@ -7,9 +7,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
 using Azure.Identity;
-using server.Repository;
-using server.Services;
-
 var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Environment.IsProduction())
@@ -27,34 +24,13 @@ if (builder.Environment.IsProduction())
     builder.Configuration["AzureAd:ClientId"] = clientId;
     builder.Configuration["AzureAd:ClientSecret"] = clientSecret;
 }
-else
-{   // Accessing development keyVault for local authorization 
-    builder.Configuration["AzureSetup:KeyVaultName"] = builder.Configuration["AzureSetup__KeyVaultName"];
-    var keyVaultName = builder.Configuration["AzureSetup__KeyVaultName"];
-    builder.Configuration.AddAzureKeyVault(
-        new Uri($"https://{keyVaultName}.vault.azure.net/"),
-        new DefaultAzureCredential());
-    
-    var clientId = builder.Configuration.GetValue<string>("AzureAd-ClientId");
-    var clientSecret = builder.Configuration.GetValue<string>("AzureAd-ClientSecret");
-    var tenantId = builder.Configuration.GetValue<string>("AzureAd-TenantId");
-    var connectionString = builder.Configuration.GetValue<string>("AzureSql-ConnectionString");
-    
-    builder.Configuration["AzureAd:TenantId"] = tenantId;
-    builder.Configuration["AzureAd:ClientId"] = clientId;
-    builder.Configuration["AzureAd:ClientSecret"] = clientSecret;
-    builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
 
-}
-
-
+// Add services to the container.
 builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-    }
-)
-    
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+})
 .AddMicrosoftIdentityWebApp(options =>
 {
     builder.Configuration.Bind("AzureAd", options);
@@ -68,42 +44,33 @@ builder.Services.AddAuthentication(options =>
     cookieOptions.Cookie.IsEssential = true;
     cookieOptions.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     cookieOptions.Cookie.SameSite = SameSiteMode.Strict;
-
-    cookieOptions.Events.OnRedirectToAccessDenied = c =>
-    {
-        c.Response.StatusCode = StatusCodes.Status403Forbidden;
-        return Task.CompletedTask;
-    };
-    cookieOptions.Events.OnRedirectToLogin = c =>
-    {
-        c.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        return Task.CompletedTask;
-    };
 });
-builder.Services.AddAuthorization(options =>
-{
-    var defaultPolicy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
+ builder.Services.AddAuthorization(options =>
+ {
+     var defaultPolicy = new AuthorizationPolicyBuilder()
+         .RequireAuthenticatedUser()
+         .Build();
 
-    options.AddPolicy("AuthenticatedUser", defaultPolicy);
-    options.DefaultPolicy = defaultPolicy;
-    options.FallbackPolicy = defaultPolicy;
-});
+     options.AddPolicy("AuthenticatedUser", defaultPolicy);
+     options.DefaultPolicy = defaultPolicy;
+     options.FallbackPolicy = defaultPolicy;
+ });
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddCors(options =>
-{
+    {
 
-    options.AddPolicy(name: "Client Origin",
-        builder => builder
-            .AllowAnyOrigin()
-            //.WithOrigins("https://app-prod-itv-officebooking.azurewebsites.net", "http://localhost:5002")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-    );
-});
-
+        options.AddPolicy(name: "Client Origin",
+            builder => builder
+                .WithOrigins(
+                "https://app-officebooking.azurewebsites.net/",
+                "https://app-dev-officebooking.azurewebsites.net/",
+                "http://localhost:5001")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+        );
+    });
 
 builder.Services.AddDbContext<OfficeDbContext>(options =>
 {
@@ -111,23 +78,10 @@ builder.Services.AddDbContext<OfficeDbContext>(options =>
         SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
         new server.Helpers.AzureSqlAuthProvider());
 
-    options.UseSqlServer("name=ConnectionStrings:DefaultConnection")
-        .UseLoggerFactory(LoggerFactory.Create(b => b.AddConsole()));
-        
+    options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
 });
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddScoped<IRoomService, RoomService>();
-builder.Services.AddScoped<IRoomRepository, RoomRepository>();
-builder.Services.AddScoped<ISeatService, SeatService>();
-builder.Services.AddScoped<ISeatRepository, SeatRepository>();
-builder.Services.AddScoped<IBookingService, BookingService>();
-builder.Services.AddScoped<IBookingRepository, BookingRepository>();
-
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -135,14 +89,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
-    
 }
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 app.UseHttpsRedirection();
 app.UseCookiePolicy();
 app.UseCors("Client Origin");
@@ -156,6 +104,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
+app.MapControllers();
 
 app.MapFallbackToFile("index.html");
 

@@ -103,6 +103,21 @@
     <None Update="..\client\src\components\Buttons\LogoutButton.jsx">
       <Link>src\components\Buttons\LogoutButton.jsx</Link>
     </None>
+    <None Update="..\client\src\components\Navbar\NavbarItem.jsx">
+      <Link>src\components\Navbar\NavbarItem.jsx</Link>
+    </None>
+    <None Update="..\client\src\Pages\Rooms\Rooms.jsx">
+      <Link>src\Pages\Rooms\Rooms.jsx</Link>
+    </None>
+    <None Update="..\client\src\Pages\History\HistoryPage.jsx">
+      <Link>src\Pages\History\HistoryPage.jsx</Link>
+    </None>
+    <None Update="..\client\src\Pages\Rooms\BigRoomPage.jsx">
+      <Link>src\Pages\Rooms\BigRoomPage.jsx</Link>
+    </None>
+    <None Update="..\client\src\Pages\Rooms\RoomPage.jsx">
+      <Link>src\Pages\Rooms\RoomPage.jsx</Link>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
