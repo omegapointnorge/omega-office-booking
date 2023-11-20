@@ -37,7 +37,7 @@ jobs:
 
       - name: Generate EF migration script
         run: |
-          dotnet tool install --global dotnet-ef
+          dotnet tool install --global dotnet-ef --version 7.0.14
           dotnet ef migrations script --idempotent --no-build --configuration Release --project ./server/server.csproj --output ${{env.DOTNET_ROOT}}/dbMigrations.sql --verbose
 
       - name: Upload artifact for deployment job
