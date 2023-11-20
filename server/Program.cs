@@ -7,10 +7,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
 using Azure.Identity;
-using Yarp.ReverseProxy.Transforms;
-using Microsoft.AspNetCore.Authentication;
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.HttpOverrides;
 var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Environment.IsProduction())
@@ -49,19 +45,18 @@ builder.Services.AddAuthentication(options =>
     cookieOptions.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     cookieOptions.Cookie.SameSite = SameSiteMode.Strict;
 });
-// builder.Services.AddAuthorization(options =>
-// {
-//     var defaultPolicy = new AuthorizationPolicyBuilder()
-//         .RequireAuthenticatedUser()
-//         .Build();
+ builder.Services.AddAuthorization(options =>
+ {
+     var defaultPolicy = new AuthorizationPolicyBuilder()
+         .RequireAuthenticatedUser()
+         .Build();
 
-//     options.AddPolicy("AuthenticatedUser", defaultPolicy);
-//     options.DefaultPolicy = defaultPolicy;
-//     options.FallbackPolicy = defaultPolicy;
-// });
+     options.AddPolicy("AuthenticatedUser", defaultPolicy);
+     options.DefaultPolicy = defaultPolicy;
+     options.FallbackPolicy = defaultPolicy;
+ });
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
     {
@@ -88,26 +83,7 @@ builder.Services.AddDbContext<OfficeDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-/*builder.Services.AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
-    });
-
-*/
-/*builder.Services.Configure<ForwardedHeadersOptions>(options =>
-{
-    options.ForwardedHeaders =
-        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-});
-*/
 var app = builder.Build();
-
-//app.UseForwardedHeaders();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -129,17 +105,16 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 app.MapControllers();
-//app.MapReverseProxy().RequireAuthorization("AuthenticatedUser");
 
 app.MapFallbackToFile("index.html");
 
 // Temporary fix to apply migrations on startup
 // since we dont apply them in our pipeline
 // (inb4 this is a permanent fix)
-/*using (var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
     dbContext.Database.Migrate();
 }
-*/
+
 app.Run();
