@@ -96,6 +96,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+//swagger
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -104,6 +106,10 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 app.UseCookiePolicy();

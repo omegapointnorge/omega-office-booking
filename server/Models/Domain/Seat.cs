@@ -12,7 +12,5 @@ namespace server.Models.Domain
             RoomId = roomId;
             Bookings = bookings;
         }
-        
- 
     }
 }

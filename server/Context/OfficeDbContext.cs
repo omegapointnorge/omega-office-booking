@@ -17,7 +17,6 @@ namespace server.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Booking setup
-
             modelBuilder.Entity<Booking>()
                 .HasKey(booking => booking.Id);
 
@@ -26,22 +25,10 @@ namespace server.Context
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Booking>()
-                .HasOne(booking => booking.Seat)
-                .WithMany(seat => seat.Bookings)
-                .HasForeignKey(booking => booking.SeatId)
-                .IsRequired();
-
-            modelBuilder.Entity<Booking>()
-                .HasOne(booking => booking.User)
-                .WithMany(user => user.Bookings)
-                .HasForeignKey(booking => booking.UserId)
-                .IsRequired();
-
-            modelBuilder.Entity<Booking>()
                 .Property(booking => booking.BookingDateTime)
                 .HasDefaultValueSql("GETDATE()")
                 .IsRequired();
-
+            
             // End of Booking setup
 
             // User setup
@@ -59,118 +46,67 @@ namespace server.Context
             modelBuilder.Entity<User>()
                 .HasIndex(user => user.Email)
                 .IsUnique();
-
-            modelBuilder.Entity<User>()
-                .HasMany(user => user.Bookings)
-                .WithOne(booking => booking.User)
-                .HasPrincipalKey(user => user.Id);
-
+           
             // End of User setup
 
             // Seat setup
-
             modelBuilder.Entity<Seat>()
                 .HasKey(seat => seat.Id);
 
             modelBuilder.Entity<Seat>()
                 .Property(seat => seat.Id)
                 .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<Seat>()
-                .HasOne(seat => seat.Room)
-                .WithMany(room => room.Seats)
-                .HasForeignKey(seat => seat.RoomId)
-                .IsRequired();
-
-            modelBuilder.Entity<Seat>()
-                .HasMany(seat => seat.Bookings)
-                .WithOne(booking => booking.Seat)
-                .HasPrincipalKey(seat => seat.Id);
-
+  
             // End of Seat setup
 
             // Room setup
-
             modelBuilder.Entity<Room>()
                 .HasKey(room => room.Id);
 
             modelBuilder.Entity<Room>()
                 .Property(room => room.Id)
                 .ValueGeneratedOnAdd();
-
-        /*    modelBuilder.Entity<Room>()
-                .HasOne(room => room.Office)
-                .WithMany(office => office.Rooms)
-                .HasForeignKey(room => room.OfficeId)
-                .IsRequired();
-        */
-            modelBuilder.Entity<Room>()
-                .HasMany(room => room.Seats)
-                .WithOne(seat => seat.Room)
-                .HasPrincipalKey(room => room.Id);
-
+            
             // End of Room setup
+            
+            SeedData(modelBuilder);
         }
 
-        private void SeedData(ModelBuilder modelBuilder)
-        { 
-        /*
-            modelBuilder.Entity<Office>()
-                .HasData(
-                    new Office(1, "Lille Grensen",20)
-                );
-        */
-        modelBuilder.Entity<Room>()
-            .HasData(
-                 new Room("Store Rommet")
-                );
-            
-            modelBuilder.Entity<Seat>()
-                .HasData(
-                    new Seat(1, 1)
-                );
-            modelBuilder.Entity<Seat>()
-                .HasData(
-                    new Seat(2, 1)
-                );
-            modelBuilder.Entity<Seat>()
-                .HasData(
-                    new Seat(3, 1)
-                );
-            modelBuilder.Entity<Seat>()
-                .HasData(
-                    new Seat(4, 1)
-                );
-            modelBuilder.Entity<Seat>()
-                .HasData(
-                    new Seat(5, 1)
-                );
-            
-            modelBuilder.Entity<User>()
-                .HasData(
-                    new User(1, "Mostafa", "Mostafa@omegapoint.no")
-                );
-            modelBuilder.Entity<User>()
-                .HasData(
-                    new User(2, "Vicky", "Vicky@omegapoint.no")
-                );
-            modelBuilder.Entity<User>()
-                .HasData(
-                    new User(3, "Hakon", "Hakon@omegapoint.no")
-                );
-            
-            modelBuilder.Entity<Booking>()
-                .HasData(
-                    new Booking(1, 1, 1, DateTime.Now.AddDays(-3))
-                );
-            modelBuilder.Entity<Booking>()
-                .HasData(
-                    new Booking(2, 2, 5, DateTime.Now.AddDays(-1))
-                );
-            modelBuilder.Entity<Booking>()
-                .HasData(
-                    new Booking(3, 3, 2, DateTime.Now.AddDays(-2))
-                );
+        private static void SeedData(ModelBuilder modelBuilder)
+        {
+            // Sample users
+            var users = new List<User>
+            {
+                new User(1, "John Doe", "john@example.com", new List<Booking>()),
+                new User(2, "Jane Doe", "jane@example.com", new List<Booking>())
+            };
+            modelBuilder.Entity<User>().HasData(users);
+
+            // Sample rooms
+            var rooms = new List<Room>
+            {
+                new Room(1, "Store Rommet", new List<Seat>()),
+                new Room(2, "Lille Rommet", new List<Seat>())
+            };
+            modelBuilder.Entity<Room>().HasData(rooms);
+
+            // Sample seats
+            var seats = new List<Seat>
+            {
+                new Seat(1, 1, new List<Booking>()),
+                new Seat(2, 1, new List<Booking>()),
+                new Seat(3, 2, new List<Booking>())
+            };
+            modelBuilder.Entity<Seat>().HasData(seats);
+
+            // Sample bookings
+            var bookings = new List<Booking>
+            {
+                new Booking(1, 1, 1, DateTime.Now),
+                new Booking(2, 2, 2, DateTime.Now.AddDays(1))
+            };
+            modelBuilder.Entity<Booking>().HasData(bookings);
         }
+        
     }
 }
