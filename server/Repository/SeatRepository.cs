@@ -8,20 +8,17 @@ namespace server.Repository
 {
     public class SeatRepository : ISeatRepository
     {
-        private readonly OfficeDbContext dbContext;
-
-
+        private readonly OfficeDbContext _dbContext;
+        
         public SeatRepository(OfficeDbContext officeDbContext)
         {
-            dbContext = officeDbContext;
+            _dbContext = officeDbContext;
         }
         
         public Task<List<SeatDto>> GetAllSeats()
         {
-            return dbContext.Seats
-                .Select(seat => new SeatDto(
-                        seat.Id,
-                        seat.RoomId)
+            return _dbContext.Seats.Select(seat => 
+                    new SeatDto(seat.Id, seat.RoomId, seat.Bookings)
                 ).ToListAsync();
         }
     }

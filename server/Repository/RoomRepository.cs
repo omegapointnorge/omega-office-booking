@@ -7,16 +7,16 @@ namespace server.Repository
 {
     public class RoomRepository : IRoomRepository
     {
-        private readonly OfficeDbContext dbContext;
+        private readonly OfficeDbContext _dbContext;
 
         public RoomRepository(OfficeDbContext dbContext)
         {
-            this.dbContext = dbContext;
+            _dbContext = dbContext;
         }
 
         public Task<List<RoomDto>> GetAllRooms()
         {
-            return dbContext.Rooms.Select(room =>
+            return _dbContext.Rooms.Select(room =>
                 new RoomDto(room.Id, room.Name, null))
                 .ToListAsync();
         }

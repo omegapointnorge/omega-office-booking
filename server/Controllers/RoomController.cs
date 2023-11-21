@@ -8,7 +8,7 @@ namespace server.Controllers
     [Route("/api/[controller]")]
     public class RoomController : ControllerBase
     {
-        readonly IRoomService _roomService;
+        private readonly IRoomService _roomService;
 
         public RoomController(IRoomService roomService)
         {

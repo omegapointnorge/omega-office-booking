@@ -8,9 +8,9 @@ namespace server.Controllers
     [Route("api/[controller]")]
     public class SeatController : ControllerBase
     {
-        private readonly SeatService _seatService;
+        private readonly ISeatService _seatService;
 
-        public SeatController(SeatService seatService)
+        public SeatController(ISeatService seatService)
         {
             _seatService = seatService;
         }

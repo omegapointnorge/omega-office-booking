@@ -7,16 +7,16 @@ namespace server.Repository
 {
     public class BookingRepository : IBookingRepository
     {
-        private readonly OfficeDbContext dbContext;
+        private readonly OfficeDbContext _dbContext;
 
         public BookingRepository(OfficeDbContext officeDbContext)
         {
-            dbContext = officeDbContext;
+            _dbContext = officeDbContext;
         }
         public Task<List<BookingDto>> GetAllBookings()
         {
-            return dbContext.Bookings.Select(booking =>
-                new BookingDto(booking.Id, booking.UserId, booking.SeatId)
+            return _dbContext.Bookings.Select(booking =>
+                new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
             ).ToListAsync();
         }
     }

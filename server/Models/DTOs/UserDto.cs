@@ -1,4 +1,4 @@
-
+using server.Helpers;
 using server.Models.Domain;
 
 namespace server.Models.DTOs
@@ -8,14 +8,14 @@ namespace server.Models.DTOs
         public int Id { get; set; }
         public string Name { get; set; } 
         public string Email { get; set; } = string.Empty;
-        public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
+        public List<BookingDto>? Bookings { get; set; } = new List<BookingDto>();
 
-        public UserDto(int id, string name, string email, ICollection<Booking>? bookings)
+        public UserDto(int id, string name, string email, List<Booking> bookings)
         {
             Id = id;
             Name = name;
             Email = email;
-            Bookings = bookings;
+            Bookings = Mappers.MapBookingDtos(bookings);
         }
     }
 }
