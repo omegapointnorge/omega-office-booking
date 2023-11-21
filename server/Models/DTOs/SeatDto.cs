@@ -7,7 +7,6 @@ namespace server.Models.DTOs
     {
         public int Id { get; set; }
         public int RoomId { get; set; }
-        public Room? Room { get; set; } = null!;
         public List<BookingDto> Bookings { get; set; } = new List<BookingDto>();
         
         public SeatDto(int id, int roomId, List<Booking>? bookings)
