@@ -4,13 +4,13 @@ namespace server.Models.Domain
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<Seat> Seats { get; set; }
+        public List<Seat> Seats { get; set; } = new List<Seat>();
 
-        public Room(int id, string name, List<Seat> seats)
+        public Room(int id, string name)
         {
             Id = id;
             Name = name;
-            Seats = seats;
+            Seats = new List<Seat>();
         }
     }
 }

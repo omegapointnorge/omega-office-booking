@@ -113,25 +113,25 @@ namespace server.Context
             // Sample users
             var users = new List<User>
             {
-                new User(1, "John Doe", "john@example.com", new List<Booking>()),
-                new User(2, "Jane Doe", "jane@example.com", new List<Booking>())
+                new User(1, "Code Master Flex", "code_master@example.com"),
+                new User(2, "Debug Diva", "debug_diva@example.com")  
             };
             modelBuilder.Entity<User>().HasData(users);
 
             // Sample rooms
             var rooms = new List<Room>
             {
-                new Room(1, "Store Rommet", new List<Seat>()),
-                new Room(2, "Lille Rommet", new List<Seat>())
+                new Room(1, "Binary Bunker"),
+                new Room(2, "Algorithm Alcove")  
             };
             modelBuilder.Entity<Room>().HasData(rooms);
 
             // Sample seats
             var seats = new List<Seat>
             {
-                new Seat(1, 1, new List<Booking>()),
-                new Seat(2, 1, new List<Booking>()),
-                new Seat(3, 2, new List<Booking>())
+                new Seat(1, 1),
+                new Seat(2, 1),
+                new Seat(3, 2)
             };
             modelBuilder.Entity<Seat>().HasData(seats);
 
