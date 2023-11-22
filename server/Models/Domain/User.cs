@@ -8,8 +8,9 @@ namespace server.Models.Domain
         public string PhoneNumber { get; set; } = string.Empty;
         public List<Booking> Bookings { get; set; } = new List<Booking>();
         
-        public User(string name, string email)
+        public User(int id, string name, string email)
         {
+            Id = id;
             Name = name;
             Email = email;
             Bookings = new List<Booking>();

@@ -6,8 +6,9 @@ namespace server.Models.Domain
         public string Name { get; set; }
         public List<Seat> Seats { get; set; } = new List<Seat>();
 
-        public Room(string name)
+        public Room(int id, string name)
         {
+            Id = id;
             Name = name;
             Seats = new List<Seat>();
         }

@@ -7,8 +7,9 @@ namespace server.Models.Domain
         public int SeatId { get; set; }
         public DateTime BookingDateTime { get; set; }
 
-        public Booking(int userId, int seatId, DateTime bookingDateTime)
+        public Booking(int id, int userId, int seatId, DateTime bookingDateTime)
         {
+            Id = id;
             UserId = userId;
             SeatId = seatId;
             BookingDateTime = bookingDateTime;
