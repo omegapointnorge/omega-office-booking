@@ -16,8 +16,7 @@ namespace server.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-       // Booking setup
-
+            // Booking setup
             modelBuilder.Entity<Booking>()
                 .HasKey(booking => booking.Id);
 
@@ -66,7 +65,6 @@ namespace server.Context
             // End of User setup
 
             // Seat setup
-
             modelBuilder.Entity<Seat>()
                 .HasKey(seat => seat.Id);
 
@@ -88,7 +86,6 @@ namespace server.Context
             // End of Seat setup
 
             // Room setup
-
             modelBuilder.Entity<Room>()
                 .HasKey(room => room.Id);
 
@@ -105,43 +102,9 @@ namespace server.Context
                 .WithOne()
                 .HasForeignKey(seat => seat.RoomId);
             
-            SeedData(modelBuilder);
-        }
+            // End of Room setup
 
-        private static void SeedData(ModelBuilder modelBuilder)
-        {
-            // Sample users
-            var users = new List<User>
-            {
-                new User(1, "Code Master Flex", "code_master@example.com"),
-                new User(2, "Debug Diva", "debug_diva@example.com")  
-            };
-            modelBuilder.Entity<User>().HasData(users);
-
-            // Sample rooms
-            var rooms = new List<Room>
-            {
-                new Room(1, "Binary Bunker"),
-                new Room(2, "Algorithm Alcove")  
-            };
-            modelBuilder.Entity<Room>().HasData(rooms);
-
-            // Sample seats
-            var seats = new List<Seat>
-            {
-                new Seat(1, 1),
-                new Seat(2, 1),
-                new Seat(3, 2)
-            };
-            modelBuilder.Entity<Seat>().HasData(seats);
-
-            // Sample bookings
-            var bookings = new List<Booking>
-            {
-                new Booking(1, 1, 1, DateTime.Now),
-                new Booking(2, 2, 2, DateTime.Now.AddDays(1))
-            };
-            modelBuilder.Entity<Booking>().HasData(bookings);
+            SampleData.CreateSampleData(modelBuilder);
         }
         
     }

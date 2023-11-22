@@ -13,7 +13,7 @@ namespace server.Models.DTOs
         {
             Id = id;
             RoomId = roomId;
-            Bookings = Mappers.MapBookingDtos(bookings);
+            if (bookings != null) Bookings = Mappers.MapBookingDtos(bookings);
         }
     }
 }

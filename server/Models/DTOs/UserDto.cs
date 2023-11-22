@@ -10,12 +10,12 @@ namespace server.Models.DTOs
         public string Email { get; set; } = string.Empty;
         public List<BookingDto>? Bookings { get; set; } = new List<BookingDto>();
 
-        public UserDto(int id, string name, string email, List<Booking> bookings)
+        public UserDto(int id, string name, string email, List<Booking>? bookings)
         {
             Id = id;
             Name = name;
             Email = email;
-            Bookings = Mappers.MapBookingDtos(bookings);
+            if (bookings != null) Bookings = Mappers.MapBookingDtos(bookings);
         }
     }
 }
