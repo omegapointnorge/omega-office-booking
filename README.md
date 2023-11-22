@@ -20,6 +20,8 @@ You will need access to the subscription used for the project, as well as the ap
 
 Get the permissions right away to avoid bottlenecks!
 
+Figma design: https://www.figma.com/file/NC9ZwuocdWNaLCxDIrJkfY/Office-Booking?type=design&node-id=0%3A1&mode=design&t=My2Yu9A58c5mDaE5-1
+
 ## Contributing
 
 This project was originally started by Håkon Bøckman, Mostafa Aziz, Vicky Huang & Synne Kjærvik. You can contact them for additional information if needed.
