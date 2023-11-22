@@ -10,8 +10,11 @@ namespace server.Context
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Booking> Bookings { get; set; }
 
-        public OfficeDbContext(DbContextOptions options) : base(options) {}
-
+        public OfficeDbContext(DbContextOptions options) : base(options)
+        {
+            
+        }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Booking setup
