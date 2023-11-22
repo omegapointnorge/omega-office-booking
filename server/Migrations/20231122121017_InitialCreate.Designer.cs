@@ -12,8 +12,8 @@ using server.Context;
 namespace server.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    [Migration("20231121153814_UppdatedModelsAndSeedData")]
-    partial class UppdatedModelsAndSeedData
+    [Migration("20231122121017_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,16 +56,44 @@ namespace server.Migrations
                         new
                         {
                             Id = 1,
-                            BookingDateTime = new DateTime(2023, 11, 21, 16, 38, 14, 545, DateTimeKind.Local).AddTicks(6260),
+                            BookingDateTime = new DateTime(2023, 11, 22, 13, 10, 17, 238, DateTimeKind.Local).AddTicks(9680),
                             SeatId = 1,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            BookingDateTime = new DateTime(2023, 11, 22, 16, 38, 14, 545, DateTimeKind.Local).AddTicks(6280),
+                            BookingDateTime = new DateTime(2023, 11, 23, 13, 10, 17, 238, DateTimeKind.Local).AddTicks(9720),
                             SeatId = 2,
                             UserId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BookingDateTime = new DateTime(2023, 11, 22, 15, 10, 17, 238, DateTimeKind.Local).AddTicks(9720),
+                            SeatId = 3,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BookingDateTime = new DateTime(2023, 11, 24, 13, 10, 17, 238, DateTimeKind.Local).AddTicks(9720),
+                            SeatId = 4,
+                            UserId = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BookingDateTime = new DateTime(2023, 11, 22, 16, 10, 17, 238, DateTimeKind.Local).AddTicks(9720),
+                            SeatId = 5,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            BookingDateTime = new DateTime(2023, 11, 25, 13, 10, 17, 238, DateTimeKind.Local).AddTicks(9720),
+                            SeatId = 6,
+                            UserId = 6
                         });
                 });
 
@@ -95,6 +123,21 @@ namespace server.Migrations
                         {
                             Id = 2,
                             Name = "Algorithm Alcove"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Cache Corner"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Syntax Sanctuary"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Exception Escape"
                         });
                 });
 
@@ -130,6 +173,36 @@ namespace server.Migrations
                         {
                             Id = 3,
                             RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 5,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 6,
+                            RoomId = 4
+                        },
+                        new
+                        {
+                            Id = 7,
+                            RoomId = 4
+                        },
+                        new
+                        {
+                            Id = 8,
+                            RoomId = 5
+                        },
+                        new
+                        {
+                            Id = 9,
+                            RoomId = 5
                         });
                 });
 
@@ -173,6 +246,34 @@ namespace server.Migrations
                             Id = 2,
                             Email = "debug_diva@example.com",
                             Name = "Debug Diva",
+                            PhoneNumber = ""
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "syntax_sorcerer@example.com",
+                            Name = "Syntax Sorcerer",
+                            PhoneNumber = ""
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Email = "pixel_picasso@example.com",
+                            Name = "Pixel Picasso",
+                            PhoneNumber = ""
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Email = "console_cowboy@example.com",
+                            Name = "Console Cowboy",
+                            PhoneNumber = ""
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Email = "bit_boffin@example.com",
+                            Name = "Bit Boffin",
                             PhoneNumber = ""
                         });
                 });

@@ -53,42 +53,42 @@ namespace server.Migrations
                         new
                         {
                             Id = 1,
-                            BookingDateTime = new DateTime(2023, 11, 22, 9, 54, 25, 600, DateTimeKind.Local).AddTicks(9330),
+                            BookingDateTime = new DateTime(2023, 11, 22, 13, 10, 17, 238, DateTimeKind.Local).AddTicks(9680),
                             SeatId = 1,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            BookingDateTime = new DateTime(2023, 11, 23, 9, 54, 25, 600, DateTimeKind.Local).AddTicks(9360),
+                            BookingDateTime = new DateTime(2023, 11, 23, 13, 10, 17, 238, DateTimeKind.Local).AddTicks(9720),
                             SeatId = 2,
                             UserId = 2
                         },
                         new
                         {
                             Id = 3,
-                            BookingDateTime = new DateTime(2023, 11, 22, 11, 54, 25, 600, DateTimeKind.Local).AddTicks(9360),
+                            BookingDateTime = new DateTime(2023, 11, 22, 15, 10, 17, 238, DateTimeKind.Local).AddTicks(9720),
                             SeatId = 3,
                             UserId = 3
                         },
                         new
                         {
                             Id = 4,
-                            BookingDateTime = new DateTime(2023, 11, 24, 9, 54, 25, 600, DateTimeKind.Local).AddTicks(9370),
+                            BookingDateTime = new DateTime(2023, 11, 24, 13, 10, 17, 238, DateTimeKind.Local).AddTicks(9720),
                             SeatId = 4,
                             UserId = 4
                         },
                         new
                         {
                             Id = 5,
-                            BookingDateTime = new DateTime(2023, 11, 22, 12, 54, 25, 600, DateTimeKind.Local).AddTicks(9370),
+                            BookingDateTime = new DateTime(2023, 11, 22, 16, 10, 17, 238, DateTimeKind.Local).AddTicks(9720),
                             SeatId = 5,
                             UserId = 5
                         },
                         new
                         {
                             Id = 6,
-                            BookingDateTime = new DateTime(2023, 11, 25, 9, 54, 25, 600, DateTimeKind.Local).AddTicks(9370),
+                            BookingDateTime = new DateTime(2023, 11, 25, 13, 10, 17, 238, DateTimeKind.Local).AddTicks(9720),
                             SeatId = 6,
                             UserId = 6
                         });
