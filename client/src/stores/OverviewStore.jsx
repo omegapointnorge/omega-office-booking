@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { Room } from "../domain/room";
 
 class OverviewStore {
   rooms = [];
@@ -33,7 +34,9 @@ class OverviewStore {
   }
 
   setRooms(data) {
-    this.rooms = data.value;
+    this.rooms = data.value.map(
+      (room) => new Room(room.id, room.name, room.seats)
+    );
   }
 
   getRouteName(route) {

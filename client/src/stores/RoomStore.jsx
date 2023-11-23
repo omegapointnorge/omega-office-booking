@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import toast from "react-hot-toast";
-
+import { Seat } from "../domain/seat";
 class RoomStore {
   seats = [];
 
@@ -28,7 +28,6 @@ class RoomStore {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      console.log(response);
       const data = await response.json();
 
       this.setSeats(data);
@@ -38,7 +37,9 @@ class RoomStore {
   }
 
   setSeats(data) {
-    this.seats = data.value;
+    this.seats = data.value.map(
+      (seat) => new Seat(seat.id, seat.roomId, seat.bookings)
+    );
   }
 
   bookSeat(id, isTaken) {
@@ -62,5 +63,6 @@ class RoomStore {
     this.openDialog = !this.openDialog;
   };
 }
+const roomStore = new RoomStore();
 
 export default RoomStore;
