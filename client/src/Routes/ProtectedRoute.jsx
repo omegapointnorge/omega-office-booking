@@ -1,16 +1,13 @@
 import { useAuthContext } from "../api/useAuthContext";
 import Heading from "../components/Heading";
 
-type ProtectedRouteProps = {
-    outlet: JSX.element;
-}
-export const ProtectedRoute = ({outlet} : ProtectedRouteProps) => {
+export const ProtectedRoute = ({ outlet }) => {
   const context = useAuthContext();
-  
+
   if (context?.user?.isAuthenticated) {
     return outlet;
   }
-  
+
   console.log("You are not authenticated, please login first");
 
   return (
