@@ -63,6 +63,5 @@ class RoomStore {
     this.openDialog = !this.openDialog;
   };
 }
-const roomStore = new RoomStore();
 
 export default RoomStore;
