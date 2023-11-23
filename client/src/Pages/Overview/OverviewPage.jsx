@@ -32,12 +32,9 @@ const OverviewPage = observer(() => {
                     className="hidden md:block cursor-pointer"
                     src={`/images/${room.image}`}
                     onClick={() => {
-                      if (room.id === 1) {
-                        roomStore.setSeats(bigRoomSeats);
-                      } else if (room.id === 2) {
-                        roomStore.setSeats(smallRoomSeats);
-                      }
-                      navigate(`/rooms/${room.route}`);
+                      navigate(
+                        `/rooms/${overviewStore.getRouteName(room.name)}`
+                      );
                     }}
                   />
                 </div>

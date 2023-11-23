@@ -1,5 +1,4 @@
 import { makeAutoObservable } from "mobx";
-import { rooms } from "../data/seats";
 
 class OverviewStore {
   rooms = [];
@@ -7,8 +6,6 @@ class OverviewStore {
   constructor() {
     this.initialize();
     makeAutoObservable(this);
-
-    this.rooms = rooms;
   }
 
   async initialize() {
@@ -23,13 +20,13 @@ class OverviewStore {
         },
       });
 
-      console.log(response);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const data = await response.json();
-      this.setRooms(data); // Update MobX store with the fetched data
+
+      this.setRooms(data);
     } catch (error) {
       console.error(error);
     }
@@ -37,6 +34,10 @@ class OverviewStore {
 
   setRooms(data) {
     this.rooms = data.value;
+  }
+
+  getRouteName(route) {
+    return route.replace(/\s+/g, "-").toLowerCase();
   }
 }
 

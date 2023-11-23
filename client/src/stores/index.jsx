@@ -4,15 +4,15 @@ import RoomStore from "./RoomStore";
 import HistoryStore from "./HistoryStore";
 
 export class RootStore {
-    overviewStore: OverviewStore;
-    roomStore: RoomStore;
-    historyStore: HistoryStore;
+  overviewStore;
+  roomStore;
+  historyStore;
 
-    constructor() {
-        this.overviewStore = new OverviewStore(this);
-        this.roomStore = new RoomStore(this);
-        this.historyStore = new HistoryStore(this); 
-    }
+  constructor() {
+    this.overviewStore = new OverviewStore(this);
+    this.roomStore = new RoomStore(this);
+    this.historyStore = new HistoryStore(this);
+  }
 }
 
 export const StoresContext = createContext(new RootStore());
