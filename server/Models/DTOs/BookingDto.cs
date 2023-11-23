@@ -5,14 +5,14 @@ namespace server.Models.DTOs
         public int Id { get; set; }
         public int UserId { get; set; }
         public int SeatId { get; set; }
-        public DateTime BookingDateTime { get; set; }
+        public DateTime DateTime { get; set; }
 
-        public BookingDto(int id, int userId, int seatId, DateTime bookingBookingDateTime)
+        public BookingDto(int id, int userId, int seatId, DateTime dateTime)
         {
             Id = id;
             UserId = userId;
             SeatId = seatId;
-            BookingDateTime = bookingBookingDateTime;
+            DateTime = dateTime;
         }
     }
 }
