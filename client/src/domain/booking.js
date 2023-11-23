@@ -1,6 +1,6 @@
-export type Booking = {
-    id: number;
-    seatId: number;
-    email: string;
-    date: string;
-};
+class Booking {
+  constructor(id, seatId, email) {
+    this.id = id;
+    this.seatId = seatId;
+  }
+}
