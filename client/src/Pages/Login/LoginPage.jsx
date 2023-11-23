@@ -1,8 +1,8 @@
 import Heading from "../../components/Heading";
 import Button from "../../components/Button";
-import {Link, useNavigate} from "react-router-dom";
-import {useAuthContext} from "../../api/useAuthContext";
-import {useEffect} from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../api/useAuthContext";
+import { useEffect } from "react";
 
 const LoginPage = () => {
   const LoginUrl = "/api/Account/Login";
@@ -14,8 +14,7 @@ const LoginPage = () => {
       navigate("/overview");
     }
   }, [context?.user?.isAuthenticated, navigate]);
-  
-  
+
   return (
     <>
       <div
@@ -51,6 +50,6 @@ const LoginPage = () => {
       </div>
     </>
   );
-}
+};
 
 export default LoginPage;

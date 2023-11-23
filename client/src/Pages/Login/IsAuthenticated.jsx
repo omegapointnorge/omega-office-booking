@@ -1,7 +1,8 @@
 import { CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../api/useAuthContext";
-import {useEffect} from "react";
+import { useEffect } from "react";
+
 export const IsAuthenticated = () => {
   const navigate = useNavigate();
   const context = useAuthContext();
@@ -14,7 +15,6 @@ export const IsAuthenticated = () => {
       navigate("/login");
     }
   }, [context?.user?.isAuthenticated, navigate]);
-    
 
   return (
     <div className="flex flex-col">
