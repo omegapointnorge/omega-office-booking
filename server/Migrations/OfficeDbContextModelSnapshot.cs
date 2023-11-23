@@ -48,26 +48,22 @@ namespace server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
-                });
 
-            modelBuilder.Entity("server.Models.Domain.Office", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Capacity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Office");
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BookingDateTime = new DateTime(2023, 11, 23, 9, 49, 39, 392, DateTimeKind.Local).AddTicks(6750),
+                            SeatId = 1,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BookingDateTime = new DateTime(2023, 11, 24, 9, 49, 39, 392, DateTimeKind.Local).AddTicks(6790),
+                            SeatId = 2,
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("server.Models.Domain.Room", b =>
@@ -82,14 +78,21 @@ namespace server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OfficeId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("OfficeId");
-
                     b.ToTable("Rooms");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Store Rommet"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Lille Rommet"
+                        });
                 });
 
             modelBuilder.Entity("server.Models.Domain.Seat", b =>
@@ -108,6 +111,83 @@ namespace server.Migrations
                     b.HasIndex("RoomId");
 
                     b.ToTable("Seats");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 12,
+                            RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 13,
+                            RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 14,
+                            RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 15,
+                            RoomId = 2
+                        });
                 });
 
             modelBuilder.Entity("server.Models.Domain.User", b =>
@@ -136,52 +216,46 @@ namespace server.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "code_master@example.com",
+                            Name = "Code Master Flex",
+                            PhoneNumber = ""
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "debug_diva@example.com",
+                            Name = "Debug Diva",
+                            PhoneNumber = ""
+                        });
                 });
 
             modelBuilder.Entity("server.Models.Domain.Booking", b =>
                 {
-                    b.HasOne("server.Models.Domain.Seat", "Seat")
+                    b.HasOne("server.Models.Domain.Seat", null)
                         .WithMany("Bookings")
                         .HasForeignKey("SeatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("server.Models.Domain.User", "User")
+                    b.HasOne("server.Models.Domain.User", null)
                         .WithMany("Bookings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Seat");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("server.Models.Domain.Room", b =>
-                {
-                    b.HasOne("server.Models.Domain.Office", "Office")
-                        .WithMany("Rooms")
-                        .HasForeignKey("OfficeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Office");
                 });
 
             modelBuilder.Entity("server.Models.Domain.Seat", b =>
                 {
-                    b.HasOne("server.Models.Domain.Room", "Room")
+                    b.HasOne("server.Models.Domain.Room", null)
                         .WithMany("Seats")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Room");
-                });
-
-            modelBuilder.Entity("server.Models.Domain.Office", b =>
-                {
-                    b.Navigation("Rooms");
                 });
 
             modelBuilder.Entity("server.Models.Domain.Room", b =>
