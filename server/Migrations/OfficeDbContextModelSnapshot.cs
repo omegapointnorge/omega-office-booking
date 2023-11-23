@@ -53,14 +53,14 @@ namespace server.Migrations
                         new
                         {
                             Id = 1,
-                            BookingDateTime = new DateTime(2023, 11, 22, 15, 30, 5, 644, DateTimeKind.Local),
+                            BookingDateTime = new DateTime(2023, 11, 23, 9, 49, 39, 392, DateTimeKind.Local).AddTicks(6750),
                             SeatId = 1,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            BookingDateTime = new DateTime(2023, 11, 23, 15, 30, 5, 644, DateTimeKind.Local).AddTicks(30),
+                            BookingDateTime = new DateTime(2023, 11, 24, 9, 49, 39, 392, DateTimeKind.Local).AddTicks(6790),
                             SeatId = 2,
                             UserId = 2
                         });
@@ -86,12 +86,12 @@ namespace server.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Binary Bunker"
+                            Name = "Store Rommet"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Algorithm Alcove"
+                            Name = "Lille Rommet"
                         });
                 });
 
@@ -122,6 +122,71 @@ namespace server.Migrations
                         {
                             Id = 2,
                             RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 12,
+                            RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 13,
+                            RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 14,
+                            RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 15,
+                            RoomId = 2
                         });
                 });
 

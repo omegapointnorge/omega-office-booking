@@ -92,8 +92,8 @@ namespace server.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Binary Bunker" },
-                    { 2, "Algorithm Alcove" }
+                    { 1, "Store Rommet" },
+                    { 2, "Lille Rommet" }
                 });
 
             migrationBuilder.InsertData(
@@ -111,7 +111,20 @@ namespace server.Migrations
                 values: new object[,]
                 {
                     { 1, 1 },
-                    { 2, 1 }
+                    { 2, 1 },
+                    { 3, 1 },
+                    { 4, 1 },
+                    { 5, 1 },
+                    { 6, 1 },
+                    { 7, 1 },
+                    { 8, 1 },
+                    { 9, 1 },
+                    { 10, 1 },
+                    { 11, 2 },
+                    { 12, 2 },
+                    { 13, 2 },
+                    { 14, 2 },
+                    { 15, 2 }
                 });
 
             migrationBuilder.InsertData(
@@ -119,8 +132,8 @@ namespace server.Migrations
                 columns: new[] { "Id", "BookingDateTime", "SeatId", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 11, 22, 15, 30, 5, 644, DateTimeKind.Local), 1, 1 },
-                    { 2, new DateTime(2023, 11, 23, 15, 30, 5, 644, DateTimeKind.Local).AddTicks(30), 2, 2 }
+                    { 1, new DateTime(2023, 11, 23, 9, 49, 39, 392, DateTimeKind.Local).AddTicks(6750), 1, 1 },
+                    { 2, new DateTime(2023, 11, 24, 9, 49, 39, 392, DateTimeKind.Local).AddTicks(6790), 2, 2 }
                 });
 
             migrationBuilder.CreateIndex(
