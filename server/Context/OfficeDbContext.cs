@@ -12,12 +12,12 @@ namespace server.Context
 
         public OfficeDbContext(DbContextOptions options) : base(options)
         {
+            
         }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Booking setup
-
             modelBuilder.Entity<Booking>()
                 .HasKey(booking => booking.Id);
 
@@ -26,17 +26,15 @@ namespace server.Context
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Booking>()
-                .HasOne(booking => booking.Seat)
-                .WithMany(seat => seat.Bookings)
-                .HasForeignKey(booking => booking.SeatId)
-                .IsRequired();
+                .HasOne<User>()
+                .WithMany(user => user.Bookings)
+                .HasForeignKey(booking => booking.UserId);
 
             modelBuilder.Entity<Booking>()
-                .HasOne(booking => booking.User)
-                .WithMany(user => user.Bookings)
-                .HasForeignKey(booking => booking.UserId)
-                .IsRequired();
-
+                .HasOne<Seat>()
+                .WithMany(seat => seat.Bookings)
+                .HasForeignKey(booking => booking.SeatId);
+            
             modelBuilder.Entity<Booking>()
                 .Property(booking => booking.BookingDateTime)
                 .HasDefaultValueSql("GETDATE()")
@@ -51,7 +49,7 @@ namespace server.Context
             modelBuilder.Entity<User>()
                 .Property(user => user.Id)
                 .ValueGeneratedOnAdd();
-
+            
             modelBuilder.Entity<User>()
                 .Property(user => user.Name)
                 .IsRequired();
@@ -62,13 +60,12 @@ namespace server.Context
 
             modelBuilder.Entity<User>()
                 .HasMany(user => user.Bookings)
-                .WithOne(booking => booking.User)
-                .HasPrincipalKey(user => user.Id);
+                .WithOne()
+                .HasForeignKey(booking => booking.UserId);
 
             // End of User setup
 
             // Seat setup
-
             modelBuilder.Entity<Seat>()
                 .HasKey(seat => seat.Id);
 
@@ -77,57 +74,39 @@ namespace server.Context
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Seat>()
-                .HasOne(seat => seat.Room)
-                .WithMany(room => room.Seats)
+                .HasOne<Room>()
+                .WithMany()
                 .HasForeignKey(seat => seat.RoomId)
                 .IsRequired();
 
             modelBuilder.Entity<Seat>()
                 .HasMany(seat => seat.Bookings)
-                .WithOne(booking => booking.Seat)
-                .HasPrincipalKey(seat => seat.Id);
+                .WithOne()
+                .HasForeignKey(booking => booking.SeatId);
 
             // End of Seat setup
 
             // Room setup
-
             modelBuilder.Entity<Room>()
                 .HasKey(room => room.Id);
 
             modelBuilder.Entity<Room>()
                 .Property(room => room.Id)
                 .ValueGeneratedOnAdd();
-
+            
             modelBuilder.Entity<Room>()
-                .HasOne(room => room.Office)
-                .WithMany(office => office.Rooms)
-                .HasForeignKey(room => room.OfficeId)
+                .Property(seat => seat.Name)
                 .IsRequired();
-
+            
             modelBuilder.Entity<Room>()
                 .HasMany(room => room.Seats)
-                .WithOne(seat => seat.Room)
-                .HasPrincipalKey(room => room.Id);
-
+                .WithOne()
+                .HasForeignKey(seat => seat.RoomId);
+            
             // End of Room setup
 
-            // Office setup
-
-            modelBuilder.Entity<Office>()
-                .HasKey(room => room.Id);
-
-            modelBuilder.Entity<Office>()
-                .Property(room => room.Id)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<Office>()
-                .HasMany(office => office.Rooms)
-                .WithOne(room => room.Office)
-                .HasPrincipalKey(office => office.Id);
-
-            // End of Office setup
-
-            base.OnModelCreating(modelBuilder);
+            SampleData.CreateSampleData(modelBuilder);
         }
+        
     }
 }
