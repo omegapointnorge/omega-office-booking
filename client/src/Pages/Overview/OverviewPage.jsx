@@ -29,7 +29,7 @@ const OverviewPage = observer(() => {
                   <img
                     alt={room.id}
                     className="hidden md:block cursor-pointer"
-                    src={`/images/${room.image}`}
+                    src={`/images/${overviewStore.getRouteName(room.name)}.png`}
                     onClick={() => {
                       navigate(
                         `/rooms/${overviewStore.getRouteName(room.name)}`
