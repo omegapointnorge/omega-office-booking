@@ -3,13 +3,12 @@ import { useAuthContext } from "../../api/useAuthContext";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
 import { useStores } from "../../stores";
-import { bigRoomSeats, smallRoomSeats } from "../../data/seats";
 
 const OverviewPage = observer(() => {
   const context = useAuthContext();
   const navigate = useNavigate();
   const name = context?.user?.claims?.find((x) => x.key === "name")?.value;
-  const { overviewStore, roomStore } = useStores();
+  const { overviewStore } = useStores();
 
   return (
     <>
@@ -30,14 +29,11 @@ const OverviewPage = observer(() => {
                   <img
                     alt={room.id}
                     className="hidden md:block cursor-pointer"
-                    src={`/images/${room.image}`}
+                    src={`/images/${overviewStore.getRouteName(room.name)}.png`}
                     onClick={() => {
-                      if (room.id === 1) {
-                        roomStore.setSeats(bigRoomSeats);
-                      } else if (room.id === 2) {
-                        roomStore.setSeats(smallRoomSeats);
-                      }
-                      navigate(`/rooms/${room.route}`);
+                      navigate(
+                        `/rooms/${overviewStore.getRouteName(room.name)}`
+                      );
                     }}
                   />
                 </div>
