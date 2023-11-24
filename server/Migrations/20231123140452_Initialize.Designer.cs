@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Context;
 
@@ -11,9 +12,11 @@ using server.Context;
 namespace server.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    partial class OfficeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231123140452_Initialize")]
+    partial class Initialize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,14 +56,14 @@ namespace server.Migrations
                         new
                         {
                             Id = 1,
-                            BookingDateTime = new DateTime(2023, 11, 24, 11, 2, 34, 390, DateTimeKind.Local).AddTicks(6854),
+                            BookingDateTime = new DateTime(2023, 11, 23, 15, 4, 52, 749, DateTimeKind.Local).AddTicks(8589),
                             SeatId = 1,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            BookingDateTime = new DateTime(2023, 11, 25, 11, 2, 34, 390, DateTimeKind.Local).AddTicks(6894),
+                            BookingDateTime = new DateTime(2023, 11, 24, 15, 4, 52, 749, DateTimeKind.Local).AddTicks(8645),
                             SeatId = 2,
                             UserId = 2
                         });

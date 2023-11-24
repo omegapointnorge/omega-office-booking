@@ -9,6 +9,7 @@ using server.Context;
 using Azure.Identity;
 using server.Repository;
 using server.Services;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,8 +81,13 @@ builder.Services.AddDbContext<OfficeDbContext>(options =>
     SqlAuthenticationProvider.SetProvider(
         SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
         new server.Helpers.AzureSqlAuthProvider());
-
-    options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
+    if (builder.Environment.IsProduction())
+        options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
+    else
+    {
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        options.UseSqlServer(connectionString);
+    }
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
