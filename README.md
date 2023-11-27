@@ -13,6 +13,9 @@ dotnet user-secrets set "AzureAd__ClientId" "XXXXXX.."
 dotnet user-secrets set "AzureAd__ClientSecret" "XXXXXX.."
 dotnet user-secrets set "AzureAd__TentanId" "XXXXXX.."
 ```
+Prerequisit of the this is that you have docker installed in your PC,
+When you first time run the docker, you can run the script named scriptDockerConnect.ps1. After the image is pulled and DB is connected, you can run the .Net cli "dotnet ef database update" for migration the database to your local machine.
+##
 
 ## Additional information
 
