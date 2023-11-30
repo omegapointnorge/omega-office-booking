@@ -81,13 +81,7 @@ builder.Services.AddDbContext<OfficeDbContext>(options =>
     SqlAuthenticationProvider.SetProvider(
         SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
         new server.Helpers.AzureSqlAuthProvider());
-    if (builder.Environment.IsProduction())
         options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
-    else
-    {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        options.UseSqlServer(connectionString);
-    }
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
