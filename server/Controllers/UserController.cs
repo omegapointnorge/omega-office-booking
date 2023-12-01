@@ -42,7 +42,14 @@ public class UserController : ControllerBase
         var response = await _userService.GetAllUsers();
         return new OkObjectResult(response);
     }
-    
+
+    [HttpGet("InsertOrUpdateUsers")]
+    public async Task<ActionResult<UserDto>> InsertOrUpdateUsers(UserDto user)
+    {
+        var response = await _userService.InsertOrUpdateUsers(user);
+        return new OkObjectResult(response);
+    }
+
 }
 
 public record UserInfo(
