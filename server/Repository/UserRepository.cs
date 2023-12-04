@@ -42,29 +42,31 @@ namespace server.Repository
         public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest booking)
         {
             // existingUser as it currently exists in the db
-            var existingUser = _dbContext.Users.FirstOrDefault(u => u.Email == booking.Email);
+            var existingUser =
+                _dbContext.Users
+                .Include(t => t.Bookings)
+                .FirstOrDefault(u => u.Email == booking.Email);
 
             if (existingUser == null)
             {
                 // User doesn't exist, so add a new one
-                var entity = new Models.Domain.User();
-                entity.Email = booking.Email;
-                entity.Name = booking.Name;            
-                _dbContext.Users.Add(entity);
+                var entityUser = new Models.Domain.User();
+                entityUser.Email = booking.Email;
+                entityUser.Name = booking.Name;            
+                _dbContext.Users.Add(entityUser);
                 _dbContext.SaveChanges();
                 // Now, you can access the generated ID
-                int entityId = entity.Id;
-                var newBooking = new Booking(entityId,booking.SeatId);
+                int entityId = entityUser.Id;
+                var newBooking = new Booking(entityId, booking.SeatId);
                 _dbContext.Bookings.Add(newBooking);
                 await _dbContext.SaveChangesAsync();
-                return EntityToDto(entity);
+                return EntityToDto(entityUser);
             }
             else
             {
-                existingUser = _dbContext.Users.Include(t => t.Bookings)
-                    .FirstOrDefault(u => u.Email == booking.Email);      
-                existingUser?.Bookings.Add(new Booking(existingUser.Id, booking.SeatId));
-                _dbContext.Entry(existingUser).State = EntityState.Modified;
+                // ensures that Bookings is not null before attempting to add a new booking.
+                existingUser.Bookings ??= new List<Booking>();
+                existingUser.Bookings.Add(new Booking(existingUser.Id, booking.SeatId));
                 await _dbContext.SaveChangesAsync();
                 return EntityToDto(existingUser);
             }
