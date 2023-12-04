@@ -26,15 +26,17 @@ namespace server.Context
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Booking>()
-                .HasOne<User>()
+                .HasOne(booking => booking.User)
                 .WithMany(user => user.Bookings)
-                .HasForeignKey(booking => booking.UserId);
+                .HasForeignKey(booking => booking.UserId)
+                .IsRequired();
 
             modelBuilder.Entity<Booking>()
-                .HasOne<Seat>()
+                .HasOne(booking => booking.Seat)
                 .WithMany(seat => seat.Bookings)
-                .HasForeignKey(booking => booking.SeatId);
-            
+                .HasForeignKey(booking => booking.SeatId)
+                .IsRequired();
+
             modelBuilder.Entity<Booking>()
                 .Property(booking => booking.BookingDateTime)
                 .HasDefaultValueSql("GETDATE()")
@@ -60,8 +62,8 @@ namespace server.Context
 
             modelBuilder.Entity<User>()
                 .HasMany(user => user.Bookings)
-                .WithOne()
-                .HasForeignKey(booking => booking.UserId);
+                .WithOne(booking => booking.User)
+                .HasPrincipalKey(user => user.Id);
 
             // End of User setup
 
@@ -81,8 +83,8 @@ namespace server.Context
 
             modelBuilder.Entity<Seat>()
                 .HasMany(seat => seat.Bookings)
-                .WithOne()
-                .HasForeignKey(booking => booking.SeatId);
+                .WithOne(booking => booking.Seat)
+                .HasPrincipalKey(seat => seat.Id);
 
             // End of Seat setup
 

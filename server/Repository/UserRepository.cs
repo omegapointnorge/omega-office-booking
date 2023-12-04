@@ -54,10 +54,13 @@ namespace server.Repository
                 entityUser.Email = booking.Email;
                 entityUser.Name = booking.Name;            
                 _dbContext.Users.Add(entityUser);
-                _dbContext.SaveChanges();
-                // Now, you can access the generated ID
-                int entityId = entityUser.Id;
-                var newBooking = new Booking(entityId, booking.SeatId);
+
+                // add reference of the user that to the booking
+                var newBooking = new Booking
+                {
+                    User = entityUser,// Reference the related, now tracked entity, not the PK
+                    SeatId = booking.SeatId
+                };
                 _dbContext.Bookings.Add(newBooking);
                 await _dbContext.SaveChangesAsync();
                 return EntityToDto(entityUser);
