@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Models.Domain;
 using server.Models.DTOs;
+using server.Request;
 
 namespace server.Services
 {
@@ -8,6 +9,6 @@ namespace server.Services
     {
         Task<ActionResult<List<UserDto>>> GetAllUsers();
 
-        Task<ActionResult<UserDto>> InsertOrUpdateUsers(UserDto user);
+        Task<ActionResult<UserDto>> InsertOrUpdateUsersBooking(UserBookingRequest booking);
     }
 }

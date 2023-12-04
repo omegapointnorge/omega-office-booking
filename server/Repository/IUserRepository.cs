@@ -1,6 +1,7 @@
 
 using server.Models.Domain;
 using server.Models.DTOs;
+using server.Request;
 
 namespace server.Repository
 {
@@ -8,6 +9,6 @@ namespace server.Repository
     {
         Task<List<UserDto>> GetAllUsers();
 
-        Task<UserDto> InsertOrUpdateUsers(UserDto user);
+        Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest booking);
     }
 }

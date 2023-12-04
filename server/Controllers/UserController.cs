@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using server.Models.Domain;
 using server.Models.DTOs;
+using server.Request;
 using server.Services;
 
 namespace server.Controllers;
@@ -36,17 +38,17 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [HttpGet("users")]
+    [HttpGet("Users")]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
     {
         var response = await _userService.GetAllUsers();
         return new OkObjectResult(response);
     }
 
-    [HttpGet("InsertOrUpdateUsers")]
-    public async Task<ActionResult<UserDto>> InsertOrUpdateUsers(UserDto user)
+    [HttpPost("UpsertUserBooking")]
+    public async Task<ActionResult<UserDto>> UpsertUserBooking(UserBookingRequest booking)
     {
-        var response = await _userService.InsertOrUpdateUsers(user);
+        var response = await _userService.InsertOrUpdateUsersBooking(booking);
         return new OkObjectResult(response);
     }
 

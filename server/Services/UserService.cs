@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using server.Models.Domain;
 using server.Models.DTOs;
 using server.Repository;
+using server.Request;
 
 namespace server.Services
 {
@@ -19,9 +20,9 @@ namespace server.Services
             return await _userRepository.GetAllUsers();
         }
 
-        public async Task<ActionResult<UserDto>> InsertOrUpdateUsers(UserDto user)
+        public async Task<ActionResult<UserDto>> InsertOrUpdateUsersBooking(UserBookingRequest booking)
         {
-            return await _userRepository.InsertOrUpdateUsers(user);
+            return await _userRepository.InsertOrUpdateUsersBooking(booking);
         }
     }
 }

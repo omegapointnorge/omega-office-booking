@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using server.Context;
 using server.Models.Domain;
 using server.Models.DTOs;
+using server.Request;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace server.Repository
@@ -38,30 +39,35 @@ namespace server.Repository
             ).ToListAsync();
         }
 
-        public async Task<UserDto> InsertOrUpdateUsers(UserDto userDto)
+        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest booking)
         {
-            var existingUser = _dbContext.Users.FirstOrDefaultAsync(u => u.Email == userDto.Email);
-            var entity = new Models.Domain.User();
+            // existingUser as it currently exists in the db
+            var existingUser = _dbContext.Users.FirstOrDefault(u => u.Email == booking.Email);
+
             if (existingUser == null)
             {
                 // User doesn't exist, so add a new one
-            
-                DtoToEntity(userDto, entity);
+                var entity = new Models.Domain.User();
+                entity.Email = booking.Email;
+                entity.Name = booking.Name;            
                 _dbContext.Users.Add(entity);
+                _dbContext.SaveChanges();
+                // Now, you can access the generated ID
+                int entityId = entity.Id;
+                var newBooking = new Booking(entityId,booking.SeatId);
+                _dbContext.Bookings.Add(newBooking);
                 await _dbContext.SaveChangesAsync();
                 return EntityToDto(entity);
             }
             else
             {
-                DtoToEntity(userDto, entity);
-                // User exists, so give a entity State, and then update the existing one
+                existingUser = _dbContext.Users.Include(t => t.Bookings)
+                    .FirstOrDefault(u => u.Email == booking.Email);      
+                existingUser?.Bookings.Add(new Booking(existingUser.Id, booking.SeatId));
                 _dbContext.Entry(existingUser).State = EntityState.Modified;
-                _dbContext.Entry(existingUser).CurrentValues.SetValues(entity);
+                await _dbContext.SaveChangesAsync();
+                return EntityToDto(existingUser);
             }
-
-
-            _dbContext.SaveChanges();
-            return EntityToDto(entity);
         }
     }
 }
