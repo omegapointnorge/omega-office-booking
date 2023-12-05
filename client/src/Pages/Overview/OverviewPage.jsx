@@ -2,7 +2,6 @@ import Heading from "../../components/Heading";
 import { useAuthContext } from "../../api/useAuthContext";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import overviewStore from "../../stores/OverviewStore";
 
 const OverviewPage = observer(() => {
