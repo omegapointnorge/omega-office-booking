@@ -2,13 +2,13 @@ import Heading from "../../components/Heading";
 import { useAuthContext } from "../../api/useAuthContext";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
-import { useStores } from "../../stores";
+import { useEffect } from "react";
+import overviewStore from "../../stores/OverviewStore";
 
 const OverviewPage = observer(() => {
   const context = useAuthContext();
   const navigate = useNavigate();
   const name = context?.user?.claims?.find((x) => x.key === "name")?.value;
-  const { overviewStore } = useStores();
 
   return (
     <>
@@ -32,7 +32,8 @@ const OverviewPage = observer(() => {
                     src={`/images/${overviewStore.getRouteName(room.name)}.png`}
                     onClick={() => {
                       navigate(
-                        `/rooms/${overviewStore.getRouteName(room.name)}`
+                        `/rooms/${overviewStore.getRouteName(room.name)}`,
+                        { state: { id: room.id } }
                       );
                     }}
                   />

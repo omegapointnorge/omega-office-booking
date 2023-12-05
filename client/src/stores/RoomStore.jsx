@@ -7,14 +7,12 @@ class RoomStore {
   openDialog = false;
 
   constructor() {
-    this.initialize();
-
     makeAutoObservable(this);
   }
 
-  async initialize() {
+  async initializeRooms(roomId) {
     try {
-      const url = "/api/Seat/seats";
+      const url = `/api/Seat/${roomId}/seats`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -64,4 +62,5 @@ class RoomStore {
   };
 }
 
-export default RoomStore;
+const roomStore = new RoomStore();
+export default roomStore;

@@ -8,4 +8,5 @@ class HistoryStore {
   }
 }
 
-export default HistoryStore;
+const historyStore = new HistoryStore();
+export default historyStore;

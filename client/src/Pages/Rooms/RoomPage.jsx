@@ -1,12 +1,17 @@
 import Heading from "../../components/Heading";
-import React from "react";
+import React, { useEffect } from "react";
 import SeatItem from "../../components/Seat/SeatItem";
 import { observer } from "mobx-react-lite";
-import { useStores } from "../../stores";
 import MyDialog from "../../components/Dialog";
+import { useLocation } from "react-router-dom";
+import roomStore from "../../stores/RoomStore";
 
 const RoomPage = observer(() => {
-  const { roomStore } = useStores();
+  const location = useLocation();
+
+  useEffect(() => {
+    roomStore.initializeRooms(location.state.id);
+  }, [location]);
 
   if (roomStore.seats.length === 0) {
     return (

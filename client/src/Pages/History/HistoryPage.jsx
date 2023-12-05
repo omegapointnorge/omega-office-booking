@@ -1,10 +1,9 @@
 import Heading from "../../components/Heading";
-import { useStores } from "../../stores";
 import { observer } from "mobx-react-lite";
 import BookingItem from "../../components/Bookings/BookingItem";
+import historyStore from "../../stores/HistoryStore";
 
 const HistoryPage = observer(() => {
-  const { historyStore } = useStores();
   if (historyStore.myBookings.length === 0) {
     return (
       <>

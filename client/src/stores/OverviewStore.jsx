@@ -44,4 +44,5 @@ class OverviewStore {
   }
 }
 
-export default OverviewStore;
+const overviewStore = new OverviewStore();
+export default overviewStore;
