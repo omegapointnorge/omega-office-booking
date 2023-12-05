@@ -21,6 +21,17 @@ namespace server.Controllers
             var response = await _seatService.GetAllSeats();
             return new OkObjectResult(response);
         }
+
+        [HttpGet("{roomId}/Seats")]
+        public async Task<ActionResult<IEnumerable<SeatDto>>> GetAllSeatsForRoom(int roomId)
+        {
+            var response = await _seatService.GetAllSeatsForRoom(roomId);
+            if (response == null)
+            {
+                return NotFound();
+            }
+            return new OkObjectResult(response);
+        }
     }
 }
 
