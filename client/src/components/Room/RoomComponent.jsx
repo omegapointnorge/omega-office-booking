@@ -1,10 +1,13 @@
 import { SeatComponent } from "../../components/Seat/SeatComponent";
 
-const RoomComponent = ({ isBigRoom, onClick }) => {
+const RoomComponent = ({ roomName, isBigRoom, onClick }) => {
   return (
     <>
-      <div className="cursor-pointer" onClick={onClick}>
-        {isBigRoom ? _BigRoomComponent() : _SmallRoomComponent()}
+      <div className="cursor-pointer " onClick={onClick}>
+        <div className="text-center text-slate-500  font-bold pb-4">
+          {roomName}
+        </div>
+        <div>{isBigRoom ? _BigRoomComponent() : _SmallRoomComponent()}</div>
       </div>
     </>
   );

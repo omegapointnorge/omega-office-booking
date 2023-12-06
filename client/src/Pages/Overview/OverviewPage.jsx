@@ -24,23 +24,11 @@ const OverviewPage = observer(() => {
           <div className="flex flex-row gap-24">
             {overviewStore.rooms.map((room) => {
               return (
-                <RoomComponent
-                  key={room.id}
-                  isBigRoom={room.id === 1 ? true : false}
-                  onClick={() => {
-                    navigate(
-                      `/rooms/${overviewStore.getRouteName(room.name)}`,
-                      { state: { id: room.id } }
-                    );
-                  }}
-                />
-
-                /*<div key={room.id}>
-                  <p className="font-bold text-center">{room.name}</p>
-                  <img
-                    alt={room.id}
-                    className="hidden md:block cursor-pointer"
-                    src={`/images/${overviewStore.getRouteName(room.name)}.png`}
+                <div>
+                  <RoomComponent
+                    key={room.id}
+                    isBigRoom={room.id === 1 ? true : false}
+                    roomName={room.name}
                     onClick={() => {
                       navigate(
                         `/rooms/${overviewStore.getRouteName(room.name)}`,
@@ -48,7 +36,7 @@ const OverviewPage = observer(() => {
                       );
                     }}
                   />
-                </div>*/
+                </div>
               );
             })}
           </div>
