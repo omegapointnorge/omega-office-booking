@@ -5,36 +5,24 @@ const SeatItem = ({
   roomName,
   seatNr,
   name,
+  left,
+  top,
 }) => {
   return (
-    <ul
-      className={`divide-y divide-gray-100 p-4 cursor-pointer`}
-      onClick={onClick}
-    >
-      <li
-        className={`flex justify-between gap-x-6 py-5 rounded-[24px] ${
-          isTaken ? "bg-red-200" : "bg-cyan-100"
-        }`}
-      >
-        <div className="flex min-w-0 gap-x-4">
-          <div className="min-w-0 flex-auto">
-            <p className="text-sm font-semibold leading-6 text-gray-900">
-              {name}
-            </p>
-            <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-              {roomName}
-            </p>
-            <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-              Taken: {isTaken ? "Taken" : "Free"}
-            </p>
-          </div>
-        </div>
-        <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-          <p className="text-sm leading-6 text-gray-900">{date}</p>
-          <p className="mt-1 text-xs leading-5 text-gray-500">{seatNr}</p>
-        </div>
-      </li>
-    </ul>
+    <div>
+      <div className={`w-8 h-7  absolute cursor-pointer`} onClick={onClick}>
+        <div
+          className={`w-8 h-5 left-0 top-0 absolute ${
+            !isTaken ? "bg-slate-300" : "bg-orange-400"
+          } rounded-lg`}
+        />
+        <div
+          className={`w-3.5 h-3 left-[9.47px] top-[14.72px] absolute ${
+            !isTaken ? "bg-slate-300" : "bg-orange-400"
+          } rounded-lg`}
+        />
+      </div>
+    </div>
   );
 };
 

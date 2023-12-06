@@ -1,6 +1,6 @@
-import { SeatComponent } from "../../components/Seat/SeatComponent";
+import { SeatComponent } from "./SeatComponent";
 
-const RoomComponent = ({ roomName, isBigRoom, onClick }) => {
+const OverviewRoomComponent = ({ roomName, isBigRoom, onClick }) => {
   return (
     <>
       <div className="cursor-pointer " onClick={onClick}>
@@ -73,4 +73,4 @@ const _SmallRoomComponent = () => {
   );
 };
 
-export default RoomComponent;
+export default OverviewRoomComponent;

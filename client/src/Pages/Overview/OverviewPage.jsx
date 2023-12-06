@@ -3,7 +3,7 @@ import { useAuthContext } from "../../api/useAuthContext";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
 import overviewStore from "../../stores/OverviewStore";
-import RoomComponent from "../../components/Room/RoomComponent";
+import OverviewRoomComponent from "../../components/Overview/RoomComponent";
 
 const OverviewPage = observer(() => {
   const context = useAuthContext();
@@ -25,7 +25,7 @@ const OverviewPage = observer(() => {
             {overviewStore.rooms.map((room) => {
               return (
                 <div>
-                  <RoomComponent
+                  <OverviewRoomComponent
                     key={room.id}
                     isBigRoom={room.id === 1 ? true : false}
                     roomName={room.name}

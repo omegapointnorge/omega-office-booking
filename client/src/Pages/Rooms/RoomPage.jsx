@@ -45,17 +45,19 @@ const RoomPage = observer(() => {
       >
         <div className="flex flex-row gap-4 flex-wrap">
           {roomStore.seats.map((seat) => (
-            <SeatItem
-              key={seat.id}
-              name={seat.name}
-              seatNr={seat.seatId}
-              isTaken={seat.isTaken}
-              roomName="Store rommet"
-              onClick={() => {
-                roomStore.handleOpenDialog();
-                roomStore.bookSeat(seat.id, !seat.isTaken);
-              }}
-            ></SeatItem>
+            <div className="p-4">
+              <SeatItem
+                key={seat.id}
+                name={seat.name}
+                seatNr={seat.seatId}
+                isTaken={seat.isTaken}
+                roomName="Store rommet"
+                onClick={() => {
+                  roomStore.handleOpenDialog();
+                  roomStore.bookSeat(seat.id, !seat.isTaken);
+                }}
+              ></SeatItem>
+            </div>
           ))}
           <MyDialog
             open={roomStore.openDialog}
