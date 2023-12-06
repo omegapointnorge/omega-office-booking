@@ -20,5 +20,10 @@ namespace server.Services
             return await _roomRepository.GetAllRooms();
         }
 
+        public async Task<ActionResult<List<SeatDto>>> GetAllSeatsForRoom(int roomId)
+        {
+            return await _roomRepository.GetAllSeatsForRoom(roomId);
+        }
+
     }
 }

@@ -20,5 +20,15 @@ namespace server.Repository
                 new RoomDto(room.Id, room.Name, null))
                 .ToListAsync();
         }
+
+        public Task<List<SeatDto>> GetAllSeatsForRoom(int roomId)
+        {
+            return _dbContext.Seats
+            .Where(seat => seat.RoomId == roomId)
+            .Select(seat =>
+                    new SeatDto(seat.Id, seat.RoomId, seat.Bookings)
+                )
+            .ToListAsync();
+        }
     }
 }

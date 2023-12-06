@@ -4,17 +4,18 @@ import { Seat } from "../domain/seat";
 class RoomStore {
   seats = [];
 
+  isLoading = false;
+
   openDialog = false;
 
   constructor() {
-    this.initialize();
-
     makeAutoObservable(this);
   }
 
-  async initialize() {
+  async initializeRooms(roomId) {
     try {
-      const url = "/api/Seat/seats";
+      this.isLoading = true;
+      const url = `/api/Room/${roomId}/Seats`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -33,6 +34,8 @@ class RoomStore {
       this.setSeats(data);
     } catch (error) {
       console.error(error);
+    } finally {
+      this.isLoading = false;
     }
   }
 
@@ -64,4 +67,5 @@ class RoomStore {
   };
 }
 
-export default RoomStore;
+const roomStore = new RoomStore();
+export default roomStore;
