@@ -3,6 +3,7 @@ import { useAuthContext } from "../../api/useAuthContext";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
 import overviewStore from "../../stores/OverviewStore";
+import OverviewRoomComponent from "../../components/Overview/RoomComponent";
 
 const OverviewPage = observer(() => {
   const context = useAuthContext();
@@ -23,12 +24,11 @@ const OverviewPage = observer(() => {
           <div className="flex flex-row gap-24">
             {overviewStore.rooms.map((room) => {
               return (
-                <div key={room.id}>
-                  <p className="font-bold text-center">{room.name}</p>
-                  <img
-                    alt={room.id}
-                    className="hidden md:block cursor-pointer"
-                    src={`/images/${overviewStore.getRouteName(room.name)}.png`}
+                <div>
+                  <OverviewRoomComponent
+                    key={room.id}
+                    isBigRoom={room.id === 1 ? true : false}
+                    roomName={room.name}
                     onClick={() => {
                       navigate(
                         `/rooms/${overviewStore.getRouteName(room.name)}`,
