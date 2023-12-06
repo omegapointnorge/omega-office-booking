@@ -9,7 +9,7 @@ namespace server.Services
 
         Task<ActionResult<List<BookingDto>>> GetAllBookings();
 
-        Task<ActionResult<List<BookingDto>>> GetAllBookingsForPerson(int userid);
+        Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(int userid);
     }
 }
 

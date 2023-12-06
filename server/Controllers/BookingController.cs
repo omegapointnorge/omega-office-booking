@@ -22,9 +22,9 @@ namespace server.Controllers
             return new OkObjectResult(response);
         }
         [HttpGet("Bookings/{userId}")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForPerson(int userId)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(int userId)
         {
-            var response = await _bookingService.GetAllBookingsForPerson(userId);
+            var response = await _bookingService.GetAllBookingsForUser(userId);
             return new OkObjectResult(response);
         }
 
