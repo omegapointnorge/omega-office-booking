@@ -43,9 +43,9 @@ const RoomPage = observer(() => {
         className="justify-center items-center flex overflow-x-hidden overflow-y-auto 
      fixed inset-0 outline-none focus:outline-none"
       >
-        <div className="flex flex-row gap-4 flex-wrap">
+        <div className="flex flex-row gap-4 items-center flex-wrap">
           {roomStore.seats.map((seat) => (
-            <div className="sm:px-8 ">
+            <div className="sm:px-8 md:pl-24">
               <SeatItem
                 key={seat.id}
                 name={seat.name}
@@ -60,7 +60,8 @@ const RoomPage = observer(() => {
             </div>
           ))}
           <PrimaryModal
-            title="Book Seat"
+            title="Book Sete"
+            content="Er du sikker på at du vil booke denne plassen? Bookingen din vil være final, og du har frem til klokken 22:00 å avbooke plassen din. Hvis du ikke gjør det, så vil du straffes hardt med en plass på wall of shame muahahah"
             open={roomStore.openDialog}
             positiveAction={() => {
               roomStore.bookSeat();
