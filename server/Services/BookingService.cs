@@ -1,7 +1,8 @@
-
 using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
 using server.Repository;
+using System.Net;
+using System.Web.Mvc;
 
 namespace server.Services
 {
@@ -16,6 +17,16 @@ namespace server.Services
         public async Task<ActionResult<List<BookingDto>>> GetAllBookings()
         {
             return await _bookingRepository.GetAllBookings();
+        }
+        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForPerson(int userid)
+        {
+            return await _bookingRepository.GetAllBookingsForPerson(userid);
+        }
+
+        public async Task<Microsoft.AspNetCore.Mvc.ActionResult> DeleteBooking(int id)
+        {
+           
+            return await _bookingRepository.DeleteBooking(id);
         }
     }
 }
