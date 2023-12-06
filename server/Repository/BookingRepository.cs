@@ -36,7 +36,7 @@ namespace server.Repository
         {
             try
             {
-                Booking booking = await _dbContext.Bookings.FindAsync(id);
+                Booking booking = _dbContext.Bookings.Find(id);
                 if (booking == null) return new StatusCodeResult(StatusCodes.Status404NotFound);
                 _dbContext.Bookings.Remove(booking);
                 await _dbContext.SaveChangesAsync();
