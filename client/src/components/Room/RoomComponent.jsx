@@ -1,9 +1,9 @@
 import { SeatComponent } from "../../components/Seat/SeatComponent";
 
-export const RoomComponent = ({ isBigRoom }) => {
+const RoomComponent = ({ isBigRoom, onClick }) => {
   return (
     <>
-      <div className="cursor-pointer">
+      <div className="cursor-pointer" onClick={onClick}>
         {isBigRoom ? _BigRoomComponent() : _SmallRoomComponent()}
       </div>
     </>
@@ -69,3 +69,5 @@ const _SmallRoomComponent = () => {
     </div>
   );
 };
+
+export default RoomComponent;
