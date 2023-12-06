@@ -17,5 +17,16 @@ namespace server.Services
         {
             return await _bookingRepository.GetAllBookings();
         }
+
+        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForPerson(int userid)
+        {
+            return await _bookingRepository.GetAllBookingsForPerson(userid);
+        }
+
+        public async Task<Microsoft.AspNetCore.Mvc.ActionResult> DeleteBooking(int id)
+        {
+
+            return await _bookingRepository.DeleteBooking(id);
+        }
     }
 }
