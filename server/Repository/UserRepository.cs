@@ -33,19 +33,14 @@ namespace server.Repository
         public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq)
         {
             // existingUser as it currently exists in the db
-            var existingUser =
-                _dbContext.Users
-                .FirstOrDefault(u => u.Email == bookingReq.Email);
-            if (existingUser == null)
-            {
-                // User doesn't exist, so add a new one
-                existingUser = CreateUser(bookingReq);
-            }
-           
+            var existingUser =_dbContext.Users.FirstOrDefault(u => u.Email == bookingReq.Email);
+            // User doesn't exist, so add a new one
+            existingUser ??= CreateUser(bookingReq);
             CreateBooking(existingUser, bookingReq.SeatId);
             await _dbContext.SaveChangesAsync();
             return EntityToDto(existingUser);
         }
+
         private Models.Domain.User CreateUser(UserBookingRequest bookingReq)
         {
             var user = new Models.Domain.User();
