@@ -53,14 +53,14 @@ namespace server.Migrations
                         new
                         {
                             Id = 1,
-                            BookingDateTime = new DateTime(2023, 11, 23, 9, 49, 39, 392, DateTimeKind.Local).AddTicks(6750),
+                            BookingDateTime = new DateTime(2023, 11, 24, 11, 2, 34, 390, DateTimeKind.Local).AddTicks(6854),
                             SeatId = 1,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            BookingDateTime = new DateTime(2023, 11, 24, 9, 49, 39, 392, DateTimeKind.Local).AddTicks(6790),
+                            BookingDateTime = new DateTime(2023, 11, 25, 11, 2, 34, 390, DateTimeKind.Local).AddTicks(6894),
                             SeatId = 2,
                             UserId = 2
                         });
