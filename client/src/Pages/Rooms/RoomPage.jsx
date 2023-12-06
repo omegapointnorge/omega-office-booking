@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite";
 import MyDialog from "../../components/Dialog";
 import { useLocation } from "react-router-dom";
 import roomStore from "../../stores/RoomStore";
+import Loading from "../../components/Loading";
 
 const RoomPage = observer(() => {
   const location = useLocation();
@@ -12,6 +13,14 @@ const RoomPage = observer(() => {
   useEffect(() => {
     roomStore.initializeRooms(location.state.id);
   }, [location]);
+
+  if (roomStore.isLoading) {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  }
 
   if (roomStore.seats.length === 0) {
     return (

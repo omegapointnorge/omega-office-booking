@@ -4,6 +4,8 @@ import { Seat } from "../domain/seat";
 class RoomStore {
   seats = [];
 
+  isLoading = false;
+
   openDialog = false;
 
   constructor() {
@@ -12,6 +14,7 @@ class RoomStore {
 
   async initializeRooms(roomId) {
     try {
+      this.isLoading = true;
       const url = `/api/Room/${roomId}/Seats`;
 
       const response = await fetch(url, {
@@ -31,6 +34,8 @@ class RoomStore {
       this.setSeats(data);
     } catch (error) {
       console.error(error);
+    } finally {
+      this.isLoading = false;
     }
   }
 
