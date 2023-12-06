@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
 using server.Models.Domain;
@@ -47,5 +46,15 @@ namespace server.Repository
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
+        // Never call this add method directly, as always need to check whether the user exists in the database according to our logic.
+       // public BookingDto Add(BookingDto dto)
+       //{
+       //   var entity = new Booking(dto.SeatId,dto.UserId);
+       //   _dbContext.Bookings.Add(entity);
+       //  _dbContext.SaveChanges();
+       //   return new BookingDto(entity.SeatId,
+       //       entity.UserId);
+
+        
     }
 }
