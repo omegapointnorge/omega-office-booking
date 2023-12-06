@@ -12,7 +12,7 @@ class RoomStore {
 
   async initializeRooms(roomId) {
     try {
-      const url = `/api/Seat/${roomId}/seats`;
+      const url = `/api/Room/${roomId}/Seats`;
 
       const response = await fetch(url, {
         method: "GET",
