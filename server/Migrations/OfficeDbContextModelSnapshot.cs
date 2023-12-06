@@ -61,6 +61,7 @@ namespace server.Migrations
                         {
                             Id = 2,
                             BookingDateTime = new DateTime(2023, 12, 5, 14, 52, 11, 163, DateTimeKind.Local).AddTicks(690),
+
                             SeatId = 2,
                             UserId = 2
                         });

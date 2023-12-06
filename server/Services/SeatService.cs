@@ -13,11 +13,13 @@ namespace server.Services
         {
             _seatRepository = seatRepository;
         }
-            
+
         public async Task<ActionResult<List<SeatDto>>> GetAllSeats()
         {
             return await _seatRepository.GetAllSeats();
         }
+
+
     }
 }
 
