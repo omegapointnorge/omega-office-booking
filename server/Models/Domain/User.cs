@@ -7,13 +7,23 @@ namespace server.Models.Domain
         public string Email { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public List<Booking> Bookings { get; set; } = new List<Booking>();
-        
+
         public User(int id, string name, string email)
         {
             Id = id;
             Name = name;
             Email = email;
-            Bookings = new List<Booking>();
+        }
+        public User(int id, string name, string email, List<Booking> booking)
+        {
+            Id = id;
+            Name = name;
+            Email = email;
+            Bookings = booking;
+        }
+
+        public User()
+        {
         }
     }
 }
