@@ -12,7 +12,16 @@ Get the secrets from the keyvault and store them with:
 dotnet user-secrets set "AzureAd__ClientId" "XXXXXX.."
 dotnet user-secrets set "AzureAd__ClientSecret" "XXXXXX.."
 dotnet user-secrets set "AzureAd__TentanId" "XXXXXX.."
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Initial Catalog=OfficeBookingDB; Data Source=localhost,<Port_Number>; Persist Security Info=True;User ID=SA;Password= <Your_Password>; TrustServerCertificate=True""
 ```
+Prerequisit of the this is that you have docker installed in your PC,
+When you first time run the docker, you can run the script named scriptDockerConnect.ps1. 
+
+After the image is loaded, then you can run "docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=2Secure*Password2" -p 1450:1433 --name sqlserverdb -h mysqlserver -d mcr.microsoft.com/mssql/server:2019-latest". 
+Note: the port number 1450 need to match the number of your connection in Azure data studio. 
+
+After the image is pulled and DB is connected, you can run the .Net cli "dotnet ef database update" for migration the database to your local machine.
+##
 
 ## Additional information
 
