@@ -1,11 +1,8 @@
-using System.Security.Cryptography;
-using IdentityModel;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
 using server.Models.Domain;
 using server.Models.DTOs;
 using server.Request;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace server.Repository
 {
