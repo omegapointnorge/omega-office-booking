@@ -4,6 +4,8 @@ import { Seat } from "../domain/seat";
 class RoomStore {
   seats = [];
 
+  selectedSeatId = 0;
+
   isLoading = false;
 
   openDialog = false;
@@ -14,7 +16,7 @@ class RoomStore {
 
   async initializeRooms(roomId) {
     try {
-      this.isLoading = true;
+      this.setLoading();
       const url = `/api/Room/${roomId}/Seats`;
 
       const response = await fetch(url, {
@@ -35,7 +37,7 @@ class RoomStore {
     } catch (error) {
       console.error(error);
     } finally {
-      this.isLoading = false;
+      this.setLoading();
     }
   }
 
@@ -45,14 +47,24 @@ class RoomStore {
     );
   }
 
-  bookSeat(id, isTaken) {
-    const seatToUpdate = this.seats.find((seat) => seat.id === id);
+  setSelectedSeat(seatId) {
+    this.selectedSeatId = seatId;
+  }
+
+  setLoading() {
+    this.isLoading = !this.isLoading;
+  }
+
+  bookSeat() {
+    const seatToUpdate = this.seats.find(
+      (seat) => seat.id === this.selectedSeatId
+    );
 
     if (seatToUpdate) {
-      seatToUpdate.isTaken = isTaken;
+      seatToUpdate.isTaken = !seatToUpdate.isTaken;
       toast.success("Booked seat");
     } else {
-      console.log(`Seat with ID ${id} not found.`);
+      console.log(`Seat with ID ${this.selectedSeatId} not found.`);
       toast.error("Seat not found");
     }
   }
