@@ -14,5 +14,10 @@ namespace server.Models.DTOs
             SeatId = seatId;
             DateTime = dateTime;
         }
+        public BookingDto(int userId, int seatId)
+        {
+            UserId = userId;
+            SeatId = seatId;
+        }
     }
 }
