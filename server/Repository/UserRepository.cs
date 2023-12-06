@@ -18,15 +18,6 @@ namespace server.Repository
             _dbContext = dbContext;
         }
 
-        private static void DtoToEntity(UserDto dto, Models.Domain.User e)
-        {
-            e.Id = dto.Id;
-            e.Name = dto.Name;
-            e.Email = dto.Email;
-            e.Bookings = dto.Bookings != null && dto.Bookings.Count != 0 ? dto.Bookings.Select(booking =>
-                    new Booking(booking.Id, booking.UserId, booking.SeatId, booking.DateTime)
-                ).ToList() : new List<Booking>();
-        }
         private static UserDto EntityToDto(Models.Domain.User e)
         {
             return new UserDto(e.Id, e.Name, e.Email, e.Bookings);
@@ -39,40 +30,40 @@ namespace server.Repository
             ).ToListAsync();
         }
 
-        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest booking)
+        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq)
         {
             // existingUser as it currently exists in the db
             var existingUser =
                 _dbContext.Users
-                .Include(t => t.Bookings)
-                .FirstOrDefault(u => u.Email == booking.Email);
-
+                .FirstOrDefault(u => u.Email == bookingReq.Email);
             if (existingUser == null)
             {
                 // User doesn't exist, so add a new one
-                var entityUser = new Models.Domain.User();
-                entityUser.Email = booking.Email;
-                entityUser.Name = booking.Name;            
-                _dbContext.Users.Add(entityUser);
+                existingUser = CreateUser(bookingReq);
+            }
+           
+            CreateBooking(existingUser, bookingReq.SeatId);
+            await _dbContext.SaveChangesAsync();
+            return EntityToDto(existingUser);
+        }
+        private Models.Domain.User CreateUser(UserBookingRequest bookingReq)
+        {
+            var user = new Models.Domain.User();
+            user.Email = bookingReq.Email;
+            user.Name = bookingReq.Name;
+            _dbContext.Users.Add(user);
+            return user;
+        }
 
-                // add reference of the user that to the booking
-                var newBooking = new Booking
-                {
-                    User = entityUser,// Reference the related, now tracked entity, not the PK
-                    SeatId = booking.SeatId
-                };
-                _dbContext.Bookings.Add(newBooking);
-                await _dbContext.SaveChangesAsync();
-                return EntityToDto(entityUser);
-            }
-            else
+        private Booking CreateBooking(Models.Domain.User user, int seatId)
+        {
+            var booking = new Booking
             {
-                // ensures that Bookings is not null before attempting to add a new booking.
-                existingUser.Bookings ??= new List<Booking>();
-                existingUser.Bookings.Add(new Booking(existingUser.Id, booking.SeatId));
-                await _dbContext.SaveChangesAsync();
-                return EntityToDto(existingUser);
-            }
+                User = user,// Reference the related, now tracked entity, not the PK
+                SeatId = seatId
+            };
+            _dbContext.Bookings.Add(booking);
+            return booking;
         }
     }
 }
