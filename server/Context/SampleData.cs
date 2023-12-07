@@ -10,6 +10,7 @@ namespace server.Context
             // Sample users
             modelBuilder.Entity<User>().HasData(new User(1, "Code Master Flex", "code_master@example.com"));
             modelBuilder.Entity<User>().HasData(new User(2, "Debug Diva", "debug_diva@example.com"));
+            modelBuilder.Entity<User>().HasData(new User(3, "Omcma Diva", "debug_omacgi@example.com"));
             // Sample rooms
             modelBuilder.Entity<Room>().HasData(new Room(1, "Store Rommet"));
             modelBuilder.Entity<Room>().HasData(new Room(2, "Lille Rommet"));
