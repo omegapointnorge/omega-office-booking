@@ -19,13 +19,13 @@ const BookingModal = ({
     >
       <div>
         <h3
-          class="text-base font-semibold leading-6 text-gray-900"
+          className="text-base font-semibold leading-6 text-gray-900"
           id="modal-title"
         >
           {title}
         </h3>
-        <div class="mt-2">
-          <p class="text-sm text-gray-500">{content}</p>
+        <div className="mt-2">
+          <p className="text-sm text-gray-500">{content}</p>
         </div>
       </div>
     </PrimaryModal>

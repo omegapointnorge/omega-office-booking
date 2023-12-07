@@ -53,19 +53,23 @@ const RoomPage = observer(() => {
               ></SeatItem>
             </div>
           ))}
-          <BookingModal
-            title="Book Sete"
-            content="Er du sikker på at du vil booke denne plassen? Bookingen din vil være final, og du har frem til klokken 22:00 å avbooke plassen din. Hvis du ikke gjør det, så vil du straffes hardt med en plass på wall of shame muahahah"
-            open={roomStore.openDialog}
-            isTaken={
-              roomStore.selectedSeat != null && roomStore.selectedSeat.isTaken
-            }
-            positiveAction={() => {
-              roomStore.bookSeat();
-              roomStore.handleCloseDialog();
-            }}
-            negativeAction={roomStore.handleCloseDialog}
-          />
+          {roomStore.selectedSeat != null && roomStore.selectedSeat.isTaken ? (
+            console.log("Test")
+          ) : (
+            <BookingModal
+              title="Book Sete"
+              content="Er du sikker på at du vil booke denne plassen? Bookingen din vil være final, og du har frem til klokken 22:00 å avbooke plassen din. Hvis du ikke gjør det, så vil du straffes hardt med en plass på wall of shame muahahah"
+              open={roomStore.openDialog}
+              isTaken={
+                roomStore.selectedSeat != null && roomStore.selectedSeat.isTaken
+              }
+              positiveAction={() => {
+                roomStore.bookSeat();
+                roomStore.handleCloseDialog();
+              }}
+              negativeAction={roomStore.handleCloseDialog}
+            />
+          )}
         </div>
       </Container>
     </>
