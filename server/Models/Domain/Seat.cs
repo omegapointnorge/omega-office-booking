@@ -12,5 +12,9 @@ namespace server.Models.Domain
             RoomId = roomId;
             Bookings = new List<Booking>();
         }
+
+        public Seat()
+        {
+        }
     }
 }

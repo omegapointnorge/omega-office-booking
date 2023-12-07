@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Context;
 
@@ -11,9 +12,11 @@ using server.Context;
 namespace server.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    partial class OfficeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231204135211_ChangeSampleBookingData")]
+    partial class ChangeSampleBookingData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,14 +56,14 @@ namespace server.Migrations
                         new
                         {
                             Id = 1,
-                            BookingDateTime = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580),
+                            BookingDateTime = new DateTime(2023, 12, 4, 14, 52, 11, 163, DateTimeKind.Local).AddTicks(635),
                             SeatId = 1,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            BookingDateTime = new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580),
+                            BookingDateTime = new DateTime(2023, 12, 5, 14, 52, 11, 163, DateTimeKind.Local).AddTicks(690),
                             SeatId = 2,
                             UserId = 2
                         });
@@ -230,13 +233,6 @@ namespace server.Migrations
                             Id = 2,
                             Email = "debug_diva@example.com",
                             Name = "Debug Diva",
-                            PhoneNumber = ""
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Email = "debug_omacgi@example.com",
-                            Name = "Omcma Diva",
                             PhoneNumber = ""
                         });
                 });
