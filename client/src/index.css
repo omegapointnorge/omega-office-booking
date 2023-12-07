@@ -2,16 +2,92 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --marine: rgb(0, 51, 73);
+  --warmgray: rgb(215, 210, 203);
+  --omegasun: #f9bc2e;
+  --tango: #e87722;
+  --petroleum: #286166;
+  --mineshaft: #383838;
+  --marine25: (var(--marine), 0.25);
+  --warmgray25: rgba(215, 210, 203, 0.25);
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif; */
+  font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100%;
+  background-color: var(--warmgray25);
+  color: var(--marine);
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+
+div {
+  font-family: "Roboto", sans-serif;
+}
+
+.heading {
+  font-family: "Roboto Slab", sans-serif;
+}
+
+.bg-warmgray {
+  background-color: #d7d2cb;
+}
+
+
+.bg-marine {
+  background-color: #003349;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.block {
+  display: flex;
+  flex-direction: row;
+  margin-right: 200px; /* Adjust this to change the space between blocks */
+  margin-top: 50px;
+  margin-left: 30px;
+}
+
+@media (max-width: 600px) {
+  .block {
+    flex-direction: row;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  margin-right: 30px; /* Adjust this to change the space between columns */
+  margin-bottom: 30px;
+}
+
+.seat {
+  margin-bottom: 20px; /* Adjust this to change the space between desks */
 }
