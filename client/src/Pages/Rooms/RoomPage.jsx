@@ -2,7 +2,6 @@ import Heading from "../../components/Heading";
 import React, { useEffect } from "react";
 import SeatItem from "../../components/Seat/SeatItem";
 import { observer } from "mobx-react-lite";
-import MyDialog from "../../components/Dialog";
 import { useLocation } from "react-router-dom";
 import roomStore from "../../stores/RoomStore";
 import Loading from "../../components/Loading";
