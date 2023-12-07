@@ -4,7 +4,7 @@ import { Seat } from "../domain/seat";
 class RoomStore {
   seats = [];
 
-  selectedSeatId = 0;
+  selectedSeat = null;
 
   isLoading = false;
 
@@ -47,8 +47,8 @@ class RoomStore {
     );
   }
 
-  setSelectedSeat(seatId) {
-    this.selectedSeatId = seatId;
+  setSelectedSeat(selectedSeat) {
+    this.selectedSeat = selectedSeat;
   }
 
   setLoading() {
@@ -57,14 +57,14 @@ class RoomStore {
 
   bookSeat() {
     const seatToUpdate = this.seats.find(
-      (seat) => seat.id === this.selectedSeatId
+      (seat) => seat.id === this.selectedSeat.id
     );
 
     if (seatToUpdate) {
       seatToUpdate.isTaken = !seatToUpdate.isTaken;
       toast.success("Booked seat");
     } else {
-      console.log(`Seat with ID ${this.selectedSeatId} not found.`);
+      console.log(`Seat with ID ${this.selectedSeat.id} not found.`);
       toast.error("Seat not found");
     }
   }

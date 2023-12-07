@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import roomStore from "../../stores/RoomStore";
 import Loading from "../../components/Loading";
 import PrimaryModal from "../../components/Modals/PrimaryModal";
+import BookingModal from "../../components/Modals/BookingModal";
 
 const RoomPage = observer(() => {
   const location = useLocation();
@@ -53,16 +54,17 @@ const RoomPage = observer(() => {
                 isTaken={seat.isTaken}
                 roomName="Store rommet"
                 onClick={() => {
-                  roomStore.setSelectedSeat(seat.id);
+                  roomStore.setSelectedSeat(seat);
                   roomStore.handleOpenDialog();
                 }}
               ></SeatItem>
             </div>
           ))}
-          <PrimaryModal
+          <BookingModal
             title="Book Sete"
             content="Er du sikker på at du vil booke denne plassen? Bookingen din vil være final, og du har frem til klokken 22:00 å avbooke plassen din. Hvis du ikke gjør det, så vil du straffes hardt med en plass på wall of shame muahahah"
             open={roomStore.openDialog}
+            isTaken={roomStore.selectedSeat.isTaken}
             positiveAction={() => {
               roomStore.bookSeat();
               roomStore.handleCloseDialog();
