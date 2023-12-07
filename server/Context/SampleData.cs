@@ -26,8 +26,8 @@ namespace server.Context
                 modelBuilder.Entity<Seat>().HasData(new Seat(i, 2));
             }
             // Sample bookings
-            modelBuilder.Entity<Booking>().HasData(new Booking(1, 1, 1, DateTime.Now));
-            modelBuilder.Entity<Booking>().HasData(new Booking(2, 2, 2, DateTime.Now.AddDays(1)));
+            modelBuilder.Entity<Booking>().HasData(new Booking(1, 1, 1, new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580)));
+            modelBuilder.Entity<Booking>().HasData(new Booking(2, 2, 2, new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580)));
         }
     }
 }
