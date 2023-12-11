@@ -12,8 +12,8 @@ using server.Context;
 namespace server.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    [Migration("20231204134020_UpdateBooking")]
-    partial class UpdateBooking
+    [Migration("20231207142208_SampledataBookingDataFix")]
+    partial class SampledataBookingDataFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,16 +56,16 @@ namespace server.Migrations
                         new
                         {
                             Id = 1,
-                            BookingDateTime = new DateTime(2023, 12, 4, 14, 40, 20, 577, DateTimeKind.Local).AddTicks(759),
+                            BookingDateTime = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580),
                             SeatId = 1,
-                            UserId = 2
+                            UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            BookingDateTime = new DateTime(2023, 12, 4, 14, 40, 20, 577, DateTimeKind.Local).AddTicks(841),
+                            BookingDateTime = new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580),
                             SeatId = 2,
-                            UserId = 3
+                            UserId = 2
                         });
                 });
 
@@ -234,26 +234,29 @@ namespace server.Migrations
                             Email = "debug_diva@example.com",
                             Name = "Debug Diva",
                             PhoneNumber = ""
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "debug_omacgi@example.com",
+                            Name = "Omcma Diva",
+                            PhoneNumber = ""
                         });
                 });
 
             modelBuilder.Entity("server.Models.Domain.Booking", b =>
                 {
-                    b.HasOne("server.Models.Domain.Seat", "Seat")
+                    b.HasOne("server.Models.Domain.Seat", null)
                         .WithMany("Bookings")
                         .HasForeignKey("SeatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("server.Models.Domain.User", "User")
+                    b.HasOne("server.Models.Domain.User", null)
                         .WithMany("Bookings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Seat");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("server.Models.Domain.Seat", b =>

@@ -5,7 +5,8 @@ namespace server.Repository
 {
     public interface IBookingRepository
     {
+        Task<ActionResult> DeleteBooking(int id);
         Task<List<BookingDto>> GetAllBookings();
-        BookingDto Add(BookingDto dto);
+        Task<List<BookingDto>> GetAllBookingsForUser(int userid);
     }
 }
