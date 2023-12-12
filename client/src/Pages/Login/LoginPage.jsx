@@ -3,6 +3,8 @@ import Button from "../../components/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../api/useAuthContext";
 import { useEffect } from "react";
+import { LogoBig } from "../../components/Navbar/Logo";
+import "../../index.css";
 
 const LoginPage = () => {
   const LoginUrl = "/api/Account/Login";
@@ -19,14 +21,15 @@ const LoginPage = () => {
     <>
       <div
         className="justify-center items-center flex overflow-x-hidden overflow-y-auto 
-     fixed inset-0 z-50 outline-none focus:outline-none bg-neutral-800/70"
+     fixed inset-0 z-50 outline-none focus:outline-none bg-warmgray"
       >
         <div className="relative w-full md:w-4/6 lg:w-3/6 xl:w-2/5 my-6 mx-auto h-full lg:h-auto md:h-auto">
           {/*CONTENT*/}
           <div
-            className="translate h-full lg:h-auto md:h-auto border-0 rounded-lg shadow-lg relative 
-                flex flex-col w-full bg-white outline-none focus:outline-none"
+            className="translate h-full lg:h-auto md:h-auto border-0 relative 
+                flex flex-col w-full  outline-none focus:outline-none my-48"
           >
+            <LogoBig />
             {/* HEADER */}
             <div>
               <Heading

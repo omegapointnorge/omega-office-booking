@@ -53,15 +53,14 @@ namespace server.Migrations
                         new
                         {
                             Id = 1,
-                            BookingDateTime = new DateTime(2023, 12, 4, 14, 52, 11, 163, DateTimeKind.Local).AddTicks(635),
+                            BookingDateTime = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580),
                             SeatId = 1,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            BookingDateTime = new DateTime(2023, 12, 5, 14, 52, 11, 163, DateTimeKind.Local).AddTicks(690),
-
+                            BookingDateTime = new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580),
                             SeatId = 2,
                             UserId = 2
                         });
@@ -231,6 +230,13 @@ namespace server.Migrations
                             Id = 2,
                             Email = "debug_diva@example.com",
                             Name = "Debug Diva",
+                            PhoneNumber = ""
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "debug_omacgi@example.com",
+                            Name = "Omcma Diva",
                             PhoneNumber = ""
                         });
                 });
