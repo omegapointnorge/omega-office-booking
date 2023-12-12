@@ -1,23 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+import './index.css';
+import Routers from "./Routes/Routers";
 
+import React from "react";
+import { Navbar } from "./components/Navbar/Navbar";
+import { useAuthContext } from "./api/useAuthContext";
+import { Toaster } from "react-hot-toast";
 export default function App() {
+    
+    const context = useAuthContext();
     return (
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                    Edit <code>src/App.js</code> and save to reload.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-            </header>
+        <div className="body">
+            <div><Toaster/></div>
+            {context?.user?.isAuthenticated ? <Navbar /> : undefined}
+            <Routers />
         </div>)
 }
-App.displayName = App.name

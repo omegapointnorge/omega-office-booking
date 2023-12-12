@@ -3,19 +3,31 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.ApplicationInsights;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-
 using server.Context;
+using Azure.Identity;
+using server.Repository;
+using server.Services;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Set our ClientId and ClientSecret in appsettings to user-secrets values
-builder.Configuration["AzureAD:ClientId"] = builder.Configuration["AzureAd__ClientId"];
-builder.Configuration["AzureAD:ClientSecret"] = builder.Configuration["AzureAd__ClientSecret"];
-builder.Configuration["AzureAD:TenantId"] = builder.Configuration["AzureAd__TenantId"];
+if (builder.Environment.IsProduction())
+{
+    var keyVaultName = builder.Configuration.GetValue<string>("KeyVaultName");
+    builder.Configuration.AddAzureKeyVault(
+        new Uri($"https://{keyVaultName}.vault.azure.net/"),
+        new DefaultAzureCredential());
 
+    var clientId = builder.Configuration.GetValue<string>("AzureAd-ClientId");
+    var clientSecret = builder.Configuration.GetValue<string>("AzureAd-ClientSecret");
+    var tenantId = builder.Configuration.GetValue<string>("AzureAd-TenantId");
+
+    builder.Configuration["AzureAd:TenantId"] = tenantId;
+    builder.Configuration["AzureAd:ClientId"] = clientId;
+    builder.Configuration["AzureAd:ClientSecret"] = clientSecret;
+}
 
 // Add services to the container.
 builder.Services.AddAuthentication(options =>
@@ -36,54 +48,56 @@ builder.Services.AddAuthentication(options =>
     cookieOptions.Cookie.IsEssential = true;
     cookieOptions.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     cookieOptions.Cookie.SameSite = SameSiteMode.Strict;
-
-    cookieOptions.Events.OnRedirectToAccessDenied = c =>
-    {
-        c.Response.StatusCode = StatusCodes.Status403Forbidden;
-        return Task.CompletedTask;
-    };
-    cookieOptions.Events.OnRedirectToLogin = c =>
-    {
-        c.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        return Task.CompletedTask;
-    };
 });
-builder.Services.AddAuthorization(options =>
-{
-    var defaultPolicy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
+ builder.Services.AddAuthorization(options =>
+ {
+     var defaultPolicy = new AuthorizationPolicyBuilder()
+         .RequireAuthenticatedUser()
+         .Build();
 
-    options.AddPolicy("AuthenticatedUser", defaultPolicy);
-    options.DefaultPolicy = defaultPolicy;
-    options.FallbackPolicy = defaultPolicy;
-});
+     options.AddPolicy("AuthenticatedUser", defaultPolicy);
+     options.DefaultPolicy = defaultPolicy;
+     options.FallbackPolicy = defaultPolicy;
+ });
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddCors(options =>
+    {
+
+        options.AddPolicy(name: "Client Origin",
+            builder => builder
+                .WithOrigins(
+                "https://app-officebooking.azurewebsites.net/",
+                "https://app-dev-officebooking.azurewebsites.net/",
+                "http://localhost:5001")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+        );
+    });
+
+builder.Services.AddDbContext<OfficeDbContext>(options =>
 {
-
-    options.AddPolicy(name: "Client Origin",
-        builder => builder
-            .AllowAnyOrigin()
-            //.WithOrigins("https://app-prod-itv-officebooking.azurewebsites.net", "http://localhost:5002")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-    );
-});
-
-
-builder.Services.AddDbContext<OfficeDbContext>(options => {
     SqlAuthenticationProvider.SetProvider(
         SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
         new server.Helpers.AzureSqlAuthProvider());
-
-    var connectionString = "Server=tcp:" + builder.Configuration["SqlServerName"] + 
-                           ".database.windows.net;Database=" + builder.Configuration["SqlDatabaseName"] +
-                           ";TrustServerCertificate=True;Authentication=Active Directory Default";
-    var sqlConnection = new SqlConnection(connectionString);
-    options.UseSqlServer(sqlConnection);
+        options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
 });
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<ISeatService, SeatService>();
+builder.Services.AddScoped<ISeatRepository, SeatRepository>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+//swagger
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -92,6 +106,10 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 app.UseCookiePolicy();
@@ -106,7 +124,17 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
+app.MapControllers();
 
 app.MapFallbackToFile("index.html");
+
+// Temporary fix to apply migrations on startup
+// since we dont apply them in our pipeline
+// (inb4 this is a permanent fix)
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<OfficeDbContext>();
+    dbContext.Database.Migrate();
+}
 
 app.Run();
