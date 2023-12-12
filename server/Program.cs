@@ -30,10 +30,7 @@ if (builder.Environment.IsProduction())
 }
 
 // Add services to the container.
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-})
+builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 .AddMicrosoftIdentityWebApp(options =>
 {
     builder.Configuration.Bind("AzureAd", options);
