@@ -30,11 +30,7 @@ if (builder.Environment.IsProduction())
 }
 
 // Add services to the container.
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-})
+builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 .AddMicrosoftIdentityWebApp(options =>
 {
     builder.Configuration.Bind("AzureAd", options);
@@ -47,7 +43,7 @@ builder.Services.AddAuthentication(options =>
     cookieOptions.Cookie.HttpOnly = true;
     cookieOptions.Cookie.IsEssential = true;
     cookieOptions.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    cookieOptions.Cookie.SameSite = SameSiteMode.Strict;
+    cookieOptions.Cookie.SameSite = SameSiteMode.None;
 });
  builder.Services.AddAuthorization(options =>
  {
