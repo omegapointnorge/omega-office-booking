@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
 using server.Repository;
@@ -8,10 +9,12 @@ namespace server.Services
     public class BookingService : IBookingService
     {
         private readonly IBookingRepository _bookingRepository;
+        private readonly IUserRepository _userRepository;
 
-        public BookingService(IBookingRepository bookingRepository)
+        public BookingService(IBookingRepository bookingRepository, IUserRepository userRepository)
         {
             _bookingRepository = bookingRepository;
+            _userRepository = userRepository;
         }
         public async Task<ActionResult<List<BookingDto>>> GetAllBookings()
         {
@@ -23,10 +26,14 @@ namespace server.Services
             return await _bookingRepository.GetAllBookingsForUser(userid);
         }
 
-        public async Task<Microsoft.AspNetCore.Mvc.ActionResult> DeleteBooking(int id)
+        public async Task<Microsoft.AspNetCore.Mvc.ActionResult> DeleteBooking(int bookingId, String email)
         {
-
-            return await _bookingRepository.DeleteBooking(id);
+            bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByEmailAndBookingid(bookingId,email) != null;
+            if (isThisBookingBelongToCurrentUser) return await _bookingRepository.DeleteBooking(bookingId);
+            else
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

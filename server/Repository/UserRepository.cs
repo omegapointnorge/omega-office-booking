@@ -38,6 +38,7 @@ namespace server.Repository
             return EntityToDto(existingUser);
         }
 
+
         private Models.Domain.User CreateUser(UserBookingRequest bookingReq)
         {
             var user = new Models.Domain.User();
@@ -56,6 +57,16 @@ namespace server.Repository
             };
             _dbContext.Bookings.Add(booking);
             return booking;
+        }
+
+        public Booking? GetBookingByEmailAndBookingid(int bookingID, string email)
+        {
+            // existingUser as it currently exists in the db
+            var existingUser = _dbContext.Users.Include(u => u.Bookings)
+                .FirstOrDefault(u => u.Email == email);
+            var existingbooking = existingUser?.Bookings.FirstOrDefault(booking =>
+                    booking.Id == bookingID);
+            return existingbooking;
         }
     }
 }

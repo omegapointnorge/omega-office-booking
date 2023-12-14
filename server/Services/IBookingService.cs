@@ -5,7 +5,7 @@ namespace server.Services
 {
     public interface IBookingService
     {
-        Task<ActionResult> DeleteBooking(int id);
+        Task<ActionResult> DeleteBooking(int id, String email);
 
         Task<ActionResult<List<BookingDto>>> GetAllBookings();
 

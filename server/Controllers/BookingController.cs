@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using server.Models.Domain;
 using server.Models.DTOs;
 using server.Services;
+using System.Security.Claims;
 
 namespace server.Controllers
 {
@@ -36,8 +39,14 @@ namespace server.Controllers
         [HttpDelete("Bookings/{id}")]
         public async Task<ActionResult> DeleteBooking(int id)
         {
+
+            var email = String.Empty;
+            if (User.Identity?.IsAuthenticated?? false)
             {
-                var result = await _bookingService.DeleteBooking(id);
+                 email = User.FindFirst("preferred_username")?.Value?? String.Empty;
+            };
+            {
+                var result = await _bookingService.DeleteBooking(id, email);
                 return result;
             }
         }
