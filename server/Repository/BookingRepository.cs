@@ -49,20 +49,5 @@ namespace server.Repository
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-
-        //public async Task<ActionResult> CheckIfThisSeatIsAvailableTomorrow(int seatId)
-        //{
-        //   
-        //}
-        // Never call this add method directly, as always need to check whether the user exists in the database according to our logic.
-        // public BookingDto Add(BookingDto dto)
-        //{
-        //   var entity = new Booking(dto.SeatId,dto.UserId);
-        //   _dbContext.Bookings.Add(entity);
-        //  _dbContext.SaveChanges();
-        //   return new BookingDto(entity.SeatId,
-        //       entity.UserId);
-
-
     }
 }
