@@ -18,12 +18,12 @@ namespace server.Context
             // Generating Seats for room 1
             for (int i = 1; i <= 10; i++) 
             {
-                modelBuilder.Entity<Seat>().HasData(new Seat(i, 1));
+                modelBuilder.Entity<Seat>().HasData(new Seat(i, 1,true));
             }
             // Generatings Seats for room 2
             for (int i = 11; i <= 15; i++) 
             {
-                modelBuilder.Entity<Seat>().HasData(new Seat(i, 2));
+                modelBuilder.Entity<Seat>().HasData(new Seat(i, 2, true));
             }
             // Sample bookings
             modelBuilder.Entity<Booking>().HasData(new Booking(1, 1, 1, new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580)));

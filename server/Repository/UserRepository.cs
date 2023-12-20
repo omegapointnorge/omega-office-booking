@@ -40,9 +40,11 @@ namespace server.Repository
 
         private Models.Domain.User CreateUser(UserBookingRequest bookingReq)
         {
-            var user = new Models.Domain.User();
-            user.Email = bookingReq.Email;
-            user.Name = bookingReq.Name;
+            var user = new Models.Domain.User
+            {
+                Email = bookingReq.Email,
+                Name = bookingReq.Name
+            };
             _dbContext.Users.Add(user);
             return user;
         }
