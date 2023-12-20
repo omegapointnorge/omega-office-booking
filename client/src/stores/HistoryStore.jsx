@@ -28,19 +28,17 @@ class HistoryStore {
 
       const data = await response.json();
 
-      // this.setBookings(data);
+      this.setBookings(data);
     } catch (error) {
       console.error(error);
     }
   }
-  setBookings(data) {Booking
+  setBookings(data) {
     this.myBookings = data.value.map(
       (booking) => new Booking(booking.id, booking.seatId, booking.dateTime)
     );
   }
-  getRouteName(route) {
-    return route.replace(/\s+/g, "-").toLowerCase();
-  }
+
 }
 
 const historyStore = new HistoryStore();
