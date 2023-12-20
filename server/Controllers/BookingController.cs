@@ -30,9 +30,9 @@ namespace server.Controllers
 
 
         [HttpGet("Bookings/MyBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForCurrentUser(int userId)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForCurrentUser()
         {
-            var response = await _bookingService.GetAllBookingsForUser(userId);
+            var response = await _bookingService.GetAllBookingsForCurrentUser();
             return new OkObjectResult(response);
         }
         /// <summary>
