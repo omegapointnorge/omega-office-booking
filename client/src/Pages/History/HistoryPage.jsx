@@ -29,7 +29,7 @@ const HistoryPage = observer(() => {
             subTitle="A summary of your bookings"
           />
           {historyStore.myBookings.map((booking) => (
-            <BookingItem key={booking.id} seatNr={booking.seatId}></BookingItem>
+            <li key={booking.id} seatNr={booking.seatId}></li>
           ))}
         </div>
       </div>
