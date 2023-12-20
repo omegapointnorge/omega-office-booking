@@ -24,7 +24,8 @@ public class UserController : ControllerBase
     {
         var claimsToExpose = new List<string>()
         {
-            "name"
+            "name",
+            "preferred_username"
         };
 
         var user = new UserInfo(

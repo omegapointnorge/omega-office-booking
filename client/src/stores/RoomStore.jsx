@@ -39,20 +39,49 @@ class RoomStore {
     }
   }
 
+  async createBookings(req) {
+    const seatToUpdate = this.seats.find((seat) => seat.id === req.SeatId);
+    try {
+      this.isLoading = true;
+      const url = `/client/User/UpsertUserBooking`;
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify(req), // Convert req to JSON string and include it in the body
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // const data = await response.json();
+      toast.success("Booked seat ok");
+      seatToUpdate.isTaken = true;
+      // this.setSeats(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
   setSeats(data) {
     this.seats = data.value.map(
       (seat) => new Seat(seat.id, seat.roomId, seat.bookings)
     );
   }
 
-  bookSeat(id, isTaken) {
-    const seatToUpdate = this.seats.find((seat) => seat.id === id);
+  bookSeat(req) {
+    const seatToUpdate = this.seats.find((seat) => seat.id === req.SeatId);
 
     if (seatToUpdate) {
-      seatToUpdate.isTaken = isTaken;
-      toast.success("Booked seat");
+        this.createBookings(req);
+      // toast.success("Booked seat");
     } else {
-      console.log(`Seat with ID ${id} not found.`);
+        console.log(`Seat with ID ${req.SeatId} not found.`);
       toast.error("Seat not found");
     }
   }
