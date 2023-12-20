@@ -28,6 +28,13 @@ namespace server.Controllers
             return new OkObjectResult(response);
         }
 
+
+        [HttpGet("Bookings/MyBookings")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForCurrentUser(int userId)
+        {
+            var response = await _bookingService.GetAllBookingsForUser(userId);
+            return new OkObjectResult(response);
+        }
         /// <summary>
         /// Deletes a booking with the specified ID.
         /// </summary>
@@ -43,4 +50,3 @@ namespace server.Controllers
         }
     }
 }
-

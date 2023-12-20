@@ -23,6 +23,13 @@ namespace server.Services
             return await _bookingRepository.GetAllBookingsForUser(userid);
         }
 
+        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser()
+        {
+            //TODO add user service
+            var userID = 1;
+            return await _bookingRepository.GetAllBookingsForUser(userID);
+        }
+
         public async Task<Microsoft.AspNetCore.Mvc.ActionResult> DeleteBooking(int id)
         {
 
