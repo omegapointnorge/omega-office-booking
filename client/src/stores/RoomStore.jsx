@@ -40,6 +40,11 @@ class RoomStore {
   }
 
   async createBookings(req) {
+      // Validate that req.Email has a value
+  if (!req.Email||!req.SeatId||!req.Name) {
+    console.error("Email,SeatId,and Name is required.");
+    return;
+  }
     const seatToUpdate = this.seats.find((seat) => seat.id === req.SeatId);
     try {
       this.isLoading = true;
@@ -57,11 +62,9 @@ class RoomStore {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
-      // const data = await response.json();
+ 
       toast.success("Booked seat ok");
       seatToUpdate.isTaken = true;
-      // this.setSeats(data);
     } catch (error) {
       console.error(error);
     } finally {
