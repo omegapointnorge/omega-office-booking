@@ -3,15 +3,11 @@ import React, { useEffect } from "react";
 import SeatItem from "../../components/Seat/SeatItem";
 import { observer } from "mobx-react-lite";
 import { useLocation } from "react-router-dom";
-import { useAuthContext } from "../../api/useAuthContext";
 import roomStore from "../../stores/RoomStore";
 import Loading from "../../components/Loading";
 
 const RoomPage = observer(() => {
-  const context = useAuthContext();
   const location = useLocation();
-  const name = context?.user?.claims?.find((x) => x.key === "name")?.value;
-  const preferred_username = context?.user?.claims?.find((x) => x.key === "preferred_username")?.value;
 
   useEffect(() => {
     roomStore.initializeRooms(location.state.id);
@@ -65,7 +61,7 @@ const RoomPage = observer(() => {
         isTaken={seat.isTaken}
         onClick={() => {
           roomStore.handleOpenDialog();
-            roomStore.bookSeat(new UserBookingRequest(name, preferred_username, seat.id));
+            roomStore.bookSeat(new UserBookingRequest(seat.id));
         }}
       />
     </div>
@@ -93,9 +89,7 @@ const RoomPage = observer(() => {
 });
 
 class UserBookingRequest {
-  constructor(name, email, seatId) {
-    this.Name = name;
-    this.Email = email;
+  constructor(seatId) {
     this.SeatId = seatId;
   }
 }

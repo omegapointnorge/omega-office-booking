@@ -39,13 +39,9 @@ class RoomStore {
     }
   }
 
-  async createBookings(req) {
+  async createBookings(req,seatToUpdate) {
       // Validate that req.Email has a value
-  if (!req.Email||!req.SeatId||!req.Name) {
-    console.error("Email,SeatId,and Name is required.");
-    return;
-  }
-    const seatToUpdate = this.seats.find((seat) => seat.id === req.SeatId);
+
     try {
       this.isLoading = true;
       const url = `/client/User/UpsertUserBooking`;
@@ -81,7 +77,7 @@ class RoomStore {
     const seatToUpdate = this.seats.find((seat) => seat.id === req.SeatId);
 
     if (seatToUpdate) {
-        this.createBookings(req);
+        this.createBookings(req,seatToUpdate);
       // toast.success("Booked seat");
     } else {
         console.log(`Seat with ID ${req.SeatId} not found.`);
