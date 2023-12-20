@@ -27,10 +27,10 @@ namespace server.Repository
             ).ToListAsync();
         }
 
-        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq)
+        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String email)
         {
             // existingUser as it currently exists in the db
-            var existingUser =_dbContext.Users.FirstOrDefault(u => u.Email == bookingReq.Email);
+            var existingUser =_dbContext.Users.FirstOrDefault(u => u.Email == email);
             // User doesn't exist, so add a new one
             existingUser ??= CreateUser(bookingReq);
             CreateBooking(existingUser, bookingReq.SeatId);
