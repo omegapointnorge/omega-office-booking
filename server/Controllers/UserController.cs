@@ -57,9 +57,10 @@ public class UserController : ControllerBase
     [HttpPost("UpsertUserBooking")]
     public async Task<ActionResult<UserDto>> UpsertUserBooking(UserBookingRequest booking)
     {
-        // Here we need to fetch the name and email of the user like in the method DeleteBooking
-        var email = "Email@gmail.com";
-        var response = await _userService.InsertOrUpdateUsersBooking(booking, email);
+        var email = User.FindFirst("preferred_username")?.Value?? String.Empty;
+        var name = User.FindFirst("name")?.Value?? String.Empty;
+        
+        var response = await _userService.InsertOrUpdateUsersBooking(booking, email, name);
         return new OkObjectResult(response);
     }
 

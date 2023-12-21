@@ -27,7 +27,7 @@ namespace server.Repository
             ).ToListAsync();
         }
 
-        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String email)
+        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String email, String name)
         {
             // existingUser as it currently exists in the db
             var existingUser =_dbContext.Users.FirstOrDefault(u => u.Email == email);
