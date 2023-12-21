@@ -30,6 +30,8 @@ You will need access to the subscription used for the project, as well as the ap
 Get the permissions right away to avoid bottlenecks!
 
 Figma design: https://www.figma.com/file/NC9ZwuocdWNaLCxDIrJkfY/Office-Booking?type=design&node-id=0%3A1&mode=design&t=My2Yu9A58c5mDaE5-1
+Domain design:
+https://www.figma.com/file/CjwlmVQ44uPcXj7ZvyAnWX/OfficeBookingFigJam?type=whiteboard&node-id=1-1464&t=ooToRV3XWPj3qH8A-0
 
 ## Contributing
 
