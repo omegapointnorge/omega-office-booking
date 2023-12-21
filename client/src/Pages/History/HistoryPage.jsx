@@ -31,7 +31,11 @@ const HistoryPage = observer(() => {
           {historyStore.myBookings.map((booking) => (
               <BookingItem key={booking.id} seatId={booking.seatId} name={booking.dateTime} ></BookingItem>
           ))}
-        </div>
+         
+        </div><div className="flex gap-10">
+        {historyStore.myBookings.map((booking) => (
+              <BookingItem key={booking.id} seatId={booking.seatId} name={booking.dateTime} ></BookingItem>
+          ))} </div>
       </div>
     </>
   );

@@ -19,8 +19,6 @@ namespace server.Repository
                     new SeatDto(seat.Id, seat.RoomId, seat.Bookings)
                 ).ToListAsync();
         }
-
-
     }
 }
 

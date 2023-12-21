@@ -12,7 +12,7 @@ class HistoryStore {
 
   async initialize() {
     try {
-      const url = "/api/Booking/bookings";
+      const url = "/api/Booking/Bookings/MyBookings";
 
       const response = await fetch(url, {
         method: "GET",

@@ -5,13 +5,13 @@ namespace server.Services
 {
     public interface IBookingService
     {
-        Task<ActionResult> DeleteBooking(int id);
+        Task<ActionResult> DeleteBooking(int id, String email);
 
         Task<ActionResult<List<BookingDto>>> GetAllBookings();
 
         Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(int userid);
 
-        Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser();
+        Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser(String email);
     }
 }
 

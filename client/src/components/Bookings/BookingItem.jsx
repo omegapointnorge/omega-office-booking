@@ -27,6 +27,7 @@ const BookingItem = ({ onClick, dateTime, roomName, seatId, name }) => {
         />
       </li>
     </ul>
+    
   );
 };
 
