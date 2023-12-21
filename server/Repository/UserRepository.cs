@@ -43,8 +43,8 @@ namespace server.Repository
         {
             var user = new Models.Domain.User
             {
-                Email = bookingReq.Email,
-                Name = bookingReq.Name
+                Email = "Email value from  _userService.InsertOrUpdateUsersBooking(booking, email)"
+
             };
             _dbContext.Users.Add(user);
             return user;
