@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
@@ -21,14 +20,14 @@ namespace server.Services
             return await _bookingRepository.GetAllBookings();
         }
 
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(int userid)
+        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(Guid userid)
         {
             return await _bookingRepository.GetAllBookingsForUser(userid);
         }
 
         public async Task<Microsoft.AspNetCore.Mvc.ActionResult> DeleteBooking(int bookingId, String email)
         {
-            bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByEmailAndBookingid(bookingId,email) != null;
+            bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByEmailAndBookingid(bookingId, email) != null;
             if (isThisBookingBelongToCurrentUser) return await _bookingRepository.DeleteBooking(bookingId);
             else
             {
