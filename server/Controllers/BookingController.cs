@@ -42,7 +42,8 @@ namespace server.Controllers
             if (User.Identity?.IsAuthenticated?? false)
             {
                  email = User.FindFirst("preferred_username")?.Value?? String.Empty;
-            };
+                 // TODO ??
+            }
             {
                 var result = await _bookingService.DeleteBooking(id, email);
                 return result;

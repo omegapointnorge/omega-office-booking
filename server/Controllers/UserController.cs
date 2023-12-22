@@ -24,6 +24,7 @@ public class UserController : ControllerBase
     {
         var claimsToExpose = new List<string>()
         {
+            "id",
             "name",
             "preferred_username"
         };
@@ -57,10 +58,11 @@ public class UserController : ControllerBase
     [HttpPost("UpsertUserBooking")]
     public async Task<ActionResult<UserDto>> UpsertUserBooking(UserBookingRequest booking)
     {
+        var userId = User.FindFirst("id")?.Value;
         var email = User.FindFirst("preferred_username")?.Value?? String.Empty;
         var name = User.FindFirst("name")?.Value?? String.Empty;
         
-        var response = await _userService.InsertOrUpdateUsersBooking(booking, email, name);
+        var response = await _userService.InsertOrUpdateUsersBooking(booking, Guid.Parse(userId), email, name);
         return new OkObjectResult(response);
     }
 
