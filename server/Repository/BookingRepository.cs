@@ -29,6 +29,7 @@ namespace server.Repository
         {
             return _dbContext.Bookings
             .Where(booking => booking.UserId == userid)
+            .OrderByDescending(booking => booking.BookingDateTime)
             .Select(booking =>
                     new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
                 )

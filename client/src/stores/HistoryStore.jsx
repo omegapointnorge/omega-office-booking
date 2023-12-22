@@ -13,25 +13,28 @@ class HistoryStore {
   async initialize() {
     try {
       const url = "/api/Booking/Bookings/MyBookings";
-
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
+      const response = await this.fetchData(url);
       const data = await response.json();
-
       this.setBookings(data);
     } catch (error) {
       console.error(error);
     }
+  }
+
+  async fetchData(url) {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return response;
   }
   setBookings(data) {
     this.myBookings = data.value.map(

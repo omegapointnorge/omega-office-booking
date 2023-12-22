@@ -29,13 +29,12 @@ const HistoryPage = observer(() => {
             subTitle="A summary of your bookings"
           />
           {historyStore.myBookings.map((booking) => (
-              <BookingItem key={booking.id} seatId={booking.seatId} name={booking.dateTime} ></BookingItem>
+              <BookingItem key={booking.id} seatId={booking.seatId} name={booking.dateTime} onClick = {() => {
+                historyStore.deleteBooking(booking.id)
+              }} ></BookingItem>
           ))}
          
-        </div><div className="flex gap-10">
-        {historyStore.myBookings.map((booking) => (
-              <BookingItem key={booking.id} seatId={booking.seatId} name={booking.dateTime} ></BookingItem>
-          ))} </div>
+        </div>
       </div>
     </>
   );
