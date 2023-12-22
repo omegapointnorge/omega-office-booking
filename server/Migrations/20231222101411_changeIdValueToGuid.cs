@@ -27,37 +27,62 @@ namespace server.Migrations
                 table: "Users",
                 keyColumn: "Id",
                 keyValue: 3);
+            
+            migrationBuilder.DropForeignKey(
+                name: "FK_Bookings_Users_UserId",
+                table: "Bookings");
+            
+            migrationBuilder.DropIndex(
+                name: "IX_Bookings_UserId",
+                table: "Bookings");
 
-            migrationBuilder.AlterColumn<Guid>(
+            migrationBuilder.DropPrimaryKey(
+                name: "PK_Users",
+                table: "Users");
+
+            migrationBuilder.DropColumn(
+                name: "Id",
+                table: "Users");
+
+            migrationBuilder.AddColumn<Guid>(
                 name: "Id",
                 table: "Users",
                 type: "uniqueidentifier",
                 nullable: false,
-                oldClrType: typeof(int),
-                oldType: "int")
-                .OldAnnotation("SqlServer:Identity", "1, 1");
+                defaultValueSql: "NEWID()");
 
-            migrationBuilder.AlterColumn<Guid>(
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_Users",
+                table: "Users",
+                column: "Id");
+            
+            migrationBuilder.DropColumn(
+                name: "UserId",
+                table: "Bookings");
+
+            migrationBuilder.AddColumn<Guid>(
                 name: "UserId",
                 table: "Bookings",
                 type: "uniqueidentifier",
                 nullable: false,
-                oldClrType: typeof(int),
-                oldType: "int");
+                defaultValueSql: "NEWID()");
 
-            migrationBuilder.UpdateData(
+            migrationBuilder.AddForeignKey(
+                name: "FK_Bookings_Users_UserId",
                 table: "Bookings",
-                keyColumn: "Id",
-                keyValue: 1,
                 column: "UserId",
-                value: new Guid("860849a4-f4b8-4566-8ed1-918cf3d41a92"));
-
-            migrationBuilder.UpdateData(
+                principalTable: "Users",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+            
+            migrationBuilder.InsertData(
                 table: "Bookings",
-                keyColumn: "Id",
-                keyValue: 2,
-                column: "UserId",
-                value: new Guid("639d660b-4724-407b-b05c-12b5f619f833"));
+                columns: new[] { "Id", "UserID" },
+                values: new object[,]
+                {
+                    {1, new Guid("093071d6-9ae9-4aef-a318-178c5875ea27"), },
+                    {2, new Guid("860849a4-f4b8-4566-8ed1-918cf3d41a92") }
+                });
 
             migrationBuilder.InsertData(
                 table: "Users",

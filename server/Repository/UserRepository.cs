@@ -32,14 +32,14 @@ namespace server.Repository
             // existingUser as it currently exists in the db
             var existingUser =_dbContext.Users.FirstOrDefault(u => u.Email == email);
             // User doesn't exist, so add a new one
-            existingUser ??= CreateUser(bookingReq, userId,email, name);
+            existingUser ??= CreateUser(userId,email, name);
             CreateBooking(existingUser, bookingReq.SeatId);
             await _dbContext.SaveChangesAsync();
             return EntityToDto(existingUser);
         }
 
 
-        private Models.Domain.User CreateUser(UserBookingRequest bookingReq, Guid userId, String email, String name)
+        private Models.Domain.User CreateUser(Guid userId, String email, String name)
         {
             var user = new Models.Domain.User
             {
