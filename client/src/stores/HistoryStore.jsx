@@ -25,8 +25,7 @@ class HistoryStore {
   async deleteBookingCall(bookingId) {
     try {
       const url = "/api/Booking/Bookings/" + bookingId;
-      const response = await this.fetchData(url, "Delete");
-
+      await this.fetchData(url, "Delete");
     } catch (error) {
       console.error(error);
     }
@@ -58,7 +57,7 @@ class HistoryStore {
     const bookingToDelete = this.myBookings.find((booking) => booking.id === bookingId);
     if (bookingToDelete) {
       let newBookingList = this.myBookings.filter(item => item !== bookingToDelete);
-      newBookingList = newBookingList.slice().reverse();
+      // newBookingList = newBookingList.slice().reverse();
       this.myBookings = newBookingList;
       this.deleteBookingCall(bookingId)
       toast.success("Booking deleted for Booking Nr: " + bookingId);
