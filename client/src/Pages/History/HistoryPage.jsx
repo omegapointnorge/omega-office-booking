@@ -29,7 +29,8 @@ const HistoryPage = observer(() => {
             subTitle="A summary of your bookings"
           />
           {historyStore.myBookings.map((booking) => (
-              <BookingItem key={booking.id} seatId={booking.seatId} name={booking.dateTime} onClick = {() => {
+              <BookingItem key={booking.id} seatId={booking.seatId} name={booking.dateTime} 
+              onClick = {() => {
                 historyStore.deleteBooking(booking.id)
               }} ></BookingItem>
           ))}

@@ -1,6 +1,8 @@
 import { makeAutoObservable } from "mobx";
 import toast from "react-hot-toast";
 import { Seat } from "../domain/seat";
+import HistoryStore from "./HistoryStore.jsx";
+import { Booking } from "../domain/booking";
 class RoomStore {
   seats = [];
 
@@ -39,13 +41,7 @@ class RoomStore {
     }
   }
 
-  async createBookings(req) {
-      // Validate that req.Email has a value
-  if (!req.Email||!req.SeatId||!req.Name) {
-    console.error("Email,SeatId,and Name is required.");
-    return;
-  }
-    const seatToUpdate = this.seats.find((seat) => seat.id === req.SeatId);
+  async createBookings(req, seatToUpdate) {
     try {
       this.isLoading = true;
       const url = `/client/User/UpsertUserBooking`;
@@ -62,8 +58,15 @@ class RoomStore {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
- 
+
       toast.success("Booked seat ok");
+      const responseData = await response.json();
+      // Extracting the booking ID
+      const bookingId = responseData.value.bookings[0].id;
+      // Extracting the booking ID
+      const seatId = responseData.value.bookings[0].seatId;
+      const dateTime = responseData.value.bookings[0].dateTime;
+      HistoryStore.myBookings.push(new Booking(bookingId, seatId, dateTime));
       seatToUpdate.isTaken = true;
     } catch (error) {
       console.error(error);
@@ -81,10 +84,10 @@ class RoomStore {
     const seatToUpdate = this.seats.find((seat) => seat.id === req.SeatId);
 
     if (seatToUpdate) {
-        this.createBookings(req);
+      this.createBookings(req, seatToUpdate);
       // toast.success("Booked seat");
     } else {
-        console.log(`Seat with ID ${req.SeatId} not found.`);
+      console.log(`Seat with ID ${req.SeatId} not found.`);
       toast.error("Seat not found");
     }
   }

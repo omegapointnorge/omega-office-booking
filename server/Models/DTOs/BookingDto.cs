@@ -10,18 +10,13 @@ namespace server.Models.DTOs
         public BookingDto(int id, int userId, int seatId, DateTime dateTime)
         {
             // Time zone identifier for Norway (with DST information)
-            string norwayTimeZoneId = "Egypt Standard Time";
+            string norwayTimeZoneId = "Central Europe Standard Time";
 
             // Convert to Norwegian time zone
             Id = id;
             UserId = userId;
             SeatId = seatId;
             DateTime = ConvertToTimeZone(dateTime, norwayTimeZoneId);  
-        }
-        public BookingDto(int userId, int seatId)
-        {
-            UserId = userId;
-            SeatId = seatId;
         }
 
         static String ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)

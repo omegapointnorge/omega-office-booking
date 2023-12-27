@@ -57,7 +57,10 @@ public class UserController : ControllerBase
     [HttpPost("UpsertUserBooking")]
     public async Task<ActionResult<UserDto>> UpsertUserBooking(UserBookingRequest booking)
     {
-        var response = await _userService.InsertOrUpdateUsersBooking(booking);
+        var email = User.FindFirst("preferred_username")?.Value?? String.Empty;
+        var name = User.FindFirst("name")?.Value?? String.Empty;
+        
+        var response = await _userService.InsertOrUpdateUsersBooking(booking, email, name);
         return new OkObjectResult(response);
     }
 

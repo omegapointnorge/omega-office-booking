@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { Booking } from "../domain/booking";
+import toast from "react-hot-toast";
 
 class HistoryStore {
   myBookings = [];
@@ -13,7 +14,7 @@ class HistoryStore {
   async initialize() {
     try {
       const url = "/api/Booking/Bookings/MyBookings";
-      const response = await this.fetchData(url);
+      const response = await this.fetchData(url, "Get");
       const data = await response.json();
       this.setBookings(data);
     } catch (error) {
@@ -21,9 +22,21 @@ class HistoryStore {
     }
   }
 
-  async fetchData(url) {
+  async deleteBookingCall(bookingId) {
+    try {
+      const url = "/api/Booking/Bookings/" + bookingId;
+      const response = await this.fetchData(url, "Delete");
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+
+  async fetchData(url, method) {
     const response = await fetch(url, {
-      method: "GET",
+      method: method,
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
@@ -40,6 +53,19 @@ class HistoryStore {
     this.myBookings = data.value.map(
       (booking) => new Booking(booking.id, booking.seatId, booking.dateTime)
     );
+  }
+  deleteBooking(bookingId) {
+    const bookingToDelete = this.myBookings.find((booking) => booking.id === bookingId);
+    if (bookingToDelete) {
+      let newBookingList = this.myBookings.filter(item => item !== bookingToDelete);
+      newBookingList = newBookingList.slice().reverse();
+      this.myBookings = newBookingList;
+      this.deleteBookingCall(bookingId)
+      toast.success("Booking deleted for Booking Nr: " + bookingId);
+    } else {
+      console.log(`bookingId:  ${bookingId} not found.`);
+      toast.error("bookingId not found");
+    }
   }
 
 }
