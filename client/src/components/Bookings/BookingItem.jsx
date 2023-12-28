@@ -21,13 +21,13 @@ const BookingItem = ({ onClick, dateTime, roomName, seatId, name }) => {
         <MdDelete
           onClick={onClick}
           color="red"
-          className="h-12 w-12 flex-none rounded-full bg-gray-50"
+          className="h-12 w-12 flex-none bg-gray-50 hover:bg-red-100 transition-colors duration-300"
           src=""
           alt=""
         />
       </li>
     </ul>
-    
+
   );
 };
 
