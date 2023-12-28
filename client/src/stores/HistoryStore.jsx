@@ -1,9 +1,12 @@
 import { makeAutoObservable } from "mobx";
 import { Booking } from "../domain/booking";
 import toast from "react-hot-toast";
+import ApiService from "./ApiService.jsx";
 
 class HistoryStore {
   myBookings = [];
+  openDialog = false;
+  bookingIdToDelete = null;
 
   constructor() {
     this.initialize();
@@ -14,7 +17,7 @@ class HistoryStore {
   async initialize() {
     try {
       const url = "/api/Booking/Bookings/MyBookings";
-      const response = await this.fetchData(url, "Get");
+      const response = await ApiService.fetchData(url, "Get", null);
       const data = await response.json();
       this.setBookings(data);
     } catch (error) {
@@ -25,7 +28,7 @@ class HistoryStore {
   async deleteBookingCall(bookingId) {
     try {
       const url = "/api/Booking/Bookings/" + bookingId;
-      await this.fetchData(url, "Delete");
+      await ApiService.fetchData(url, "Delete");
     } catch (error) {
       console.error(error);
     }
@@ -33,21 +36,7 @@ class HistoryStore {
 
 
 
-  async fetchData(url, method) {
-    const response = await fetch(url, {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    return response;
-  }
   setBookings(data) {
     this.myBookings = data.value.map(
       (booking) => new Booking(booking.id, booking.seatId, booking.dateTime)
@@ -61,11 +50,21 @@ class HistoryStore {
       this.myBookings = newBookingList;
       this.deleteBookingCall(bookingId)
       toast.success("Booking deleted for Booking Nr: " + bookingId);
+      this.handleCloseDialog();
     } else {
       console.log(`bookingId:  ${bookingId} not found.`);
       toast.error("bookingId not found");
     }
   }
+  /* DIALOG */
+  handleOpenDialog(bookingId) {
+    this.openDialog = !this.openDialog;
+    this.bookingIdToDelete = bookingId;
+  };
+
+  handleCloseDialog = () => {
+    this.openDialog = !this.openDialog;
+  };
 
 }
 

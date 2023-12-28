@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { Seat } from "../domain/seat";
 import HistoryStore from "./HistoryStore.jsx";
 import { Booking } from "../domain/booking";
+import ApiService from "./ApiService.jsx";
 class RoomStore {
   seats = [];
 
@@ -46,14 +47,7 @@ class RoomStore {
       this.isLoading = true;
       const url = `/client/User/UpsertUserBooking`;
 
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify(req), // Convert req to JSON string and include it in the body
-      });
+      const response = await ApiService.fetchData(url, "POST", req);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
