@@ -62,7 +62,8 @@ namespace server.Repository
             var booking = new Booking
             {
                 User = user,// Reference the related, now tracked entity, not the PK
-                SeatId = seatId
+                SeatId = seatId,
+                BookingDateTime = DateTime.Now.AddDays(1)
             };
             _dbContext.Bookings.Add(booking);
             return booking;
