@@ -12,7 +12,9 @@ Get the secrets from the keyvault and store them with:
 dotnet user-secrets set "AzureAd__ClientId" "XXXXXX.."
 dotnet user-secrets set "AzureAd__ClientSecret" "XXXXXX.."
 dotnet user-secrets set "AzureAd__TentanId" "XXXXXX.."
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Initial Catalog=OfficeBookingDB; Data Source=localhost,<Port_Number>; Persist Security Info=True;User ID=SA;Password= <Your_Password>; TrustServerCertificate=True""
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Initial Catalog=OfficeBookingDB; Data Source=localhost,<Port_Number>; Persist Security Info=True;User ID=SA;Password= <Your_Password>; TrustServerCertificate=True"
+
+For macbook user, the image addressen need to be the address for Mac. change mcr.microsoft.com/mssql/server:2019-latest in the following commands
 ```
 Prerequisit of the this is that you have the latest version docker desktop installed on your PC. This version will include Docker compose, which is required. 
 Run the db by issuing the command 'docker compose up -d' in your terminal.

@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using server.Context;
-using server.Models.Domain;
 using server.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using server.Models.Domain;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace server.Repository
 {
@@ -14,6 +16,7 @@ namespace server.Repository
         {
             _dbContext = officeDbContext;
         }
+
         public Task<List<BookingDto>> GetAllBookings()
         {
             return _dbContext.Bookings.Select(booking =>
@@ -36,7 +39,7 @@ namespace server.Repository
         {
             try
             {
-                Booking booking = _dbContext.Bookings.Find(id);
+                var booking = await _dbContext.Bookings.FindAsync(id);
                 if (booking == null) return new StatusCodeResult(StatusCodes.Status404NotFound);
                 _dbContext.Bookings.Remove(booking);
                 await _dbContext.SaveChangesAsync();
@@ -47,15 +50,5 @@ namespace server.Repository
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-        // Never call this add method directly, as always need to check whether the user exists in the database according to our logic.
-        // public BookingDto Add(BookingDto dto)
-        //{
-        //   var entity = new Booking(dto.SeatId,dto.UserId);
-        //   _dbContext.Bookings.Add(entity);
-        //  _dbContext.SaveChanges();
-        //   return new BookingDto(entity.SeatId,
-        //       entity.UserId);
-
-
     }
 }
