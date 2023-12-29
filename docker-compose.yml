@@ -1,0 +1,11 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-CU24-ubuntu-20.04
+    ports: 
+      - "1450:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=2Secure*Password2
+    container_name: sqlserverdb
+    hostname: mysqlserver
+    platform: linux/amd64
