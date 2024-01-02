@@ -69,13 +69,13 @@ namespace server.Repository
             return booking;
         }
 
-        public Booking? GetBookingByGuidAndBookingId(int bookingID, Guid userId)
+        public Booking? GetBookingByGuidAndBookingId(int bookingId, Guid userId)
         {
             // existingUser as it currently exists in the db
             var existingUser = _dbContext.Users.Include(u => u.Bookings)
                 .FirstOrDefault(u => u.Id == userId);
             var existingbooking = existingUser?.Bookings.FirstOrDefault(booking =>
-                    booking.Id == bookingID);
+                    booking.Id == bookingId);
             return existingbooking;
         }
     }

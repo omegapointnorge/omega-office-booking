@@ -36,7 +36,7 @@ namespace server.Controllers
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
-                userId = User.FindFirst(" http://schemas.microsoft.com/identity/claims/tenantid")?.Value;
+                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
             };
             var response = await _bookingService.GetAllBookingsForCurrentUser(Guid.Parse(userId));
             return new OkObjectResult(response);
