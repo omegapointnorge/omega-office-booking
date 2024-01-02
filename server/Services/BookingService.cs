@@ -25,7 +25,7 @@ namespace server.Services
             return await _bookingRepository.GetAllBookingsForUser(userid);
         }
 
-        public async Task<Microsoft.AspNetCore.Mvc.ActionResult> DeleteBooking(int bookingId, String email)
+        public async Task<ActionResult> DeleteBooking(int bookingId, String email)
         {
             bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByEmailAndBookingid(bookingId, email) != null;
             if (isThisBookingBelongToCurrentUser) return await _bookingRepository.DeleteBooking(bookingId);
@@ -33,6 +33,14 @@ namespace server.Services
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+        }
+        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser(string email)
+        {
+            //TODO add user service
+            // existingUser as it currently exists in the db
+            var user = _userRepository.GetUserByEmail(email);
+
+            return await _bookingRepository.GetAllBookingsForUser(user?.Id);
         }
     }
 }

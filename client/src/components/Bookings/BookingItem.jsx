@@ -1,6 +1,6 @@
 import { MdDelete } from "react-icons/md";
 
-const BookingItem = ({ onClick, date, roomName, seatNr, name }) => {
+const BookingItem = ({ onClick, dateTime, roomName, seatId, name }) => {
   return (
     <ul className="divide-y divide-gray-100 p-4 rounded-[24px] bg-cyan-50">
       <li className="flex justify-between gap-x-6 py-5">
@@ -10,23 +10,24 @@ const BookingItem = ({ onClick, date, roomName, seatNr, name }) => {
               {name}
             </p>
             <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-              Sete: {seatNr}
+              Sete: {seatId}
             </p>
           </div>
         </div>
         <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-          <p className="text-sm leading-6 text-gray-900">{date}</p>
-          <p className="mt-1 text-xs leading-5 text-gray-500">{seatNr}</p>
+          <p className="text-sm leading-6 text-gray-900">{dateTime}</p>
+          <p className="mt-1 text-xs leading-5 text-gray-500">{seatId}</p>
         </div>
         <MdDelete
           onClick={onClick}
           color="red"
-          className="h-12 w-12 flex-none rounded-full bg-gray-50"
+          className="h-12 w-12 flex-none bg-gray-50 hover:bg-red-100 transition-colors duration-300"
           src=""
           alt=""
         />
       </li>
     </ul>
+
   );
 };
 

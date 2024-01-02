@@ -30,7 +30,7 @@ namespace server.Repository
         public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, Guid userId, String email, String name)
         {
             // existingUser as it currently exists in the db
-            var existingUser =_dbContext.Users.FirstOrDefault(u => u.Email == email);
+            var existingUser = GetUserByEmail(email);
             // User doesn't exist, so add a new one
             existingUser ??= CreateUser(userId,email, name);
             CreateBooking(existingUser, bookingReq.SeatId);
@@ -52,12 +52,19 @@ namespace server.Repository
             return user;
         }
 
+        public User? GetUserByEmail(String email)
+        {
+            var user = _dbContext.Users.FirstOrDefault(u => u.Email == email);
+            return user;
+        }
+
         private Booking CreateBooking(Models.Domain.User user, int seatId)
         {
             var booking = new Booking
             {
                 User = user,// Reference the related, now tracked entity, not the PK
-                SeatId = seatId
+                SeatId = seatId,
+                BookingDateTime = DateTime.Now.AddDays(1)
             };
             _dbContext.Bookings.Add(booking);
             return booking;
