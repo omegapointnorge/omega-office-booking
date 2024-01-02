@@ -25,10 +25,11 @@ namespace server.Repository
         }
 
 
-        public Task<List<BookingDto>> GetAllBookingsForUser(int userid)
+        public Task<List<BookingDto>> GetAllBookingsForUser(int? userid)
         {
             return _dbContext.Bookings
             .Where(booking => booking.UserId == userid)
+            .OrderByDescending(booking => booking.BookingDateTime)
             .Select(booking =>
                     new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
                 )

@@ -31,6 +31,18 @@ namespace server.Controllers
             return new OkObjectResult(response);
         }
 
+
+        [HttpGet("Bookings/MyBookings")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForCurrentUser()
+        {
+            var email = String.Empty;
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                email = User.FindFirst("preferred_username")?.Value ?? String.Empty;
+            };
+            var response = await _bookingService.GetAllBookingsForCurrentUser(email);
+            return new OkObjectResult(response);
+        }
         /// <summary>
         /// Deletes a booking with the specified ID.
         /// </summary>
@@ -52,4 +64,3 @@ namespace server.Controllers
         }
     }
 }
-
