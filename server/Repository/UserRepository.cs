@@ -30,14 +30,13 @@ namespace server.Repository
         public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, Guid userId, String email, String name)
         {
             // existingUser as it currently exists in the db
-            var existingUser = GetUserByEmail(email);
+            var existingUser = GetUserByUserId(userId);
             // User doesn't exist, so add a new one
-            existingUser ??= CreateUser(userId,email, name);
+            existingUser ??= CreateUser(userId, email, name);
             CreateBooking(existingUser, bookingReq.SeatId);
             await _dbContext.SaveChangesAsync();
             return EntityToDto(existingUser);
         }
-
 
         private Models.Domain.User CreateUser(Guid userId, String email, String name)
         {
@@ -52,9 +51,9 @@ namespace server.Repository
             return user;
         }
 
-        public User? GetUserByEmail(String email)
+        public User? GetUserByUserId(Guid userId)
         {
-            var user = _dbContext.Users.FirstOrDefault(u => u.Email == email);
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
             return user;
         }
 
@@ -70,11 +69,11 @@ namespace server.Repository
             return booking;
         }
 
-        public Booking? GetBookingByEmailAndBookingid(int bookingID, string email)
+        public Booking? GetBookingByGuidAndBookingId(int bookingID, Guid userId)
         {
             // existingUser as it currently exists in the db
             var existingUser = _dbContext.Users.Include(u => u.Bookings)
-                .FirstOrDefault(u => u.Email == email);
+                .FirstOrDefault(u => u.Id == userId);
             var existingbooking = existingUser?.Bookings.FirstOrDefault(booking =>
                     booking.Id == bookingID);
             return existingbooking;

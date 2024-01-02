@@ -5,8 +5,6 @@ using server.Services;
 
 namespace server.Controllers;
 
-
-
 [ApiController]
 [Route("client/[controller]")]
 public class UserController : ControllerBase

@@ -33,12 +33,12 @@ namespace server.Controllers
         [HttpGet("Bookings/MyBookings")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForCurrentUser()
         {
-            var email = String.Empty;
+            var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
-                email = User.FindFirst("preferred_username")?.Value ?? String.Empty;
+                userId = User.FindFirst(" http://schemas.microsoft.com/identity/claims/tenantid")?.Value;
             };
-            var response = await _bookingService.GetAllBookingsForCurrentUser(email);
+            var response = await _bookingService.GetAllBookingsForCurrentUser(Guid.Parse(userId));
             return new OkObjectResult(response);
         }
         /// <summary>
@@ -50,14 +50,14 @@ namespace server.Controllers
         public async Task<ActionResult> DeleteBooking(int id)
         {
 
-            var email = String.Empty;
+            var userId = String.Empty;
             if (User.Identity?.IsAuthenticated?? false)
             {
-                 email = User.FindFirst("preferred_username")?.Value?? String.Empty;
+                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid")?.Value;
                  // TODO ??
             }
             {
-                var result = await _bookingService.DeleteBooking(id, email);
+                var result = await _bookingService.DeleteBooking(id, Guid.Parse(userId));
                 return result;
             }
         }
