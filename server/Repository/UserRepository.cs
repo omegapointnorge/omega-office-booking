@@ -27,7 +27,7 @@ namespace server.Repository
             ).ToListAsync();
         }
 
-        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, Guid userId, String email, String name)
+        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String userId, String email, String name)
         {
             // existingUser as it currently exists in the db
             var existingUser = GetUserByUserId(userId);
@@ -38,7 +38,7 @@ namespace server.Repository
             return EntityToDto(existingUser);
         }
 
-        private Models.Domain.User CreateUser(Guid userId, String email, String name)
+        private Models.Domain.User CreateUser(String userId, String email, String name)
         {
             var user = new Models.Domain.User
             {
@@ -51,7 +51,7 @@ namespace server.Repository
             return user;
         }
 
-        public User? GetUserByUserId(Guid userId)
+        public User? GetUserByUserId(String userId)
         {
             var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
             return user;
@@ -69,7 +69,7 @@ namespace server.Repository
             return booking;
         }
 
-        public Booking? GetBookingByGuidAndBookingId(int bookingId, Guid userId)
+        public Booking? GetBookingByUserIdAndBookingId(int bookingId, String userId)
         {
             // existingUser as it currently exists in the db
             var existingUser = _dbContext.Users.Include(u => u.Bookings)

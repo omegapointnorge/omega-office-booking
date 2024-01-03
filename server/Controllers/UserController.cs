@@ -60,7 +60,7 @@ public class UserController : ControllerBase
         var email = User.FindFirst("preferred_username")?.Value?? String.Empty;
         var name = User.FindFirst("name")?.Value?? String.Empty;
         
-        var response = await _userService.InsertOrUpdateUsersBooking(booking, Guid.Parse(userId), email, name);
+        var response = await _userService.InsertOrUpdateUsersBooking(booking, userId, email, name);
         return new OkObjectResult(response);
     }
 

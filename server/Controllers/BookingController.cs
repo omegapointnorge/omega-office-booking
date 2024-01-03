@@ -23,7 +23,7 @@ namespace server.Controllers
         }
         
         [HttpGet("Bookings/{userId}")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(Guid userId)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
         {
             var response = await _bookingService.GetAllBookingsForUser(userId);
             return new OkObjectResult(response);
@@ -36,9 +36,9 @@ namespace server.Controllers
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
-                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
+                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value ?? String.Empty;
             };
-            var response = await _bookingService.GetAllBookingsForCurrentUser(Guid.Parse(userId));
+            var response = await _bookingService.GetAllBookingsForCurrentUser(userId);
             return new OkObjectResult(response);
         }
         /// <summary>
@@ -53,11 +53,11 @@ namespace server.Controllers
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated?? false)
             {
-                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid")?.Value;
+                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid")?.Value ?? String.Empty;
                  // TODO ??
             }
             {
-                var result = await _bookingService.DeleteBooking(id, Guid.Parse(userId));
+                var result = await _bookingService.DeleteBooking(id, userId);
                 return result;
             }
         }

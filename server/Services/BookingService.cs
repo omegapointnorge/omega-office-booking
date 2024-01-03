@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
 using server.Repository;
@@ -20,21 +19,21 @@ namespace server.Services
             return await _bookingRepository.GetAllBookings();
         }
 
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(Guid userId)
+        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(String userId)
         {
             return await _bookingRepository.GetAllBookingsForUser(userId);
         }
 
-        public async Task<ActionResult> DeleteBooking(int bookingId, Guid userId)
+        public async Task<ActionResult> DeleteBooking(int bookingId, String userId)
         {
-            bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByGuidAndBookingId(bookingId, userId) != null;
+            bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByUserIdAndBookingId(bookingId, userId) != null;
             if (isThisBookingBelongToCurrentUser) return await _bookingRepository.DeleteBooking(bookingId);
             else
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser(Guid userId)
+        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser(String userId)
         {
             //TODO add user service
             // existingUser as it currently exists in the db

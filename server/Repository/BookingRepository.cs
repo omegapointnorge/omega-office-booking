@@ -2,9 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using server.Context;
 using server.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using server.Models.Domain;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace server.Repository
 {
@@ -25,10 +22,10 @@ namespace server.Repository
         }
 
 
-        public Task<List<BookingDto>> GetAllBookingsForUser(Guid userid)
+        public Task<List<BookingDto>> GetAllBookingsForUser(String userId)
         {
             return _dbContext.Bookings
-            .Where(booking => booking.UserId == userid)
+            .Where(booking => booking.UserId == userId)
             .OrderByDescending(booking => booking.BookingDateTime)
             .Select(booking =>
                     new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
