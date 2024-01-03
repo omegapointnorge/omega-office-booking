@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using server.Models.Domain;
 using server.Models.DTOs;
 using server.Services;
-using System.Security.Claims;
 
 namespace server.Controllers
 {
@@ -24,8 +21,9 @@ namespace server.Controllers
             var response = await _bookingService.GetAllBookings();
             return new OkObjectResult(response);
         }
+        
         [HttpGet("Bookings/{userId}")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(int userId)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
         {
             var response = await _bookingService.GetAllBookingsForUser(userId);
             return new OkObjectResult(response);
@@ -35,12 +33,12 @@ namespace server.Controllers
         [HttpGet("Bookings/MyBookings")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForCurrentUser()
         {
-            var email = String.Empty;
+            var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
-                email = User.FindFirst("preferred_username")?.Value ?? String.Empty;
+                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value ?? String.Empty;
             };
-            var response = await _bookingService.GetAllBookingsForCurrentUser(email);
+            var response = await _bookingService.GetAllBookingsForCurrentUser(userId);
             return new OkObjectResult(response);
         }
         /// <summary>
@@ -52,13 +50,14 @@ namespace server.Controllers
         public async Task<ActionResult> DeleteBooking(int id)
         {
 
-            var email = String.Empty;
+            var userId = String.Empty;
             if (User.Identity?.IsAuthenticated?? false)
             {
-                 email = User.FindFirst("preferred_username")?.Value?? String.Empty;
-            };
+                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid")?.Value ?? String.Empty;
+                 // TODO ??
+            }
             {
-                var result = await _bookingService.DeleteBooking(id, email);
+                var result = await _bookingService.DeleteBooking(id, userId);
                 return result;
             }
         }
