@@ -1,8 +1,10 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
 using server.Models.Domain;
 using server.Models.DTOs;
 using server.Request;
+using server.Response;
 
 namespace server.Repository
 {
@@ -27,15 +29,45 @@ namespace server.Repository
             ).ToListAsync();
         }
 
-        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String userId, String email, String name)
+        public async Task<UserBookingResponse> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String userId, String email, String name)
         {
-            // existingUser as it currently exists in the db
-            var existingUser = GetUserByUserId(userId);
+            var response = new UserBookingResponse();
+            try
+            {
+                // existingUser as it currently exists in the db
+                var existingUser = GetUserByUserId(userId);
             // User doesn't exist, so add a new one
             existingUser ??= CreateUser(userId, email, name);
             CreateBooking(existingUser, bookingReq.SeatId);
             await _dbContext.SaveChangesAsync();
-            return EntityToDto(existingUser);
+            response.UserResponse = EntityToDto(existingUser);
+
+            }
+            catch (DbUpdateException ex)
+            {
+                // Handle specific database-related exceptions
+                if (ex.InnerException is SqlException sqlException)
+                {
+                    // Check for specific SQL Server error codes and handle accordingly
+                    if (sqlException.Number == 2601 || sqlException.Number == 2627)
+                    {
+                        // Unique key violation (duplicate entry)
+                        response.Error = "User booking already exists.";
+                    }
+                    else
+                    {
+                        // Handle other SQL Server error codes or provide a generic error message
+                        response.Error = "Error while saving changes to the database.";
+                    }
+                }
+                else
+                {
+                    // Handle other database-related exceptions or provide a generic error message
+                    response.Error = "Error while saving changes to the database.";
+                }
+            }
+
+            return response;
         }
 
         private Models.Domain.User CreateUser(String userId, String email, String name)
@@ -57,7 +89,7 @@ namespace server.Repository
             return user;
         }
 
-        private Booking CreateBooking(Models.Domain.User user, int seatId)
+        private User CreateBooking(Models.Domain.User user, int seatId)
         {
             var booking = new Booking
             {
@@ -65,8 +97,8 @@ namespace server.Repository
                 SeatId = seatId,
                 BookingDateTime = DateTime.Now.AddDays(1)
             };
-            _dbContext.Bookings.Add(booking);
-            return booking;
+            user.Bookings.Add(booking);
+            return user;
         }
 
         public Booking? GetBookingByUserIdAndBookingId(int bookingId, String userId)

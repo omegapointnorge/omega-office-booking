@@ -33,13 +33,5 @@ namespace server.Services
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser(String userId)
-        {
-            //TODO add user service
-            // existingUser as it currently exists in the db
-            var user = _userRepository.GetUserByUserId(userId);
-
-            return await _bookingRepository.GetAllBookingsForUser(user.Id);
-        }
     }
 }

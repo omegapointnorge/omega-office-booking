@@ -21,7 +21,7 @@ namespace server.Controllers
             var response = await _bookingService.GetAllBookings();
             return new OkObjectResult(response);
         }
-        
+
         [HttpGet("Bookings/{userId}")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
         {
@@ -36,11 +36,12 @@ namespace server.Controllers
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
-                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value ?? String.Empty;
+                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
             };
-            var response = await _bookingService.GetAllBookingsForCurrentUser(userId);
+            var response = await _bookingService.GetAllBookingsForUser(userId);
             return new OkObjectResult(response);
         }
+        
         /// <summary>
         /// Deletes a booking with the specified ID.
         /// </summary>
@@ -51,10 +52,10 @@ namespace server.Controllers
         {
 
             var userId = String.Empty;
-            if (User.Identity?.IsAuthenticated?? false)
+            if (User.Identity?.IsAuthenticated ?? false)
             {
-                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid")?.Value ?? String.Empty;
-                 // TODO ??
+                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
+                // TODO ??
             }
             {
                 var result = await _bookingService.DeleteBooking(id, userId);
