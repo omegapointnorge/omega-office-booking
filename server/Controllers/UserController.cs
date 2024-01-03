@@ -5,8 +5,6 @@ using server.Services;
 
 namespace server.Controllers;
 
-
-
 [ApiController]
 [Route("client/[controller]")]
 public class UserController : ControllerBase
@@ -24,6 +22,7 @@ public class UserController : ControllerBase
     {
         var claimsToExpose = new List<string>()
         {
+            "id",
             "name",
             "preferred_username"
         };
@@ -57,10 +56,11 @@ public class UserController : ControllerBase
     [HttpPost("UpsertUserBooking")]
     public async Task<ActionResult<UserDto>> UpsertUserBooking(UserBookingRequest booking)
     {
+        var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid")?.Value;
         var email = User.FindFirst("preferred_username")?.Value?? String.Empty;
         var name = User.FindFirst("name")?.Value?? String.Empty;
         
-        var response = await _userService.InsertOrUpdateUsersBooking(booking, email, name);
+        var response = await _userService.InsertOrUpdateUsersBooking(booking, userId, email, name);
         return new OkObjectResult(response);
     }
 

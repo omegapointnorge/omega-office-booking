@@ -27,22 +27,22 @@ namespace server.Repository
             ).ToListAsync();
         }
 
-        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String email, String name)
+        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String userId, String email, String name)
         {
             // existingUser as it currently exists in the db
-            var existingUser = GetUserByEmail(email);
+            var existingUser = GetUserByUserId(userId);
             // User doesn't exist, so add a new one
-            existingUser ??= CreateUser(bookingReq, email, name);
+            existingUser ??= CreateUser(userId, email, name);
             CreateBooking(existingUser, bookingReq.SeatId);
             await _dbContext.SaveChangesAsync();
             return EntityToDto(existingUser);
         }
 
-
-        private Models.Domain.User CreateUser(UserBookingRequest bookingReq, String email, String name)
+        private Models.Domain.User CreateUser(String userId, String email, String name)
         {
             var user = new Models.Domain.User
             {
+                Id = userId,
                 Email = email,
                 Name = name
 
@@ -51,9 +51,9 @@ namespace server.Repository
             return user;
         }
 
-        public User? GetUserByEmail(String email)
+        public User? GetUserByUserId(String userId)
         {
-            var user = _dbContext.Users.FirstOrDefault(u => u.Email == email);
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
             return user;
         }
 
@@ -69,13 +69,13 @@ namespace server.Repository
             return booking;
         }
 
-        public Booking? GetBookingByEmailAndBookingid(int bookingID, string email)
+        public Booking? GetBookingByUserIdAndBookingId(int bookingId, String userId)
         {
             // existingUser as it currently exists in the db
             var existingUser = _dbContext.Users.Include(u => u.Bookings)
-                .FirstOrDefault(u => u.Email == email);
+                .FirstOrDefault(u => u.Id == userId);
             var existingbooking = existingUser?.Bookings.FirstOrDefault(booking =>
-                    booking.Id == bookingID);
+                    booking.Id == bookingId);
             return existingbooking;
         }
     }

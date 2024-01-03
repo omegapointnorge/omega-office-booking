@@ -8,9 +8,9 @@ namespace server.Repository
     public interface IUserRepository
     {
         Task<List<UserDto>> GetAllUsers();
-        Booking? GetBookingByEmailAndBookingid(int id, string email);
-        Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest booking, String email, String name);
-        User? GetUserByEmail(string email);
+        Booking? GetBookingByUserIdAndBookingId(int id, String userId);
+        Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest booking, String userId, String email, String name);
 
+        User? GetUserByUserId(String userId);
     }
 }

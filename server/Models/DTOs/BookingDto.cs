@@ -3,11 +3,11 @@ namespace server.Models.DTOs
     public class BookingDto
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public String UserId { get; set; }
         public int SeatId { get; set; }
         public String DateTime { get; set; }
 
-        public BookingDto(int id, int userId, int seatId, DateTime dateTime)
+        public BookingDto(int id, String userId, int seatId, DateTime dateTime)
         {
             // Time zone identifier for Norway (with DST information)
             string norwayTimeZoneId = "Central Europe Standard Time";
