@@ -20,9 +20,9 @@ namespace server.Services
             return await _userRepository.GetAllUsers();
         }
 
-        public async Task<ActionResult<UserDto>> InsertOrUpdateUsersBooking(UserBookingRequest booking)
+        public async Task<ActionResult<UserDto>> InsertOrUpdateUsersBooking(UserBookingRequest booking, String email, String name)
         {
-            return await _userRepository.InsertOrUpdateUsersBooking(booking);
+            return await _userRepository.InsertOrUpdateUsersBooking(booking, email, name);
         }
     }
 }

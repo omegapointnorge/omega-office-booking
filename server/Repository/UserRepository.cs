@@ -27,26 +27,33 @@ namespace server.Repository
             ).ToListAsync();
         }
 
-        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq)
+        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String email, String name)
         {
             // existingUser as it currently exists in the db
-            var existingUser =_dbContext.Users.FirstOrDefault(u => u.Email == bookingReq.Email);
+            var existingUser = GetUserByEmail(email);
             // User doesn't exist, so add a new one
-            existingUser ??= CreateUser(bookingReq);
+            existingUser ??= CreateUser(bookingReq, email, name);
             CreateBooking(existingUser, bookingReq.SeatId);
             await _dbContext.SaveChangesAsync();
             return EntityToDto(existingUser);
         }
 
 
-        private Models.Domain.User CreateUser(UserBookingRequest bookingReq)
+        private Models.Domain.User CreateUser(UserBookingRequest bookingReq, String email, String name)
         {
             var user = new Models.Domain.User
             {
-                Email = bookingReq.Email,
-                Name = bookingReq.Name
+                Email = email,
+                Name = name
+
             };
             _dbContext.Users.Add(user);
+            return user;
+        }
+
+        public User? GetUserByEmail(String email)
+        {
+            var user = _dbContext.Users.FirstOrDefault(u => u.Email == email);
             return user;
         }
 
@@ -55,7 +62,8 @@ namespace server.Repository
             var booking = new Booking
             {
                 User = user,// Reference the related, now tracked entity, not the PK
-                SeatId = seatId
+                SeatId = seatId,
+                BookingDateTime = DateTime.Now.AddDays(1)
             };
             _dbContext.Bookings.Add(booking);
             return booking;

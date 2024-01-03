@@ -9,6 +9,8 @@ namespace server.Repository
     {
         Task<List<UserDto>> GetAllUsers();
         Booking? GetBookingByEmailAndBookingid(int id, string email);
-        Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest booking);
+        Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest booking, String email, String name);
+        User? GetUserByEmail(string email);
+
     }
 }

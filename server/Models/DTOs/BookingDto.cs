@@ -5,19 +5,29 @@ namespace server.Models.DTOs
         public int Id { get; set; }
         public int UserId { get; set; }
         public int SeatId { get; set; }
-        public DateTime DateTime { get; set; }
+        public String DateTime { get; set; }
 
         public BookingDto(int id, int userId, int seatId, DateTime dateTime)
         {
+            // Time zone identifier for Norway (with DST information)
+            string norwayTimeZoneId = "Central Europe Standard Time";
+
+            // Convert to Norwegian time zone
             Id = id;
             UserId = userId;
             SeatId = seatId;
-            DateTime = dateTime;
+            DateTime = ConvertToTimeZone(dateTime, norwayTimeZoneId);  
         }
-        public BookingDto(int userId, int seatId)
+
+        static String ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)
         {
-            UserId = userId;
-            SeatId = seatId;
+            // Get the time zone information
+            TimeZoneInfo norwayTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+
+            // Convert the DateTime to the specified time zone
+            DateTime convertedDateTime = TimeZoneInfo.ConvertTime(originalDateTime, norwayTimeZone);
+
+            return convertedDateTime.ToString("dd/MM/yyyy HH:mm");
         }
     }
 }

@@ -14,13 +14,6 @@ namespace server.Models.Domain
             Name = name;
             Email = email;
         }
-        public User(int id, string name, string email, List<Booking> booking)
-        {
-            Id = id;
-            Name = name;
-            Email = email;
-            Bookings = booking;
-        }
 
         public User()
         {
