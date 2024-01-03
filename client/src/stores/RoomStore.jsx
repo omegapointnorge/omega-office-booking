@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 import toast from "react-hot-toast";
 import { Seat } from "../domain/seat";
 import HistoryStore from "./HistoryStore.jsx";
-import { Booking } from "../domain/booking";
+import Booking from "../domain/booking";
 import ApiService from "./ApiService.jsx";
 class RoomStore {
   seats = [];

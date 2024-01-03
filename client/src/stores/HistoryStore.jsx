@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { Booking } from "../domain/booking";
+import Booking from "../domain/booking";
 import toast from "react-hot-toast";
 import ApiService from "./ApiService.jsx";
 
