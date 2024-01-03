@@ -3,6 +3,7 @@ using server.Context;
 using server.Models.Domain;
 using server.Models.DTOs;
 using server.Request;
+using server.Response;
 
 namespace server.Repository
 {
@@ -27,15 +28,19 @@ namespace server.Repository
             ).ToListAsync();
         }
 
-        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String userId, String email, String name)
+        public async Task<UserBookingResponse> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String userId, String email, String name)
         {
             // existingUser as it currently exists in the db
             var existingUser = GetUserByUserId(userId);
             // User doesn't exist, so add a new one
             existingUser ??= CreateUser(userId, email, name);
             CreateBooking(existingUser, bookingReq.SeatId);
+            var response = new UserBookingResponse();
+            
             await _dbContext.SaveChangesAsync();
-            return EntityToDto(existingUser);
+            response.UserResponse = existingUser;
+            
+            return response;
         }
 
         private Models.Domain.User CreateUser(String userId, String email, String name)

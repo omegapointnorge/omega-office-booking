@@ -2,6 +2,7 @@
 using server.Models.Domain;
 using server.Models.DTOs;
 using server.Request;
+using server.Response;
 
 namespace server.Repository
 {
@@ -9,7 +10,7 @@ namespace server.Repository
     {
         Task<List<UserDto>> GetAllUsers();
         Booking? GetBookingByUserIdAndBookingId(int id, String userId);
-        Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest booking, String userId, String email, String name);
+        Task<UserBookingResponse> InsertOrUpdateUsersBooking(UserBookingRequest booking, String userId, String email, String name);
 
         User? GetUserByUserId(String userId);
     }
