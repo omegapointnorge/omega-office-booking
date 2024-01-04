@@ -16,14 +16,14 @@ namespace server.Controllers
         }
 
         [HttpGet("bookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookings()
+        public async Task<ActionResult<IEnumerable<BookingDetailsDto>>> GetAllBookings()
         {
             var response = await _bookingService.GetAllBookings();
             return new OkObjectResult(response);
         }
 
         [HttpGet("Bookings/{userId}")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
+        public async Task<ActionResult<IEnumerable<BookingDetailsDto>>> GetAllBookingsForUser(String userId)
         {
             var response = await _bookingService.GetAllBookingsForUser(userId);
             return new OkObjectResult(response);
@@ -31,7 +31,7 @@ namespace server.Controllers
 
 
         [HttpGet("Bookings/MyBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForCurrentUser()
+        public async Task<ActionResult<IEnumerable<BookingDetailsDto>>> GetAllBookingsForCurrentUser()
         {
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
@@ -41,7 +41,7 @@ namespace server.Controllers
             var response = await _bookingService.GetAllBookingsForUser(userId);
             return new OkObjectResult(response);
         }
-        
+
         /// <summary>
         /// Deletes a booking with the specified ID.
         /// </summary>
