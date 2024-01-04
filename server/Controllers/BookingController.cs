@@ -55,12 +55,11 @@ namespace server.Controllers
             if (User.Identity?.IsAuthenticated ?? false)
             {
                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
-                // TODO ??
+                
             }
-            {
                 var result = await _bookingService.DeleteBooking(id, userId);
                 return result;
-            }
+            
         }
     }
 }

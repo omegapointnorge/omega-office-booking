@@ -62,13 +62,8 @@ public class UserController : ControllerBase
         var name = User.FindFirst("name")?.Value?? String.Empty;
 
         var response = await _userService.InsertOrUpdateUsersBooking(booking, userId, email, name);
-        if ( response?.Value?.Error != null ) {
-            return new BadRequestObjectResult(response?.Value?.Error);
-        }
-        else
         return new OkObjectResult(response);
     }
-
 }
 
 public record UserInfo(

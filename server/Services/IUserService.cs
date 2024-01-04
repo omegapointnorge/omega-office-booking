@@ -9,6 +9,6 @@ namespace server.Services
     {
         Task<ActionResult<List<UserDto>>> GetAllUsers();
 
-        Task<ActionResult<UserBookingResponse>> InsertOrUpdateUsersBooking(UserBookingRequest booking, String userId,String email, String name);
+        Task<UserBookingResponse> InsertOrUpdateUsersBooking(UserBookingRequest booking, String userId,String email, String name);
     }
 }

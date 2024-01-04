@@ -1,10 +1,13 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
+using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
 using server.Request;
 using server.Response;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using User = server.Models.Domain.User;
 
 namespace server.Repository
 {
@@ -36,43 +39,34 @@ namespace server.Repository
             {
                 // existingUser as it currently exists in the db
                 var existingUser = GetUserByUserId(userId);
-            // User doesn't exist, so add a new one
-            existingUser ??= CreateUser(userId, email, name);
-            CreateBooking(existingUser, bookingReq.SeatId);
-            await _dbContext.SaveChangesAsync();
-            response.UserResponse = EntityToDto(existingUser);
+                // User doesn't exist, so add a new one, timeForBooking is the time for the reservation, now set it to tomorrow
+                var bookingDateTime = DateTime.Now.AddDays(1);
+                existingUser ??= CreateUser(userId, email, name);
+                if (CanBookSeatAndUser(bookingDateTime, bookingReq.SeatId, userId))
+                {
+                    CreateBooking(bookingDateTime, existingUser, bookingReq.SeatId);
+                    await _dbContext.SaveChangesAsync();
+                    response.UserResponse = EntityToDto(existingUser);
+                }
+                else
+                {
+                    response.Error = "Seat Can not be Booked, or the user has already a reservation";
+                }
 
             }
             catch (DbUpdateException ex)
             {
                 // Handle specific database-related exceptions
-                if (ex.InnerException is SqlException sqlException)
-                {
-                    // Check for specific SQL Server error codes and handle accordingly
-                    if (sqlException.Number == 2601 || sqlException.Number == 2627)
-                    {
-                        // Unique key violation (duplicate entry)
-                        response.Error = "User booking already exists.";
-                    }
-                    else
-                    {
-                        // Handle other SQL Server error codes or provide a generic error message
-                        response.Error = "Error while saving changes to the database.";
-                    }
-                }
-                else
-                {
-                    // Handle other database-related exceptions or provide a generic error message
-                    response.Error = "Error while saving changes to the database.";
-                }
+                ExceptionHandler.HandleDbUpdateException(response, ex);
             }
-
             return response;
         }
 
-        private Models.Domain.User CreateUser(String userId, String email, String name)
+
+
+        private User CreateUser(String userId, String email, String name)
         {
-            var user = new Models.Domain.User
+            var user = new User
             {
                 Id = userId,
                 Email = email,
@@ -89,16 +83,22 @@ namespace server.Repository
             return user;
         }
 
-        private User CreateBooking(Models.Domain.User user, int seatId)
+        private User CreateBooking(DateTime bookingDateTime, Models.Domain.User user, int seatId)
         {
             var booking = new Booking
             {
                 User = user,// Reference the related, now tracked entity, not the PK
                 SeatId = seatId,
-                BookingDateTime = DateTime.Now.AddDays(1)
+                BookingDateTime = bookingDateTime
             };
             user.Bookings.Add(booking);
             return user;
+        }
+
+        private bool CanBookSeatAndUser(DateTime bookingDateTime, int seatId, String userId)
+        {
+            // Check if the seat already has a booking on the same day,as well as user,
+            return !_dbContext.Bookings.Any(booking => booking.BookingDateTime.Date == bookingDateTime.Date && (booking.SeatId == seatId || booking.UserId == userId));
         }
 
         public Booking? GetBookingByUserIdAndBookingId(int bookingId, String userId)
