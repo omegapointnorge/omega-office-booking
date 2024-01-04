@@ -61,6 +61,7 @@ public class UserController : ControllerBase
         var name = User.FindFirst("name")?.Value?? String.Empty;
         
         var response = await _userService.InsertOrUpdateUsersBooking(booking, userId, email, name);
+        if (response == null) return new BadRequestObjectResult("Seat or Person cannot be booked");
         return new OkObjectResult(response);
     }
 

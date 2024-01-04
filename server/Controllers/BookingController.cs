@@ -38,7 +38,7 @@ namespace server.Controllers
             {
                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value ?? String.Empty;
             };
-            var response = await _bookingService.GetAllBookingsForCurrentUser(userId);
+            var response = await _bookingService.GetAllBookingsForUser(userId);
             return new OkObjectResult(response);
         }
         /// <summary>
@@ -56,10 +56,9 @@ namespace server.Controllers
                  userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid")?.Value ?? String.Empty;
                  // TODO ??
             }
-            {
                 var result = await _bookingService.DeleteBooking(id, userId);
                 return result;
-            }
+            
         }
     }
 }
