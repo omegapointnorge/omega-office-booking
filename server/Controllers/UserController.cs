@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
 using server.Request;
+using server.Response;
 using server.Services;
 
 namespace server.Controllers;
@@ -54,17 +55,15 @@ public class UserController : ControllerBase
     /// respons object contains the corrent booking information, not the booking histories
     /// </returns>
     [HttpPost("UpsertUserBooking")]
-    public async Task<ActionResult<UserDto>> UpsertUserBooking(UserBookingRequest booking)
+    public async Task<ActionResult<UserBookingResponse>> UpsertUserBooking(UserBookingRequest booking)
     {
-        var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid")?.Value;
+        var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
         var email = User.FindFirst("preferred_username")?.Value?? String.Empty;
         var name = User.FindFirst("name")?.Value?? String.Empty;
-        
+
         var response = await _userService.InsertOrUpdateUsersBooking(booking, userId, email, name);
-        if (response == null) return new BadRequestObjectResult("Seat or Person cannot be booked");
         return new OkObjectResult(response);
     }
-
 }
 
 public record UserInfo(

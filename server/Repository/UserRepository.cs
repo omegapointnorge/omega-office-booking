@@ -1,8 +1,13 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
+using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
 using server.Request;
+using server.Response;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using User = server.Models.Domain.User;
 
 namespace server.Repository
 {
@@ -27,32 +32,41 @@ namespace server.Repository
             ).ToListAsync();
         }
 
-        public async Task<UserDto?> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String userId, String email, String name)
+        public async Task<UserBookingResponse> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String userId, String email, String name)
         {
-            // existingUser as it currently exists in the db
-            var existingUser = GetUserByUserId(userId);
-            // User doesn't exist, so add a new one
-            var timeForBooking = DateTime.Now.AddDays(1);
-            existingUser ??= CreateUser(userId, email, name);
-            var userDto = EntityToDto(existingUser);
-            if (SeatCanBeBookedOnSameDay(timeForBooking, bookingReq.SeatId) && UserCanBeBookedOnSameDay(timeForBooking, userId))
+            var response = new UserBookingResponse();
+            try
             {
-                CreateBooking(timeForBooking, existingUser, bookingReq.SeatId);
-                await _dbContext.SaveChangesAsync();
+                // existingUser as it currently exists in the db
+                var existingUser = GetUserByUserId(userId);
+                // User doesn't exist, so add a new one, timeForBooking is the time for the reservation, now set it to tomorrow
+                var bookingDateTime = DateTime.Now.AddDays(1);
+                existingUser ??= CreateUser(userId, email, name);
+                if (CanBookSeatAndUser(bookingDateTime, bookingReq.SeatId, userId))
+                {
+                    CreateBooking(bookingDateTime, existingUser, bookingReq.SeatId);
+                    await _dbContext.SaveChangesAsync();
+                    response.UserResponse = EntityToDto(existingUser);
+                }
+                else
+                {
+                    response.Error = "Seat Can not be Booked, or the user has already a reservation";
+                }
 
-                //userDto = EntityToDto(existingUser);
-                return userDto;
             }
-            else
+            catch (DbUpdateException ex)
             {
-                return null;
-               // here implemented error handling
+                // Handle specific database-related exceptions
+                ExceptionHandler.HandleDbUpdateException(response, ex);
             }
+            return response;
         }
 
-        private Models.Domain.User CreateUser(String userId, String email, String name)
+
+
+        private User CreateUser(String userId, String email, String name)
         {
-            var user = new Models.Domain.User
+            var user = new User
             {
                 Id = userId,
                 Email = email,
@@ -69,7 +83,7 @@ namespace server.Repository
             return user;
         }
 
-        private Booking CreateBooking(DateTime bookingDateTime, Models.Domain.User user, int seatId)
+        private User CreateBooking(DateTime bookingDateTime, Models.Domain.User user, int seatId)
         {
             var booking = new Booking
             {
@@ -77,24 +91,15 @@ namespace server.Repository
                 SeatId = seatId,
                 BookingDateTime = bookingDateTime
             };
-            _dbContext.Bookings.Add(booking);
-            return booking;
+            user.Bookings.Add(booking);
+            return user;
         }
 
-        private bool SeatCanBeBookedOnSameDay(DateTime bookingDateTime, int seatId)
+        private bool CanBookSeatAndUser(DateTime bookingDateTime, int seatId, String userId)
         {
-            // Check if the seat already has a booking on the same day
-            return !_dbContext.Bookings.Any(booking => booking.BookingDateTime.Date == bookingDateTime.Date && booking.SeatId == seatId);
+            // Check if the seat already has a booking on the same day,as well as user,
+            return !_dbContext.Bookings.Any(booking => booking.BookingDateTime.Date == bookingDateTime.Date && (booking.SeatId == seatId || booking.UserId == userId));
         }
-
-        //Todo This can be implemented when Guid is ready for user, always return true for now
-        private bool UserCanBeBookedOnSameDay(DateTime bookingDateTime, string userId)
-        {
-            // Check if the user already has a booking on the same day
-            return true;
-        }
-
-
 
         public Booking? GetBookingByUserIdAndBookingId(int bookingId, String userId)
         {

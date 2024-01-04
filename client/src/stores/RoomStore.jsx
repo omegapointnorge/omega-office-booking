@@ -48,20 +48,22 @@ class RoomStore {
       const url = `/client/User/UpsertUserBooking`;
 
       const response = await ApiService.fetchData(url, "POST", req);
-
+      const responseData = await response.json();
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      else if (responseData.error != null) {
+        toast.error("Error: " + responseData.error);
+      } else {
+        // Extracting the booking entity
+        const bookingId = responseData.userResponse.bookings[0].id;
+        const seatId = responseData.userResponse.bookings[0].seatId;
+        const dateTime = responseData.userResponse.bookings[0].dateTime;
+        HistoryStore.myBookings.unshift(new Booking(bookingId, seatId, dateTime));
+        seatToUpdate.isTaken = true;
+        toast.success("Booked Seat OK with Seat " + seatId);
+      }
 
-      toast.success("Booked seat ok");
-      const responseData = await response.json();
-      // Extracting the booking ID
-      const bookingId = responseData.value.bookings[0].id;
-      // Extracting the booking ID
-      const seatId = responseData.value.bookings[0].seatId;
-      const dateTime = responseData.value.bookings[0].dateTime;
-      HistoryStore.myBookings.unshift(new Booking(bookingId, seatId, dateTime));
-      seatToUpdate.isTaken = true;
     } catch (error) {
       console.error(error);
     } finally {

@@ -3,6 +3,7 @@ using server.Models.Domain;
 using server.Models.DTOs;
 using server.Repository;
 using server.Request;
+using server.Response;
 
 namespace server.Services
 {
@@ -20,8 +21,9 @@ namespace server.Services
             return await _userRepository.GetAllUsers();
         }
 
-        public async Task<ActionResult<UserDto?>> InsertOrUpdateUsersBooking(UserBookingRequest booking, String userId, String email, String name)
+        public async Task<UserBookingResponse> InsertOrUpdateUsersBooking(UserBookingRequest booking, String userId, String email, String name)
         {
+
             return await _userRepository.InsertOrUpdateUsersBooking(booking, userId, email, name);
         }
     }
