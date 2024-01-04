@@ -29,7 +29,6 @@ namespace server.Controllers
             return new OkObjectResult(response);
         }
 
-
         [HttpGet("Bookings/MyBookings")]
         public async Task<ActionResult<IEnumerable<BookingDetailsDto>>> GetAllBookingsForCurrentUser()
         {
@@ -50,7 +49,6 @@ namespace server.Controllers
         [HttpDelete("Bookings/{id}")]
         public async Task<ActionResult> DeleteBooking(int id)
         {
-
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
