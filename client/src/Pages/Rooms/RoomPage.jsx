@@ -60,8 +60,16 @@ const RoomPage = observer(() => {
         seatNr={seat.id}
         isTaken={seat.isTaken}
         onClick={() => {
+
+          const pathSegments = location.pathname.split("/");
+          const lastWord = pathSegments.pop().replace("-", " ");
+
+          // Function to capitalize the first character of each word
+          const capitalizeWords = (str) => str.replace(/\b\w/g, (match) => match.toUpperCase());
+          const roomName = capitalizeWords(lastWord);
+
           roomStore.handleOpenDialog();
-            roomStore.bookSeat(new UserBookingRequest(seat.id));
+            roomStore.bookSeat(new UserBookingRequest(seat.id), roomName);
         }}
       />
     </div>
