@@ -20,8 +20,7 @@ namespace server.Repository
                 new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
             ).ToListAsync();
         }
-
-
+        
         public Task<List<BookingDto>> GetAllBookingsForUser(String userId)
         {
             return _dbContext.Bookings
@@ -31,6 +30,36 @@ namespace server.Repository
                     new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
                 )
             .ToListAsync();
+        }
+
+        public Task<List<BookingDto>> GetUpcomingBookingsForUser(string userId)
+        {
+            DateTime currentDateTime = DateTime.Now;
+
+            return _dbContext.Bookings
+                .Where(booking => booking.UserId == userId && booking.BookingDateTime > currentDateTime)
+                .OrderBy(booking => booking.BookingDateTime)
+                .Select(booking =>
+                    new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
+                )
+                .ToListAsync();
+        }
+
+        public async Task<List<BookingDto>> GetPreviousBookingsForUser(string userId, int itemCount, int pageNumber)
+        {
+            DateTime currentDateTime = DateTime.Now;
+
+            var query = _dbContext.Bookings
+                .Where(booking => booking.UserId == userId && booking.BookingDateTime < currentDateTime)
+                .OrderByDescending(booking => booking.BookingDateTime)
+                .Skip((pageNumber - 1) * itemCount)  // Calculate the number of records to skip based on the page number and page size
+                .Take(itemCount);  // Take only the specified number of records for the current page
+
+            var bookings = await query
+                .Select(booking => new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime))
+                .ToListAsync();
+
+            return bookings;
         }
 
         public async Task<ActionResult> DeleteBooking(int id)

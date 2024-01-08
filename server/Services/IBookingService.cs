@@ -9,8 +9,9 @@ namespace server.Services
 
         Task<ActionResult<List<BookingDto>>> GetAllBookings();
 
-        Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(string userid);
-
+        Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(string userId);
+        Task<ActionResult<List<BookingDto>>> GetUpcomingBookingsForUser(string userId);
+        Task<ActionResult<List<BookingDto>>> GetPreviousBookingsForUser(string userId, int itemCount, int pageNumber);
     }
 }
 

@@ -7,7 +7,7 @@ import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
 
 
 const HistoryPage = observer(() => {
-    if (historyStore.myBookings.length === 0) {
+    if (historyStore.myUpcomingBookings.length === 0) {
         return (
             <>
                 <div
@@ -60,7 +60,7 @@ const HistoryPage = observer(() => {
                             <button>
                                 <IoIosArrowBack />
                             </button>
-                            {historyStore.myEarlierBookings
+                            {historyStore.myPreviousBookings
                                 .map((booking) => (
                                     <BookingItem key={booking.id} roomName={booking.roomName}
                                                  seatId={booking.seatId}

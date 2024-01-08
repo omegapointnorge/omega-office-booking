@@ -22,23 +22,27 @@ namespace server.Controllers
             return new OkObjectResult(response);
         }
 
-        [HttpGet("Bookings/{userId}")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
-        {
-            var response = await _bookingService.GetAllBookingsForUser(userId);
-            return new OkObjectResult(response);
-        }
-
-
-        [HttpGet("Bookings/MyBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForCurrentUser()
+        [HttpGet("Bookings/MyUpcomingBookings")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllUpcomingBookingsForCurrentUser()
         {
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
             };
-            var response = await _bookingService.GetAllBookingsForUser(userId);
+            var response = await _bookingService.GetUpcomingBookingsForUser(userId);
+            return new OkObjectResult(response);
+        }
+        
+        [HttpGet("Bookings/MyPreviousBookings")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllPreviousBookingsForCurrentUser(int itemCount, int pageNumber)
+        {
+            var userId = String.Empty;
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
+            };
+            var response = await _bookingService.GetPreviousBookingsForUser(userId, itemCount, pageNumber);
             return new OkObjectResult(response);
         }
         

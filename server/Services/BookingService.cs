@@ -24,6 +24,16 @@ namespace server.Services
             return await _bookingRepository.GetAllBookingsForUser(userId);
         }
 
+        public async Task<ActionResult<List<BookingDto>>> GetUpcomingBookingsForUser(string userId)
+        {
+            return await _bookingRepository.GetUpcomingBookingsForUser(userId);
+        }
+
+        public async Task<ActionResult<List<BookingDto>>> GetPreviousBookingsForUser(string userId, int itemCount, int pageNumber)
+        {
+            return await _bookingRepository.GetPreviousBookingsForUser(userId, itemCount, pageNumber);
+        }
+
         public async Task<ActionResult> DeleteBooking(int bookingId, String userId)
         {
             bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByUserIdAndBookingId(bookingId, userId) != null;

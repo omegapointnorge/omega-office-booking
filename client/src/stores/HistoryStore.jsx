@@ -2,26 +2,38 @@ import { makeAutoObservable } from "mobx";
 import { Booking } from "../domain/booking";
 import toast from "react-hot-toast";
 import ApiService from "./ApiService.jsx";
-import {parse} from "date-fns";
 
 class HistoryStore {
-  myBookings = [];
   myUpcomingBookings = [];
-  myEarlierBookings = [];
+  myPreviousBookings = [];
   openDialog = false;
   bookingIdToDelete = null;
+  itemCount = 6;
+  pageNumber;
 
   constructor() {
-    this.initialize();
+    this.fetchUpcomingBookings();
+    this.fetchPreviousBookings(1, this.itemCount);
     makeAutoObservable(this);
   }
 
-  async initialize() {
+  async fetchUpcomingBookings() {
     try {
-      const url = "/api/Booking/Bookings/MyBookings";
+      const url = "/api/Booking/Bookings/MyUpcomingBookings";
       const response = await ApiService.fetchData(url, "Get", null);
       const data = await response.json();
-      this.setBookings(data);
+      this.setUpcomingBookings(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async fetchPreviousBookings(pageNumber, itemCount) {
+    try {
+      const url = `/api/Booking/Bookings/MyPreviousBookings?pageNumber=${pageNumber}&itemCount=${itemCount}`;
+      const response = await ApiService.fetchData(url, "Get", null);
+      const data = await response.json();
+      this.setPreviousBookings(data);
     } catch (error) {
       console.error(error);
     }
@@ -36,33 +48,24 @@ class HistoryStore {
     }
   }
 
-  setBookings(data) {
-    this.myBookings = data.value.map(
+  setUpcomingBookings(data) {
+    this.myUpcomingBookings = data.value.map(
         (booking) => new Booking(booking.id, booking.seatId, booking.dateTime)
     );
-    let pastBookings = []
-    let futureBookings = []
-    this.myBookings.forEach((booking) => {
-      console.log("booking datetime", booking.dateTime)
-      const givenDate = parse(booking.dateTime, 'dd/MM/yyyy HH:mm:ss', new Date());
-      const currentDate = new Date()
-      console.log("test")
-      console.log(currentDate)
-      if (givenDate <  currentDate){
-        pastBookings.push(booking)
-      }
-      else futureBookings.unshift(booking)
-    })
-    this.myEarlierBookings = pastBookings
-    this.myUpcomingBookings = futureBookings
+  }
+
+  setPreviousBookings(data) {
+    this.myPreviousBookings = data.value.map(
+        (booking) => new Booking(booking.id, booking.seatId, booking.dateTime)
+    );
   }
 
   deleteBooking(bookingId) {
-    const bookingToDelete = this.myBookings.find((booking) => booking.id === bookingId);
+    const bookingToDelete = this.myUpcomingBookings.find((booking) => booking.id === bookingId);
     if (bookingToDelete) {
-      let newBookingList = this.myBookings.filter(item => item !== bookingToDelete);
+      let newBookingList = this.myUpcomingBookings.filter(item => item !== bookingToDelete);
       // newBookingList = newBookingList.slice().reverse();
-      this.myBookings = newBookingList;
+      this.myUpcomingBookings = newBookingList;
       this.deleteBookingCall(bookingId)
       toast.success("Booking deleted for Booking Nr: " + bookingId);
       this.handleCloseDialog();
