@@ -10,5 +10,6 @@ namespace server.Repository
         Task<List<BookingDto>> GetAllBookingsForUser(string userId);
         Task<List<BookingDto>> GetUpcomingBookingsForUser(string userId);
         Task<List<BookingDto>> GetPreviousBookingsForUser(string userId, int itemCount, int pageNumber);
+        Task<int> GetPreviousBookingCountForUser(string userId);
     }
 }

@@ -46,6 +46,18 @@ namespace server.Controllers
             return new OkObjectResult(response);
         }
         
+        [HttpGet("Bookings/MyPreviousBookingsCount")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetCurrentUserPreviousBookingCount()
+        {
+            var userId = String.Empty;
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
+            };
+            var response = await _bookingService.GetPreviousBookingCountForUser(userId);
+            return new OkObjectResult(response);
+        }
+        
         /// <summary>
         /// Deletes a booking with the specified ID.
         /// </summary>

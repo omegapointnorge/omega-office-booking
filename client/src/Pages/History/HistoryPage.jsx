@@ -5,7 +5,6 @@ import historyStore from "../../stores/HistoryStore";
 import MyDialog from "../../components/Dialog";
 import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
 
-
 const HistoryPage = observer(() => {
     if (historyStore.myUpcomingBookings.length === 0) {
         return (
@@ -57,8 +56,8 @@ const HistoryPage = observer(() => {
                     <div className="flex flex-col gap-4">
                         <p className="text-left text-xl font-semibold heading mb-3">PREVIOUS BOOKINGS</p>
                         <div className="flex flex-row gap-5">
-                            <button>
-                                <IoIosArrowBack />
+                            <button onClick={() => historyStore.navigatePrevious()} className={`opacity-${historyStore.pageNumber < historyStore.lastPage ? '0' : '100'}`}>
+                                <IoIosArrowBack/>
                             </button>
                             {historyStore.myPreviousBookings
                                 .map((booking) => (
@@ -67,7 +66,7 @@ const HistoryPage = observer(() => {
                                                  dateTime={booking.dateTime} showDeleteButton={false}
                                     ></BookingItem>
                                 ))}
-                            <button>
+                            <button onClick={() => historyStore.navigateNext()}>
                                 <IoIosArrowForward />
                             </button>
                         </div>

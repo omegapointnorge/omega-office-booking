@@ -34,6 +34,11 @@ namespace server.Services
             return await _bookingRepository.GetPreviousBookingsForUser(userId, itemCount, pageNumber);
         }
 
+        public async Task<int> GetPreviousBookingCountForUser(string userId)
+        {
+            return await _bookingRepository.GetPreviousBookingCountForUser(userId);
+        }
+
         public async Task<ActionResult> DeleteBooking(int bookingId, String userId)
         {
             bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByUserIdAndBookingId(bookingId, userId) != null;

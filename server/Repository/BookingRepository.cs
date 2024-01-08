@@ -62,6 +62,18 @@ namespace server.Repository
             return bookings;
         }
 
+        public async Task<int> GetPreviousBookingCountForUser(string userId)
+        {
+            DateTime currentDateTime = DateTime.Now;
+
+            var query = await _dbContext.Bookings
+                .Where(booking => booking.UserId == userId && booking.BookingDateTime < currentDateTime)
+                .CountAsync();
+
+            return query;
+        }
+
+
         public async Task<ActionResult> DeleteBooking(int id)
         {
             try

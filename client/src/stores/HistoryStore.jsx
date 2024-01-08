@@ -9,11 +9,14 @@ class HistoryStore {
   openDialog = false;
   bookingIdToDelete = null;
   itemCount = 6;
-  pageNumber;
+  pageNumber = 1;
+  totalItemCount;
+  lastPage;
 
   constructor() {
     this.fetchUpcomingBookings();
-    this.fetchPreviousBookings(1, this.itemCount);
+    this.fetchPreviousBookings(this.pageNumber, this.itemCount);
+    this.fetchPreviousBookingsCount();
     makeAutoObservable(this);
   }
 
@@ -39,6 +42,17 @@ class HistoryStore {
     }
   }
 
+  async fetchPreviousBookingsCount() {
+    try {
+      const url = `/api/Booking/Bookings/MyPreviousBookingsCount`;
+      const response = await ApiService.fetchData(url, "Get", null);
+      const data = await response.json();
+      this.setPreviousBookingsCount(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async deleteBookingCall(bookingId) {
     try {
       const url = "/api/Booking/Bookings/" + bookingId;
@@ -59,6 +73,26 @@ class HistoryStore {
         (booking) => new Booking(booking.id, booking.seatId, booking.dateTime)
     );
   }
+
+  setPreviousBookingsCount(data) {
+    this.totalItemCount = data;
+  }
+
+  async navigatePrevious() {
+    if (this.pageNumber > 1) {
+      this.pageNumber -= 1;
+      await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
+    }
+  }
+
+  async navigateNext() {
+    this.lastPage = Math.ceil(this.totalItemCount / this.itemCount);
+    if (this.pageNumber < this.lastPage) {
+      this.pageNumber += 1;
+      await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
+    }
+  }
+
 
   deleteBooking(bookingId) {
     const bookingToDelete = this.myUpcomingBookings.find((booking) => booking.id === bookingId);
