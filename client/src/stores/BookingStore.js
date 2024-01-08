@@ -1,0 +1,80 @@
+import { makeAutoObservable } from "mobx";
+import Booking from '../domain/booking';
+
+class BookingStore {
+  activeBookings = [];
+  userBookings = [];
+
+  constructor() {
+    this.initialize()
+    makeAutoObservable(this);
+  }
+
+  async initialize() {
+    await this.fetchAllActiveBookings()
+  }
+
+  // Fetch all active bookings
+  async fetchAllActiveBookings() {
+    try {
+      const response = await fetch('/api/booking/bookings');
+      if (!response.ok) throw new Error('Failed to fetch active bookings');
+      const data = await response.json();
+      this.setActiveBookings(data.value);
+    } catch (error) {
+      console.error("Error fetching active bookings:", error);
+    }
+  }
+
+  // Fetch all bookings for a specific user
+  async fetchUserBookings(userId) {
+    try {
+      const response = await fetch(`/api/Booking/Bookings/MyBookings`);
+      if (!response.ok) throw new Error('Failed to fetch user bookings');
+      const data = await response.json();
+      this.setUserBookings(data);
+    } catch (error) {
+      console.error("Error fetching user bookings:", error);
+    }
+  }
+
+  async createBooking(bookingRequest) {
+    try {
+      const response = await fetch('/api/Booking/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify(bookingRequest),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create booking');
+      }
+
+      const newBookingJson = await response.json();
+      const newBookingData = newBookingJson.value
+      const newBooking = new Booking(newBookingData.userId, newBookingData.seatId, newBookingData.bookingDateTime);
+
+      // Update the store's state with the new booking
+      this.activeBookings.push(newBooking);
+
+    } catch (error) {
+      console.error("Error creating booking:", error);
+    }
+  }
+
+  // Update active bookings
+  setActiveBookings(bookings) {
+    this.activeBookings = bookings;
+  }
+
+  // Update user bookings
+  setUserBookings(bookings) {
+    this.userBookings = bookings;
+  }
+}
+
+const bookingStore = new BookingStore();
+export default bookingStore;

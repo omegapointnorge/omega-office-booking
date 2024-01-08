@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using server.Context;
 using server.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using server.Models.Domain;
 
 namespace server.Repository
 {
@@ -13,8 +14,15 @@ namespace server.Repository
         {
             _dbContext = officeDbContext;
         }
+        
+        public async Task<Booking> CreateBookingAsync(Booking booking)
+        {
+            _dbContext.Bookings.Add(booking);
+            await _dbContext.SaveChangesAsync();
+            return booking;
+        }
 
-        public Task<List<BookingDto>> GetAllBookings()
+        public Task<List<BookingDto>> GetAllFutureBookings()
         {
             return _dbContext.Bookings.Select(booking =>
                 new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)

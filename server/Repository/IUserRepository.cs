@@ -13,5 +13,7 @@ namespace server.Repository
         Task<UserBookingResponse> InsertOrUpdateUsersBooking(UserBookingRequest booking, String userId, String email, String name);
 
         User? GetUserByUserId(String userId);
+
+        Task UpsertUserAsync(User user);
     }
 }
