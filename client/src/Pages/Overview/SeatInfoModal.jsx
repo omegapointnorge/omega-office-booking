@@ -1,34 +1,42 @@
 import React, {useState, useEffect} from 'react';
+import { observer } from 'mobx-react-lite';
+import bookingStore from '../../stores/BookingStore';
+import { BookingRequest } from '../../domain/booking';
+import { useAuthContext } from '../../api/useAuthContext';
 
-const SeatInfoModal = ({ onClose, selectedSeatId, user, activeBookings }) => {
 
-    const today = new Date().toISOString().split('T')[0];
-    const userId = user.claims[1].value
+const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
+    const { user } = useAuthContext() ?? {};
 
-    const [bookingDate, setBookingDate] = useState(today);
-    const [bookedBy, setBookedBy] = useState('');
+    const initialDateTime = new Date().toISOString().slice(0, 16);
+    const userId = user?.claims?.find(claim => claim.key === 'http://schemas.microsoft.com/identity/claims/objectidentifier')?.value;
+
+    const { activeBookings } = bookingStore;
+
+    const [bookingDateTime, setBookingDateTime] = useState(initialDateTime);
+    const [bookedBy, setBookedBy] = useState();
 
     useEffect(() => {
         const foundBooking = activeBookings.find(booking => booking.seatId === selectedSeatId);
         if (foundBooking) {
-            setBookedBy(foundBooking.email);
+            setBookedBy(foundBooking.userId);
+            setBookingDateTime(new Date(foundBooking.bookingDateTime).toISOString().slice(0, 16));
         } else {
             setBookedBy('');
         }
     }, [selectedSeatId, activeBookings]);
 
-    const onDateChange = (dateValue) => {
-        console.log(dateValue)
-        setBookingDate(dateValue)
-    }
+    const onDateTimeChange = (dateTimeValue) => {
+        setBookingDateTime(dateTimeValue);
+    };
 
-    const handleBook = () => {
-        // Logic for booking the seat
-        console.log("Booking seat:", selectedSeatId);
+    const handleBook = async () => {
+        const booking = new BookingRequest(selectedSeatId);
+        await bookingStore.createBooking(booking);
+        onClose()
     };
 
     const handleDelete = () => {
-        // Logic for booking the seat
         console.log("Booking seat:", selectedSeatId);
     };
 
@@ -75,9 +83,9 @@ const SeatInfoModal = ({ onClose, selectedSeatId, user, activeBookings }) => {
                 <label htmlFor="booking-date" className="font-medium">Booking Date:</label>
                 <input 
                     id="booking-date"
-                    type="date" 
-                    value={bookingDate || ''}
-                    onChange={e => onDateChange(e.target.value)}
+                    type="datetime-local" 
+                    value={bookingDateTime}
+                    onChange={e => onDateTimeChange(e.target.value)}
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={!user.admin}
                 />
@@ -88,7 +96,7 @@ const SeatInfoModal = ({ onClose, selectedSeatId, user, activeBookings }) => {
         </div>
       </div>
     );
-  };
+  });
   
   export default SeatInfoModal;
   
