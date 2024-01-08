@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using server.Models.Domain;
 using server.Models.DTOs;
+using server.Models.DTOs.Request;
+using server.Models.DTOs.Response;
+using server.Request;
 using server.Services;
 
 namespace server.Controllers
@@ -16,10 +20,27 @@ namespace server.Controllers
         }
 
         [HttpGet("bookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookings()
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllFutureBookings()
         {
-            var response = await _bookingService.GetAllBookings();
+            var response = await _bookingService.GetAllFutureBookings();
             return new OkObjectResult(response);
+        }
+
+        [HttpPost("create")]
+        public async Task<ActionResult<CreateBookingResponse>> CreateBooking(CreateBookingRequest bookingRequest)
+        {
+            try
+            {
+                var user = GetUser();
+                var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
+                
+                return Ok(booking);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception, handle the error appropriately
+                return StatusCode(500, "Internal Server Error");
+            }
         }
         
         [HttpGet("Bookings/{userId}")]
@@ -36,7 +57,7 @@ namespace server.Controllers
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
-                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value ?? String.Empty;
+                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
             };
             var response = await _bookingService.GetAllBookingsForCurrentUser(userId);
             return new OkObjectResult(response);
@@ -53,7 +74,7 @@ namespace server.Controllers
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated?? false)
             {
-                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid")?.Value ?? String.Empty;
+                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
                  // TODO ??
             }
             {
@@ -61,5 +82,14 @@ namespace server.Controllers
                 return result;
             }
         }
+
+        private User GetUser() {
+            var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
+            var email = User.FindFirst("preferred_username")?.Value?? String.Empty;
+            var name = User.FindFirst("name")?.Value?? String.Empty;
+
+            return new User(userId, name, email);
+        }
+
     }
 }

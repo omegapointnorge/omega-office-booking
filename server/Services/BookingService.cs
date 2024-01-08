@@ -1,6 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using server.Models.Domain;
 using server.Models.DTOs;
 using server.Repository;
+using server.Models.DTOs.Request;
+using server.Models.DTOs.Response;
+using server.Services;
+using System.Diagnostics.CodeAnalysis;
+
 
 namespace server.Services
 {
@@ -14,9 +20,27 @@ namespace server.Services
             _bookingRepository = bookingRepository;
             _userRepository = userRepository;
         }
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookings()
+
+        public async Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user)
         {
-            return await _bookingRepository.GetAllBookings();
+
+            await _userRepository.UpsertUserAsync(user);
+
+            var booking = new Booking
+            {
+                UserId = user.Id,
+                SeatId = bookingRequest.SeatId,
+                BookingDateTime = DateTime.Now
+            };
+
+            var createdBooking = await _bookingRepository.CreateBookingAsync(booking);
+            var createBookingResponse = new CreateBookingResponse(createdBooking);
+
+            return createBookingResponse;
+        }
+        public async Task<ActionResult<List<BookingDto>>> GetAllFutureBookings()
+        {
+            return await _bookingRepository.GetAllFutureBookings();
         }
 
         public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(String userId)
@@ -40,6 +64,16 @@ namespace server.Services
             var user = _userRepository.GetUserByUserId(userId);
 
             return await _bookingRepository.GetAllBookingsForUser(user.Id);
+        }
+
+        private DateTime ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)  {
+            // Get the time zone information
+            TimeZoneInfo norwayTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+
+            // Convert the DateTime to the specified time zone
+            DateTime convertedDateTime = TimeZoneInfo.ConvertTime(originalDateTime, norwayTimeZone);
+
+            return convertedDateTime;
         }
     }
 }
