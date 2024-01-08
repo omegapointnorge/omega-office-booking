@@ -1,9 +1,7 @@
 import React, {useState} from 'react';
 import Heading from '../../components/Heading';
-import Booking from '../../domain/booking'
 import { useAuthContext } from '../../api/useAuthContext';
 import { observer } from 'mobx-react-lite';
-import overviewStore from '../../stores/OverviewStore';
 import OfficeMap from './OfficeMap'; 
 import SeatInfoModal from './SeatInfoModal'; 
 
@@ -17,20 +15,18 @@ const OverviewPage = observer(() => {
 
   const [showModal, setShowModal] = useState(false);
   const [selectedSeatId, setSelectedSeatId] = useState(null);
-  const [activeBookings, setActiveBookings] = useState([
-    new Booking(1, '1', 'mbs@itverket.no', '2023-01-15'),
-    new Booking(2, '2', 'user2@example.com', '2023-01-16'),
-    new Booking(3, '3', 'user3@example.com', '2023-01-17'),
-    new Booking(4, '4', 'user4@example.com', '2023-01-18'),
-    new Booking(5, '5', 'user5@example.com', '2023-01-19')
-  ])
+
 
 
   const showSeatInfo = (seatId) => {
-    setSelectedSeatId(seatId);
-    setShowModal(true);
-  };
-  
+    try {
+      setSelectedSeatId(Number(seatId));
+      setShowModal(true);
+    }
+    catch (e) {
+      console.error(e)
+    }
+  };  
 
   return (
     <>
@@ -38,11 +34,11 @@ const OverviewPage = observer(() => {
         <div className="flex flex-col gap-10">
           <Heading title={welcomeTitle} subTitle={subTitle} />
           <div className="flex flex-row gap-24">
-            <OfficeMap showSeatInfo={showSeatInfo} activeBookings={activeBookings} user={user}/>
+            <OfficeMap showSeatInfo={showSeatInfo}/>
           </div>
         </div>
       </div>
-      {showModal && <SeatInfoModal onClose={() => setShowModal(false)} selectedSeatId={selectedSeatId} user={user} activeBookings={activeBookings}/>}
+      {showModal && <SeatInfoModal onClose={() => setShowModal(false)} selectedSeatId={selectedSeatId}/>}
     </>
   );
 });
