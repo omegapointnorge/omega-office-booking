@@ -22,9 +22,9 @@ public class UserController : ControllerBase
     {
         var claimsToExpose = new List<string>()
         {
-            "id",
+            "http://schemas.microsoft.com/identity/claims/objectidentifier",
             "name",
-            "preferred_username"
+            "preferred_username",
         };
 
         var user = new UserInfo(
@@ -56,7 +56,7 @@ public class UserController : ControllerBase
     [HttpPost("UpsertUserBooking")]
     public async Task<ActionResult<UserDto>> UpsertUserBooking(UserBookingRequest booking)
     {
-        var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid")?.Value;
+        var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
         var email = User.FindFirst("preferred_username")?.Value?? String.Empty;
         var name = User.FindFirst("name")?.Value?? String.Empty;
         
