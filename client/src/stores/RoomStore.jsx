@@ -56,10 +56,9 @@ class RoomStore {
       toast.success("Booked seat ok");
       const responseData = await response.json();
       // Extracting the booking ID
-      const bookingId = responseData.value.bookings[0].id;
-      // Extracting the booking ID
-      const seatId = responseData.value.bookings[0].seatId;
-      const dateTime = responseData.value.bookings[0].dateTime;
+      const bookingId = responseData.value.userResponse.bookings[0].id;
+      const seatId = responseData.value.userResponse.bookings[0].seatId;
+      const dateTime = responseData.value.userResponse.bookings[0].dateTime;
       HistoryStore.myBookings.unshift(new Booking(bookingId, seatId, dateTime));
       seatToUpdate.isTaken = true;
     } catch (error) {
