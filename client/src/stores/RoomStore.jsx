@@ -42,7 +42,7 @@ class RoomStore {
     }
   }
 
-  async createBookings(req, seatToUpdate) {
+  async createBookings(req, seatToUpdate, roomName) {
     try {
       this.isLoading = true;
       const url = `/client/User/UpsertUserBooking`;
@@ -59,7 +59,7 @@ class RoomStore {
       const bookingId = responseData.value.userResponse.bookings[0].id;
       const seatId = responseData.value.userResponse.bookings[0].seatId;
       const dateTime = responseData.value.userResponse.bookings[0].dateTime;
-      HistoryStore.myBookings.unshift(new Booking(bookingId, seatId, dateTime));
+      HistoryStore.myBookings.unshift(new Booking(roomName, bookingId, seatId, dateTime));
       seatToUpdate.isTaken = true;
     } catch (error) {
       console.error(error);
@@ -73,11 +73,11 @@ class RoomStore {
     );
   }
 
-  bookSeat(req) {
+  bookSeat(req, roomName) {
     const seatToUpdate = this.seats.find((seat) => seat.id === req.SeatId);
 
     if (seatToUpdate) {
-      this.createBookings(req, seatToUpdate);
+      this.createBookings(req, seatToUpdate, roomName);
       // toast.success("Booked seat");
     } else {
       console.log(`Seat with ID ${req.SeatId} not found.`);

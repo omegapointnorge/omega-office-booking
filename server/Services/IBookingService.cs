@@ -7,10 +7,9 @@ namespace server.Services
     {
         Task<ActionResult> DeleteBooking(int id, string userId);
 
-        Task<ActionResult<List<BookingDto>>> GetAllBookings();
+        Task<ActionResult<List<BookingDetailsDto>>> GetAllBookings();
 
-        Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(string userid);
-
+        Task<ActionResult<List<BookingDetailsDto>>> GetAllBookingsForUser(string userid);
     }
 }
 

@@ -31,7 +31,7 @@ const HistoryPage = observer(() => {
             subTitle="A summary of your bookings"
           />
           {historyStore.myBookings.map((booking) => (
-            <BookingItem key={booking.id} seatId={booking.seatId} name={booking.dateTime}
+            <BookingItem key={booking.id} roomName={booking.roomName} seatId={booking.seatId}  dateTime={booking.dateTime}
               onClick={() => {
                 historyStore.handleOpenDialog(booking.id);
               }}></BookingItem>

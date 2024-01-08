@@ -39,7 +39,7 @@ class HistoryStore {
 
   setBookings(data) {
     this.myBookings = data.value.map(
-      (booking) => new Booking(booking.id, booking.seatId, booking.dateTime)
+      (booking) => new Booking(booking.roomName, booking.bookingDto.id, booking.bookingDto.seatId, booking.bookingDto.dateTime)
     );
   }
   deleteBooking(bookingId) {
