@@ -1,8 +1,13 @@
 export default class Booking {
-  constructor(id, seatId, email, date) {
-    this.id = id;
+  constructor(userId, seatId, bookingDateTime) {
+    this.userId = userId;
     this.seatId = seatId;
-    this.email = email;
-    this.date = date;
+    this.bookingDateTime = bookingDateTime;
+  }
+}
+
+export class BookingRequest {
+  constructor(seatId) {
+    this.seatId = seatId
   }
 }
