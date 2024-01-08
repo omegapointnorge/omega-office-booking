@@ -1,21 +1,26 @@
 import { makeAutoObservable } from "mobx";
-import Booking from "../domain/booking"
+import Booking from '../domain/booking';
 
 class BookingStore {
   activeBookings = [];
   userBookings = [];
 
   constructor() {
+    this.initialize()
     makeAutoObservable(this);
+  }
+
+  async initialize() {
+    await this.fetchAllActiveBookings()
   }
 
   // Fetch all active bookings
   async fetchAllActiveBookings() {
     try {
-      const response = await fetch('/api/bookings');
+      const response = await fetch('/api/booking/bookings');
       if (!response.ok) throw new Error('Failed to fetch active bookings');
       const data = await response.json();
-      this.setActiveBookings(data);
+      this.setActiveBookings(data.value);
     } catch (error) {
       console.error("Error fetching active bookings:", error);
     }
@@ -33,30 +38,28 @@ class BookingStore {
     }
   }
 
-  async createBooking(bookingDetails) {
+  async createBooking(bookingRequest) {
     try {
-      const response = await fetch('/api/bookings/create', {
+      const response = await fetch('/api/Booking/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify(bookingDetails),
+        body: JSON.stringify(bookingRequest),
       });
 
       if (!response.ok) {
         throw new Error('Failed to create booking');
       }
 
-      const newBookingData = await response.json();
-      const newBooking = new Booking(newBookingData.id, newBookingData.userId, newBookingData.date);
+      const newBookingJson = await response.json();
+      const newBookingData = newBookingJson.value
+      const newBooking = new Booking(newBookingData.userId, newBookingData.seatId, newBookingData.bookingDateTime);
 
       // Update the store's state with the new booking
       this.activeBookings.push(newBooking);
 
-      // Optionally, if the new booking is for the current user, update userBookings as well
-      // if (newBooking.userId === currentUser.id) {
-      //   this.userBookings.push(newBooking);
-      // }
     } catch (error) {
       console.error("Error creating booking:", error);
     }
