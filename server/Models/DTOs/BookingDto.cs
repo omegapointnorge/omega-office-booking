@@ -16,7 +16,7 @@ namespace server.Models.DTOs
             Id = id;
             UserId = userId;
             SeatId = seatId;
-            DateTime = ConvertToTimeZone(dateTime, norwayTimeZoneId);  
+            DateTime = dateTime.ToString();  
         }
 
         static String ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)

@@ -2,9 +2,12 @@ import { makeAutoObservable } from "mobx";
 import { Booking } from "../domain/booking";
 import toast from "react-hot-toast";
 import ApiService from "./ApiService.jsx";
+import {parse} from "date-fns";
 
 class HistoryStore {
   myBookings = [];
+  myUpcomingBookings = [];
+  myEarlierBookings = [];
   openDialog = false;
   bookingIdToDelete = null;
 
@@ -12,7 +15,6 @@ class HistoryStore {
     this.initialize();
     makeAutoObservable(this);
   }
-
 
   async initialize() {
     try {
@@ -34,14 +36,27 @@ class HistoryStore {
     }
   }
 
-
-
-
   setBookings(data) {
     this.myBookings = data.value.map(
-      (booking) => new Booking(booking.id, booking.seatId, booking.dateTime)
+        (booking) => new Booking(booking.id, booking.seatId, booking.dateTime)
     );
+    let pastBookings = []
+    let futureBookings = []
+    this.myBookings.forEach((booking) => {
+      console.log("booking datetime", booking.dateTime)
+      const givenDate = parse(booking.dateTime, 'dd/MM/yyyy HH:mm:ss', new Date());
+      const currentDate = new Date()
+      console.log("test")
+      console.log(currentDate)
+      if (givenDate <  currentDate){
+        pastBookings.push(booking)
+      }
+      else futureBookings.unshift(booking)
+    })
+    this.myEarlierBookings = pastBookings
+    this.myUpcomingBookings = futureBookings
   }
+
   deleteBooking(bookingId) {
     const bookingToDelete = this.myBookings.find((booking) => booking.id === bookingId);
     if (bookingToDelete) {
@@ -65,7 +80,6 @@ class HistoryStore {
   handleCloseDialog = () => {
     this.openDialog = !this.openDialog;
   };
-
 }
 
 const historyStore = new HistoryStore();
