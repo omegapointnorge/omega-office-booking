@@ -12,5 +12,7 @@ namespace server.Repository
         Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest booking, String userId, String email, String name);
 
         User? GetUserByUserId(String userId);
+
+        Task UpsertUserAsync(User user);
     }
 }

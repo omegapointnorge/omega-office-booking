@@ -27,6 +27,40 @@ namespace server.Repository
             ).ToListAsync();
         }
 
+        public async Task UpsertUserAsync(User user)
+            {
+                if (user == null)
+                {
+                    throw new ArgumentNullException(nameof(user));
+                }
+
+                if (await UserExistsAsync(user.Id))
+                {
+                    await UpdateUserAsync(user);
+                }
+                else
+                {
+                    await AddUserAsync(user);
+                }
+
+                await _dbContext.SaveChangesAsync();
+            }
+
+            private async Task<bool> UserExistsAsync(string userId)
+            {
+                return await _dbContext.Users.AsNoTracking().AnyAsync(u => u.Id == userId);
+            }
+
+            private async Task AddUserAsync(User user)
+            {
+                await _dbContext.Users.AddAsync(user);
+            }
+
+            private async Task UpdateUserAsync(User user)
+            {
+                _dbContext.Entry(user).State = EntityState.Modified;
+            }
+
         public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String userId, String email, String name)
         {
             // existingUser as it currently exists in the db
@@ -50,6 +84,8 @@ namespace server.Repository
             _dbContext.Users.Add(user);
             return user;
         }
+
+
 
         public User? GetUserByUserId(String userId)
         {
