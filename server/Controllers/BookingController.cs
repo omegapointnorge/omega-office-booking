@@ -34,7 +34,7 @@ namespace server.Controllers
                 var user = GetUser();
                 var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
                 
-                return Ok(booking);
+                return CreatedAtRoute(null, booking);
             }
             catch (Exception ex)
             {
@@ -57,7 +57,7 @@ namespace server.Controllers
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
-                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
+                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
             };
             var response = await _bookingService.GetAllBookingsForUser(userId);
             return new OkObjectResult(response);
