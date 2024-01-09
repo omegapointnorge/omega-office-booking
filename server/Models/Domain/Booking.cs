@@ -10,7 +10,7 @@ namespace server.Models.Domain
         public DateTime BookingDateTime { get; set; }
         public Booking()
         {
-         
+                UserId = string.Empty;
         }
         public Booking(String userId, int seatId)
         {

@@ -25,6 +25,7 @@ namespace server.Models.Domain
         
         public User()
         {
+            Id = string.Empty;
         }
     }
 }
