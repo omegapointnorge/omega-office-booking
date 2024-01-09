@@ -66,23 +66,30 @@ namespace server.Controllers
         /// <summary>
         /// Deletes a booking with the specified ID.
         /// </summary>
-        /// <param name="id">The ID of the booking to delete.</param>
+        /// <param name="bookingId">The ID of the booking to delete.</param>
         /// <returns>The result of the delete operation. 200 for succeed deleting, 404 for not found for the given id. and 500 for generic errors</returns>
-        [HttpDelete("Bookings/{id}")]
-        public async Task<ActionResult> DeleteBooking(int id)
+        [HttpDelete("{bookingId}")]
+        public async Task<ActionResult> DeleteBookingAsync(int bookingId)
         {
-
-            var userId = String.Empty;
-            if (User.Identity?.IsAuthenticated ?? false)
+            if (!(User.Identity?.IsAuthenticated ?? false))
             {
-                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
-                // TODO ??
+                return Unauthorized();
             }
+
+            try
             {
-                var result = await _bookingService.DeleteBooking(id, userId);
-                return result;
+                var user = GetUser();
+                var deleteResponse = await _bookingService.DeleteBookingAsync(bookingId, user.Id);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, "An error occurred processing your request.");
             }
         }
+
 
         private User GetUser() {
             var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
