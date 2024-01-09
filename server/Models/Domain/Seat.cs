@@ -14,9 +14,5 @@ namespace server.Models.Domain
             IsAvailable = isAvailable;
             Bookings = new List<Booking>();
         }
-
-        public Seat()
-        {
-        }
     }
 }

@@ -10,12 +10,6 @@ namespace server.Models.Domain
         public DateTime BookingDateTime { get; set; }
         public Booking()
         {
-         
-        }
-        public Booking(String userId, int seatId)
-        {
-            UserId = userId;
-            SeatId = seatId;
         }
         public Booking(int id, String userId, int seatId, DateTime bookingDateTime)
         {
