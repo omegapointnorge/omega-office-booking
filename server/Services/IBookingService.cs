@@ -17,6 +17,9 @@ namespace server.Services
         Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser(string userId);
 
         Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, User userId);
+        Task<ActionResult<List<BookingDto>>> GetPreviousBookingsForUser(string userId, int itemCount, int pageNumber);
+        Task<int> GetPreviousBookingCountForUser(string userId);
+
 
     }
 }

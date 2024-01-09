@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Models.Domain;
 using server.Models.DTOs;
-using server.Repository;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
-using server.Services;
-using System.Diagnostics.CodeAnalysis;
+using server.Repository;
 
 
 namespace server.Services
@@ -42,6 +40,16 @@ namespace server.Services
         {
             return await _bookingRepository.GetAllFutureBookings();
         }
+        public async Task<ActionResult<List<BookingDto>>> GetPreviousBookingsForUser(string userId, int itemCount, int pageNumber)
+        {
+            return await _bookingRepository.GetPreviousBookingsForUser(userId, itemCount, pageNumber);
+        }
+
+        public async Task<int> GetPreviousBookingCountForUser(string userId)
+        {
+            return await _bookingRepository.GetPreviousBookingCountForUser(userId);
+        }
+
 
         public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(String userId)
         {
@@ -65,7 +73,8 @@ namespace server.Services
             return await _bookingRepository.GetAllBookingsForUser(userId);
         }
 
-        private DateTime ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)  {
+        private DateTime ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)
+        {
             // Get the time zone information
             TimeZoneInfo norwayTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
 
