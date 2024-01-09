@@ -106,13 +106,7 @@ namespace server.Repository
 
         private User CreateUser(String userId, String email, String name)
         {
-            var user = new User
-            {
-                Id = userId,
-                Email = email,
-                Name = name
-
-            };
+            var user = new User(userId, name, email);
             _dbContext.Users.Add(user);
             return user;
         }
