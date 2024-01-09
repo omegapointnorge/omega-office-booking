@@ -58,7 +58,7 @@ namespace server.Repository
                 await _dbContext.Users.AddAsync(user);
             }
 
-            private async Task UpdateUserAsync(User user)
+            private void UpdateUser(User user)
             {
                 _dbContext.Entry(user).State = EntityState.Modified;
             }

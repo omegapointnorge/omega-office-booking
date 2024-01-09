@@ -39,7 +39,7 @@ namespace server.Controllers
             catch (Exception ex)
             {
                 // Log the exception, handle the error appropriately
-                return StatusCode(500, "Internal Server Error");
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
             }
         }
         
@@ -85,7 +85,7 @@ namespace server.Controllers
         }
 
         private User GetUser() {
-            var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
+            var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
             var email = User.FindFirst("preferred_username")?.Value?? String.Empty;
             var name = User.FindFirst("name")?.Value?? String.Empty;
 

@@ -41,7 +41,8 @@ const OfficeMap = observer(({showSeatInfo}) => {
           newViewBox = "2600 400 900 900"; 
           break;
         case 'sales':
-          newViewBox = "0 900 800 800"; 
+          newViewBox = "0 900 800 800";
+          break;
         default:
           newViewBox = "0 0 3725 2712"; // Default view
       }
