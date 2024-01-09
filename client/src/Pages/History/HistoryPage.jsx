@@ -5,6 +5,7 @@ import BookingItem from "../../components/Bookings/BookingItem";
 import historyStore from "../../stores/HistoryStore";
 import MyDialog from "../../components/Dialog";
 import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
+import { set } from "mobx";
 
 const HistoryPage = observer(() => {
     const [isFirstPage, setIsFirstPage] = useState(true);
@@ -13,7 +14,7 @@ const [isLastPage, setIsLastPage] = useState(false);
 const navigateNext = () => {
     if (!isLastPage) {
         historyStore.navigateNext();
-        setIsFirstPage(false);
+        setIsFirstPage(false)
         if (historyStore.pageNumber === historyStore.lastPage) setIsLastPage(true)
     }
 };
@@ -21,8 +22,8 @@ const navigateNext = () => {
 const navigatePrevious = () => {
     if (!isFirstPage) {
         historyStore.navigatePrevious();
-        setIsFirstPage(true);
-        if (historyStore.pageNumber !== historyStore.lastPage) setIsLastPage(false)
+        setIsLastPage(false)
+        if(historyStore.pageNumber === 1) setIsFirstPage(true)
     }
 };
 

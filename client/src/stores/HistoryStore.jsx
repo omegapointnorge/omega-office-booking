@@ -22,7 +22,7 @@ class HistoryStore {
 
   async fetchUpcomingBookings() {
     try {
-      const url = "/api/Booking/Bookings";
+      const url = (`/api/Booking/Bookings/MyBookings`);
       const response = await ApiService.fetchData(url, "Get", null);
       const data = await response.json();
       this.setUpcomingBookings(data);

@@ -69,7 +69,7 @@ namespace server.Controllers
         [HttpGet("Bookings/{userId}")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
         {
-            var response = await _bookingService.GetAllBookingsForUser(userId);
+            var response = await _bookingService.GetAllFutureBookingsForUser(userId);
             return new OkObjectResult(response);
         }
 
@@ -82,7 +82,7 @@ namespace server.Controllers
             {
                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
             };
-            var response = await _bookingService.GetAllBookingsForUser(userId);
+            var response = await _bookingService.GetAllFutureBookingsForUser(userId);
             return new OkObjectResult(response);
         }
 

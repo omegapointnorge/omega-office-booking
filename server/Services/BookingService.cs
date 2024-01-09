@@ -51,9 +51,9 @@ namespace server.Services
         }
 
 
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(String userId)
+        public async Task<ActionResult<List<BookingDto>>> GetAllFutureBookingsForUser(String userId)
         {
-            return await _bookingRepository.GetAllBookingsForUser(userId);
+            return await _bookingRepository.GetAllFutureBookingsForUser(userId);
         }
 
         public async Task<ActionResult> DeleteBooking(int bookingId, String userId)
@@ -71,7 +71,7 @@ namespace server.Services
             // existingUser as it currently exists in the db
             var user = _userRepository.GetUserByUserId(userId);
 
-            return await _bookingRepository.GetAllBookingsForUser(user.Id);
+            return await _bookingRepository.GetAllFutureBookingsForUser(user.Id);
         }
 
         private DateTime ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)

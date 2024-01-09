@@ -30,10 +30,12 @@ namespace server.Repository
         }
 
 
-        public Task<List<BookingDto>> GetAllBookingsForUser(String userId)
+        public Task<List<BookingDto>> GetAllFutureBookingsForUser(String userId)
         {
+            DateTime currentDateTime = DateTime.Now;
+
             return _dbContext.Bookings
-            .Where(booking => booking.UserId == userId)
+            .Where(booking => booking.UserId == userId && booking.BookingDateTime > currentDateTime)
             .OrderByDescending(booking => booking.BookingDateTime)
             .Select(booking =>
                     new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
