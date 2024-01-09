@@ -63,7 +63,7 @@ namespace server.Repository
                 _dbContext.Entry(user).State = EntityState.Modified;
             }
 
-        public async Task<UserDto> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String userId, String email, String name)
+        public async Task<UserBookingResponse> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String userId, String email, String name)
         {
             var response = new UserBookingResponse();
             try
