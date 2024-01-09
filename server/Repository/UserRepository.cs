@@ -72,13 +72,7 @@ namespace server.Repository
 
         private Models.Domain.User CreateUser(String userId, String email, String name)
         {
-            var user = new Models.Domain.User
-            {
-                Id = userId,
-                Email = email,
-                Name = name
-
-            };
+            var user = new Models.Domain.User(userId, name, email);
             _dbContext.Users.Add(user);
             return user;
         }
