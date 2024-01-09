@@ -73,6 +73,28 @@ class BookingStore {
     }
   }
 
+  async deleteBooking(deleteBookingRequest) {
+    try {
+      const url = `/api/Booking/${deleteBookingRequest.bookingId}`;
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete booking: ${response.status}`);
+      }
+
+      this.removeBookingById(deleteBookingRequest.bookingId)
+
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+    }
+  }
+
+
   // Update active bookings
   setActiveBookings(bookings) {
     this.activeBookings = bookings;
@@ -81,6 +103,10 @@ class BookingStore {
   // Update user bookings
   setUserBookings(bookings) {
     this.userBookings = bookings;
+  }
+
+  removeBookingById(bookingId) {
+    this.activeBookings = this.activeBookings.filter(booking => booking.id !== bookingId);
   }
 }
 
