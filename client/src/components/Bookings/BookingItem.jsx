@@ -1,6 +1,6 @@
 import { MdDelete } from "react-icons/md";
 
-const BookingItem = ({ onClick, roomName, bookingDateTime, seatId, showDeleteButton }) => {
+const BookingItem = ({ onClick, roomId, bookingDateTime, seatId, showDeleteButton }) => {
   return (
       <ul className="divide-y divide-gray-100 p-4 rounded-[24px] bg-white">
         <li className="flex justify-between gap-x-6 py-5">
@@ -10,7 +10,7 @@ const BookingItem = ({ onClick, roomName, bookingDateTime, seatId, showDeleteBut
                 {bookingDateTime}
               </p>
               <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                {roomName}Romnavn, sete {seatId}
+                Rom {roomId}, sete {seatId}
               </p>
             </div>
                 <MdDelete

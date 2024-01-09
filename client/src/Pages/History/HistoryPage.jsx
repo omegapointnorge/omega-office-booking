@@ -1,11 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Heading from "../../components/Heading";
 import {observer} from "mobx-react-lite";
 import BookingItem from "../../components/Bookings/BookingItem";
 import historyStore from "../../stores/HistoryStore";
 import MyDialog from "../../components/Dialog";
 import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
-import { set } from "mobx";
 
 const HistoryPage = observer(() => {
     const [isFirstPage, setIsFirstPage] = useState(true);
@@ -27,7 +26,7 @@ const navigatePrevious = () => {
     }
 };
 
-    if (historyStore.myUpcomingBookings.length === 0) {
+    if (historyStore.myUpcomingBookings.length === 0 && historyStore.myPreviousBookings.length === 0) {
         return (
             <>
                 <div
@@ -49,13 +48,18 @@ const navigatePrevious = () => {
                 />
                 <div className="container mt-3">
                     <div className="flex flex-col gap-4 mb-10">
-                        <p className="text-left text-xl font-semibold heading mb-3">UPCOMING BOOKINGS</p>
+                        <p className="text-left text-xl font-semibold heading mb-3 pl-11">UPCOMING BOOKINGS</p>
                         <div className="flex flex-row gap-5">
+                            {/*Buttons for navigation when support is added for more than one booking. Currently only aligns the booking items correctly*/}
+                            <button onClick={() => navigatePrevious()}
+                                    className="opacity-0" disabled={true}>
+                                <IoIosArrowBack/>
+                            </button>
                             {historyStore.myUpcomingBookings
                                 .map((booking) => (
                                     <BookingItem
                                         key={booking.id}
-                                        roomName={booking.roomName}
+                                        roomId={booking.roomId}
                                         seatId={booking.seatId}
                                         bookingDateTime={booking.bookingDateTime}
                                         showDeleteButton={true}
@@ -64,6 +68,10 @@ const navigatePrevious = () => {
                                         }}
                                     ></BookingItem>
                                 ))}
+                            <button onClick={() => navigateNext()}
+                                    className={"opacity-0"} disabled={true}>
+                                <IoIosArrowForward/>
+                            </button>
                             <MyDialog
                                 title="Delete your Seat?"
                                 open={historyStore.openDialog}
@@ -75,14 +83,14 @@ const navigatePrevious = () => {
                         </div>
                     </div>
                     <div className="flex flex-col gap-4">
-                        <p className="text-left text-xl font-semibold heading mb-3">PREVIOUS BOOKINGS</p>
+                        <p className="text-left text-xl font-semibold heading mb-3 pl-11">PREVIOUS BOOKINGS</p>
                         <div className="flex flex-row gap-5">
                             <button onClick={() => navigatePrevious()} className={`${isFirstPage ? 'opacity-0' : 'opacity-100'}`} disabled={isFirstPage}>
                                 <IoIosArrowBack/>
                             </button>
                             {historyStore.myPreviousBookings
                                 .map((booking) => (
-                                    <BookingItem key={booking.id} roomName={booking.roomName}
+                                    <BookingItem key={booking.id} roomId={booking.roomId}
                                                  seatId={booking.seatId}
                                                  bookingDateTime={booking.bookingDateTime} showDeleteButton={false}
                                     ></BookingItem>

@@ -53,21 +53,6 @@ class HistoryStore {
     }
   }
 
-  async navigatePrevious() {
-    if (this.pageNumber > 1) {
-      this.pageNumber -= 1;
-      await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
-    }
-  }
-
-  async navigateNext() {
-    this.lastPage = Math.ceil(this.totalItemCount / this.itemCount);
-    if (this.pageNumber < this.lastPage) {
-      this.pageNumber += 1;
-      await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
-    }
-  }
-
   async deleteBookingCall(bookingId) {
     try {
       const url = "/api/Booking/Bookings/" + bookingId;
@@ -107,7 +92,6 @@ class HistoryStore {
       await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
     }
   }
-
 
   deleteBooking(bookingId) {
     const bookingToDelete = this.myUpcomingBookings.find((booking) => booking.id === bookingId);
