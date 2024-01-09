@@ -38,7 +38,7 @@ namespace server.Repository
 
                 if (await UserExistsAsync(user.Id))
                 {
-                    await UpdateUserAsync(user);
+                    UpdateUser(user);
                 }
                 else
                 {
