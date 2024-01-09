@@ -104,9 +104,9 @@ namespace server.Repository
             return response;
         }
 
-        private Models.Domain.User CreateUser(String userId, String email, String name)
+        private User CreateUser(String userId, String email, String name)
         {
-            var user = new Models.Domain.User
+            var user = new User
             {
                 Id = userId,
                 Email = email,
