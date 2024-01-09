@@ -3,7 +3,6 @@ using server.Models.Domain;
 using server.Models.DTOs;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
-using server.Request;
 using server.Services;
 
 namespace server.Controllers
@@ -26,6 +25,30 @@ namespace server.Controllers
             return new OkObjectResult(response);
         }
 
+        [HttpGet("Bookings/MyPreviousBookings")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllPreviousBookingsForCurrentUser(int itemCount, int pageNumber)
+        {
+            var userId = String.Empty;
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
+            };
+            var response = await _bookingService.GetPreviousBookingsForUser(userId, itemCount, pageNumber);
+            return new OkObjectResult(response);
+        }
+
+        [HttpGet("Bookings/MyPreviousBookingsCount")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetCurrentUserPreviousBookingCount()
+        {
+            var userId = String.Empty;
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
+            };
+            var response = await _bookingService.GetPreviousBookingCountForUser(userId);
+            return new OkObjectResult(response);
+        }
+
         [HttpPost("create")]
         public async Task<ActionResult<CreateBookingResponse>> CreateBooking(CreateBookingRequest bookingRequest)
         {
@@ -33,7 +56,7 @@ namespace server.Controllers
             {
                 var user = GetUser();
                 var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
-                
+
                 return Ok(booking);
             }
             catch (Exception ex)
@@ -42,7 +65,7 @@ namespace server.Controllers
                 return StatusCode(500, "Internal Server Error: " + ex.Message);
             }
         }
-        
+
         [HttpGet("Bookings/{userId}")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
         {
@@ -62,7 +85,7 @@ namespace server.Controllers
             var response = await _bookingService.GetAllBookingsForUser(userId);
             return new OkObjectResult(response);
         }
-        
+
         /// <summary>
         /// Deletes a booking with the specified ID.
         /// </summary>
@@ -84,10 +107,11 @@ namespace server.Controllers
             }
         }
 
-        private User GetUser() {
+        private User GetUser()
+        {
             var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
-            var email = User.FindFirst("preferred_username")?.Value?? String.Empty;
-            var name = User.FindFirst("name")?.Value?? String.Empty;
+            var email = User.FindFirst("preferred_username")?.Value ?? String.Empty;
+            var name = User.FindFirst("name")?.Value ?? String.Empty;
 
             return new User(userId, name, email);
         }
