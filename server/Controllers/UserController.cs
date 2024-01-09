@@ -23,9 +23,9 @@ public class UserController : ControllerBase
     {
         var claimsToExpose = new List<string>()
         {
-            "id",
+            "http://schemas.microsoft.com/identity/claims/objectidentifier",
             "name",
-            "preferred_username"
+            "preferred_username",
         };
 
         var user = new UserInfo(
