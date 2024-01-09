@@ -14,9 +14,5 @@ namespace server.Models.Domain
             Name = name;
             Email = email;
         }
-
-        public User()
-        {
-        }
     }
 }
