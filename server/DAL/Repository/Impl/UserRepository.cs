@@ -105,20 +105,20 @@ namespace server.DAL.Repository.Impl
 
         private User CreateUser(String userId, String email, String name)
         {
-            var user = new User(userId, name, email);
+            var user = new Models.Domain.User(userId, name, email);
             _dbContext.Users.Add(user);
             return user;
         }
 
 
 
-        public User? GetUserByUserId(string userId)
+        public User? GetUserByUserId(String userId)
         {
             var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
             return user;
         }
 
-        private User CreateBooking(User user, int seatId)
+        private User CreateBooking(Models.Domain.User user, int seatId)
         {
             var booking = new Booking
             {
@@ -130,7 +130,7 @@ namespace server.DAL.Repository.Impl
             return user;
         }
 
-        public Booking? GetBookingByUserIdAndBookingId(int bookingId, string userId)
+        public Booking? GetBookingByUserIdAndBookingId(int bookingId, String userId)
         {
             // existingUser as it currently exists in the db
             var existingUser = _dbContext.Users.Include(u => u.Bookings)
