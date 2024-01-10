@@ -4,22 +4,51 @@ import toast from "react-hot-toast";
 import ApiService from "./ApiService.jsx";
 
 class HistoryStore {
-  myBookings = [];
+  myUpcomingBookings = [];
+  myPreviousBookings = [];
   openDialog = false;
   bookingIdToDelete = null;
+  itemCount = 6;
+  pageNumber = 1;
+  totalItemCount;
+  lastPage;
 
   constructor() {
-    this.initialize();
+    this.fetchUpcomingBookings();
+    this.fetchPreviousBookings(this.pageNumber, this.itemCount);
+    this.fetchPreviousBookingsCount();
     makeAutoObservable(this);
   }
 
 
-  async initialize() {
+  async fetchUpcomingBookings() {
     try {
       const url = "/api/Booking/Bookings/MyBookings";
       const response = await ApiService.fetchData(url, "Get", null);
       const data = await response.json();
-      this.setBookings(data);
+      this.setUpcomingBookings(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async fetchPreviousBookings(pageNumber, itemCount) {
+    try {
+      const url = `/api/Booking/Bookings/MyPreviousBookings?pageNumber=${pageNumber}&itemCount=${itemCount}`;
+      const response = await ApiService.fetchData(url, "Get", null);
+      const data = await response.json();
+      this.setPreviousBookings(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async fetchPreviousBookingsCount() {
+    try {
+      const url = `/api/Booking/Bookings/MyPreviousBookingsCount`;
+      const response = await ApiService.fetchData(url, "Get", null);
+      const data = await response.json();
+      this.setPreviousBookingsCount(data);
     } catch (error) {
       console.error(error);
     }
@@ -34,20 +63,43 @@ class HistoryStore {
     }
   }
 
-
-
-
-  setBookings(data) {
-    this.myBookings = data.value.map(
-      (booking) => new Booking(booking.id, booking.seatId, booking.dateTime)
+  setUpcomingBookings(data) {
+    this.myUpcomingBookings = data.value.map(
+      (booking) => new Booking(booking.id, booking.userId, booking.seatId, booking.bookingDateTime)
     );
   }
+
+   setPreviousBookings(data) {
+    this.myPreviousBookings = data.value.map(
+        (booking) => new Booking(booking.id, booking.seatId, booking.bookingDateTime)
+    );
+  }
+
+  setPreviousBookingsCount(data) {
+    this.totalItemCount = data;
+  }
+
+  async navigatePrevious() {
+    if (this.pageNumber > 1) {
+      this.pageNumber -= 1;
+      await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
+    }
+  }
+
+  async navigateNext() {
+    this.lastPage = Math.ceil(this.totalItemCount / this.itemCount);
+    if (this.pageNumber < this.lastPage) {
+      this.pageNumber += 1;
+      await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
+    }
+  }
+
   deleteBooking(bookingId) {
-    const bookingToDelete = this.myBookings.find((booking) => booking.id === bookingId);
+    const bookingToDelete = this.myUpcomingBookings.find((booking) => booking.id === bookingId);
     if (bookingToDelete) {
-      let newBookingList = this.myBookings.filter(item => item !== bookingToDelete);
+      let newBookingList = this.myUpcomingBookings.filter(item => item !== bookingToDelete);
       // newBookingList = newBookingList.slice().reverse();
-      this.myBookings = newBookingList;
+      this.myUpcomingBookings = newBookingList;
       this.deleteBookingCall(bookingId)
       toast.success("Booking deleted for Booking Nr: " + bookingId);
       this.handleCloseDialog();
