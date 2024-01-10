@@ -37,6 +37,7 @@ const HistoryPage = observer(() => {
               }}></BookingItem>
 
           ))}
+
           <MyDialog
             title="Delete your Seat?"
             open={historyStore.openDialog}
