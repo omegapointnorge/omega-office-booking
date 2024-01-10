@@ -48,7 +48,7 @@ namespace server.Services
             return await _bookingRepository.GetAllBookingsForUser(userId);
         }
 
-        public async Task<ActionResult> DeleteBooking(int bookingId, String userId)
+        public async Task<ActionResult> DeleteBookingAsync(int bookingId, String userId)
         {
             bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByUserIdAndBookingId(bookingId, userId) != null;
             if (isThisBookingBelongToCurrentUser) return await _bookingRepository.DeleteBooking(bookingId);
@@ -61,9 +61,8 @@ namespace server.Services
         {
             //TODO add user service
             // existingUser as it currently exists in the db
-            var user = _userRepository.GetUserByUserId(userId);
 
-            return await _bookingRepository.GetAllBookingsForUser(user.Id);
+            return await _bookingRepository.GetAllBookingsForUser(userId);
         }
 
         private DateTime ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)  {

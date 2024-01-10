@@ -18,7 +18,11 @@ class BookingStore {
   async fetchAllActiveBookings() {
     try {
       const response = await fetch('/api/booking/bookings');
-      if (!response.ok) throw new Error('Failed to fetch active bookings');
+      
+      if (!response.ok) { 
+        throw new Error('Failed to fetch active bookings');
+      }
+
       const data = await response.json();
       this.setActiveBookings(data.value);
     } catch (error) {
@@ -30,7 +34,11 @@ class BookingStore {
   async fetchUserBookings(userId) {
     try {
       const response = await fetch(`/api/Booking/Bookings/MyBookings`);
-      if (!response.ok) throw new Error('Failed to fetch user bookings');
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user bookings');
+      }
+
       const data = await response.json();
       this.setUserBookings(data);
     } catch (error) {
@@ -55,7 +63,7 @@ class BookingStore {
 
       const newBookingJson = await response.json();
       const newBookingData = newBookingJson.value
-      const newBooking = new Booking(newBookingData.userId, newBookingData.seatId, newBookingData.bookingDateTime);
+      const newBooking = new Booking(newBookingData.id, newBookingData.userId, newBookingData.seatId, newBookingData.bookingDateTime);
 
       // Update the store's state with the new booking
       this.activeBookings.push(newBooking);
@@ -65,6 +73,28 @@ class BookingStore {
     }
   }
 
+  async deleteBooking(deleteBookingRequest) {
+    try {
+      const url = `/api/Booking/${deleteBookingRequest.bookingId}`;
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete booking: ${response.status}`);
+      }
+
+      this.removeBookingById(deleteBookingRequest.bookingId)
+
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+    }
+  }
+
+
   // Update active bookings
   setActiveBookings(bookings) {
     this.activeBookings = bookings;
@@ -73,6 +103,10 @@ class BookingStore {
   // Update user bookings
   setUserBookings(bookings) {
     this.userBookings = bookings;
+  }
+
+  removeBookingById(bookingId) {
+    this.activeBookings = this.activeBookings.filter(booking => booking.id !== bookingId);
   }
 }
 
