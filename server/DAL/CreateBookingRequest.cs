@@ -1,7 +1,4 @@
-using server.Helpers;
-using server.Models.Domain;
-
-namespace server.Models.DTOs.Request
+namespace server.DAL
 {
     public class CreateBookingRequest
     {

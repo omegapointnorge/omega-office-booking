@@ -7,9 +7,10 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
 using Azure.Identity;
-using server.Repository;
 using server.Services;
 using Microsoft.Extensions.Configuration;
+using server.Repository.Impl;
+using server.Repository.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 

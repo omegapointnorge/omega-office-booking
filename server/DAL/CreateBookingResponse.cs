@@ -1,14 +1,15 @@
-using server.Models.Domain;
+using server.Models;
 
-namespace server.Models.DTOs.Response
+namespace server.DAL
 {
     public class CreateBookingResponse
     {
         public int SeatId { get; set; }
-        public String UserId { get; set; }
+        public string UserId { get; set; }
         public DateTime BookingDateTime { get; set; }
-        
-        public CreateBookingResponse(Booking booking) {
+
+        public CreateBookingResponse(Booking booking)
+        {
             SeatId = booking.SeatId;
             UserId = booking.UserId;
             BookingDateTime = booking.BookingDateTime;

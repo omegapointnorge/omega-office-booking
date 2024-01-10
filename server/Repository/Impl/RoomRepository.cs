@@ -1,17 +1,18 @@
 
 using Microsoft.EntityFrameworkCore;
 using server.Context;
-using server.Models.DTOs;
+using server.DAL;
+using server.Repository.Interface;
 
-namespace server.Repository
+namespace server.Repository.Impl
 {
-    public class RoomRepository : IRoomRepository
+    public class RoomRepository : Repository<RoomDto>, IRoomRepository
     {
         private readonly OfficeDbContext _dbContext;
 
-        public RoomRepository(OfficeDbContext dbContext)
+        public RoomRepository(OfficeDbContext context) : base(context)
         {
-            _dbContext = dbContext;
+            _dbContext = context;
         }
 
         public Task<List<RoomDto>> GetAllRooms()

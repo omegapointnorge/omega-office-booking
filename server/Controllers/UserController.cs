@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using server.Models.DTOs;
-using server.Request;
+using server.DAL;
 using server.Response;
 using server.Services;
 
@@ -48,14 +47,14 @@ public class UserController : ControllerBase
     /// <summary>
     /// Handles HTTP POST requests to upsert a user booking.
     /// </summary>
-    /// <param name="booking">The UserBookingRequest containing information about the user booking.</param>
+    /// <param name="booking">The CreateBookingRequest containing information about the user booking.</param>
     /// <returns>
     /// If successful, returns a 200 OK response with the updated UserDto.
     /// If the input is invalid, returns a 400 Bad Request response with validation errors.
     /// respons object contains the corrent booking information, not the booking histories
     /// </returns>
     [HttpPost("UpsertUserBooking")]
-    public async Task<ActionResult<UserBookingResponse>> UpsertUserBooking(UserBookingRequest booking)
+    public async Task<ActionResult<UserBookingResponse>> UpsertUserBooking(CreateBookingRequest booking)
     {
         var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
         var email = User.FindFirst("preferred_username")?.Value?? String.Empty;

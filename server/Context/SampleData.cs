@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using server.Models.Domain;
+using server.Models;
 
 namespace server.Context
 {

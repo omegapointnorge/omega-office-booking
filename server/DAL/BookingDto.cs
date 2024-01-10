@@ -1,13 +1,13 @@
-namespace server.Models.DTOs
+namespace server.DAL
 {
     public class BookingDto
     {
         public int Id { get; set; }
-        public String UserId { get; set; }
+        public string UserId { get; set; }
         public int SeatId { get; set; }
         public DateTime BookingDateTime { get; set; }
 
-        public BookingDto(int id, String userId, int seatId, DateTime dateTime)
+        public BookingDto(int id, string userId, int seatId, DateTime dateTime)
         {
             // Time zone identifier for Norway (with DST information)
             string norwayTimeZoneId = "Central Europe Standard Time";
@@ -19,7 +19,7 @@ namespace server.Models.DTOs
             BookingDateTime = DateTime.Parse(ConvertToTimeZone(dateTime, norwayTimeZoneId));
         }
 
-        static String ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)
+        static string ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)
         {
             // Get the time zone information
             TimeZoneInfo norwayTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);

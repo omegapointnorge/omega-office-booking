@@ -1,4 +1,4 @@
-namespace server.Models.Domain
+namespace server.Models
 {
     public class Booking
     {

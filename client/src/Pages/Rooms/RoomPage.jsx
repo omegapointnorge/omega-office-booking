@@ -61,7 +61,7 @@ const RoomPage = observer(() => {
         isTaken={seat.isTaken}
         onClick={() => {
           roomStore.handleOpenDialog();
-            roomStore.bookSeat(new UserBookingRequest(seat.id));
+            roomStore.bookSeat(new CreateBookingRequest(seat.id));
         }}
       />
     </div>
@@ -88,7 +88,7 @@ const RoomPage = observer(() => {
   );
 });
 
-class UserBookingRequest {
+class CreateBookingRequest {
   constructor(seatId) {
     this.SeatId = seatId;
   }
