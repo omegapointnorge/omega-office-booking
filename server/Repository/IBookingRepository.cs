@@ -7,7 +7,7 @@ namespace server.Repository
     public interface IBookingRepository
     {
         Task<ActionResult> DeleteBooking(int id);
-        Task<List<BookingDto>> GetAllFutureBookings();
+        Task<List<BookingDto>> GetAllActiveBookings();
         Task<List<BookingDto>> GetAllBookingsForUser(string userId);
         Task<Booking> CreateBookingAsync(Booking booking);
 

@@ -20,9 +20,9 @@ namespace server.Controllers
         }
 
         [HttpGet("bookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllFutureBookings()
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings()
         {
-            var response = await _bookingService.GetAllFutureBookings();
+            var response = await _bookingService.GetAllActiveBookings();
             return new OkObjectResult(response);
         }
 

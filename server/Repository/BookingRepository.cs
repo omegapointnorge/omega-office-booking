@@ -22,7 +22,7 @@ namespace server.Repository
             return booking;
         }
 
-        public Task<List<BookingDto>> GetAllFutureBookings()
+        public Task<List<BookingDto>> GetAllActiveBookings()
         {
             return _dbContext.Bookings.Select(booking =>
                 new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)

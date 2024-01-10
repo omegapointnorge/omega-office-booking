@@ -38,9 +38,9 @@ namespace server.Services
 
             return createBookingResponse;
         }
-        public async Task<ActionResult<List<BookingDto>>> GetAllFutureBookings()
+        public async Task<ActionResult<List<BookingDto>>> GetAllActiveBookings()
         {
-            return await _bookingRepository.GetAllFutureBookings();
+            return await _bookingRepository.GetAllActiveBookings();
         }
 
         public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(String userId)

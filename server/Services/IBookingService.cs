@@ -10,7 +10,7 @@ namespace server.Services
     {
         Task<ActionResult> DeleteBookingAsync(int id, string userId);
 
-        Task<ActionResult<List<BookingDto>>> GetAllFutureBookings();
+        Task<ActionResult<List<BookingDto>>> GetAllActiveBookings();
 
         Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(string userid);
 
