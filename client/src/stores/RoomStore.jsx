@@ -59,7 +59,7 @@ class RoomStore {
       const bookingId = responseData.value.userResponse.bookings[0].id;
       const seatId = responseData.value.userResponse.bookings[0].seatId;
       const dateTime = responseData.value.userResponse.bookings[0].dateTime;
-      HistoryStore.myBookings.unshift(new Booking(bookingId, seatId, dateTime));
+      HistoryStore.myUpcomingBookings.unshift(new Booking(bookingId, seatId, dateTime));
       seatToUpdate.isTaken = true;
     } catch (error) {
       console.error(error);

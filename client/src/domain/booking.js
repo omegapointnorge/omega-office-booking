@@ -1,3 +1,5 @@
+import { toBeVisible } from "@testing-library/jest-dom/matchers";
+
 export default class Booking {
   constructor(id = null, userId = null, seatId = null, bookingDateTime = null) {
     this.id = id;
