@@ -7,10 +7,5 @@ namespace server.DAL.Repository.Interface
     {
         Task<List<UserDto>> GetAllUsers();
         Booking? GetBookingByUserIdAndBookingId(int id, string userId);
-        Task<UserBookingResponse> InsertOrUpdateUsersBooking(CreateBookingRequest booking, string userId, string email, string name);
-
-        User? GetUserByUserId(string userId);
-
-        Task UpsertUserAsync(User user);
     }
 }
