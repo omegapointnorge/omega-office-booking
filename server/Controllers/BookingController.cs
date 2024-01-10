@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using server.DAL;
-using server.Models;
+using server.DAL.Dto;
+using server.DAL.Models;
 using server.Services;
 
 namespace server.Controllers
