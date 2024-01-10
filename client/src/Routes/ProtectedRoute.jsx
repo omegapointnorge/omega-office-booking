@@ -3,6 +3,9 @@ import Heading from "../components/Heading";
 
 export const ProtectedRoute = ({ outlet }) => {
   const context = useAuthContext();
+  if (!context.useAuthContext) {
+    return <div className="flex justify-center">Loading...</div>;
+  }
 
   if (context?.user?.isAuthenticated) {
     return outlet;
