@@ -20,8 +20,11 @@ namespace server.Controllers
         [HttpGet("bookings")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllFutureBookings()
         {
-            var response = await _bookingService.GetAllFutureBookings();
-            return new OkObjectResult(response);
+            var result = await _bookingService.GetAllFutureBookings();
+
+            if (result.Value.IsSuccess)
+                return new OkObjectResult(result.Value.BookingDto);
+            return StatusCode(500);
         }
 
         [HttpPost("create")]
@@ -44,8 +47,10 @@ namespace server.Controllers
         [HttpGet("Bookings/{userId}")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
         {
-            var response = await _bookingService.GetAllBookingsForUser(userId);
-            return new OkObjectResult(response);
+            var result = await _bookingService.GetAllBookingsForUser(userId);
+            if (result.Value.IsSuccess)
+                return new OkObjectResult(result.Value.BookingDto);
+            return StatusCode(500);
         }
 
 
@@ -57,8 +62,10 @@ namespace server.Controllers
             {
                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
             };
-            var response = await _bookingService.GetAllBookingsForUser(userId);
-            return new OkObjectResult(response);
+            var result = await _bookingService.GetAllBookingsForUser(userId);
+            if (result.Value.IsSuccess)
+                return new OkObjectResult(result.Value.BookingDto);
+            return StatusCode(500);
         }
         
         /// <summary>

@@ -8,7 +8,10 @@ namespace server.DAL.Repository.Interface
         public Task<T> GetAsync(Expression<Func<T, bool>> filter);
         public Task<IEnumerable<T>> GetAsync();
 
-        public Task Delete(T entity);
+        //public Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter);
+
+
+        public Task DeleteAndCommit(T entity);
         public Task SaveAsync();
 
     }

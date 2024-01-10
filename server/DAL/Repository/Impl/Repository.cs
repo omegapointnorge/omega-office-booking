@@ -44,7 +44,7 @@ namespace server.DAL.Repository.Impl
         }
 
 
-        public async Task Delete(T entity)
+        public async Task DeleteAndCommit(T entity)
         {
             dbContext.Remove(entity);
             await SaveAsync();

@@ -23,24 +23,24 @@ namespace server.DAL.Repository.Impl
             return booking;
         }
 
-        public Task<List<BookingDto>> GetAllFutureBookings()
-        {
-            return _dbContext.Bookings.Select(booking =>
-                new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
-            ).ToListAsync();
-        }
+        //public Task<List<BookingDto>> GetAllFutureBookings()
+        //{
+        //    return _dbContext.Bookings.Select(booking =>
+        //        new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
+        //    ).ToListAsync();
+        //}
 
 
-        public Task<List<BookingDto>> GetAllBookingsForUser(string userId)
-        {
-            return _dbContext.Bookings
-            .Where(booking => booking.UserId == userId)
-            .OrderByDescending(booking => booking.BookingDateTime)
-            .Select(booking =>
-                    new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
-                )
-            .ToListAsync();
-        }
+        //public Task<List<BookingDto>> GetAllBookingsForUser(string userId)
+        //{
+        //    return _dbContext.Bookings
+        //    .Where(booking => booking.UserId == userId)
+        //    .OrderByDescending(booking => booking.BookingDateTime)
+        //    .Select(booking =>
+        //            new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
+        //        )
+        //    .ToListAsync();
+        //}
 
         public async Task<ActionResult> DeleteBooking(int id)
         {

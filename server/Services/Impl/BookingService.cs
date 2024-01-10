@@ -3,7 +3,9 @@ using server.DAL;
 using server.DAL.Dto;
 using server.DAL.Models;
 using server.DAL.Repository.Interface;
+using server.Helpers;
 using server.Services.Interface;
+using System.Collections.Generic;
 
 namespace server.Services.Impl
 {
@@ -35,14 +37,36 @@ namespace server.Services.Impl
 
             return createBookingResponse;
         }
-        public async Task<ActionResult<List<BookingDto>>> GetAllFutureBookings()
+        public async Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetAllFutureBookings()
         {
-            return await _bookingRepository.GetAllFutureBookings();
+            try
+            {
+                IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
+                var bookingDtoList = Mappers.MapBookingDtos(bookingList);
+                return (true, bookingDtoList, null);
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError($"Error: {ex.Message} | {ex.StackTrace}");
+                return (false, null, ex.Message);
+            }
         }
 
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(string userId)
+        public async Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetAllBookingsForUser(string userId)
         {
-            return await _bookingRepository.GetAllBookingsForUser(userId);
+            try
+            {
+                IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
+                bookingList = bookingList.Where(x => x.UserId == userId);
+                var bookingDtoList = Mappers.MapBookingDtos(bookingList);
+                return (true, bookingDtoList, null);
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError($"Error: {ex.Message} | {ex.StackTrace}");
+                return (false, null, ex.Message);
+            }
+            //return await _bookingRepository.GetAllBookingsForUser(userId);
         }
 
         public async Task<ActionResult> DeleteBookingAsync(int bookingId, string userId)
@@ -53,13 +77,6 @@ namespace server.Services.Impl
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-        }
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser(string userId)
-        {
-            //TODO add user service
-            // existingUser as it currently exists in the db
-
-            return await _bookingRepository.GetAllBookingsForUser(userId);
         }
 
         private DateTime ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)
