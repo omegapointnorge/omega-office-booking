@@ -23,7 +23,7 @@ namespace server.Services.Impl
         public async Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user)
         {
 
-            await _userRepository.UpsertUserAsync(user);
+            //await _userRepository.UpsertUserAsync(user);
 
             var booking = new Booking
             {
