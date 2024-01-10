@@ -1,5 +1,6 @@
 using server.DAL;
-using server.Models;
+using server.DAL.Dto;
+using server.DAL.Models;
 
 namespace server.Helpers
 {

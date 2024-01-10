@@ -1,16 +1,17 @@
+using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Identity.Web;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using server.Context;
-using Azure.Identity;
+using server.DAL.Repository.Impl;
+using server.DAL.Repository.Interface;
 using server.Services;
-using Microsoft.Extensions.Configuration;
-using server.Repository.Impl;
-using server.Repository.Interface;
+using server.Services.Impl;
+using server.Services.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 

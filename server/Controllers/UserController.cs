@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using server.DAL;
-using server.Response;
-using server.Services;
+using server.DAL.Dto;
+using server.Services.Impl;
 
 namespace server.Controllers;
 
