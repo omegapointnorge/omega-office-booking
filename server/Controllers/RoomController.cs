@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using server.DAL.Dto;
-using server.Services.Impl;
+using server.Services.Interface;
 
 namespace server.Controllers
 {

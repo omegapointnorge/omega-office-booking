@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using server.DAL.Dto;
 using server.DAL.Repository.Interface;
-using server.Services.Impl;
+using server.Services.Interface;
 
-namespace server.Services.Interface
+namespace server.Services.Impl
 {
     public class RoomService : IRoomService
     {

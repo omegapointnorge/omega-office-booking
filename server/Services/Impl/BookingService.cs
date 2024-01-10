@@ -3,8 +3,9 @@ using server.DAL;
 using server.DAL.Dto;
 using server.DAL.Models;
 using server.DAL.Repository.Interface;
+using server.Services.Interface;
 
-namespace server.Services.Interface
+namespace server.Services.Impl
 {
     public class BookingService : IBookingService
     {
@@ -44,7 +45,7 @@ namespace server.Services.Interface
             return await _bookingRepository.GetAllBookingsForUser(userId);
         }
 
-        public async Task<ActionResult> DeleteBookingAsync(int bookingId, String userId)
+        public async Task<ActionResult> DeleteBookingAsync(int bookingId, string userId)
         {
             bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByUserIdAndBookingId(bookingId, userId) != null;
             if (isThisBookingBelongToCurrentUser) return await _bookingRepository.DeleteBooking(bookingId);
@@ -53,7 +54,7 @@ namespace server.Services.Interface
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser(String userId)
+        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser(string userId)
         {
             //TODO add user service
             // existingUser as it currently exists in the db

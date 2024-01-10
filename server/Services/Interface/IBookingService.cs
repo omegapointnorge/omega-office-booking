@@ -3,7 +3,7 @@ using server.DAL;
 using server.DAL.Dto;
 using server.DAL.Models;
 
-namespace server.Services
+namespace server.Services.Interface
 {
     public interface IBookingService
     {

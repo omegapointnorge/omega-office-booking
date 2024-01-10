@@ -105,7 +105,7 @@ namespace server.DAL.Repository.Impl
 
         private User CreateUser(String userId, String email, String name)
         {
-            var user = new Models.Domain.User(userId, name, email);
+            var user = new User(userId, name, email);
             _dbContext.Users.Add(user);
             return user;
         }
@@ -118,7 +118,7 @@ namespace server.DAL.Repository.Impl
             return user;
         }
 
-        private User CreateBooking(Models.Domain.User user, int seatId)
+        private User CreateBooking(Models.User user, int seatId)
         {
             var booking = new Booking
             {

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using server.DAL;
 using server.DAL.Dto;
 using server.DAL.Models;
-using server.Services;
+using server.Services.Interface;
 
 namespace server.Controllers
 {
