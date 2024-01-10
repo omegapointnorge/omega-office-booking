@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using server.Models.DTOs;
-using server.Repository;
-
+using server.DAL;
+using server.Repository.Interface;
 
 namespace server.Services
 {
     public class RoomService : IRoomService
     {
 
-        private readonly IRoomRepository _roomRepository;
+        readonly IRoomRepository _roomRepository;
 
         public RoomService(IRoomRepository roomRepository)
         {

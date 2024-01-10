@@ -1,20 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using server.Context;
-using server.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using server.Models.Domain;
+using server.Repository.Interface;
+using server.Models;
+using server.DAL;
 
-namespace server.Repository
+namespace server.Repository.Impl
 {
-    public class BookingRepository : IBookingRepository
+    public class BookingRepository : Repository<Booking>, IBookingRepository
     {
         private readonly OfficeDbContext _dbContext;
 
-        public BookingRepository(OfficeDbContext officeDbContext)
+        public BookingRepository(OfficeDbContext context) : base(context)
         {
-            _dbContext = officeDbContext;
+            _dbContext = context;
         }
-        
+
         public async Task<Booking> CreateBookingAsync(Booking booking)
         {
             _dbContext.Bookings.Add(booking);
@@ -30,7 +31,7 @@ namespace server.Repository
         }
 
 
-        public Task<List<BookingDto>> GetAllBookingsForUser(String userId)
+        public Task<List<BookingDto>> GetAllBookingsForUser(string userId)
         {
             return _dbContext.Bookings
             .Where(booking => booking.UserId == userId)

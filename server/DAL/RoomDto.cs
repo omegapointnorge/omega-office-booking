@@ -1,7 +1,7 @@
 using server.Helpers;
-using server.Models.Domain;
+using server.Models;
 
-namespace server.Models.DTOs
+namespace server.DAL
 {
     public class RoomDto
     {

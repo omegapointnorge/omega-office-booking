@@ -1,27 +1,27 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
-using server.Models.Domain;
-using server.Models.DTOs;
-using server.Request;
+using server.DAL;
+using server.Models;
+using server.Repository.Interface;
 using server.Response;
 
-namespace server.Repository
+namespace server.Repository.Impl
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : Repository<User>, IUserRepository
     {
         private readonly OfficeDbContext _dbContext;
 
-        public UserRepository(OfficeDbContext dbContext)
+        public UserRepository(OfficeDbContext context) : base(context)
         {
-            _dbContext = dbContext;
+            _dbContext = context;
         }
 
-        private static UserDto EntityToDto(Models.Domain.User e)
+        private static UserDto EntityToDto(User e)
         {
             return new UserDto(e.Id, e.Name, e.Email, e.Bookings);
         }
-
+ 
         public Task<List<UserDto>> GetAllUsers()
         {
             return _dbContext.Users.Select(user =>
@@ -30,51 +30,51 @@ namespace server.Repository
         }
 
         public async Task UpsertUserAsync(User user)
+        {
+            if (user == null)
             {
-                if (user == null)
-                {
-                    throw new ArgumentNullException(nameof(user));
-                }
-
-                if (await UserExistsAsync(user.Id))
-                {
-                    UpdateUser(user);
-                }
-                else
-                {
-                    await AddUserAsync(user);
-                }
-
-                await _dbContext.SaveChangesAsync();
+                throw new ArgumentNullException(nameof(user));
             }
 
-            private async Task<bool> UserExistsAsync(string userId)
+            if (await UserExistsAsync(user.Id))
             {
-                return await _dbContext.Users.AsNoTracking().AnyAsync(u => u.Id == userId);
+                UpdateUser(user);
+            }
+            else
+            {
+                await AddUserAsync(user);
             }
 
-            private async Task AddUserAsync(User user)
-            {
-                await _dbContext.Users.AddAsync(user);
-            }
+            await _dbContext.SaveChangesAsync();
+        }
 
-            private void UpdateUser(User user)
-            {
-                _dbContext.Entry(user).State = EntityState.Modified;
-            }
+        private async Task<bool> UserExistsAsync(string userId)
+        {
+            return await _dbContext.Users.AsNoTracking().AnyAsync(u => u.Id == userId);
+        }
 
-        public async Task<UserBookingResponse> InsertOrUpdateUsersBooking(UserBookingRequest bookingReq, String userId, String email, String name)
+        private async Task AddUserAsync(User user)
+        {
+            await _dbContext.Users.AddAsync(user);
+        }
+
+        private void UpdateUser(User user)
+        {
+            _dbContext.Entry(user).State = EntityState.Modified;
+        }
+
+        public async Task<UserBookingResponse> InsertOrUpdateUsersBooking(CreateBookingRequest bookingReq, string userId, string email, string name)
         {
             var response = new UserBookingResponse();
             try
             {
                 // existingUser as it currently exists in the db
                 var existingUser = GetUserByUserId(userId);
-            // User doesn't exist, so add a new one
-            existingUser ??= CreateUser(userId, email, name);
-            CreateBooking(existingUser, bookingReq.SeatId);
-            await _dbContext.SaveChangesAsync();
-            response.UserResponse = EntityToDto(existingUser);
+                // User doesn't exist, so add a new one
+                existingUser ??= CreateUser(userId, email, name);
+                CreateBooking(existingUser, bookingReq.SeatId);
+                await _dbContext.SaveChangesAsync();
+                response.UserResponse = EntityToDto(existingUser);
 
             }
             catch (DbUpdateException ex)
@@ -113,13 +113,13 @@ namespace server.Repository
 
 
 
-        public User? GetUserByUserId(String userId)
+        public User? GetUserByUserId(string userId)
         {
             var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
             return user;
         }
 
-        private User CreateBooking(Models.Domain.User user, int seatId)
+        private User CreateBooking(User user, int seatId)
         {
             var booking = new Booking
             {
@@ -131,7 +131,7 @@ namespace server.Repository
             return user;
         }
 
-        public Booking? GetBookingByUserIdAndBookingId(int bookingId, String userId)
+        public Booking? GetBookingByUserIdAndBookingId(int bookingId, string userId)
         {
             // existingUser as it currently exists in the db
             var existingUser = _dbContext.Users.Include(u => u.Bookings)

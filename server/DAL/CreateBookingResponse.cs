@@ -1,6 +1,6 @@
-using server.Models.Domain;
+using server.Models;
 
-namespace server.Models.DTOs.Response
+namespace server.DAL
 {
     public class CreateBookingResponse
     {

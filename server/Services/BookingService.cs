@@ -1,19 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
-using server.Models.Domain;
-using server.Models.DTOs;
-using server.Repository;
-using server.Models.DTOs.Request;
-using server.Models.DTOs.Response;
-using server.Services;
-using System.Diagnostics.CodeAnalysis;
-
+using server.DAL;
+using server.Models;
+using server.Repository.Interface;
 
 namespace server.Services
 {
     public class BookingService : IBookingService
     {
-        private readonly IBookingRepository _bookingRepository;
-        private readonly IUserRepository _userRepository;
+        readonly IBookingRepository _bookingRepository;
+        readonly IUserRepository _userRepository;
 
         public BookingService(IBookingRepository bookingRepository, IUserRepository userRepository)
         {

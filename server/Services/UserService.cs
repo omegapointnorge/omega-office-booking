@@ -1,15 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using server.Models.Domain;
-using server.Models.DTOs;
-using server.Repository;
-using server.Request;
+using server.DAL;
+using server.Repository.Interface;
 using server.Response;
 
 namespace server.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
+        readonly IUserRepository _userRepository;
 
         public UserService(IUserRepository userRepository)
         {
@@ -21,7 +19,7 @@ namespace server.Services
             return await _userRepository.GetAllUsers();
         }
 
-        public async Task<ActionResult<UserBookingResponse>> InsertOrUpdateUsersBooking(UserBookingRequest booking, String userId, String email, String name)
+        public async Task<ActionResult<UserBookingResponse>> InsertOrUpdateUsersBooking(CreateBookingRequest booking, String userId, String email, String name)
         {
             return await _userRepository.InsertOrUpdateUsersBooking(booking, userId, email, name);
         }
