@@ -40,7 +40,9 @@ namespace server.Services
         }
         public async Task<ActionResult<List<BookingDto>>> GetAllActiveBookings()
         {
-            return await _bookingRepository.GetAllActiveBookings();
+            var bookings = await _bookingRepository.GetAllActiveBookings();
+            var bookingDtos = ConvertBookingsToBookingDtos(bookings);
+            return bookingDtos;
         }
 
         public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(String userId)
@@ -73,6 +75,10 @@ namespace server.Services
             DateTime convertedDateTime = TimeZoneInfo.ConvertTime(originalDateTime, norwayTimeZone);
 
             return convertedDateTime;
+        }
+
+        private List<BookingDto> ConvertBookingsToBookingDtos(List<Booking> bookings) {
+            return bookings.Select(booking => new BookingDto(booking)).ToList();
         }
     }
 }

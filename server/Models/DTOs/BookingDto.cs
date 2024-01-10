@@ -1,3 +1,5 @@
+using server.Models.Domain;
+
 namespace server.Models.DTOs
 {
     public class BookingDto
@@ -5,7 +7,7 @@ namespace server.Models.DTOs
         public int Id { get; set; }
         public String UserId { get; set; }
         public int SeatId { get; set; }
-        public DateTime BookingDateTime { get; set; }
+        public String BookingDateTime { get; set; }
 
         public BookingDto(int id, String userId, int seatId, DateTime dateTime)
         {
@@ -16,7 +18,14 @@ namespace server.Models.DTOs
             Id = id;
             UserId = userId;
             SeatId = seatId;
-            BookingDateTime = DateTime.Parse(ConvertToTimeZone(dateTime, norwayTimeZoneId));
+            BookingDateTime = dateTime.ToUniversalTime().ToString("o");
+        }
+
+        public BookingDto(Booking booking) {
+            Id = booking.Id;
+            UserId = booking.UserId;
+            SeatId = booking.SeatId;
+            BookingDateTime = booking.BookingDateTime.ToUniversalTime().ToString("o");
         }
 
         static String ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)

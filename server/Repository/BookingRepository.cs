@@ -22,12 +22,14 @@ namespace server.Repository
             return booking;
         }
 
-        public Task<List<BookingDto>> GetAllActiveBookings()
+        public Task<List<Booking>> GetAllActiveBookings()
         {
-            return _dbContext.Bookings.Select(booking =>
-                new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
-            ).ToListAsync();
+            return _dbContext.Bookings
+                .Where(booking => booking.BookingDateTime.Date >= DateTime.Today)
+                .Select(booking => new Booking(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime))
+                .ToListAsync();
         }
+
 
 
         public Task<List<BookingDto>> GetAllBookingsForUser(String userId)
