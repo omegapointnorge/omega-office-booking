@@ -6,14 +6,8 @@ using server.Response;
 
 namespace server.Repository
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository<User>
     {
-        Task<List<UserDto>> GetAllUsers();
         Booking? GetBookingByUserIdAndBookingId(int id, String userId);
-        Task<UserBookingResponse> InsertOrUpdateUsersBooking(UserBookingRequest booking, String userId, String email, String name);
-
-        User? GetUserByUserId(String userId);
-
-        Task UpsertUserAsync(User user);
     }
 }

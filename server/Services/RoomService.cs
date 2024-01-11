@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using server.Helpers;
 using server.Models.DTOs;
 using server.Repository;
 
@@ -17,12 +18,18 @@ namespace server.Services
 
         public async Task<ActionResult<List<RoomDto>>> GetAllRooms()
         {
-            return await _roomRepository.GetAllRooms();
+            var roomListResult = await _roomRepository.GetAsync();
+            var roomDtos = Mappers.MapBookingDtos(roomListResult);
+            return roomDtos;
         }
 
         public async Task<ActionResult<List<SeatDto>>> GetAllSeatsForRoom(int roomId)
         {
-            return await _roomRepository.GetAllSeatsForRoom(roomId);
+            var seats = new List<SeatDto>();
+            var roomListResult = await _roomRepository.GetAsync();
+            var roomDtos = Mappers.MapBookingDtos(roomListResult);
+            seats = roomDtos.First().Seats;
+            return seats;
         }
 
     }

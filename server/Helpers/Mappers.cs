@@ -5,6 +5,11 @@ namespace server.Helpers
 {
     public static class Mappers
     {
+        public static UserDto UserEntityToDto(User e)
+        {
+            return new UserDto(e.Id, e.Name, e.Email, e.Bookings);
+        }
+
         public static List<BookingDto> MapBookingDtos(IEnumerable<Booking> bookings)
         {
             var bookingDtoList = new List<BookingDto>();
@@ -20,6 +25,24 @@ namespace server.Helpers
             }
             return bookingDtoList;
         }
+
+        public static List<RoomDto> MapBookingDtos(IEnumerable<Room> rooms)
+        {
+            var roomDtos = new List<RoomDto>();
+            try
+            {
+                roomDtos = rooms.Select(room =>
+                    new RoomDto(room.Id, room.Name, room.Seats)
+                ).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine($"Error mapping BookingDtos: {e.Message}");
+            }
+            return roomDtos;
+        }
+
+
 
         public static List<SeatDto> MapSeatDtos(IEnumerable<Seat>? seats)
         {

@@ -24,7 +24,7 @@ class BookingStore {
       }
 
       const data = await response.json();
-      this.setActiveBookings(data.value);
+      this.setActiveBookings(data);
     } catch (error) {
       console.error("Error fetching active bookings:", error);
     }

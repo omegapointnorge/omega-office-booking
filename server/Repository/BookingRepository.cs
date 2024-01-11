@@ -6,40 +6,15 @@ using server.Models.Domain;
 
 namespace server.Repository
 {
-    public class BookingRepository : IBookingRepository
+    public class BookingRepository : Repository<Booking>, IBookingRepository
     {
         private readonly OfficeDbContext _dbContext;
 
-        public BookingRepository(OfficeDbContext officeDbContext)
+        public BookingRepository(OfficeDbContext context) : base(context)
         {
-            _dbContext = officeDbContext;
-        }
-        
-        public async Task<Booking> CreateBookingAsync(Booking booking)
-        {
-            _dbContext.Bookings.Add(booking);
-            await _dbContext.SaveChangesAsync();
-            return booking;
+            _dbContext = context;
         }
 
-        public Task<List<BookingDto>> GetAllFutureBookings()
-        {
-            return _dbContext.Bookings.Select(booking =>
-                new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
-            ).ToListAsync();
-        }
-
-
-        public Task<List<BookingDto>> GetAllBookingsForUser(String userId)
-        {
-            return _dbContext.Bookings
-            .Where(booking => booking.UserId == userId)
-            .OrderByDescending(booking => booking.BookingDateTime)
-            .Select(booking =>
-                    new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
-                )
-            .ToListAsync();
-        }
 
         public async Task<ActionResult> DeleteBooking(int id)
         {

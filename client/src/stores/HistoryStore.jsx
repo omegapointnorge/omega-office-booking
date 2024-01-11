@@ -38,7 +38,7 @@ class HistoryStore {
 
 
   setBookings(data) {
-    this.myBookings = data.value.map(
+    this.myBookings = data.map(
       (booking) => new Booking(booking.id, booking.seatId, booking.dateTime)
     );
   }
