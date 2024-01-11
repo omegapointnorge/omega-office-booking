@@ -4,6 +4,7 @@ import Booking from '../domain/booking';
 class BookingStore {
   activeBookings = [];
   userBookings = [];
+  displayDate = new Date()
 
   constructor() {
     this.initialize()
@@ -23,8 +24,10 @@ class BookingStore {
         throw new Error('Failed to fetch active bookings');
       }
 
-      const data = await response.json();
-      this.setActiveBookings(data.value);
+      const bookingsAsJson = await response.json();
+      const bookings = this.convertJsonObjectsToBookings(bookingsAsJson.value)
+      console.log(bookings)
+      this.setActiveBookings(bookings);
     } catch (error) {
       console.error("Error fetching active bookings:", error);
     }
@@ -107,6 +110,14 @@ class BookingStore {
 
   removeBookingById(bookingId) {
     this.activeBookings = this.activeBookings.filter(booking => booking.id !== bookingId);
+  }
+
+  convertJsonObjectsToBookings(jsonArray) {
+    return jsonArray.map(obj => new Booking(obj.id, obj.userId, obj.seatId, obj.bookingDateTime));
+  }
+
+  setDisplayDate(date) {
+    this.displayDate = date;
   }
 }
 

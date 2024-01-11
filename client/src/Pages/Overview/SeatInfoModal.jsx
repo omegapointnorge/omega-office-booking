@@ -11,18 +11,30 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
     const initialDateTime = new Date().toISOString().slice(0, 16);
     const userId = user?.claims?.find(claim => claim.key === 'http://schemas.microsoft.com/identity/claims/objectidentifier')?.value;
 
-    const { activeBookings } = bookingStore;
+    const { activeBookings, displayDate } = bookingStore;
 
     const [bookingDateTime, setBookingDateTime] = useState(initialDateTime);
     const [selectedBooking, setSelectedBooking] = useState(new Booking());
 
     useEffect(() => {
-        const foundBooking = activeBookings.find(booking => booking.seatId === selectedSeatId);
+        const foundBooking = activeBookings.find(booking => booking.seatId === selectedSeatId && isSameDate(displayDate, booking.bookingDateTime));
         if (foundBooking) {
             setSelectedBooking(foundBooking)
             setBookingDateTime(new Date(foundBooking.bookingDateTime).toISOString().slice(0, 16));
         }
     }, [selectedSeatId, activeBookings]);
+
+    const isSameDate = (date1, date2) => {
+        console.log(date1)
+        console.log(date2)
+        if (!(date1 instanceof Date) || !(date2 instanceof Date)) {
+          throw new Error('Both arguments must be Date objects.');
+      }
+  
+      return  date1.getDate() === date2.getDate() &&
+              date1.getFullYear() === date2.getFullYear() &&
+              date1.getMonth() === date2.getMonth();
+      } 
 
     const onDateTimeChange = (dateTimeValue) => {
         setBookingDateTime(dateTimeValue);

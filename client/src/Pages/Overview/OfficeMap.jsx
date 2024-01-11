@@ -8,7 +8,7 @@ import bookingStore from '../../stores/BookingStore';
 const OfficeMap = observer(({showSeatInfo}) => {
 
     const { user } = useAuthContext() ?? {};
-    const { activeBookings } = bookingStore
+    const { activeBookings, displayDate } = bookingStore
 
     const [currentViewBox, setCurrentViewBox] = useState("0 0 3725 2712");
     const [zoomedIn, setZoomedIn] = useState(false);
@@ -17,7 +17,7 @@ const OfficeMap = observer(({showSeatInfo}) => {
 
 
     const getColorForSeat = (seatId) => {
-        const foundBooking = activeBookings.find(booking => booking.seatId === seatId);
+        const foundBooking = activeBookings.find(booking => booking.seatId === seatId && isSameDate(displayDate, booking.bookingDateTime));
     
         if (foundBooking) {
             if (foundBooking.userId === userId) {
@@ -28,6 +28,18 @@ const OfficeMap = observer(({showSeatInfo}) => {
     
         return "green"; // The seat is not booked
     };
+
+    const isSameDate = (date1, date2) => {
+      console.log(date1)
+      console.log(date2)
+      if (!(date1 instanceof Date) || !(date2 instanceof Date)) {
+        throw new Error('Both arguments must be Date objects.');
+    }
+
+    return  date1.getDate() === date2.getDate() &&
+            date1.getFullYear() === date2.getFullYear() &&
+            date1.getMonth() === date2.getMonth();
+    } 
   
     const zoomToRoom = (roomName) => {
       let newViewBox;

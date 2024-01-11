@@ -3,7 +3,7 @@ export default class Booking {
     this.id = id;
     this.userId = userId;
     this.seatId = seatId;
-    this.bookingDateTime = bookingDateTime;
+    this.bookingDateTime = new Date(bookingDateTime);
   }
 }
 
