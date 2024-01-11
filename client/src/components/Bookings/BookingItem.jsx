@@ -16,7 +16,7 @@ const BookingItem = ({onClick, bookingDateTime, seatId, showDeleteButton }) => {
         
         <MdDelete
           onClick={onClick}
-          color="red"
+          color="black"
           className={`h-10 w-10 flex-none text-black hover:text-red-500 transition-colors duration-200 ${!showDeleteButton ? 'opacity-0' : 'opacity-100'}`}
           src=""
           alt=""
