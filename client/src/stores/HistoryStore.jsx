@@ -23,7 +23,7 @@ class HistoryStore {
 
   async fetchUpcomingBookings() {
     try {
-      const url = "/api/Booking/Bookings/MyBookings";
+      const url = "/api/Booking/Bookings/MyActiveBookings";
       const response = await ApiService.fetchData(url, "Get", null);
       const data = await response.json();
       this.setUpcomingBookings(data);
@@ -71,7 +71,7 @@ class HistoryStore {
 
    setPreviousBookings(data) {
     this.myPreviousBookings = data.value.map(
-        (booking) => new Booking(booking.id, booking.seatId, booking.bookingDateTime)
+        (booking) => new Booking(booking.id, booking.userId, booking.seatId, booking.bookingDateTime)
     );
   }
 

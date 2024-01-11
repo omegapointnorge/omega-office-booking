@@ -68,22 +68,22 @@ namespace server.Controllers
         }
 
         [HttpGet("Bookings/{userId}")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser(String userId)
         {
-            var response = await _bookingService.GetAllBookingsForUser(userId);
+            var response = await _bookingService.GetActiveBookingsForUser(userId);
             return new OkObjectResult(response);
         }
 
 
-        [HttpGet("Bookings/MyBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForCurrentUser()
+        [HttpGet("Bookings/MyActiveBookings")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser()
         {
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
             };
-            var response = await _bookingService.GetAllBookingsForUser(userId);
+            var response = await _bookingService.GetActiveBookingsForUser(userId);
             return new OkObjectResult(response);
         }
 
