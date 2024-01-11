@@ -8,15 +8,20 @@ class HistoryStore {
   myPreviousBookings = [];
   openDialog = false;
   bookingIdToDelete = null;
-  itemCount = 6;
+  itemCount = 5;
   pageNumber = 1;
-  totalItemCount;
+  previousBookingsCount;
   lastPage;
+  isFirstPage;
+  isLastPage;
 
   constructor() {
     this.fetchActiveBookings();
     this.fetchPreviousBookings(this.pageNumber, this.itemCount);
     this.fetchPreviousBookingsCount();
+    this.setIsFirstPage(true);
+    this.setIsLastPage(false);
+
     makeAutoObservable(this);
   }
 
@@ -49,6 +54,7 @@ class HistoryStore {
       const response = await ApiService.fetchData(url, "Get", null);
       const data = await response.json();
       this.setPreviousBookingsCount(data);
+      this.setLastPage(this.previousBookingsCount / this.itemCount)
     } catch (error) {
       console.error(error);
     }
@@ -76,23 +82,39 @@ class HistoryStore {
   }
 
   setPreviousBookingsCount(data) {
-    this.totalItemCount = data;
+    this.previousBookingsCount = data;
+    console.log("previous1 ", this.previousBookingsCount);
+  }
+
+  setIsFirstPage(data) {
+    this.isFirstPage = data;
+  }
+  
+  setIsLastPage(data) {
+    this.isLastPage = data;
+  }
+
+  setLastPage(data) {
+    this.lastPage = data;
   }
 
   async navigatePrevious() {
-    if (this.pageNumber > 1) {
-      this.pageNumber -= 1;
-      await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
-    }
+  if (this.pageNumber > 1) {
+    this.pageNumber -= 1;
+    this.setIsLastPage(false);
+    this.setIsFirstPage(this.pageNumber === 1);
+    await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
   }
+}
 
-  async navigateNext() {
-    this.lastPage = Math.ceil(this.totalItemCount / this.itemCount);
-    if (this.pageNumber < this.lastPage) {
-      this.pageNumber += 1;
-      await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
-    }
+async navigateNext() {
+  if (this.pageNumber < this.lastPage) {
+    this.pageNumber += 1;
+    this.setIsFirstPage(false);
+    this.setIsLastPage(this.pageNumber === this.lastPage);
+    await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
   }
+}
 
   deleteBooking(bookingId) {
     const bookingToDelete = this.myActiveBookings.find((booking) => booking.id === bookingId);
