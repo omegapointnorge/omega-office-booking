@@ -54,7 +54,7 @@ class HistoryStore {
       const response = await ApiService.fetchData(url, "Get", null);
       const data = await response.json();
       this.setPreviousBookingsCount(data);
-      this.setLastPage(this.previousBookingsCount / this.itemCount)
+      this.setLastPage(Math.ceil(this.previousBookingsCount / this.itemCount))
     } catch (error) {
       console.error(error);
     }
@@ -83,7 +83,6 @@ class HistoryStore {
 
   setPreviousBookingsCount(data) {
     this.previousBookingsCount = data;
-    console.log("previous1 ", this.previousBookingsCount);
   }
 
   setIsFirstPage(data) {
@@ -111,6 +110,7 @@ async navigateNext() {
   if (this.pageNumber < this.lastPage) {
     this.pageNumber += 1;
     this.setIsFirstPage(false);
+    console.log(this.pageNumber, this.lastPage);
     this.setIsLastPage(this.pageNumber === this.lastPage);
     await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
   }

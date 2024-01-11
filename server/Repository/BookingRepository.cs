@@ -32,10 +32,10 @@ namespace server.Repository
 
         public Task<List<BookingDto>> GetActiveBookingsForUser(String userId)
         {
-            DateTime currentDateTime = DateTime.Now;
+            DateTime currentDateTime = DateTime.Now.Date;
 
             return _dbContext.Bookings
-            .Where(booking => booking.UserId == userId && booking.BookingDateTime > currentDateTime)
+            .Where(booking => booking.UserId == userId && booking.BookingDateTime.Date >= currentDateTime)
             .OrderByDescending(booking => booking.BookingDateTime)
             .Select(booking =>
                     new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
@@ -45,10 +45,10 @@ namespace server.Repository
 
         public async Task<List<BookingDto>> GetPreviousBookingsForUser(string userId, int itemCount, int pageNumber)
         {
-            DateTime currentDateTime = DateTime.Now;
+            DateTime currentDateTime = DateTime.Now.Date;
 
             var query = _dbContext.Bookings
-                .Where(booking => booking.UserId == userId && booking.BookingDateTime < currentDateTime)
+                .Where(booking => booking.UserId == userId && booking.BookingDateTime.Date < currentDateTime)
                 .OrderByDescending(booking => booking.BookingDateTime)
                 .Skip((pageNumber - 1) * itemCount)  // Calculate the number of records to skip based on the page number and page size
                 .Take(itemCount);  // Take only the specified number of records for the current page
@@ -62,10 +62,10 @@ namespace server.Repository
 
         public async Task<int> GetPreviousBookingCountForUser(string userId)
         {
-            DateTime currentDateTime = DateTime.Now;
+            DateTime currentDateTime = DateTime.Now.Date;
 
             var query = await _dbContext.Bookings
-                .Where(booking => booking.UserId == userId && booking.BookingDateTime < currentDateTime)
+                .Where(booking => booking.UserId == userId && booking.BookingDateTime.Date < currentDateTime)
                 .CountAsync();
 
             return query;
