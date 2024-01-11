@@ -4,6 +4,10 @@ import Heading from "../components/Heading";
 export const ProtectedRoute = ({ outlet }) => {
   const context = useAuthContext();
 
+  if(context?.loading) {
+    return "Loading...";
+  }
+
   if (context?.user?.isAuthenticated) {
     return outlet;
   }
