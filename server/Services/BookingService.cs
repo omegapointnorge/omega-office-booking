@@ -4,6 +4,7 @@ using server.Models.DTOs;
 using server.Repository;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
+using server.Helpers;
 using server.Services;
 using System.Diagnostics.CodeAnalysis;
 
@@ -41,7 +42,7 @@ namespace server.Services
         public async Task<ActionResult<List<BookingDto>>> GetAllActiveBookings()
         {
             var bookings = await _bookingRepository.GetAllActiveBookings();
-            var bookingDtos = ConvertBookingsToBookingDtos(bookings);
+            var bookingDtos = Mappers.MapBookingDtos(bookings);
             return bookingDtos;
         }
 
@@ -75,10 +76,6 @@ namespace server.Services
             DateTime convertedDateTime = TimeZoneInfo.ConvertTime(originalDateTime, norwayTimeZone);
 
             return convertedDateTime;
-        }
-
-        private List<BookingDto> ConvertBookingsToBookingDtos(List<Booking> bookings) {
-            return bookings.Select(booking => new BookingDto(booking)).ToList();
         }
     }
 }
