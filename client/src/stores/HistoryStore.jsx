@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import ApiService from "./ApiService.jsx";
 
 class HistoryStore {
-  myUpcomingBookings = [];
+  myActiveBookings = [];
   myPreviousBookings = [];
   openDialog = false;
   bookingIdToDelete = null;
@@ -14,19 +14,19 @@ class HistoryStore {
   lastPage;
 
   constructor() {
-    this.fetchUpcomingBookings();
+    this.fetchActiveBookings();
     this.fetchPreviousBookings(this.pageNumber, this.itemCount);
     this.fetchPreviousBookingsCount();
     makeAutoObservable(this);
   }
 
 
-  async fetchUpcomingBookings() {
+  async fetchActiveBookings() {
     try {
       const url = "/api/Booking/Bookings/MyActiveBookings";
       const response = await ApiService.fetchData(url, "Get", null);
       const data = await response.json();
-      this.setUpcomingBookings(data);
+      this.setActiveBookings(data);
     } catch (error) {
       console.error(error);
     }
@@ -63,8 +63,8 @@ class HistoryStore {
     }
   }
 
-  setUpcomingBookings(data) {
-    this.myUpcomingBookings = data.value.map(
+  setActiveBookings(data) {
+    this.myActiveBookings = data.value.map(
       (booking) => new Booking(booking.id, booking.userId, booking.seatId, booking.bookingDateTime)
     );
   }
@@ -95,11 +95,11 @@ class HistoryStore {
   }
 
   deleteBooking(bookingId) {
-    const bookingToDelete = this.myUpcomingBookings.find((booking) => booking.id === bookingId);
+    const bookingToDelete = this.myActiveBookings.find((booking) => booking.id === bookingId);
     if (bookingToDelete) {
-      let newBookingList = this.myUpcomingBookings.filter(item => item !== bookingToDelete);
+      let newBookingList = this.myActiveBookings.filter(item => item !== bookingToDelete);
       // newBookingList = newBookingList.slice().reverse();
-      this.myUpcomingBookings = newBookingList;
+      this.myActiveBookings = newBookingList;
       this.deleteBookingCall(bookingId)
       toast.success("Booking deleted for Booking Nr: " + bookingId);
       this.handleCloseDialog();
