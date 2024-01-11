@@ -27,7 +27,7 @@ const navigatePrevious = () => {
     }
 };
 
-  if (historyStore.myUpcomingBookings.length === 0 && historyStore.myPreviousBookings.length === 0) {
+  if (historyStore.myActiveBookings.length === 0 && historyStore.myPreviousBookings.length === 0) {
     return (
       <>
         <div
@@ -57,7 +57,7 @@ const navigatePrevious = () => {
                                     className="opacity-0" disabled={true}>
                                 <IoIosArrowBack/>
                             </button>
-                            {historyStore.myUpcomingBookings
+                            {historyStore.myActiveBookings
                                 .map((booking) => (
                                     <BookingItem
                                         key={booking.id}
