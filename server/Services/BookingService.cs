@@ -51,9 +51,9 @@ namespace server.Services
         }
 
 
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(String userId)
+        public async Task<ActionResult<List<BookingDto>>> GetActiveBookingsForUser(String userId)
         {
-            return await _bookingRepository.GetAllBookingsForUser(userId);
+            return await _bookingRepository.GetActiveBookingsForUser(userId);
         }
 
         public async Task<ActionResult> DeleteBookingAsync(int bookingId, String userId)
@@ -64,13 +64,6 @@ namespace server.Services
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-        }
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser(String userId)
-        {
-            //TODO add user service
-            // existingUser as it currently exists in the db
-
-            return await _bookingRepository.GetAllBookingsForUser(userId);
         }
 
         private DateTime ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)
