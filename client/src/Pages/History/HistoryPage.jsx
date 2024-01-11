@@ -8,24 +8,9 @@ import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
 
 
 const HistoryPage = observer(() => {
-  const [isFirstPage, setIsFirstPage] = useState(true);
-  const [isLastPage, setIsLastPage] = useState(false);
 
-  const navigateNext = () => {
-    if (!isLastPage) {
-        historyStore.navigateNext();
-        setIsFirstPage(false)
-        if (historyStore.pageNumber === historyStore.lastPage) setIsLastPage(true)
-    }
-};
 
-const navigatePrevious = () => {
-    if (!isFirstPage) {
-        historyStore.navigatePrevious();
-        setIsLastPage(false)
-        if(historyStore.pageNumber === 1) setIsFirstPage(true)
-    }
-};
+
 
   if (historyStore.myActiveBookings.length === 0 && historyStore.myPreviousBookings.length === 0) {
     return (
@@ -53,7 +38,7 @@ const navigatePrevious = () => {
                         <p className="text-left text-xl font-semibold heading mb-3 pl-11">UPCOMING BOOKINGS</p>
                         <div className="flex flex-row gap-5">
                             {/*Buttons for navigation when support is added for more than one booking. Currently only aligns the booking items correctly*/}
-                            <button onClick={() => navigatePrevious()}
+                            <button onClick={() => historyStore.navigatePrevious()}
                                     className="opacity-0" disabled={true}>
                                 <IoIosArrowBack/>
                             </button>
@@ -69,7 +54,7 @@ const navigatePrevious = () => {
                                         }}
                                     ></BookingItem>
                                 ))}
-                            <button onClick={() => navigateNext()}
+                            <button onClick={() => historyStore.navigateNext()}
                                     className={"opacity-0"} disabled={true}>
                                 <IoIosArrowForward/>
                             </button>
@@ -86,7 +71,7 @@ const navigatePrevious = () => {
                     <div className="flex flex-col gap-4">
                         <p className="text-left text-xl font-semibold heading mb-3 pl-11">PREVIOUS BOOKINGS</p>
                         <div className="flex flex-row gap-5">
-                            <button onClick={() => navigatePrevious()} className={`${isFirstPage ? 'opacity-0' : 'opacity-100'}`} disabled={isFirstPage}>
+                            <button onClick={() => historyStore.navigatePrevious()} className={`${historyStore.isFirstPage ? 'opacity-0' : 'opacity-100'}`} disabled={historyStore.isFirstPage}>
                                 <IoIosArrowBack/>
                             </button>
                             {historyStore.myPreviousBookings
@@ -96,7 +81,7 @@ const navigatePrevious = () => {
                                                  bookingDateTime={booking.bookingDateTime} showDeleteButton={false}
                                     ></BookingItem>
                                 ))}
-                            <button onClick={() => navigateNext()} className={`${isLastPage ? 'opacity-0' : 'opacity-100'}`} disabled={isLastPage}>
+                            <button onClick={() => historyStore.navigateNext()} className={`${historyStore.isLastPage ? 'opacity-0' : 'opacity-100'}`} disabled={historyStore.isLastPage}>
                                 <IoIosArrowForward />
                             </button>
                         </div>
