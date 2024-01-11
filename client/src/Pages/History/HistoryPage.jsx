@@ -7,10 +7,6 @@ import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
 
 
 const HistoryPage = observer(() => {
-
-
-
-
   if (historyStore.myActiveBookings.length === 0 && historyStore.myPreviousBookings.length === 0) {
     return (
       <>
@@ -34,7 +30,7 @@ const HistoryPage = observer(() => {
                 />
                 <div className="container mt-3">
                     <div className="flex flex-col gap-4 mb-10">
-                        <p className="text-left text-xl font-semibold heading mb-3 pl-11">UPCOMING BOOKINGS</p>
+                        <p className="text-left text-xl font-semibold heading mb-3 pl-11">ACTIVE BOOKINGS</p>
                         <div className="flex flex-row gap-5">
                             {/*Buttons for navigation when support is added for more than one booking. Currently only aligns the booking items correctly*/}
                             <button onClick={() => historyStore.navigatePrevious()}
