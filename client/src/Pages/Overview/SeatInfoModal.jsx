@@ -72,7 +72,7 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
     }
   
     return (
-      <div className=" inset-0 z-50 flex items-center justify-center bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
         <div className="relative mx-auto p-6 border w-full max-w-md rounded-lg bg-white shadow-xl">
           <div className="text-center">
             <h3 className="text-xl font-semibold text-gray-900 mb-4">Seat Information</h3>
