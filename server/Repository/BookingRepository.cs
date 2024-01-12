@@ -30,20 +30,18 @@ namespace server.Repository
         }
 
 
-        public Task<List<BookingDto>> GetActiveBookingsForUser(String userId)
+        public Task<List<Booking>> GetActiveBookingsForUser(String userId)
         {
             DateTime currentDateTime = DateTime.Now.Date;
 
             return _dbContext.Bookings
-            .Where(booking => booking.UserId == userId && booking.BookingDateTime.Date >= currentDateTime)
-            .OrderByDescending(booking => booking.BookingDateTime)
-            .Select(booking =>
-                    new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
-                )
-            .ToListAsync();
+                .Where(booking => booking.UserId == userId && booking.BookingDateTime.Date >= currentDateTime)
+                .OrderByDescending(booking => booking.BookingDateTime)
+                .ToListAsync();
         }
 
-        public async Task<List<BookingDto>> GetPreviousBookingsForUser(string userId, int itemCount, int pageNumber)
+
+        public async Task<List<Booking>> GetPreviousBookingsForUser(string userId, int itemCount, int pageNumber)
         {
             DateTime currentDateTime = DateTime.Now.Date;
 
@@ -53,10 +51,7 @@ namespace server.Repository
                 .Skip((pageNumber - 1) * itemCount)  // Calculate the number of records to skip based on the page number and page size
                 .Take(itemCount);  // Take only the specified number of records for the current page
 
-            var bookings = await query
-                .Select(booking => new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime))
-                .ToListAsync();
-
+            var bookings = await query.ToListAsync();
             return bookings;
         }
 

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
 using server.Models.DTOs.Request;
@@ -42,7 +43,8 @@ namespace server.Services
         }
         public async Task<ActionResult<List<BookingDto>>> GetPreviousBookingsForUser(string userId, int itemCount, int pageNumber)
         {
-            return await _bookingRepository.GetPreviousBookingsForUser(userId, itemCount, pageNumber);
+            var bookings = await _bookingRepository.GetPreviousBookingsForUser(userId, itemCount, pageNumber);
+            return Mappers.MapBookingDtos(bookings);
         }
 
         public async Task<int> GetPreviousBookingCountForUser(string userId)
@@ -53,7 +55,8 @@ namespace server.Services
 
         public async Task<ActionResult<List<BookingDto>>> GetActiveBookingsForUser(String userId)
         {
-            return await _bookingRepository.GetActiveBookingsForUser(userId);
+            var bookings = await _bookingRepository.GetActiveBookingsForUser(userId);
+            return Mappers.MapBookingDtos(bookings);
         }
 
         public async Task<ActionResult> DeleteBookingAsync(int bookingId, String userId)
