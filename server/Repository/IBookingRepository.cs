@@ -8,9 +8,9 @@ namespace server.Repository
     {
         Task<ActionResult> DeleteBooking(int id);
         Task<List<BookingDto>> GetAllFutureBookings();
-        Task<List<BookingDto>> GetActiveBookingsForUser(string userId);
+        Task<List<Booking>> GetActiveBookingsForUser(string userId);
         Task<Booking> CreateBookingAsync(Booking booking);
-        Task<List<BookingDto>> GetPreviousBookingsForUser(string userId, int itemCount, int pageNumber);
+        Task<List<Booking>> GetPreviousBookingsForUser(string userId, int itemCount, int pageNumber);
         Task<int> GetPreviousBookingCountForUser(string userId);
 
     }
