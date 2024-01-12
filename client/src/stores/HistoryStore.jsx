@@ -6,22 +6,20 @@ import ApiService from "./ApiService.jsx";
 class HistoryStore {
   myActiveBookings = [];
   myPreviousBookings = [];
+  myPreviousBookingsCurrentPage = [];
   openDialog = false;
   bookingIdToDelete = null;
   itemCount = 5;
-  pageNumber = 1;
-  previousBookingsCount;
+  pageNumber = 0;
   lastPage;
   isFirstPage;
   isLastPage;
 
   constructor() {
     this.fetchActiveBookings();
-    this.fetchPreviousBookings(this.pageNumber, this.itemCount);
-    this.fetchPreviousBookingsCount();
+    this.fetchPreviousBookings();
     this.setIsFirstPage(true);
     this.setIsLastPage(false);
-
     makeAutoObservable(this);
   }
 
@@ -37,28 +35,33 @@ class HistoryStore {
     }
   }
 
-  async fetchPreviousBookings(pageNumber, itemCount) {
+  async fetchPreviousBookings() {
     try {
-      const url = `/api/Booking/Bookings/MyPreviousBookings?pageNumber=${pageNumber}&itemCount=${itemCount}`;
+      const url = `/api/Booking/Bookings/MyPreviousBookings`;
       const response = await ApiService.fetchData(url, "Get", null);
       const data = await response.json();
       this.setPreviousBookings(data);
+      this.setLastPage(Math.ceil(this.myPreviousBookings.length / this.itemCount))
+      this.initPreviousBookingsPageCurrentPage();
+
     } catch (error) {
       console.error(error);
     }
   }
 
-  async fetchPreviousBookingsCount() {
-    try {
-      const url = `/api/Booking/Bookings/MyPreviousBookingsCount`;
-      const response = await ApiService.fetchData(url, "Get", null);
-      const data = await response.json();
-      this.setPreviousBookingsCount(data);
-      this.setLastPage(Math.ceil(this.previousBookingsCount / this.itemCount))
-    } catch (error) {
-      console.error(error);
+  initPreviousBookingsPageCurrentPage() {
+  try {
+    if (this.myPreviousBookings.length > 5) {
+      this.setIsLastPage(false);
+      this.myPreviousBookingsCurrentPage = this.myPreviousBookings.slice(0, 5);
+    } else {
+      this.setIsLastPage(true);
+      this.myPreviousBookingsCurrentPage = this.myPreviousBookings;
     }
+  } catch (error) {
+    console.error(error);
   }
+}
 
   async deleteBookingCall(bookingId) {
     try {
@@ -75,14 +78,10 @@ class HistoryStore {
     );
   }
 
-   setPreviousBookings(data) {
+  setPreviousBookings(data) {
     this.myPreviousBookings = data.value.map(
         (booking) => new Booking(booking.id, booking.userId, booking.seatId, booking.bookingDateTime)
     );
-  }
-
-  setPreviousBookingsCount(data) {
-    this.previousBookingsCount = data;
   }
 
   setIsFirstPage(data) {
@@ -97,22 +96,26 @@ class HistoryStore {
     this.lastPage = data;
   }
 
-  async navigatePrevious() {
+  navigatePrevious() {
   if (this.pageNumber > 1) {
     this.pageNumber -= 1;
     this.setIsLastPage(false);
     this.setIsFirstPage(this.pageNumber === 1);
-    await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
+    const startIndex = (this.pageNumber - 1) * this.itemCount;
+    const endIndex = this.pageNumber * this.itemCount;
+    this.myPreviousBookingsCurrentPage = this.myPreviousBookings.slice(startIndex, endIndex);
   }
 }
 
-async navigateNext() {
+navigateNext() {
   if (this.pageNumber < this.lastPage) {
     this.pageNumber += 1;
     this.setIsFirstPage(false);
-    console.log(this.pageNumber, this.lastPage);
     this.setIsLastPage(this.pageNumber === this.lastPage);
-    await this.fetchPreviousBookings(this.pageNumber, this.itemCount);
+
+    const startIndex = (this.pageNumber - 1) * this.itemCount;
+    const endIndex = this.pageNumber * this.itemCount;
+    this.myPreviousBookingsCurrentPage = this.myPreviousBookings.slice(startIndex, endIndex);
   }
 }
 

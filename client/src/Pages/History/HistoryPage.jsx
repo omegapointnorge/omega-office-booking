@@ -69,7 +69,7 @@ const HistoryPage = observer(() => {
                             <button onClick={() => historyStore.navigatePrevious()} className={`${historyStore.isFirstPage ? 'opacity-0' : 'opacity-100'}`} disabled={historyStore.isFirstPage}>
                                 <IoIosArrowBack/>
                             </button>
-                            {historyStore.myPreviousBookings
+                            {historyStore.myPreviousBookingsCurrentPage
                                 .map((booking) => (
                                     <BookingItem key={booking.id} roomId={booking.roomId}
                                                  seatId={booking.seatId}
