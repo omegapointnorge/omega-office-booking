@@ -11,8 +11,8 @@ const HistoryPage = observer(() => {
     return (
       <>
         <div
-          className="justify-center items-center flex mt-10 overflow-x-hidden overflow-y-auto
-            inset-0 outline-none focus:outline-none"
+          className="justify-center items-center flex overflow-x-hidden overflow-y-auto 
+     fixed inset-0 outline-none focus:outline-none"
         >
           <Heading title="You dont have any bookings" />
         </div>
