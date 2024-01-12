@@ -26,26 +26,14 @@ namespace server.Controllers
         }
 
         [HttpGet("Bookings/MyPreviousBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllPreviousBookingsForCurrentUser(int itemCount, int pageNumber)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllPreviousBookingsForCurrentUser()
         {
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
             };
-            var response = await _bookingService.GetPreviousBookingsForUser(userId, itemCount, pageNumber);
-            return new OkObjectResult(response);
-        }
-
-        [HttpGet("Bookings/MyPreviousBookingsCount")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetCurrentUserPreviousBookingCount()
-        {
-            var userId = String.Empty;
-            if (User.Identity?.IsAuthenticated ?? false)
-            {
-                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
-            };
-            var response = await _bookingService.GetPreviousBookingCountForUser(userId);
+            var response = await _bookingService.GetPreviousBookingsForUser(userId);
             return new OkObjectResult(response);
         }
 

@@ -41,22 +41,22 @@ namespace server.Services
         {
             return await _bookingRepository.GetAllFutureBookings();
         }
-        public async Task<ActionResult<List<BookingDto>>> GetPreviousBookingsForUser(string userId, int itemCount, int pageNumber)
+        public async Task<ActionResult<List<BookingDto>>> GetPreviousBookingsForUser(string userId)
         {
-            var bookings = await _bookingRepository.GetPreviousBookingsForUser(userId, itemCount, pageNumber);
-            return Mappers.MapBookingDtos(bookings);
-        }
-
-        public async Task<int> GetPreviousBookingCountForUser(string userId)
-        {
-            return await _bookingRepository.GetPreviousBookingCountForUser(userId);
+            var bookings = await _bookingRepository.GetAllBookingsForUser(userId);
+            var currentDate = DateTime.Now.Date;
+            var previousBookings = bookings.Where(b => b.BookingDateTime < currentDate).OrderByDescending(b => b.BookingDateTime).ToList();
+            return Mappers.MapBookingDtos(previousBookings);
         }
 
 
         public async Task<ActionResult<List<BookingDto>>> GetActiveBookingsForUser(String userId)
         {
-            var bookings = await _bookingRepository.GetActiveBookingsForUser(userId);
-            return Mappers.MapBookingDtos(bookings);
+            var bookings = await _bookingRepository.GetAllBookingsForUser(userId);
+            var currentDate = DateTime.Now.Date;
+            var activeBookings = bookings.Where(b => b.BookingDateTime >= currentDate).OrderBy(b => b.BookingDateTime).ToList();
+
+            return Mappers.MapBookingDtos(activeBookings);
         }
 
         public async Task<ActionResult> DeleteBookingAsync(int bookingId, String userId)

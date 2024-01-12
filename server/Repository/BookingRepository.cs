@@ -30,13 +30,11 @@ namespace server.Repository
         }
 
 
-        public Task<List<Booking>> GetActiveBookingsForUser(String userId)
+        public Task<List<Booking>> GetAllBookingsForUser(String userId)
         {
-            DateTime currentDateTime = DateTime.Now.Date;
 
             return _dbContext.Bookings
-                .Where(booking => booking.UserId == userId && booking.BookingDateTime.Date >= currentDateTime)
-                .OrderByDescending(booking => booking.BookingDateTime)
+                .Where(booking => booking.UserId == userId)
                 .ToListAsync();
         }
 
