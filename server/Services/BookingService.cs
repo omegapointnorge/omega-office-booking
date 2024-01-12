@@ -45,7 +45,7 @@ namespace server.Services
         {
             var bookings = await _bookingRepository.GetAllBookingsForUser(userId);
             var currentDate = DateTime.Now.Date;
-            var previousBookings = bookings.Where(b => b.BookingDateTime < currentDate).OrderByDescending(b => b.BookingDateTime).ToList();
+            var previousBookings = bookings.Where(b => b.BookingDateTime.Date < currentDate).OrderByDescending(b => b.BookingDateTime).ToList();
             return Mappers.MapBookingDtos(previousBookings);
         }
 
@@ -54,7 +54,7 @@ namespace server.Services
         {
             var bookings = await _bookingRepository.GetAllBookingsForUser(userId);
             var currentDate = DateTime.Now.Date;
-            var activeBookings = bookings.Where(b => b.BookingDateTime >= currentDate).OrderBy(b => b.BookingDateTime).ToList();
+            var activeBookings = bookings.Where(b => b.BookingDateTime.Date >= currentDate).OrderBy(b => b.BookingDateTime).ToList();
 
             return Mappers.MapBookingDtos(activeBookings);
         }
