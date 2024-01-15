@@ -14,22 +14,5 @@ namespace server.Repository
         {
             _dbContext = context;
         }
-
-
-        public async Task<ActionResult> DeleteBooking(int id)
-        {
-            try
-            {
-                var booking = await _dbContext.Bookings.FindAsync(id);
-                if (booking == null) return new StatusCodeResult(StatusCodes.Status404NotFound);
-                _dbContext.Bookings.Remove(booking);
-                await _dbContext.SaveChangesAsync();
-                return new StatusCodeResult(StatusCodes.Status200OK);
-            }
-            catch (Exception)
-            {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-        }
     }
 }

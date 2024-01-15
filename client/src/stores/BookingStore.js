@@ -62,7 +62,7 @@ class BookingStore {
       }
 
       const newBookingJson = await response.json();
-      const newBookingData = newBookingJson.value
+      const newBookingData = newBookingJson
       const newBooking = new Booking(newBookingData.id, newBookingData.userId, newBookingData.seatId, newBookingData.bookingDateTime);
 
       // Update the store's state with the new booking

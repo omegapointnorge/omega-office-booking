@@ -6,7 +6,5 @@ namespace server.Repository
 {
     public interface IBookingRepository : IRepository<Booking>
     {
-        Task<ActionResult> DeleteBooking(int id);
-
     }
 }

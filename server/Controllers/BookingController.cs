@@ -36,8 +36,10 @@ namespace server.Controllers
             {
                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
             };
-            var response = await _bookingService.GetPreviousBookingsForUser(userId);
-            return new OkObjectResult(response);
+            var result = await _bookingService.GetPreviousBookingsForUser(userId);
+            if (result.Value.IsSuccess)
+                return new OkObjectResult(result.Value.BookingDto);
+            return StatusCode(500);
         }
 
         [HttpPost("create")]
@@ -61,7 +63,7 @@ namespace server.Controllers
         [HttpGet("Bookings/{userId}")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser(String userId)
         {
-            var result = await _bookingService.GetAllBookingsForUser(userId);
+            var result = await _bookingService.GetActiveBookingsForUser(userId);
             if (result.Value.IsSuccess)
                 return new OkObjectResult(result.Value.BookingDto);
             return StatusCode(500);
@@ -76,7 +78,7 @@ namespace server.Controllers
             {
                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
             };
-            var result = await _bookingService.GetAllBookingsForUser(userId);
+            var result = await _bookingService.GetActiveBookingsForUser(userId);
             if (result.Value.IsSuccess)
                 return new OkObjectResult(result.Value.BookingDto);
             return StatusCode(500);
@@ -90,15 +92,9 @@ namespace server.Controllers
         [HttpDelete("{bookingId}")]
         public async Task<ActionResult> DeleteBookingAsync(int bookingId)
         {
-            if (!(User.Identity?.IsAuthenticated ?? false))
-            {
-                return Unauthorized();
-            }
-
             try
             {
-                var user = GetUser();
-                var deleteResponse = await _bookingService.DeleteBookingAsync(bookingId, user.Id);
+                var deleteResponse = await _bookingService.DeleteBookingAsync(bookingId);
 
                 return NoContent();
             }

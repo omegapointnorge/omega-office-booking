@@ -4,9 +4,7 @@ using server.Models.Domain;
 using server.Models.DTOs;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
-using server.Services;
-using System.Diagnostics.CodeAnalysis;
-using server.Helpers;
+using server.Repository;
 
 namespace server.Services
 {
@@ -53,40 +51,54 @@ namespace server.Services
                 return (false, null, ex.Message);
             }
         }
-            return await _bookingRepository.GetAllFutureBookings();
-        }
-        public async Task<ActionResult<List<BookingDto>>> GetPreviousBookingsForUser(string userId)
-        {
-            var bookings = await _bookingRepository.GetAllBookingsForUser(userId);
-            var currentDate = DateTime.Now.Date;
-            var previousBookings = bookings.Where(b => b.BookingDateTime.Date < currentDate).OrderByDescending(b => b.BookingDateTime).ToList();
-            return Mappers.MapBookingDtos(previousBookings);
-        }
 
-        public async Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetAllBookingsForUser(string userId)
+        public async Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetActiveBookingsForUser(string userId)
         {
             try
             {
                 IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
                 bookingList = bookingList.Where(x => x.UserId == userId);
-                var bookingDtoList = Mappers.MapBookingDtos(bookingList);
-            var currentDate = DateTime.Now.Date;
-            var activeBookings = bookings.Where(b => b.BookingDateTime.Date >= currentDate).OrderBy(b => b.BookingDateTime).ToList();
-            return (true, bookingDtoList, null);
+                var currentDate = DateTime.Now.Date;
+                var activeBookings = bookingList.Where(b => b.BookingDateTime.Date >= currentDate).OrderBy(b => b.BookingDateTime).ToList();
+                var bookingDtoList = Mappers.MapBookingDtos(activeBookings);
+                return (true, bookingDtoList, null);
             }
             catch (Exception ex)
             {
                 //_logger.LogError($"Error: {ex.Message} | {ex.StackTrace}");
                 return (false, null, ex.Message);
             }
-            //return await _bookingRepository.GetAllBookingsForUser(userId);
+        }
+        public async Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetPreviousBookingsForUser(string userId)
+        {
+            try
+            {
+                IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
+                bookingList = bookingList.Where(x => x.UserId == userId);
+                var currentDate = DateTime.Now.Date;
+                var previousBookings = bookingList.Where(b => b.BookingDateTime.Date < currentDate).OrderByDescending(b => b.BookingDateTime).ToList();
+                var bookingDtoList = Mappers.MapBookingDtos(previousBookings);
+                return (true, bookingDtoList, null);
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError($"Error: {ex.Message} | {ex.StackTrace}");
+                return (false, null, ex.Message);
+            }
         }
 
-        public async Task<ActionResult> DeleteBookingAsync(int bookingId, string userId)
+
+
+        public async Task<ActionResult> DeleteBookingAsync(int bookingId)
         {
-            bool isCurrentUsersBooking = _userRepository.GetBookingByUserIdAndBookingId(bookingId, userId) != null;
-            if (isCurrentUsersBooking) return await _bookingRepository.DeleteBooking(bookingId);
-            else
+            try
+            {
+                var booking = new Booking();
+                booking.Id = bookingId;
+                await _bookingRepository.DeleteAndCommit(booking);
+                return new StatusCodeResult(StatusCodes.Status200OK);
+            }
+            catch (Exception ex)
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }

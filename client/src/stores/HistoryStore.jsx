@@ -42,7 +42,7 @@ class HistoryStore {
       const url = "/api/Booking/Bookings/MyActiveBookings";
       const response = await ApiService.fetchData(url, "Get", null);
       const data = await response.json();
-      this.myActiveBookings = data.value.map(
+      this.myActiveBookings = data.map(
       (booking) => new Booking(booking.id, booking.userId, booking.seatId, booking.bookingDateTime)
     );
     } catch (error) {
@@ -55,7 +55,7 @@ class HistoryStore {
       const url = `/api/Booking/Bookings/MyPreviousBookings`;
       const response = await ApiService.fetchData(url, "Get", null);
       const data = await response.json();
-      this.myPreviousBookings = data.value.map(
+      this.myPreviousBookings = data.map(
         (booking) => new Booking(booking.id, booking.userId, booking.seatId, booking.bookingDateTime)
     );
 
@@ -67,8 +67,9 @@ class HistoryStore {
 
   async deleteBooking(bookingId) {
     try {
-      const url = "/api/Booking/Bookings/" + bookingId;
-      await ApiService.fetchData(url, "Delete");
+      const url = "/api/Booking/" + bookingId;
+        await ApiService.fetchData(url, "Delete");
+      this.removeBookingById(bookingId)
     } catch (error) {
       console.error(error);
     }
@@ -84,6 +85,10 @@ class HistoryStore {
 
   setLastPage(data) {
     this.lastPage = data;
+    }
+
+  removeBookingById(bookingId) {
+    this.myActiveBookings = this.myActiveBookings.filter(booking => booking.id !== bookingId);
   }
 
   navigatePrevious() {
