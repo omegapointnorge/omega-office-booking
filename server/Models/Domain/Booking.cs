@@ -5,7 +5,6 @@ namespace server.Models.Domain
         public int Id { get; set; }
         public String UserId { get; set; }
         public int SeatId { get; set; }
-        public User User { get; set; } = null!;
         public Seat Seat { get; set; } = null!;
         public DateTime BookingDateTime { get; set; }
         public Booking()

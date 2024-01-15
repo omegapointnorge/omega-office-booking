@@ -4,6 +4,7 @@ using server.Models.DTOs;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
 using server.Services;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace server.Controllers
 {
@@ -47,11 +48,14 @@ namespace server.Controllers
         {
             try
             {
-                var user = GetUser();
-                var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
+                if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
+                    var booking = await _bookingService.CreateBookingAsync(bookingRequest, userId);
 
-                return CreatedAtRoute(null, booking);
-
+                    return CreatedAtRoute(null, booking);
+                }
+                return StatusCode(500, "User is not Authenticated.");
             }
             catch (Exception ex)
             {
@@ -103,19 +107,6 @@ namespace server.Controllers
                 // Log the exception
                 return StatusCode(500, "An error occurred processing your request.");
             }
-        }
-
-
-        private User GetUser()
-        {
-            {
-                var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
-                var email = User.FindFirst("preferred_username")?.Value ?? String.Empty;
-                var name = User.FindFirst("name")?.Value ?? String.Empty;
-
-                return new User(userId, name, email);
-            }
-
         }
     }
 }

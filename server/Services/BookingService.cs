@@ -11,21 +11,19 @@ namespace server.Services
     public class BookingService : IBookingService
     {
         readonly IBookingRepository _bookingRepository;
-        readonly IUserRepository _userRepository;
 
-        public BookingService(IBookingRepository bookingRepository, IUserRepository userRepository)
+        public BookingService(IBookingRepository bookingRepository)
         {
             _bookingRepository = bookingRepository;
-            _userRepository = userRepository;
         }
 
-        public async Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user)
+        public async Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, string user)
         {
 
 
             var booking = new Booking
             {
-                UserId = user.Id,
+                UserId = user,
                 SeatId = bookingRequest.SeatId,
                 BookingDateTime = DateTime.Now
             };

@@ -126,6 +126,7 @@
     <Folder Include="..\client\public\images\">
       <Link>public\images</Link>
     </Folder>
+    <Folder Include="Response\" />
   </ItemGroup>
 
   <ItemGroup>

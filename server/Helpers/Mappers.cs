@@ -5,10 +5,6 @@ namespace server.Helpers
 {
     public static class Mappers
     {
-        public static UserDto UserEntityToDto(User e)
-        {
-            return new UserDto(e.Id, e.Name, e.Email, e.Bookings);
-        }
 
         public static List<BookingDto> MapBookingDtos(IEnumerable<Booking> bookings)
         {
