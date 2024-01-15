@@ -2,7 +2,7 @@ const NavbarItem = ({ onClick, label }) => {
   return (
     <div
       onClick={onClick}
-      className="hover:text-black transition font-semibold text-lg"
+      className="px-4 py-3 hover:bg-neutral-100 transition font-semibold outline rounded-lg"
     >
       {label}
     </div>

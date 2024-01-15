@@ -3,53 +3,95 @@ import { observer } from "mobx-react-lite";
 import BookingItem from "../../components/Bookings/BookingItem";
 import historyStore from "../../stores/HistoryStore";
 import MyDialog from "../../components/Dialog";
+import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
+import Loading from "../../components/Loading";
+
+const ActiveBookings = observer(() => (
+  <div className="flex flex-row gap-5">
+    <button onClick={() => historyStore.navigatePrevious()} className="opacity-0" disabled={true}>
+      <IoIosArrowBack />
+    </button>
+    {historyStore.myActiveBookings.map((booking) => (
+      <BookingItem
+        key={booking.id}
+        seatId={booking.seatId}
+        bookingDateTime={booking.bookingDateTime}
+        showDeleteButton={true}
+        onClick={() => {
+          historyStore.handleOpenDialog(booking.id);
+        }}
+      ></BookingItem>
+    ))}
+    <button onClick={() => historyStore.navigateNext()} className="opacity-0" disabled={true}>
+      <IoIosArrowForward />
+    </button>
+    <MyDialog
+      title="Delete your Seat?"
+      open={historyStore.openDialog}
+      handleClose={historyStore.handleCloseDialog}
+      onClick={() => {
+        historyStore.deleteBooking(historyStore.bookingIdToDelete);
+        historyStore.handleCloseDialog();
+      }}
+    />
+  </div>
+));
+
+const PreviousBookings = observer(() => (
+  <div className="flex flex-row gap-5">
+    <button
+      onClick={() => historyStore.navigatePrevious()}
+      className={`${historyStore.isFirstPage ? 'opacity-0' : 'opacity-100'}`}
+      disabled={historyStore.isFirstPage}
+    >
+      <IoIosArrowBack />
+    </button>
+    {historyStore.myPreviousBookingsCurrentPage.map((booking) => (
+      <BookingItem
+        key={booking.id}
+        seatId={booking.seatId}
+        bookingDateTime={booking.bookingDateTime}
+        showDeleteButton={false}
+      ></BookingItem>
+    ))}
+    <button
+      onClick={() => historyStore.navigateNext()}
+      className={`${historyStore.isLastPage ? 'opacity-0' : 'opacity-100'}`}
+      disabled={historyStore.isLastPage}
+    >
+      <IoIosArrowForward />
+    </button>
+  </div>
+));
 
 
 const HistoryPage = observer(() => {
-  if (historyStore.myBookings.length === 0) {
+    if (historyStore.isLoading) {
+        return <Loading/>
+    }
+
+  if (historyStore.isEmpty) {
     return (
-      <>
-        <div
-          className="justify-center items-center flex mt-10 overflow-x-hidden overflow-y-auto
-            inset-0 outline-none focus:outline-none"
-        >
-          <Heading title="You dont have any bookings" />
-        </div>
-      </>
+      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 outline-none focus:outline-none">
+        <Heading title="You dont have any bookings" />
+      </div>
     );
   }
 
   return (
-    <>
-      <div
-        className="justify-center items-center flex mt-10 overflow-x-hidden overflow-y-auto
-        inset-0 outline-none focus:outline-none"
-      >
-        <div className="flex flex-col gap-10">
-          <Heading
-            title="Your bookings"
-            subTitle="A summary of your bookings"
-          />
-          {historyStore.myBookings.map((booking) => (
-            <BookingItem key={booking.id} seatId={booking.seatId} name={booking.dateTime}
-              onClick={() => {
-                historyStore.handleOpenDialog(booking.id);
-              }}></BookingItem>
-
-          ))}
-          <MyDialog
-            title="Delete your Seat?"
-            open={historyStore.openDialog}
-            handleClose={historyStore.handleCloseDialog}
-            onClick={() => {
-              historyStore.deleteBooking(historyStore.bookingIdToDelete);
-            }}
-          />
-
-
+    <div className="justify-center items-center flex flex-col fixed inset-0 mt-10">
+      <Heading title="Your bookings" />
+      <div className="container mt-3">
+        <div className="flex flex-col gap-4 mb-10">
+          <p className="text-left text-xl font-semibold heading mb-3 pl-11">ACTIVE BOOKINGS</p>
+          <ActiveBookings />
+        </div>
+        <div className="flex flex-col gap-4">
+          <p className="text-left text-xl font-semibold heading mb-3 pl-11">PREVIOUS BOOKINGS</p>
+          <PreviousBookings />
         </div>
       </div>
-    </>
+    </div>
   );
 });
 

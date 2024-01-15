@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
-using server.Repository;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
 using server.Services;
@@ -53,6 +53,15 @@ namespace server.Services
                 return (false, null, ex.Message);
             }
         }
+            return await _bookingRepository.GetAllFutureBookings();
+        }
+        public async Task<ActionResult<List<BookingDto>>> GetPreviousBookingsForUser(string userId)
+        {
+            var bookings = await _bookingRepository.GetAllBookingsForUser(userId);
+            var currentDate = DateTime.Now.Date;
+            var previousBookings = bookings.Where(b => b.BookingDateTime.Date < currentDate).OrderByDescending(b => b.BookingDateTime).ToList();
+            return Mappers.MapBookingDtos(previousBookings);
+        }
 
         public async Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetAllBookingsForUser(string userId)
         {
@@ -61,7 +70,9 @@ namespace server.Services
                 IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
                 bookingList = bookingList.Where(x => x.UserId == userId);
                 var bookingDtoList = Mappers.MapBookingDtos(bookingList);
-                return (true, bookingDtoList, null);
+            var currentDate = DateTime.Now.Date;
+            var activeBookings = bookings.Where(b => b.BookingDateTime.Date >= currentDate).OrderBy(b => b.BookingDateTime).ToList();
+            return (true, bookingDtoList, null);
             }
             catch (Exception ex)
             {
@@ -73,8 +84,8 @@ namespace server.Services
 
         public async Task<ActionResult> DeleteBookingAsync(int bookingId, string userId)
         {
-            bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByUserIdAndBookingId(bookingId, userId) != null;
-            if (isThisBookingBelongToCurrentUser) return await _bookingRepository.DeleteBooking(bookingId);
+            bool isCurrentUsersBooking = _userRepository.GetBookingByUserIdAndBookingId(bookingId, userId) != null;
+            if (isCurrentUsersBooking) return await _bookingRepository.DeleteBooking(bookingId);
             else
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);

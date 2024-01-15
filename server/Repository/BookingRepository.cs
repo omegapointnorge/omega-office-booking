@@ -1,8 +1,8 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
-using server.Models.DTOs;
-using Microsoft.AspNetCore.Mvc;
 using server.Models.Domain;
+using server.Models.DTOs;
 
 namespace server.Repository
 {

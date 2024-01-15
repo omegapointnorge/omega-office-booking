@@ -33,7 +33,7 @@ class BookingStore {
   // Fetch all bookings for a specific user
   async fetchUserBookings(userId) {
     try {
-      const response = await fetch(`/api/Booking/Bookings/MyBookings`);
+      const response = await fetch(`/api/Booking/Bookings/MyActiveBookings`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch user bookings');
