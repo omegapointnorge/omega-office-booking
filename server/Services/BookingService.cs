@@ -61,8 +61,8 @@ namespace server.Services
 
         public async Task<ActionResult> DeleteBookingAsync(int bookingId, String userId)
         {
-            bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByUserIdAndBookingId(bookingId, userId) != null;
-            if (isThisBookingBelongToCurrentUser) return await _bookingRepository.DeleteBooking(bookingId);
+            bool isCurrentUsersBooking = _userRepository.GetBookingByUserIdAndBookingId(bookingId, userId) != null;
+            if (isCurrentUsersBooking) return await _bookingRepository.DeleteBooking(bookingId);
             else
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
