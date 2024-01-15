@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
-using server.Repository;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
-using server.Services;
-using System.Diagnostics.CodeAnalysis;
+using server.Repository;
 
 
 namespace server.Services
@@ -42,30 +41,36 @@ namespace server.Services
         {
             return await _bookingRepository.GetAllFutureBookings();
         }
-
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(String userId)
+        public async Task<ActionResult<List<BookingDto>>> GetPreviousBookingsForUser(string userId)
         {
-            return await _bookingRepository.GetAllBookingsForUser(userId);
+            var bookings = await _bookingRepository.GetAllBookingsForUser(userId);
+            var currentDate = DateTime.Now.Date;
+            var previousBookings = bookings.Where(b => b.BookingDateTime.Date < currentDate).OrderByDescending(b => b.BookingDateTime).ToList();
+            return Mappers.MapBookingDtos(previousBookings);
+        }
+
+
+        public async Task<ActionResult<List<BookingDto>>> GetActiveBookingsForUser(String userId)
+        {
+            var bookings = await _bookingRepository.GetAllBookingsForUser(userId);
+            var currentDate = DateTime.Now.Date;
+            var activeBookings = bookings.Where(b => b.BookingDateTime.Date >= currentDate).OrderBy(b => b.BookingDateTime).ToList();
+
+            return Mappers.MapBookingDtos(activeBookings);
         }
 
         public async Task<ActionResult> DeleteBookingAsync(int bookingId, String userId)
         {
-            bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByUserIdAndBookingId(bookingId, userId) != null;
-            if (isThisBookingBelongToCurrentUser) return await _bookingRepository.DeleteBooking(bookingId);
+            bool isCurrentUsersBooking = _userRepository.GetBookingByUserIdAndBookingId(bookingId, userId) != null;
+            if (isCurrentUsersBooking) return await _bookingRepository.DeleteBooking(bookingId);
             else
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser(String userId)
+
+        private DateTime ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)
         {
-            //TODO add user service
-            // existingUser as it currently exists in the db
-
-            return await _bookingRepository.GetAllBookingsForUser(userId);
-        }
-
-        private DateTime ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)  {
             // Get the time zone information
             TimeZoneInfo norwayTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
 

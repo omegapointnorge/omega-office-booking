@@ -1,31 +1,71 @@
 import { makeAutoObservable } from "mobx";
 import Booking from "../domain/booking";
-import toast from "react-hot-toast";
 import ApiService from "./ApiService.jsx";
 
+const ITEMS_PER_PAGE = 5;
+
 class HistoryStore {
-  myBookings = [];
+  myActiveBookings = [];
+  myPreviousBookings = [];
+  myPreviousBookingsCurrentPage = [];
   openDialog = false;
   bookingIdToDelete = null;
+  
+  pageNumber = 1;
+  lastPage;
+  isFirstPage = true;
+  isLastPage = false;
+  isLoading = false;
 
   constructor() {
-    this.initialize();
+    this.initBookings();
     makeAutoObservable(this);
   }
 
-
-  async initialize() {
+   async initBookings() {
     try {
-      const url = "/api/Booking/Bookings/MyBookings";
-      const response = await ApiService.fetchData(url, "Get", null);
-      const data = await response.json();
-      this.setBookings(data);
+      this.isLoading = true;
+      await this.fetchActiveBookings();
+      await this.fetchPreviousBookings();
+      this.initPreviousBookings();
+      
     } catch (error) {
       console.error(error);
     }
+    finally { 
+      this.isLoading = false;
+  }
+}
+
+  async fetchActiveBookings() {
+    try {
+      const url = "/api/Booking/Bookings/MyActiveBookings";
+      const response = await ApiService.fetchData(url, "Get", null);
+      const data = await response.json();
+      this.myActiveBookings = data.value.map(
+      (booking) => new Booking(booking.id, booking.userId, booking.seatId, booking.bookingDateTime)
+    );
+    } catch (error) {
+        console.error("Error active bookings:", error);
+    }
   }
 
-  async deleteBookingCall(bookingId) {
+  async fetchPreviousBookings() {
+    try {
+      const url = `/api/Booking/Bookings/MyPreviousBookings`;
+      const response = await ApiService.fetchData(url, "Get", null);
+      const data = await response.json();
+      this.myPreviousBookings = data.value.map(
+        (booking) => new Booking(booking.id, booking.userId, booking.seatId, booking.bookingDateTime)
+    );
+
+    this.lastPage = Math.ceil(this.myPreviousBookings.length / ITEMS_PER_PAGE);    
+    } catch (error) {
+        console.error("Error fetching previous bookings:", error);
+    }
+  }
+
+  async deleteBooking(bookingId) {
     try {
       const url = "/api/Booking/Bookings/" + bookingId;
       await ApiService.fetchData(url, "Delete");
@@ -34,29 +74,45 @@ class HistoryStore {
     }
   }
 
-
-
-
-  setBookings(data) {
-    this.myBookings = data.value.map(
-      (booking) => new Booking(booking.id, booking.seatId, booking.dateTime)
-    );
+  setIsFirstPage(data) {
+    this.isFirstPage = data;
   }
-  deleteBooking(bookingId) {
-    const bookingToDelete = this.myBookings.find((booking) => booking.id === bookingId);
-    if (bookingToDelete) {
-      let newBookingList = this.myBookings.filter(item => item !== bookingToDelete);
-      // newBookingList = newBookingList.slice().reverse();
-      this.myBookings = newBookingList;
-      this.deleteBookingCall(bookingId)
-      toast.success("Booking deleted for Booking Nr: " + bookingId);
-      this.handleCloseDialog();
-    } else {
-      console.log(`bookingId:  ${bookingId} not found.`);
-      toast.error("bookingId not found");
+
+   setIsLastPage(data) {
+    this.isLastPage = data;
+  }
+
+  setLastPage(data) {
+    this.lastPage = data;
+  }
+
+  navigatePrevious() {
+    if (this.pageNumber > 1) {
+      this.pageNumber -= 1;
+      this.updateNavigation();
     }
   }
-  /* DIALOG */
+
+  navigateNext() {
+    if (this.pageNumber < this.lastPage) {
+      this.pageNumber += 1;
+      this.updateNavigation();
+    }
+  }
+
+  updateNavigation() {
+    this.setIsFirstPage(this.pageNumber === 1);
+    this.setIsLastPage(this.pageNumber === this.lastPage);
+    const startIndex = (this.pageNumber - 1) * ITEMS_PER_PAGE;
+    const endIndex = this.pageNumber * ITEMS_PER_PAGE;
+    this.myPreviousBookingsCurrentPage = this.myPreviousBookings.slice(startIndex, endIndex);
+  }
+
+  get isEmpty() {
+    return this.myActiveBookings.length === 0 && this.myPreviousBookings.length === 0;
+  }
+
+  /* Utils */
   handleOpenDialog(bookingId) {
     this.openDialog = !this.openDialog;
     this.bookingIdToDelete = bookingId;
@@ -65,6 +121,18 @@ class HistoryStore {
   handleCloseDialog = () => {
     this.openDialog = !this.openDialog;
   };
+
+  initPreviousBookings() {
+
+    if (this.myPreviousBookings.length > ITEMS_PER_PAGE) {
+      this.setIsLastPage(false);
+      this.myPreviousBookingsCurrentPage = this.myPreviousBookings.slice(0, ITEMS_PER_PAGE);
+    } 
+    else {
+      this.setIsLastPage(true);
+      this.myPreviousBookingsCurrentPage = this.myPreviousBookings;
+    }
+  }
 
 }
 

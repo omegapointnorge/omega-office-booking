@@ -1,8 +1,8 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context;
-using server.Models.DTOs;
-using Microsoft.AspNetCore.Mvc;
 using server.Models.Domain;
+using server.Models.DTOs;
 
 namespace server.Repository
 {
@@ -14,7 +14,7 @@ namespace server.Repository
         {
             _dbContext = officeDbContext;
         }
-        
+
         public async Task<Booking> CreateBookingAsync(Booking booking)
         {
             _dbContext.Bookings.Add(booking);
@@ -29,16 +29,11 @@ namespace server.Repository
             ).ToListAsync();
         }
 
-
-        public Task<List<BookingDto>> GetAllBookingsForUser(String userId)
+        public Task<List<Booking>> GetAllBookingsForUser(String userId)
         {
             return _dbContext.Bookings
-            .Where(booking => booking.UserId == userId)
-            .OrderByDescending(booking => booking.BookingDateTime)
-            .Select(booking =>
-                    new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
-                )
-            .ToListAsync();
+                .Where(booking => booking.UserId == userId)
+                .ToListAsync();
         }
 
         public async Task<ActionResult> DeleteBooking(int id)

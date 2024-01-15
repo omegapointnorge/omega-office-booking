@@ -12,11 +12,10 @@ namespace server.Services
 
         Task<ActionResult<List<BookingDto>>> GetAllFutureBookings();
 
-        Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(string userid);
-
-        Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser(string userId);
+        Task<ActionResult<List<BookingDto>>> GetActiveBookingsForUser(string userid);
 
         Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, User userId);
+        Task<ActionResult<List<BookingDto>>> GetPreviousBookingsForUser(string userId);
 
     }
 }

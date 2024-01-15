@@ -3,7 +3,6 @@ using server.Models.Domain;
 using server.Models.DTOs;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
-using server.Request;
 using server.Services;
 
 namespace server.Controllers
@@ -26,6 +25,18 @@ namespace server.Controllers
             return new OkObjectResult(response);
         }
 
+        [HttpGet("Bookings/MyPreviousBookings")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllPreviousBookingsForCurrentUser()
+        {
+            var userId = String.Empty;
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
+            };
+            var response = await _bookingService.GetPreviousBookingsForUser(userId);
+            return new OkObjectResult(response);
+        }
+
         [HttpPost("create")]
         public async Task<ActionResult<CreateBookingResponse>> CreateBooking(CreateBookingRequest bookingRequest)
         {
@@ -33,8 +44,9 @@ namespace server.Controllers
             {
                 var user = GetUser();
                 var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
-                
+
                 return CreatedAtRoute(null, booking);
+
             }
             catch (Exception ex)
             {
@@ -42,27 +54,27 @@ namespace server.Controllers
                 return StatusCode(500, "Internal Server Error: " + ex.Message);
             }
         }
-        
+
         [HttpGet("Bookings/{userId}")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser(String userId)
         {
-            var response = await _bookingService.GetAllBookingsForUser(userId);
+            var response = await _bookingService.GetActiveBookingsForUser(userId);
             return new OkObjectResult(response);
         }
 
 
-        [HttpGet("Bookings/MyBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForCurrentUser()
+        [HttpGet("Bookings/MyActiveBookings")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser()
         {
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
             };
-            var response = await _bookingService.GetAllBookingsForUser(userId);
+            var response = await _bookingService.GetActiveBookingsForUser(userId);
             return new OkObjectResult(response);
         }
-        
+
         /// <summary>
         /// Deletes a booking with the specified ID.
         /// </summary>
@@ -91,13 +103,16 @@ namespace server.Controllers
         }
 
 
-        private User GetUser() {
-            var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
-            var email = User.FindFirst("preferred_username")?.Value?? String.Empty;
-            var name = User.FindFirst("name")?.Value?? String.Empty;
+        private User GetUser()
+        {
+            {
+                var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
+                var email = User.FindFirst("preferred_username")?.Value ?? String.Empty;
+                var name = User.FindFirst("name")?.Value ?? String.Empty;
 
-            return new User(userId, name, email);
+                return new User(userId, name, email);
+            }
+
         }
-
     }
 }
