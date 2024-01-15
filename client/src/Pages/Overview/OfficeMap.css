@@ -1,0 +1,24 @@
+.seat-booked-by-user {
+    fill: dodgerblue;
+  }
+  
+  .seat-booked {
+    fill: LightCoral;
+  }
+  
+  .seat-available {
+    fill: limegreen;
+  }
+  
+  .seat-unavailable {
+    fill: #E3E3E3; /* Example color for unavailable seats */
+    pointer-events: none;
+  }
+
+  .seat-booked-by-user:hover,
+  .seat-booked:hover,
+  .seat-available:hover {
+    /* shared hover styles */
+    filter: brightness(110%);
+    cursor: pointer;
+  }
