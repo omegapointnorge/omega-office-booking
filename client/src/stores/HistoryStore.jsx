@@ -67,7 +67,7 @@ class HistoryStore {
 
   async deleteBooking(bookingId) {
     try {
-      const url = "/api/Booking/Bookings/" + bookingId;
+      const url = "/api/Booking/" + bookingId;
       await ApiService.fetchData(url, "Delete");
     } catch (error) {
       console.error(error);
