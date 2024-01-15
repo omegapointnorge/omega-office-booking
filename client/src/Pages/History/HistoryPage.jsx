@@ -4,6 +4,7 @@ import BookingItem from "../../components/Bookings/BookingItem";
 import historyStore from "../../stores/HistoryStore";
 import MyDialog from "../../components/Dialog";
 import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
+import Loading from "../../components/Loading";
 
 const ActiveBookings = observer(() => (
   <div className="flex flex-row gap-5">
@@ -30,6 +31,7 @@ const ActiveBookings = observer(() => (
       handleClose={historyStore.handleCloseDialog}
       onClick={() => {
         historyStore.deleteBooking(historyStore.bookingIdToDelete);
+        historyStore.handleCloseDialog();
       }}
     />
   </div>
@@ -62,8 +64,13 @@ const PreviousBookings = observer(() => (
   </div>
 ));
 
+
 const HistoryPage = observer(() => {
-  if (historyStore.myActiveBookings.length === 0 && historyStore.myPreviousBookings.length === 0) {
+    if (historyStore.isLoading) {
+        return <Loading/>
+    }
+
+  if (historyStore.isEmpty) {
     return (
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 outline-none focus:outline-none">
         <Heading title="You dont have any bookings" />
