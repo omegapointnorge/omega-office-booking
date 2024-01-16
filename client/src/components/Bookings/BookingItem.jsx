@@ -1,7 +1,8 @@
 import { MdDelete } from "react-icons/md";
 
-const BookingItem = ({onClick, bookingDateTime, seatId, showDeleteButton }) => {
+const BookingItem = ({onClick, bookingDateTime, seatId, showDeleteButton, roomId }) => {
   const date = new Date(bookingDateTime);
+  console.log(roomId);
   const dateString = date.toLocaleDateString();
   return (
     <ul className="divide-y divide-gray-100 p-4 rounded-[24px] bg-white w-48">

@@ -42,10 +42,10 @@ namespace server.Services
             return await _bookingRepository.GetAllFutureBookings();
         }
 
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(String userId)
+        public async Task<ActionResult<List<MyBookingsResponse>>> GetAllBookingsForUser(String userId)
         {
             var bookings = await _bookingRepository.GetAllBookingsForUser(userId);
-            return Mappers.MapBookingDtos(bookings);
+            return Mappers.MapMyBookingsResponse(bookings);
         }
 
         public async Task<ActionResult> DeleteBookingAsync(int bookingId, String userId)

@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import Booking from "../domain/booking";
+import Booking, { MyBookingsResponse } from "../domain/booking";
 import ApiService from "./ApiService.jsx";
 
 const ITEMS_PER_PAGE = 5;
@@ -132,7 +132,7 @@ class HistoryStore {
     return isActive ? dateA - dateB : dateB - dateA;
   });
 
-  return sortedBookings.map((booking) => new Booking(booking.id, booking.userId, booking.seatId, booking.bookingDateTime));
+  return sortedBookings.map((myBookingsResponse) => new MyBookingsResponse(myBookingsResponse.id, myBookingsResponse.userId, myBookingsResponse.seatId, myBookingsResponse.bookingDateTime, myBookingsResponse.roomId));
 }
 
 }
