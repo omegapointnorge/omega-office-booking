@@ -69,9 +69,6 @@ class HistoryStore {
     this.isLastPage = data;
   }
 
-  setLastPage(data) {
-    this.lastPage = data;
-  }
 
   removeBookingById(bookingId) {
     this.myActiveBookings = this.myActiveBookings.filter(booking => booking.id !== bookingId);
