@@ -26,7 +26,6 @@ class BookingStore {
 
       const bookingsAsJson = await response.json();
       const bookings = this.convertJsonObjectsToBookings(bookingsAsJson.value)
-      console.log(bookings)
       this.setActiveBookings(bookings);
     } catch (error) {
       console.error("Error fetching active bookings:", error);
