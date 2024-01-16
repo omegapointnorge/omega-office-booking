@@ -8,19 +8,15 @@ import { useAuthContext } from '../../api/useAuthContext';
 const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
     const { user } = useAuthContext() ?? {};
 
-    const initialDateTime = new Date().toISOString().slice(0, 16);
     const userId = user?.claims?.find(claim => claim.key === 'http://schemas.microsoft.com/identity/claims/objectidentifier')?.value;
 
     const { activeBookings, displayDate } = bookingStore;
-
-    const [bookingDateTime, setBookingDateTime] = useState(initialDateTime);
     const [selectedBooking, setSelectedBooking] = useState(new Booking());
 
     useEffect(() => {
         const foundBooking = activeBookings.find(booking => booking.seatId === selectedSeatId && isSameDate(displayDate, booking.bookingDateTime));
         if (foundBooking) {
             setSelectedBooking(foundBooking)
-            setBookingDateTime(new Date(foundBooking.bookingDateTime).toISOString().slice(0, 16));
         }
     }, [selectedSeatId, activeBookings]);
 
@@ -34,12 +30,8 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
               date1.getMonth() === date2.getMonth();
       } 
 
-    const onDateTimeChange = (dateTimeValue) => {
-        setBookingDateTime(dateTimeValue);
-    };
-
     const handleBook = async () => {
-        const createBookingRequest = new CreateBookingRequest(selectedSeatId);
+        const createBookingRequest = new CreateBookingRequest(selectedSeatId,displayDate);
         await bookingStore.createBooking(createBookingRequest);
         onClose()
     };
@@ -87,19 +79,10 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
           <div className="text-center">
             <h3 className="text-xl font-semibold text-gray-900 mb-4">Seat Information</h3>
             <div className="text-left space-y-3">
-              <p className="text-sm text-gray-600">Seat ID: <span className="text-gray-700 font-medium">{selectedSeatId}</span></p>
-              <p className="text-sm text-gray-600">Booked by: <span className="text-gray-700 font-medium">{selectedBooking.id || 'Not booked'}</span></p>
-              <div className="flex items-center text-sm text-gray-600 space-x-2">
-                <label htmlFor="booking-date" className="font-medium">Booking Date:</label>
-                <input 
-                    id="booking-date"
-                    type="datetime-local" 
-                    value={bookingDateTime}
-                    onChange={e => onDateTimeChange(e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    disabled={!user.admin}
-                />
-                </div>
+              <p className="text-sm text-gray-600">Sete ID: <span className="text-gray-700 font-medium">{selectedSeatId}</span></p>
+              <p className="text-sm text-gray-600">Booket av: <span className="text-gray-700 font-medium">{selectedBooking.id || 'Not booked'}</span></p>
+              <p className="text-sm text-gray-600">Booking dato: <span className="text-gray-700 font-medium">{displayDate.toLocaleDateString()}</span></p>
+              <br/>
             </div>
             {getButtonGroup()}
           </div>
