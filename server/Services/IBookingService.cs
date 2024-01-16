@@ -10,7 +10,7 @@ namespace server.Services
     {
         Task<ActionResult> DeleteBookingAsync(int id);
 
-        Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetAllFutureBookings();
+        Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetAllBookings();
 
         Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetActiveBookingsForUser(string userid);
 

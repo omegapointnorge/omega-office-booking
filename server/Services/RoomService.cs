@@ -19,7 +19,7 @@ namespace server.Services
         public async Task<ActionResult<List<RoomDto>>> GetAllRooms()
         {
             var roomListResult = await _roomRepository.GetAsync();
-            var roomDtos = Mappers.MapBookingDtos(roomListResult);
+            var roomDtos = Mappers.MapRoomDtos(roomListResult);
             return roomDtos;
         }
 
@@ -27,7 +27,7 @@ namespace server.Services
         {
             var seats = new List<SeatDto>();
             var roomListResult = await _roomRepository.GetAsync();
-            var roomDtos = Mappers.MapBookingDtos(roomListResult);
+            var roomDtos = Mappers.MapRoomDtos(roomListResult);
             seats = roomDtos.First().Seats;
             return seats;
         }

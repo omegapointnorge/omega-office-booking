@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using server.Models.Domain;
 using server.Models.DTOs;
+using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
 using server.Services;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace server.Controllers
 {
@@ -22,7 +21,7 @@ namespace server.Controllers
         [HttpGet("bookings")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllFutureBookings()
         {
-            var result = await _bookingService.GetAllFutureBookings();
+            var result = await _bookingService.GetAllBookings();
 
             if (result.Value.IsSuccess)
                 return new OkObjectResult(result.Value.BookingDto);
@@ -30,28 +29,32 @@ namespace server.Controllers
         }
 
         [HttpGet("Bookings/MyPreviousBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllPreviousBookingsForCurrentUser()
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetPreviousBookingsForUser()
         {
-            var userId = String.Empty;
-            if (User.Identity?.IsAuthenticated ?? false)
+            try
             {
-                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
-            };
-            var result = await _bookingService.GetPreviousBookingsForUser(userId);
-            if (result.Value.IsSuccess)
+                var user = GetUser();
+                var result = await _bookingService.GetPreviousBookingsForUser(user.UserId);
                 return new OkObjectResult(result.Value.BookingDto);
-            return StatusCode(500);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception, handle the error appropriately
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
         }
 
+        
         [HttpPost("create")]
         public async Task<ActionResult<CreateBookingResponse>> CreateBooking(CreateBookingRequest bookingRequest)
         {
             try
             {
+                //TODO delete User.Identity?.IsAuthenticated since this is not necessary
                 if (User.Identity?.IsAuthenticated ?? false)
                 {
-                    var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
-                    var booking = await _bookingService.CreateBookingAsync(bookingRequest, userId);
+                    var user = GetUser();
+                    var booking = await _bookingService.CreateBookingAsync(bookingRequest, user.UserId);
 
                     return CreatedAtRoute(null, booking);
                 }
@@ -64,27 +67,18 @@ namespace server.Controllers
             }
         }
 
-        [HttpGet("Bookings/{userId}")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser(String userId)
-        {
-            var result = await _bookingService.GetActiveBookingsForUser(userId);
-            if (result.Value.IsSuccess)
-                return new OkObjectResult(result.Value.BookingDto);
-            return StatusCode(500);
-        }
-
 
         [HttpGet("Bookings/MyActiveBookings")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser()
         {
-            var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
-                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
+                var user = GetUser();
+                var result = await _bookingService.GetActiveBookingsForUser(user.UserId);
+                if (result.Value.IsSuccess)
+                    return new OkObjectResult(result.Value.BookingDto);
             };
-            var result = await _bookingService.GetActiveBookingsForUser(userId);
-            if (result.Value.IsSuccess)
-                return new OkObjectResult(result.Value.BookingDto);
+            
             return StatusCode(500);
         }
 
@@ -107,6 +101,14 @@ namespace server.Controllers
                 // Log the exception
                 return StatusCode(500, "An error occurred processing your request.");
             }
+        }
+        private User GetUser()
+        {
+            var id = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
+            var name = User.FindFirst("name")?.Value ?? String.Empty;
+            User user = new(name, id);
+            return user;
+
         }
     }
 }

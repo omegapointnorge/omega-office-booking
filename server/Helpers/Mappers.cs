@@ -22,7 +22,7 @@ namespace server.Helpers
             return bookingDtoList;
         }
 
-        public static List<RoomDto> MapBookingDtos(IEnumerable<Room> rooms)
+        public static List<RoomDto> MapRoomDtos(IEnumerable<Room> rooms)
         {
             var roomDtos = new List<RoomDto>();
             try

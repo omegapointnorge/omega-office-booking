@@ -35,7 +35,7 @@ namespace server.Services
 
             return createBookingResponse;
         }
-        public async Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetAllFutureBookings()
+        public async Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetAllBookings()
         {
             try
             {
@@ -81,7 +81,7 @@ namespace server.Services
             catch (Exception ex)
             {
                 //_logger.LogError($"Error: {ex.Message} | {ex.StackTrace}");
-                return (false, null, ex.Message);
+                throw ex;
             }
         }
 
