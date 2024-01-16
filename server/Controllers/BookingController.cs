@@ -25,18 +25,6 @@ namespace server.Controllers
             return new OkObjectResult(response);
         }
 
-        [HttpGet("Bookings/MyPreviousBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllPreviousBookingsForCurrentUser()
-        {
-            var userId = String.Empty;
-            if (User.Identity?.IsAuthenticated ?? false)
-            {
-                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ?? String.Empty;
-            };
-            var response = await _bookingService.GetPreviousBookingsForUser(userId);
-            return new OkObjectResult(response);
-        }
-
         [HttpPost("create")]
         public async Task<ActionResult<CreateBookingResponse>> CreateBooking(CreateBookingRequest bookingRequest)
         {
@@ -55,25 +43,19 @@ namespace server.Controllers
             }
         }
 
-        [HttpGet("Bookings/{userId}")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser(String userId)
-        {
-            var response = await _bookingService.GetActiveBookingsForUser(userId);
-            return new OkObjectResult(response);
-        }
 
-
-        [HttpGet("Bookings/MyActiveBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser()
+        [HttpGet("Bookings/MyBookings")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetBookingsForUser()
         {
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)
             {
                 userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
             };
-            var response = await _bookingService.GetActiveBookingsForUser(userId);
+            var response = await _bookingService.GetAllBookingsForUser(userId);
             return new OkObjectResult(response);
         }
+
 
         /// <summary>
         /// Deletes a booking with the specified ID.
