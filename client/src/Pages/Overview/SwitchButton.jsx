@@ -10,7 +10,7 @@ const SwitchButton = observer(() => {
 
 
     const buttonClicked = (dateChangeFactor) => {
-        const newDate = new Date(displayDate);
+        const newDate = new Date(today);
         newDate.setDate(newDate.getDate() + dateChangeFactor);
         bookingStore.setDisplayDate(newDate);
     }
@@ -32,7 +32,7 @@ const SwitchButton = observer(() => {
         className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
         isSameDate(displayDate, today) ? 'bg-blue-500 text-white' : 'bg-gray-200'
         }`}
-        onClick={() => buttonClicked(-1)}
+        onClick={() => buttonClicked(0)}
       >
         I dag
       </button>
