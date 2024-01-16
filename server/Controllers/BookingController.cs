@@ -21,11 +21,16 @@ namespace server.Controllers
         [HttpGet("bookings")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllFutureBookings()
         {
-            var result = await _bookingService.GetAllBookings();
-
-            if (result.Value.IsSuccess)
-                return new OkObjectResult(result.Value.BookingDto);
-            return StatusCode(500);
+            try
+            {
+                var result = await _bookingService.GetAllBookings();
+                return new OkObjectResult(result.Value);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception, handle the error appropriately
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
         }
 
         [HttpGet("Bookings/MyPreviousBookings")]
@@ -35,7 +40,7 @@ namespace server.Controllers
             {
                 var user = GetUser();
                 var result = await _bookingService.GetPreviousBookingsForUser(user.UserId);
-                return new OkObjectResult(result.Value.BookingDto);
+                return new OkObjectResult(result.Value);
             }
             catch (Exception ex)
             {
@@ -71,15 +76,22 @@ namespace server.Controllers
         [HttpGet("Bookings/MyActiveBookings")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser()
         {
-            if (User.Identity?.IsAuthenticated ?? false)
+            try
             {
-                var user = GetUser();
-                var result = await _bookingService.GetActiveBookingsForUser(user.UserId);
-                if (result.Value.IsSuccess)
-                    return new OkObjectResult(result.Value.BookingDto);
-            };
-            
-            return StatusCode(500);
+                if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    var user = GetUser();
+                    var result = await _bookingService.GetActiveBookingsForUser(user.UserId);
+                       
+                        return new OkObjectResult(result.Value);
+                }
+                return StatusCode(500, "User is not Authenticated.");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception, handle the error appropriately
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
         }
 
         /// <summary>
@@ -99,7 +111,7 @@ namespace server.Controllers
             catch (Exception ex)
             {
                 // Log the exception
-                return StatusCode(500, "An error occurred processing your request.");
+                return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
         private User GetUser()

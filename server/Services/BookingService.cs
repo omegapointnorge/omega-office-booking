@@ -35,22 +35,21 @@ namespace server.Services
 
             return createBookingResponse;
         }
-        public async Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetAllBookings()
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookings()
         {
             try
             {
                 IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
                 var bookingDtoList = Mappers.MapBookingDtos(bookingList);
-                return (true, bookingDtoList, null);
+                return bookingDtoList;
             }
             catch (Exception ex)
             {
-                //_logger.LogError($"Error: {ex.Message} | {ex.StackTrace}");
-                return (false, null, ex.Message);
+                throw;
             }
         }
 
-        public async Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetActiveBookingsForUser(string userId)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser(string userId)
         {
             try
             {
@@ -59,15 +58,14 @@ namespace server.Services
                 var currentDate = DateTime.Now.Date;
                 var activeBookings = bookingList.Where(b => b.BookingDateTime.Date >= currentDate).OrderBy(b => b.BookingDateTime).ToList();
                 var bookingDtoList = Mappers.MapBookingDtos(activeBookings);
-                return (true, bookingDtoList, null);
+                return bookingDtoList;
             }
             catch (Exception ex)
             {
-                //_logger.LogError($"Error: {ex.Message} | {ex.StackTrace}");
-                return (false, null, ex.Message);
+                throw;
             }
         }
-        public async Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetPreviousBookingsForUser(string userId)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetPreviousBookingsForUser(string userId)
         {
             try
             {
@@ -76,12 +74,11 @@ namespace server.Services
                 var currentDate = DateTime.Now.Date;
                 var previousBookings = bookingList.Where(b => b.BookingDateTime.Date < currentDate).OrderByDescending(b => b.BookingDateTime).ToList();
                 var bookingDtoList = Mappers.MapBookingDtos(previousBookings);
-                return (true, bookingDtoList, null);
+                return bookingDtoList;
             }
             catch (Exception ex)
             {
-                //_logger.LogError($"Error: {ex.Message} | {ex.StackTrace}");
-                throw ex;
+                throw;
             }
         }
 
@@ -98,19 +95,8 @@ namespace server.Services
             }
             catch (Exception ex)
             {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                throw;
             }
-        }
-
-        private DateTime ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)
-        {
-            // Get the time zone information
-            TimeZoneInfo norwayTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
-
-            // Convert the DateTime to the specified time zone
-            DateTime convertedDateTime = TimeZoneInfo.ConvertTime(originalDateTime, norwayTimeZone);
-
-            return convertedDateTime;
         }
     }
 }

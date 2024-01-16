@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using server.Models.Domain;
 using server.Models.DTOs;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
@@ -10,11 +9,11 @@ namespace server.Services
     {
         Task<ActionResult> DeleteBookingAsync(int id);
 
-        Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetAllBookings();
+        Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookings();
 
-        Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetActiveBookingsForUser(string userid);
+        Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser(string userid);
 
-        Task<ActionResult<(bool IsSuccess, IEnumerable<BookingDto> BookingDto, string ErrorMessage)>> GetPreviousBookingsForUser(string userId);
+        Task<ActionResult<IEnumerable<BookingDto>>> GetPreviousBookingsForUser(string userId);
 
         Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, string userId);
        

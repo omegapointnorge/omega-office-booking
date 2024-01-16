@@ -18,18 +18,32 @@ namespace server.Services
 
         public async Task<ActionResult<List<RoomDto>>> GetAllRooms()
         {
-            var roomListResult = await _roomRepository.GetAsync();
-            var roomDtos = Mappers.MapRoomDtos(roomListResult);
-            return roomDtos;
+            try
+            {
+                var roomListResult = await _roomRepository.GetAsync();
+                var roomDtos = Mappers.MapRoomDtos(roomListResult);
+                return roomDtos;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<ActionResult<List<SeatDto>>> GetAllSeatsForRoom(int roomId)
         {
-            var seats = new List<SeatDto>();
-            var roomListResult = await _roomRepository.GetAsync();
-            var roomDtos = Mappers.MapRoomDtos(roomListResult);
-            seats = roomDtos.First().Seats;
-            return seats;
+            try
+            {
+                var seats = new List<SeatDto>();
+                var roomListResult = await _roomRepository.GetAsync();
+                var roomDtos = Mappers.MapRoomDtos(roomListResult);
+                seats = roomDtos.First().Seats;
+                return seats;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
     }

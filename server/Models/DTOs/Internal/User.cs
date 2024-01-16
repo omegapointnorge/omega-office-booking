@@ -8,8 +8,8 @@ namespace server.Models.DTOs.Internal
         public string UserId { get; set; }
         public User(String name, String id)
         {
-            UserName = id;
-            UserId = name;
+            UserName = name;
+            UserId = id;
         }
     }
 }
