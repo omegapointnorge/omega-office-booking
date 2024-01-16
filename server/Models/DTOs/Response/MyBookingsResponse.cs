@@ -7,7 +7,6 @@ namespace server.Models.DTOs.Response
         {
             RoomId = roomId;
         }
-
         public int RoomId { get; set; }
     }
 }

@@ -11,11 +11,6 @@ namespace server.Helpers
             var myBookingsResponseList = new List<MyBookingsResponse>();
             try
             {
-                if (bookings == null)
-                {
-                    throw new ArgumentNullException(nameof(bookings));
-                }
-
                 myBookingsResponseList = bookings.Select(booking =>
                     new MyBookingsResponse(
                         booking.Id,
