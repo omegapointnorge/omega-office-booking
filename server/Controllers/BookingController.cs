@@ -45,7 +45,7 @@ namespace server.Controllers
 
 
         [HttpGet("Bookings/MyBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetBookingsForUser()
+        public async Task<ActionResult<IEnumerable<MyBookingsResponse>>> GetBookingsForUser()
         {
             var userId = String.Empty;
             if (User.Identity?.IsAuthenticated ?? false)

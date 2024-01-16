@@ -13,7 +13,7 @@ namespace server.Services
         Task<ActionResult<List<BookingDto>>> GetAllFutureBookings();
 
         Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, User userId);
-        Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(string userId);
+        Task<ActionResult<List<MyBookingsResponse>>> GetAllBookingsForUser(string userId);
 
 
 
