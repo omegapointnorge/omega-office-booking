@@ -8,8 +8,9 @@ export default class Booking {
 }
 
 export class CreateBookingRequest {
-  constructor(seatId) {
+  constructor(seatId, bookingDateTime) {
     this.seatId = seatId
+    this.bookingDateTime = bookingDateTime
   }
 }
 
