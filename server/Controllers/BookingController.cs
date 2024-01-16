@@ -33,23 +33,6 @@ namespace server.Controllers
             }
         }
 
-        [HttpGet("Bookings/MyPreviousBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetPreviousBookingsForUser()
-        {
-            try
-            {
-                var user = GetUser();
-                var result = await _bookingService.GetPreviousBookingsForUser(user.UserId);
-                return new OkObjectResult(result.Value);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception, handle the error appropriately
-                return StatusCode(500, "Internal Server Error: " + ex.Message);
-            }
-        }
-
-        
         [HttpPost("create")]
         public async Task<ActionResult<CreateBookingResponse>> CreateBooking(CreateBookingRequest bookingRequest)
         {
@@ -73,15 +56,15 @@ namespace server.Controllers
         }
 
 
-        [HttpGet("Bookings/MyActiveBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser()
+        [HttpGet("Bookings/MyBookings")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser()
         {
             try
             {
                 if (User.Identity?.IsAuthenticated ?? false)
                 {
                     var user = GetUser();
-                    var result = await _bookingService.GetActiveBookingsForUser(user.UserId);
+                    var result = await _bookingService.GetAllBookingsForUser(user.UserId);
                        
                         return new OkObjectResult(result.Value);
                 }
@@ -93,6 +76,7 @@ namespace server.Controllers
                 return StatusCode(500, "Internal Server Error: " + ex.Message);
             }
         }
+
 
         /// <summary>
         /// Deletes a booking with the specified ID.

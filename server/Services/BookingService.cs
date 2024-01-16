@@ -49,39 +49,22 @@ namespace server.Services
             }
         }
 
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetActiveBookingsForUser(string userId)
-        {
-            try
-            {
-                IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
-                bookingList = bookingList.Where(x => x.UserId == userId);
-                var currentDate = DateTime.Now.Date;
-                var activeBookings = bookingList.Where(b => b.BookingDateTime.Date >= currentDate).OrderBy(b => b.BookingDateTime).ToList();
-                var bookingDtoList = Mappers.MapBookingDtos(activeBookings);
-                return bookingDtoList;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetPreviousBookingsForUser(string userId)
-        {
-            try
-            {
-                IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
-                bookingList = bookingList.Where(x => x.UserId == userId);
-                var currentDate = DateTime.Now.Date;
-                var previousBookings = bookingList.Where(b => b.BookingDateTime.Date < currentDate).OrderByDescending(b => b.BookingDateTime).ToList();
-                var bookingDtoList = Mappers.MapBookingDtos(previousBookings);
-                return bookingDtoList;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
 
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
+        {
+            try
+            {
+                var bookings = await _bookingRepository.GetAsync();
+                var currentDate = DateTime.Now.Date;
+                var bookingList = bookings.Where(b => b.UserId == userId).ToList();
+
+                return Mappers.MapBookingDtos(bookingList);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
 
         public async Task<ActionResult> DeleteBookingAsync(int bookingId)
