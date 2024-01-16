@@ -41,22 +41,11 @@ namespace server.Services
         {
             return await _bookingRepository.GetAllFutureBookings();
         }
-        public async Task<ActionResult<List<BookingDto>>> GetPreviousBookingsForUser(string userId)
+
+        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(String userId)
         {
             var bookings = await _bookingRepository.GetAllBookingsForUser(userId);
-            var currentDate = DateTime.Now.Date;
-            var previousBookings = bookings.Where(b => b.BookingDateTime.Date < currentDate).OrderByDescending(b => b.BookingDateTime).ToList();
-            return Mappers.MapBookingDtos(previousBookings);
-        }
-
-
-        public async Task<ActionResult<List<BookingDto>>> GetActiveBookingsForUser(String userId)
-        {
-            var bookings = await _bookingRepository.GetAllBookingsForUser(userId);
-            var currentDate = DateTime.Now.Date;
-            var activeBookings = bookings.Where(b => b.BookingDateTime.Date >= currentDate).OrderBy(b => b.BookingDateTime).ToList();
-
-            return Mappers.MapBookingDtos(activeBookings);
+            return Mappers.MapBookingDtos(bookings);
         }
 
         public async Task<ActionResult> DeleteBookingAsync(int bookingId, String userId)
