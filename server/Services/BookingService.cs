@@ -43,24 +43,21 @@ namespace server.Services
                 var bookingDtoList = Mappers.MapBookingDtos(bookingList);
                 return bookingDtoList;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
         }
 
 
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
+        public async Task<ActionResult<IEnumerable<MyBookingsResponse>>> GetAllBookingsForUser(String userId)
         {
             try
             {
-                var bookings = await _bookingRepository.GetAsync();
-                var currentDate = DateTime.Now.Date;
-                var bookingList = bookings.Where(b => b.UserId == userId).ToList();
-
-                return Mappers.MapBookingDtos(bookingList);
+                var bookings = await _bookingRepository.GetBookingsWithSeatForUserAsync(userId);
+                return Mappers.MapMyBookingsResponse(bookings);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -71,12 +68,14 @@ namespace server.Services
         {
             try
             {
-                var booking = new Booking();
-                booking.Id = bookingId;
+                var booking = new Booking
+                {
+                    Id = bookingId
+                };
                 await _bookingRepository.DeleteAndCommit(booking);
                 return new StatusCodeResult(StatusCodes.Status200OK);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

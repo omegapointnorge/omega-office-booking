@@ -24,12 +24,13 @@ namespace server.Services
                 var roomDtos = Mappers.MapRoomDtos(roomListResult);
                 return roomDtos;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
         }
 
+        //TODO check if frontend need this method. Delete it if not in use
         public async Task<ActionResult<List<SeatDto>>> GetAllSeatsForRoom(int roomId)
         {
             try
@@ -37,10 +38,14 @@ namespace server.Services
                 var seats = new List<SeatDto>();
                 var roomListResult = await _roomRepository.GetAsync();
                 var roomDtos = Mappers.MapRoomDtos(roomListResult);
-                seats = roomDtos.First().Seats;
+                // Check if roomDtos is not null and contains at least one room
+                if (roomDtos?.Any() == true)
+                {
+                    seats = roomDtos.First().Seats ?? new List<SeatDto>();
+                }
                 return seats;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

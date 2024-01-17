@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using server.Context;
 using server.Models.Domain;
 
@@ -11,5 +12,14 @@ namespace server.Repository
         {
             _dbContext = context;
         }
+
+        public Task<List<Booking>> GetBookingsWithSeatForUserAsync(String userId)
+        {
+            return _dbContext.Bookings
+                .Include(booking => booking.Seat)
+                .Where(booking => booking.UserId == userId)
+                .ToListAsync();
+        }
+
     }
 }

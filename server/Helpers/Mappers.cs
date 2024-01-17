@@ -21,9 +21,9 @@ namespace server.Helpers
                     )
                 ).ToList();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.Error.WriteLine($"Error mapping MyBookingsResponse: {e.Message}");
+                throw new Exception($"Error occurred with {nameof(MapMyBookingsResponse)}: {ex.Message}", ex);
             }
             return myBookingsResponseList;
         }
