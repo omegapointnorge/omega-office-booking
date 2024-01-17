@@ -7,6 +7,6 @@ namespace server.Models.DTOs.Request
     {
         public required int SeatId { get; set; }
 
-        public DateTime? bookingDateTime { get; set; }
+        public DateTime BookingDateTime { get; set; } = DateTime.Now;
     }
 }
