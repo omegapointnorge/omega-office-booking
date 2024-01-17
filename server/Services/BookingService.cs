@@ -27,7 +27,7 @@ namespace server.Services
                 {
                     UserId = userId,
                     SeatId = bookingRequest.SeatId,
-                    BookingDateTime = bookingRequest.BookingDateTime
+                    BookingDateTime = bookingRequest.bookingDateTime ?? DateTime.Now
                 };
 
                 if (CanBookSeatAndUser(bookingList, bookingRequest, userId))
@@ -94,7 +94,7 @@ namespace server.Services
 
         private static bool CanBookSeatAndUser(IEnumerable<Booking> bookingList,CreateBookingRequest bookingRequest, String userId)
         {
-            var bookingDateTime = bookingRequest.BookingDateTime;
+            var bookingDateTime = bookingRequest.bookingDateTime ?? DateTime.Now;
             // Check if the seat already has a booking on the same day,as well as user,
             return !bookingList.Any(booking => booking.BookingDateTime.Date == bookingDateTime.Date && (booking.SeatId == bookingRequest.SeatId || booking.UserId == userId));
         }
