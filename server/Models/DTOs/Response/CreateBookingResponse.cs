@@ -5,8 +5,8 @@ namespace server.Models.DTOs.Response
     public class CreateBookingResponse
     {
         public int Id { get; set; }
-        public int SeatId { get; set; }
         public String UserId { get; set; }
+        public int SeatId { get; set; }
         public DateTime BookingDateTime { get; set; }
         
         public CreateBookingResponse(Booking booking) {

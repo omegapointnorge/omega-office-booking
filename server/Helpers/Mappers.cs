@@ -21,9 +21,9 @@ namespace server.Helpers
                     )
                 ).ToList();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.Error.WriteLine($"Error mapping MyBookingsResponse: {e.Message}");
+                throw new Exception($"Error occurred with {nameof(MapMyBookingsResponse)}: {ex.Message}", ex);
             }
             return myBookingsResponseList;
         }
@@ -43,6 +43,24 @@ namespace server.Helpers
             }
             return bookingDtoList;
         }
+
+        public static List<RoomDto> MapRoomDtos(IEnumerable<Room> rooms)
+        {
+            var roomDtos = new List<RoomDto>();
+            try
+            {
+                roomDtos = rooms.Select(room =>
+                    new RoomDto(room.Id, room.Name, room.Seats)
+                ).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine($"Error mapping BookingDtos: {e.Message}");
+            }
+            return roomDtos;
+        }
+
+
 
         public static List<SeatDto> MapSeatDtos(IEnumerable<Seat>? seats)
         {

@@ -41,23 +41,24 @@ class HistoryStore {
             const response = await ApiService.fetchData(url, "Get", null);
             const data = await response.json();
 
-            this.myActiveBookings = this.filterAndSortBookings(data.value, true);
-            this.myPreviousBookings = this.filterAndSortBookings(data.value, false);
-            this.lastPage = Math.ceil(this.myPreviousBookings.length / ITEMS_PER_PAGE);
+      this.myActiveBookings = this.filterAndSortBookings(data, true);
+      this.myPreviousBookings = this.filterAndSortBookings(data, false);
+      this.lastPage = Math.ceil(this.myPreviousBookings.length / ITEMS_PER_PAGE);
 
         } catch (error) {
             console.error("Error fetching bookings:", error);
         }
     }
 
-    async deleteBooking(bookingId) {
-        try {
-            const url = "/api/Booking/" + bookingId;
-            await ApiService.fetchData(url, "Delete");
-        } catch (error) {
-            console.error(error);
-        }
+  async deleteBooking(bookingId) {
+    try {
+      const url = "/api/Booking/" + bookingId;
+        await ApiService.fetchData(url, "Delete");
+      this.removeBookingById(bookingId)
+    } catch (error) {
+      console.error(error);
     }
+  }
 
     setIsFirstPage(data) {
         this.isFirstPage = data;
@@ -67,12 +68,17 @@ class HistoryStore {
         this.isLastPage = data;
     }
 
-    navigatePrevious() {
-        if (this.pageNumber > 1) {
-            this.pageNumber -= 1;
-            this.updateNavigation();
-        }
+
+  removeBookingById(bookingId) {
+    this.myActiveBookings = this.myActiveBookings.filter(booking => booking.id !== bookingId);
+  }
+
+  navigatePrevious() {
+    if (this.pageNumber > 1) {
+      this.pageNumber -= 1;
+      this.updateNavigation();
     }
+  }
 
     navigateNext() {
         if (this.pageNumber < this.lastPage) {

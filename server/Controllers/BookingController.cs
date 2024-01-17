@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using server.Models.Domain;
 using server.Models.DTOs;
+using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
 using server.Services;
@@ -21,8 +21,16 @@ namespace server.Controllers
         [HttpGet("bookings")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllFutureBookings()
         {
-            var response = await _bookingService.GetAllFutureBookings();
-            return new OkObjectResult(response);
+            try
+            {
+                var result = await _bookingService.GetAllBookings();
+                return new OkObjectResult(result.Value);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception, handle the error appropriately
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
         }
 
         [HttpPost("create")]
@@ -30,11 +38,15 @@ namespace server.Controllers
         {
             try
             {
-                var user = GetUser();
-                var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
+                //TODO delete User.Identity?.IsAuthenticated since this is not necessary
+                if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    var user = GetUser();
+                    var booking = await _bookingService.CreateBookingAsync(bookingRequest, user.UserId);
 
-                return CreatedAtRoute(null, booking);
-
+                    return CreatedAtRoute(null, booking);
+                }
+                return StatusCode(500, "User is not Authenticated.");
             }
             catch (Exception ex)
             {
@@ -45,15 +57,24 @@ namespace server.Controllers
 
 
         [HttpGet("Bookings/MyBookings")]
-        public async Task<ActionResult<IEnumerable<MyBookingsResponse>>> GetBookingsForUser()
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser()
         {
-            var userId = String.Empty;
-            if (User.Identity?.IsAuthenticated ?? false)
+            try
             {
-                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
-            };
-            var response = await _bookingService.GetAllBookingsForUser(userId);
-            return new OkObjectResult(response);
+                if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    var user = GetUser();
+                    var result = await _bookingService.GetAllBookingsForUser(user.UserId);
+                       
+                        return new OkObjectResult(result.Value);
+                }
+                return StatusCode(500, "User is not Authenticated.");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception, handle the error appropriately
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
         }
 
 
@@ -65,35 +86,24 @@ namespace server.Controllers
         [HttpDelete("{bookingId}")]
         public async Task<ActionResult> DeleteBookingAsync(int bookingId)
         {
-            if (!(User.Identity?.IsAuthenticated ?? false))
-            {
-                return Unauthorized();
-            }
-
             try
             {
-                var user = GetUser();
-                var deleteResponse = await _bookingService.DeleteBookingAsync(bookingId, user.Id);
+                var deleteResponse = await _bookingService.DeleteBookingAsync(bookingId);
 
                 return NoContent();
             }
             catch (Exception ex)
             {
                 // Log the exception
-                return StatusCode(500, "An error occurred processing your request.");
+                return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
-
-
         private User GetUser()
         {
-            {
-                var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
-                var email = User.FindFirst("preferred_username")?.Value ?? String.Empty;
-                var name = User.FindFirst("name")?.Value ?? String.Empty;
-
-                return new User(userId, name, email);
-            }
+            var id = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
+            var name = User.FindFirst("name")?.Value ?? String.Empty;
+            User user = new(name, id);
+            return user;
 
         }
     }

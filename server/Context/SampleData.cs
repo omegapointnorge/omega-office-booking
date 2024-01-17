@@ -7,10 +7,6 @@ namespace server.Context
     {
         public static void CreateSampleData(ModelBuilder modelBuilder)
         {
-            // Sample users
-            modelBuilder.Entity<User>().HasData(new User("860849a4-f4b8-4566-8ed1-918cf3d41a92", "Code Master Flex", "code_master@example.com"));
-            modelBuilder.Entity<User>().HasData(new User("639d660b-4724-407b-b05c-12b5f619f833", "Debug Diva", "debug_diva@example.com"));
-            modelBuilder.Entity<User>().HasData(new User("093071d6-9ae9-4aef-a318-178c5875ea27", "Omcma Diva", "debug_omacgi@example.com"));
             // Sample rooms
             modelBuilder.Entity<Room>().HasData(new Room(1, "Store Rommet"));
             modelBuilder.Entity<Room>().HasData(new Room(2, "Lille Rommet"));
