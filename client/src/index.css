@@ -9,7 +9,7 @@
   --tango: #e87722;
   --petroleum: #286166;
   --mineshaft: #383838;
-  --marine25: (var(--marine), 0.25);
+  --marine25: rgba(0, 51, 73, 0.25);
   --warmgray25: rgba(215, 210, 203, 0.25);
 }
 

@@ -11,11 +11,10 @@ namespace server.Services
 
         Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookings();
 
-        Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(string userid);
+        Task<ActionResult<IEnumerable<MyBookingsResponse>>> GetAllBookingsForUser(string userid);
 
         Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, string userId);
        
 
     }
 }
-
