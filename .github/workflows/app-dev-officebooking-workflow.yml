@@ -47,12 +47,12 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
-      # - name: Upload EF migration script artifact for deployment job
-      #   if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: dbmigrationscript
-      #     path: ${{env.DOTNET_ROOT}}/dbMigrations.sql
+      - name: Upload EF migration script artifact for deployment job
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
+        uses: actions/upload-artifact@v3
+        with:
+          name: dbmigrationscript
+          path: ${{env.DOTNET_ROOT}}/dbMigrations.sql
 
   deploy:
     runs-on: windows-latest
@@ -69,19 +69,19 @@ jobs:
         with:
           name: .net-app
 
-      # - name: Download EF migration script artifact from build job
-      #   id: downloadbundle
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: dbmigrationscript
-      #     path: dbmigrationscript
+      - name: Download EF migration script artifact from build job
+        id: downloadbundle
+        uses: actions/download-artifact@v3
+        with:
+          name: dbmigrationscript
+          path: dbmigrationscript
 
-      # - name: Update DB using SQL script
-      #   uses: azure/sql-action@v2.2
-      #   with:
-      #     connection-string: ${{ secrets.DB_CONNECTION_STRING }}
-      #     path: "${{ steps.downloadbundle.outputs.download-path }}/dbMigrations.sql"
-      #     action: "publish"
+      - name: Update DB using SQL script
+        uses: azure/sql-action@v2.2
+        with:
+          connection-string: ${{ secrets.DB_CONNECTION_STRING }}
+          path: "${{ steps.downloadbundle.outputs.download-path }}/dbMigrations.sql"
+          action: "publish"
 
       - name: App Settings Variable Substitution
         uses: microsoft/variable-substitution@v1
