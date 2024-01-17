@@ -50,10 +50,14 @@ class HistoryStore {
         }
     }
 
-  async deleteBooking(bookingId) {
+  async deleteBooking(bookingId) { 
     try {
       const url = "/api/Booking/" + bookingId;
-        await ApiService.fetchData(url, "Delete");
+        const response = await ApiService.fetchData(url, "Delete");
+
+        if (!response.ok) {
+            throw new Error(`Failed to delete booking: ${response.status}`);
+        }
       this.removeBookingById(bookingId)
     } catch (error) {
       console.error(error);

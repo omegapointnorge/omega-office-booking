@@ -60,9 +60,7 @@ class BookingStore {
 
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error('Error:', errorText);
-                toast.error("Error creating booking:" + errorText);
-                //throw new Error('Failed to create booking, check if the user has another booking');
+                throw new Error('Failed to create booking, check if the user has another booking' + errorText);
             }
             else {
                 const newBookingJson = await response.json();
