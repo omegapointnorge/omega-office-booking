@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
@@ -17,23 +18,33 @@ namespace server.Services
             _bookingRepository = bookingRepository;
         }
 
-        public async Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, string user)
+        public async Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, string userId)
         {
-
-
-            var booking = new Booking
+            try
             {
-                UserId = user,
-                SeatId = bookingRequest.SeatId,
-                BookingDateTime = DateTime.Now
-            };
+                IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
+                var booking = new Booking
+                {
+                    UserId = userId,
+                    SeatId = bookingRequest.SeatId,
+                    BookingDateTime = bookingRequest.BookingDateTime
+                };
 
-            await _bookingRepository.AddAsync(booking);
-            await _bookingRepository.SaveAsync();
+                if (CanBookSeatAndUser(bookingList, bookingRequest, userId))
+                {
+                    await _bookingRepository.AddAsync(booking);
+                    await _bookingRepository.SaveAsync();
+                    var createBookingResponse = new CreateBookingResponse(booking);
 
-            var createBookingResponse = new CreateBookingResponse(booking);
-
-            return createBookingResponse;
+                    return createBookingResponse;
+                }
+                else throw new Exception("The seat may have been taken while you are booking, try again if you don't have a booking for the same day.");
+               
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookings()
         {
@@ -79,6 +90,13 @@ namespace server.Services
             {
                 throw;
             }
+        }
+
+        private static bool CanBookSeatAndUser(IEnumerable<Booking> bookingList,CreateBookingRequest bookingRequest, String userId)
+        {
+            var bookingDateTime = bookingRequest.BookingDateTime;
+            // Check if the seat already has a booking on the same day,as well as user,
+            return !bookingList.Any(booking => booking.BookingDateTime.Date == bookingDateTime.Date && (booking.SeatId == bookingRequest.SeatId || booking.UserId == userId));
         }
     }
 }
