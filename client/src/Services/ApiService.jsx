@@ -20,6 +20,7 @@ class ApiService {
 
         return response;
     }
+
 }
 const apiService = new ApiService();
 export default apiService;

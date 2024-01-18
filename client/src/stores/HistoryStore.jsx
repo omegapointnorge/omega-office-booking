@@ -1,7 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {MyBookingsResponse} from "../domain/booking";
 import ApiService from "../Services/ApiService.jsx";
-
+import BookingService from "../Services/BookingService.js"
 const ITEMS_PER_PAGE = 5;
 
 class HistoryStore {
@@ -16,6 +16,8 @@ class HistoryStore {
     isFirstPage = true;
     isLastPage = false;
     isLoading = false;
+
+    //_bookingService = new BookingService()
 
     constructor() {
         this.initBookings();
@@ -35,20 +37,19 @@ class HistoryStore {
         }
     }
 
+
     async fetchMyBookings() {
-        try {
-            const url = "/api/Booking/Bookings/MyBookings";
-            const response = await ApiService.fetchData(url, "Get", null);
-            const data = await response.json();
+        try{
+            const data = await BookingService.fetchMyBookings();
+            
+            this.myActiveBookings = this.filterAndSortBookings(data, true);
+            this.myPreviousBookings = this.filterAndSortBookings(data, false);
+            this.lastPage = Math.ceil(this.myPreviousBookings.length / ITEMS_PER_PAGE);
+        }catch(error) {
 
-      this.myActiveBookings = this.filterAndSortBookings(data, true);
-      this.myPreviousBookings = this.filterAndSortBookings(data, false);
-      this.lastPage = Math.ceil(this.myPreviousBookings.length / ITEMS_PER_PAGE);
-
-        } catch (error) {
-            console.error("Error fetching bookings:", error);
         }
     }
+    
 
   async deleteBooking(bookingId) {
     try {
@@ -59,6 +60,8 @@ class HistoryStore {
       console.error(error);
     }
   }
+
+
 
     setIsFirstPage(data) {
         this.isFirstPage = data;
