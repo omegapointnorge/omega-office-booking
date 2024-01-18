@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
@@ -39,7 +38,7 @@ namespace server.Services
                     return createBookingResponse;
                 }
                 else throw new Exception("The seat may have been taken while you are booking, try again if you don't have a booking for the same day.");
-               
+
             }
             catch (Exception)
             {
@@ -61,12 +60,12 @@ namespace server.Services
         }
 
 
-        public async Task<ActionResult<IEnumerable<MyBookingsResponse>>> GetAllBookingsForUser(String userId)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
         {
             try
             {
                 var bookings = await _bookingRepository.GetBookingsWithSeatForUserAsync(userId);
-                return Mappers.MapMyBookingsResponse(bookings);
+                return Mappers.MapBookingDtos(bookings);
             }
             catch (Exception)
             {
@@ -92,7 +91,7 @@ namespace server.Services
             }
         }
 
-        private static bool CanBookSeatAndUser(IEnumerable<Booking> bookingList,CreateBookingRequest bookingRequest, String userId)
+        private static bool CanBookSeatAndUser(IEnumerable<Booking> bookingList, CreateBookingRequest bookingRequest, String userId)
         {
             var bookingDateTime = bookingRequest.BookingDateTime;
             // Check if the seat already has a booking on the same day,as well as user,

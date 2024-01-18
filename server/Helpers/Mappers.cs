@@ -1,32 +1,10 @@
 using server.Models.Domain;
 using server.Models.DTOs;
-using server.Models.DTOs.Response;
 
 namespace server.Helpers
 {
     public static class Mappers
     {
-        public static List<MyBookingsResponse> MapMyBookingsResponse(IEnumerable<Booking> bookings)
-        {
-            var myBookingsResponseList = new List<MyBookingsResponse>();
-            try
-            {
-                myBookingsResponseList = bookings.Select(booking =>
-                    new MyBookingsResponse(
-                        booking.Id,
-                        booking.UserId,
-                        booking.SeatId,
-                        booking.BookingDateTime,
-                        booking.Seat.RoomId
-                    )
-                ).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error occurred with {nameof(MapMyBookingsResponse)}: {ex.Message}", ex);
-            }
-            return myBookingsResponseList;
-        }
 
         public static List<BookingDto> MapBookingDtos(IEnumerable<Booking> bookings)
         {
