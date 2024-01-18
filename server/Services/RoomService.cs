@@ -20,7 +20,7 @@ namespace server.Services
         {
             try
             {
-                var roomListResult = await _roomRepository.GetAsync();
+                var roomListResult = await _roomRepository.GetRoomsAsync();
                 var roomDtos = Mappers.MapRoomDtos(roomListResult);
                 return roomDtos;
             }
