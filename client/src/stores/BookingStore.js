@@ -2,6 +2,7 @@ import { makeAutoObservable } from "mobx";
 import Booking from '../domain/booking';
 import toast from "react-hot-toast";
 import ApiService from "./ApiService.jsx";
+import historyStore from "./HistoryStore";
 
 class BookingStore {
     activeBookings = [];
@@ -54,6 +55,7 @@ class BookingStore {
 
                 // Update the store's state with the new booking
                 this.activeBookings.push(newBooking);
+                historyStore.fetchMyBookings();
             }
 
         } catch (error) {
@@ -63,15 +65,25 @@ class BookingStore {
 
     //TODO try to reuse the same deletebooking logic like HistoryStore
     async deleteBooking(booking) {
-        try {
-            const bookingId = booking.bookingId;
-            const url = "/api/Booking/" + bookingId;
-            await ApiService.fetchData(url, "Delete");
-            this.removeBookingById(bookingId);
-        } catch (error) {
-            console.error(error);
+    try {
+        const bookingId = booking.bookingId;
+        const url = `/api/Booking/${bookingId}`;
+
+        const response = await ApiService.fetchData(url, "DELETE");
+
+        if (!response.ok) {
+            throw new Error(`Failed to delete booking with ID ${bookingId}`);
         }
+
+        await this.removeBookingById(bookingId);
+        await historyStore.removeBookingById(bookingId);
+    } catch (error) {
+        console.error("Error deleting booking:", error);
+        // Handle the error or rethrow if needed
+        throw error;
     }
+}
+
     // Update active bookings
     setActiveBookings(bookings) {
         this.activeBookings = bookings;
