@@ -1,5 +1,5 @@
 import {makeAutoObservable} from "mobx";
-import Booking, {MyBookingsResponse} from "../domain/booking";
+import Booking, {Room} from "../domain/booking";
 import ApiService from "./ApiService.jsx";
 
 const ITEMS_PER_PAGE = 5;
@@ -17,6 +17,8 @@ class HistoryStore {
     isFirstPage = true;
     isLastPage = false;
     isLoading = false;
+    rooms = [];
+
 
     constructor() {
         this.initBookings();
@@ -27,6 +29,7 @@ class HistoryStore {
         try {
             this.isLoading = true;
             await this.fetchMyBookings();
+            await this.seatIdToRoomId()
             this.initPreviousBookings();
 
         } catch (error) {
@@ -35,7 +38,6 @@ class HistoryStore {
             this.isLoading = false;
         }
 
-        await this.seatIdToRoomId()
     }
 
     async seatIdToRoomId(){
@@ -43,8 +45,8 @@ class HistoryStore {
             const url = "/api/room/rooms";
             const response = await ApiService.fetchData(url, "Get", null);
             const data = await response.json();
-            console.log(data);
 
+            this.rooms = data.value.map(room => new Room(room.id, room.name, room.seats));
 
         } catch (error) {
             console.error("Error fetching bookings:", error);
@@ -154,9 +156,17 @@ class HistoryStore {
         return sortedBookings.map((booking) => new Booking(booking.id, booking.userId, booking.seatId, booking.bookingDateTime));
     }
 
-    getRoomIdBySeatId(seatId){
-        return 1
+    getRoomIdBySeatId(seatId) {
+    for (const room of this.rooms) {
+        const foundSeat = room.seats.find(seat => seat.id === seatId);
+        if (foundSeat) {
+            return room.id;
+        }
     }
+    console.error(`Seat with ID ${seatId} not found in any room.`);
+    return null; 
+}
+
 }
 
 const historyStore = new HistoryStore();
