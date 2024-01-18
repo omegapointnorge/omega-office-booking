@@ -4,7 +4,6 @@ import LoginPage from "../Pages/Login/LoginPage";
 import OverviewPage from "../Pages/Overview/OverviewPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import HistoryPage from "../Pages/History/HistoryPage";
-import RoomPage from "../Pages/Rooms/RoomPage";
 
 const Routers = () => {
   return (
@@ -16,10 +15,6 @@ const Routers = () => {
       <Route
         path="/overview"
         element={<ProtectedRoute outlet={<OverviewPage />} />}
-      ></Route>
-      <Route
-        path="/rooms/:roomId"
-        element={<ProtectedRoute outlet={<RoomPage />} />}
       ></Route>
       <Route
         path="/history"

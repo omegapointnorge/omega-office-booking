@@ -1,6 +1,6 @@
 import {makeAutoObservable} from "mobx";
 import {MyBookingsResponse} from "../domain/booking";
-import ApiService from "./ApiService.jsx";
+import ApiService from "../Services/ApiService.jsx";
 
 const ITEMS_PER_PAGE = 5;
 

@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import Booking from '../domain/booking';
 import toast from "react-hot-toast";
-import ApiService from "./ApiService.jsx";
+import ApiService from "../Services/ApiService.jsx";
 
 class BookingStore {
     activeBookings = [];
