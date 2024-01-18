@@ -1,10 +1,33 @@
 using server.Models.Domain;
 using server.Models.DTOs;
+using server.Models.DTOs.Response;
 
 namespace server.Helpers
 {
     public static class Mappers
     {
+        public static List<MyBookingsResponse> MapMyBookingsResponse(IEnumerable<Booking> bookings)
+        {
+            var myBookingsResponseList = new List<MyBookingsResponse>();
+            try
+            {
+                myBookingsResponseList = bookings.Select(booking =>
+                    new MyBookingsResponse(
+                        booking.Id,
+                        booking.UserId,
+                        booking.SeatId,
+                        booking.BookingDateTime,
+                        booking.Seat.RoomId
+                    )
+                ).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error occurred with {nameof(MapMyBookingsResponse)}: {ex.Message}", ex);
+            }
+            return myBookingsResponseList;
+        }
+
         public static List<BookingDto> MapBookingDtos(IEnumerable<Booking> bookings)
         {
             var bookingDtoList = new List<BookingDto>();
@@ -20,6 +43,24 @@ namespace server.Helpers
             }
             return bookingDtoList;
         }
+
+        public static List<RoomDto> MapRoomDtos(IEnumerable<Room> rooms)
+        {
+            var roomDtos = new List<RoomDto>();
+            try
+            {
+                roomDtos = rooms.Select(room =>
+                    new RoomDto(room.Id, room.Name, room.Seats)
+                ).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine($"Error mapping BookingDtos: {e.Message}");
+            }
+            return roomDtos;
+        }
+
+
 
         public static List<SeatDto> MapSeatDtos(IEnumerable<Seat>? seats)
         {

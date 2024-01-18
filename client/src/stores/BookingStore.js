@@ -18,14 +18,14 @@ class BookingStore {
   // Fetch all active bookings
   async fetchAllActiveBookings() {
     try {
-      const response = await fetch('/api/booking/bookings');
+      const response = await fetch('/api/booking/Bookings');
       
       if (!response.ok) { 
         throw new Error('Failed to fetch active bookings');
       }
 
       const bookingsAsJson = await response.json();
-      const bookings = this.convertJsonObjectsToBookings(bookingsAsJson.value)
+      const bookings = this.convertJsonObjectsToBookings(bookingsAsJson)
       this.setActiveBookings(bookings);
     } catch (error) {
       console.error("Error fetching active bookings:", error);
@@ -35,7 +35,7 @@ class BookingStore {
   // Fetch all bookings for a specific user
   async fetchUserBookings(userId) {
     try {
-      const response = await fetch(`/api/Booking/Bookings/MyBookings`);
+      const response = await fetch(`/api/Booking/Bookings/MyActiveBookings`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch user bookings');

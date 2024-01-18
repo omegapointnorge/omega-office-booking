@@ -1,81 +1,84 @@
 using Microsoft.AspNetCore.Mvc;
+using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
-using server.Repository;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
-using server.Helpers;
-using server.Services;
-using System.Diagnostics.CodeAnalysis;
-
+using server.Repository;
 
 namespace server.Services
 {
     public class BookingService : IBookingService
     {
-        private readonly IBookingRepository _bookingRepository;
-        private readonly IUserRepository _userRepository;
+        readonly IBookingRepository _bookingRepository;
 
-        public BookingService(IBookingRepository bookingRepository, IUserRepository userRepository)
+        public BookingService(IBookingRepository bookingRepository)
         {
             _bookingRepository = bookingRepository;
-            _userRepository = userRepository;
         }
 
-        public async Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user)
+        public async Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, string user)
         {
 
-            await _userRepository.UpsertUserAsync(user);
 
             var booking = new Booking
             {
-                UserId = user.Id,
+                UserId = user,
                 SeatId = bookingRequest.SeatId,
                 BookingDateTime = DateTime.Now
             };
 
-            var createdBooking = await _bookingRepository.CreateBookingAsync(booking);
-            var createBookingResponse = new CreateBookingResponse(createdBooking);
+            await _bookingRepository.AddAsync(booking);
+            await _bookingRepository.SaveAsync();
+
+            var createBookingResponse = new CreateBookingResponse(booking);
 
             return createBookingResponse;
         }
-        public async Task<ActionResult<List<BookingDto>>> GetAllActiveBookings()
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings()
         {
-            var bookings = await _bookingRepository.GetAllActiveBookings();
-            var bookingDtos = Mappers.MapBookingDtos(bookings);
-            return bookingDtos;
-        }
-
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(String userId)
-        {
-            return await _bookingRepository.GetAllBookingsForUser(userId);
-        }
-
-        public async Task<ActionResult> DeleteBookingAsync(int bookingId, String userId)
-        {
-            bool isThisBookingBelongToCurrentUser = _userRepository.GetBookingByUserIdAndBookingId(bookingId, userId) != null;
-            if (isThisBookingBelongToCurrentUser) return await _bookingRepository.DeleteBooking(bookingId);
-            else
+            try
             {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                IEnumerable<Booking> bookingList = await _bookingRepository.GetAllActiveBookings();
+                var bookingDtoList = Mappers.MapBookingDtos(bookingList);
+                return bookingDtoList;
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
-        public async Task<ActionResult<List<BookingDto>>> GetAllBookingsForCurrentUser(String userId)
-        {
-            //TODO add user service
-            // existingUser as it currently exists in the db
 
-            return await _bookingRepository.GetAllBookingsForUser(userId);
+
+        public async Task<ActionResult<IEnumerable<MyBookingsResponse>>> GetAllBookingsForUser(String userId)
+        {
+            try
+            {
+                var bookings = await _bookingRepository.GetBookingsWithSeatForUserAsync(userId);
+                return Mappers.MapMyBookingsResponse(bookings);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        private DateTime ConvertToTimeZone(DateTime originalDateTime, string timeZoneId)  {
-            // Get the time zone information
-            TimeZoneInfo norwayTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
 
-            // Convert the DateTime to the specified time zone
-            DateTime convertedDateTime = TimeZoneInfo.ConvertTime(originalDateTime, norwayTimeZone);
-
-            return convertedDateTime;
+        public async Task<ActionResult> DeleteBookingAsync(int bookingId)
+        {
+            try
+            {
+                var booking = new Booking
+                {
+                    Id = bookingId
+                };
+                await _bookingRepository.DeleteAndCommit(booking);
+                return new StatusCodeResult(StatusCodes.Status200OK);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

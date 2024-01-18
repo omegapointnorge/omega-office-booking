@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using server.Models.Domain;
 using server.Models.DTOs;
+using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
-using server.Request;
 using server.Services;
 
 namespace server.Controllers
@@ -19,22 +18,13 @@ namespace server.Controllers
             _bookingService = bookingService;
         }
 
-        [HttpGet("bookings")]
+        [HttpGet("activeBookings")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings()
-        {
-            var response = await _bookingService.GetAllActiveBookings();
-            return new OkObjectResult(response);
-        }
-
-        [HttpPost("create")]
-        public async Task<ActionResult<CreateBookingResponse>> CreateBooking(CreateBookingRequest bookingRequest)
         {
             try
             {
-                var user = GetUser();
-                var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
-                
-                return CreatedAtRoute(null, booking);
+                var result = await _bookingService.GetAllActiveBookings();
+                return new OkObjectResult(result.Value);
             }
             catch (Exception ex)
             {
@@ -42,27 +32,52 @@ namespace server.Controllers
                 return StatusCode(500, "Internal Server Error: " + ex.Message);
             }
         }
-        
-        [HttpGet("Bookings/{userId}")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
+
+        [HttpPost("create")]
+        public async Task<ActionResult<CreateBookingResponse>> CreateBooking(CreateBookingRequest bookingRequest)
         {
-            var response = await _bookingService.GetAllBookingsForUser(userId);
-            return new OkObjectResult(response);
+            try
+            {
+                //TODO delete User.Identity?.IsAuthenticated since this is not necessary
+                if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    var user = GetUser();
+                    var booking = await _bookingService.CreateBookingAsync(bookingRequest, user.UserId);
+
+                    return CreatedAtRoute(null, booking);
+                }
+                return StatusCode(500, "User is not Authenticated.");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception, handle the error appropriately
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
         }
 
 
         [HttpGet("Bookings/MyBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForCurrentUser()
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser()
         {
-            var userId = String.Empty;
-            if (User.Identity?.IsAuthenticated ?? false)
+            try
             {
-                userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
-            };
-            var response = await _bookingService.GetAllBookingsForUser(userId);
-            return new OkObjectResult(response);
+                if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    var user = GetUser();
+                    var result = await _bookingService.GetAllBookingsForUser(user.UserId);
+                       
+                        return new OkObjectResult(result.Value);
+                }
+                return StatusCode(500, "User is not Authenticated.");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception, handle the error appropriately
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
         }
-        
+
+
         /// <summary>
         /// Deletes a booking with the specified ID.
         /// </summary>
@@ -71,33 +86,25 @@ namespace server.Controllers
         [HttpDelete("{bookingId}")]
         public async Task<ActionResult> DeleteBookingAsync(int bookingId)
         {
-            if (!(User.Identity?.IsAuthenticated ?? false))
-            {
-                return Unauthorized();
-            }
-
             try
             {
-                var user = GetUser();
-                var deleteResponse = await _bookingService.DeleteBookingAsync(bookingId, user.Id);
+                var deleteResponse = await _bookingService.DeleteBookingAsync(bookingId);
 
                 return NoContent();
             }
             catch (Exception ex)
             {
                 // Log the exception
-                return StatusCode(500, "An error occurred processing your request.");
+                return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
+        private User GetUser()
+        {
+            var id = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
+            var name = User.FindFirst("name")?.Value ?? String.Empty;
+            User user = new(name, id);
+            return user;
 
-
-        private User GetUser() {
-            var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
-            var email = User.FindFirst("preferred_username")?.Value?? String.Empty;
-            var name = User.FindFirst("name")?.Value?? String.Empty;
-
-            return new User(userId, name, email);
         }
-
     }
 }

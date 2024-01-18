@@ -18,20 +18,35 @@ namespace server.Controllers
         [HttpGet("rooms")]
         public async Task<ActionResult<IEnumerable<RoomDto>>> GetAllRooms()
         {
-            var response = await _roomService.GetAllRooms();
-            return new OkObjectResult(response);
+            try
+            {
+                var response = await _roomService.GetAllRooms();
+                return new OkObjectResult(response);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception, handle the error appropriately
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
         }
 
         [HttpGet("{roomId}/Seats")]
         public async Task<ActionResult<IEnumerable<SeatDto>>> GetAllSeatsForRoom(int roomId)
         {
-            var response = await _roomService.GetAllSeatsForRoom(roomId);
-            if (response == null)
+            try
             {
-                return NotFound();
+                var response = await _roomService.GetAllSeatsForRoom(roomId);
+                if (response == null)
+                {
+                    return NotFound();
+                }
+                return new OkObjectResult(response);
             }
-            return new OkObjectResult(response);
+            catch (Exception ex)
+            {
+                // Log the exception, handle the error appropriately
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
         }
-
     }
 }

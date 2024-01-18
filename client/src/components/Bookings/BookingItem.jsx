@@ -1,30 +1,36 @@
 import { MdDelete } from "react-icons/md";
+import BookingSvg from "./BookingSvg";
 
-const BookingItem = ({ onClick, dateTime, roomName, seatId, name }) => {
+const BookingItem = ({onClick, bookingDateTime, seatId, showDeleteButton, roomId }) => {
+  const date = new Date(bookingDateTime);
+  const dateString = date.toLocaleDateString();
+
   return (
-    <ul className="divide-y divide-gray-100 p-4 rounded-[24px] bg-cyan-50">
-      <li className="flex justify-between gap-x-6 py-5">
-        <div className="flex min-w-0 gap-x-4">
-          <div className="min-w-0 flex-auto">
-            <p className="text-sm font-semibold leading-6 text-gray-900">
-              {name}
-            </p>
-            <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-              Sete: {seatId}
-            </p>
+    <ul className="divide-y divide-gray-100 p-4 rounded-[24px] bg-white w-48">
+      <li className="flex flex-col">
+          <div className="flex items-center content-center justify-center">
+              <BookingSvg highlightedId={roomId}/>
           </div>
-        </div>
-        <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-          <p className="text-sm leading-6 text-gray-900">{dateTime}</p>
-          <p className="mt-1 text-xs leading-5 text-gray-500">{seatId}</p>
-        </div>
-        <MdDelete
-          onClick={onClick}
-          color="red"
-          className="h-12 w-12 flex-none bg-gray-50 hover:bg-red-100 transition-colors duration-300"
-          src=""
-          alt=""
-        />
+          <div className="flex flex-row justify-between">
+              <div>
+                  <p className="text-sm leading-6 text-gray-900">
+                      {dateString}
+                  </p>
+                  <p className="truncate text-xs leading-5 text-gray-900">
+                      Sete {seatId}
+                  </p>
+              </div>
+              <div className="flex items-center">
+                  <MdDelete
+                      onClick={onClick}
+                      color="black"
+                      className={`h-8 w-8 flex-none text-black hover:text-red-500 transition-colors duration-200 ${!showDeleteButton ? 'opacity-0' : 'opacity-100'}`}
+                      src=""
+                      alt=""
+                      disabled={!showDeleteButton}
+                  />
+              </div>
+          </div>
       </li>
     </ul>
 
