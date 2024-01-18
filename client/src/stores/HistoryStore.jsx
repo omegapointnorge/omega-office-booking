@@ -1,5 +1,5 @@
 import {makeAutoObservable} from "mobx";
-import {MyBookingsResponse} from "../domain/booking";
+import Booking, {MyBookingsResponse} from "../domain/booking";
 import ApiService from "./ApiService.jsx";
 
 const ITEMS_PER_PAGE = 5;
@@ -8,6 +8,7 @@ class HistoryStore {
     myActiveBookings = [];
     myPreviousBookings = [];
     myPreviousBookingsCurrentPage = [];
+
     openDialog = false;
     bookingIdToDelete = null;
 
@@ -33,6 +34,22 @@ class HistoryStore {
         } finally {
             this.isLoading = false;
         }
+
+        await this.seatIdToRoomId()
+    }
+
+    async seatIdToRoomId(){
+           try {
+            const url = "/api/room/rooms";
+            const response = await ApiService.fetchData(url, "Get", null);
+            const data = await response.json();
+            console.log(data);
+
+
+        } catch (error) {
+            console.error("Error fetching bookings:", error);
+        }
+
     }
 
     async fetchMyBookings() {
@@ -134,7 +151,11 @@ class HistoryStore {
             return isActive ? dateA - dateB : dateB - dateA;
         });
 
-        return sortedBookings.map((myBookingsResponse) => new MyBookingsResponse(myBookingsResponse.id, myBookingsResponse.userId, myBookingsResponse.seatId, myBookingsResponse.bookingDateTime, myBookingsResponse.roomId));
+        return sortedBookings.map((booking) => new Booking(booking.id, booking.userId, booking.seatId, booking.bookingDateTime));
+    }
+
+    getRoomIdBySeatId(seatId){
+        return 1
     }
 }
 
