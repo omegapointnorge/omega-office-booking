@@ -22,8 +22,8 @@ namespace server.Context
                 modelBuilder.Entity<Seat>().HasData(new Seat(i, 2, true));
             }
             // Sample bookings
-            modelBuilder.Entity<Booking>().HasData(new Booking(1, "860849a4-f4b8-4566-8ed1-918cf3d41a92", 1, new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580)));
-            modelBuilder.Entity<Booking>().HasData(new Booking(2, "639d660b-4724-407b-b05c-12b5f619f833", 2, new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580)));
+            modelBuilder.Entity<Booking>().HasData(new Booking(1, "860849a4-f4b8-4566-8ed1-918cf3d41a92", "SampleUser1", 1, new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580)));
+            modelBuilder.Entity<Booking>().HasData(new Booking(2, "639d660b-4724-407b-b05c-12b5f619f833", "SampleUser2", 2, new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580)));
         }
     }
 }
