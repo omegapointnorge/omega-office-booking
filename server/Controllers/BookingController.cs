@@ -29,7 +29,7 @@ namespace server.Controllers
             catch (Exception ex)
             {
                 // Log the exception, handle the error appropriately
-                return StatusCode(500, "Internal Server Error: " + ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
