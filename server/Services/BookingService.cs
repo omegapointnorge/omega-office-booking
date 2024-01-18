@@ -38,7 +38,7 @@ namespace server.Services
 
                     return createBookingResponse;
                 }
-                else throw new Exception("The seat or the user has already a booking from before");
+                else throw new Exception("The seat may have been taken while you are booking, try again if you don't have a booking for the same day.");
                
             }
             catch (Exception)

@@ -29,7 +29,7 @@ namespace server.Controllers
             catch (Exception ex)
             {
                 // Log the exception, handle the error appropriately
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
 
@@ -38,20 +38,14 @@ namespace server.Controllers
         {
             try
             {
-                //TODO delete User.Identity?.IsAuthenticated since this is not necessary
-                if (User.Identity?.IsAuthenticated ?? false)
-                {
                     var user = GetUser();
                     var booking = await _bookingService.CreateBookingAsync(bookingRequest, user.UserId);
-
                     return CreatedAtRoute(null, booking);
-                }
-                return StatusCode(500, "User is not Authenticated.");
             }
             catch (Exception ex)
             {
                 // Log the exception, handle the error appropriately
-                return StatusCode(500, "Internal Server Error: " + ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -61,19 +55,15 @@ namespace server.Controllers
         {
             try
             {
-                if (User.Identity?.IsAuthenticated ?? false)
-                {
                     var user = GetUser();
                     var result = await _bookingService.GetAllBookingsForUser(user.UserId);
                        
                         return new OkObjectResult(result.Value);
-                }
-                return StatusCode(500, "User is not Authenticated.");
             }
             catch (Exception ex)
             {
                 // Log the exception, handle the error appropriately
-                return StatusCode(500, "Internal Server Error: " + ex.Message);
+                return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
 

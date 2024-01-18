@@ -2,7 +2,6 @@ import { makeAutoObservable } from "mobx";
 import Booking from '../domain/booking';
 import toast from "react-hot-toast";
 import ApiService from "./ApiService.jsx";
-import HistoryStore from "./HistoryStore.jsx";
 
 class BookingStore {
     activeBookings = [];
@@ -20,11 +19,7 @@ class BookingStore {
     // Fetch all active bookings
     async fetchAllActiveBookings() {
         try {
-            const response = await fetch('/api/booking/bookings');
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch active bookings');
-            }
+            const response = await ApiService.fetchData('/api/booking/bookings', 'Get');
 
             const data = await response.json();
             this.setActiveBookings(data);
@@ -48,7 +43,9 @@ class BookingStore {
                 const errorText = await response.text();
                 console.error('Error:', errorText);
                 toast.error("Error creating booking:" + errorText);
-                //throw new Error('Failed to create booking, check if the user has another booking');
+               //refresh the page in case someone has booked the seat recently
+                await this.fetchAllActiveBookings();
+
             }
             else {
                 const newBookingJson = await response.json();
@@ -65,12 +62,12 @@ class BookingStore {
     }
 
     //TODO try to reuse the same deletebooking logic like HistoryStore
-    async deleteBooking(bookingId) {
+    async deleteBooking(booking) {
         try {
+            const bookingId = booking.bookingId;
             const url = "/api/Booking/" + bookingId;
             await ApiService.fetchData(url, "Delete");
             this.removeBookingById(bookingId);
-            HistoryStore.removeBookingById(bookingId);
         } catch (error) {
             console.error(error);
         }
