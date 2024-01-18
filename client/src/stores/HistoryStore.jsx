@@ -1,6 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {MyBookingsResponse} from "../domain/booking";
 import ApiService from "./ApiService.jsx";
+import BookingStore from "./BookingStore.jsx";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -54,7 +55,8 @@ class HistoryStore {
     try {
       const url = "/api/Booking/" + bookingId;
         await ApiService.fetchData(url, "Delete");
-      this.removeBookingById(bookingId)
+        this.removeBookingById(bookingId);
+        BookingStore.removeBookingById(bookingId);
     } catch (error) {
       console.error(error);
     }

@@ -1,6 +1,8 @@
 import { makeAutoObservable } from "mobx";
 import Booking from '../domain/booking';
 import toast from "react-hot-toast";
+import ApiService from "./ApiService.jsx";
+import HistoryStore from "./HistoryStore.jsx";
 
 class BookingStore {
     activeBookings = [];
@@ -28,22 +30,6 @@ class BookingStore {
             this.setActiveBookings(data);
         } catch (error) {
             console.error("Error fetching active bookings:", error);
-        }
-    }
-
-    // Fetch all bookings for a specific user
-    async fetchUserBookings(userId) {
-        try {
-            const response = await fetch(`/api/Booking/Bookings/MyActiveBookings`);
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch user bookings');
-            }
-
-            const data = await response.json();
-            this.setUserBookings(data);
-        } catch (error) {
-            console.error("Error fetching user bookings:", error);
         }
     }
 
@@ -78,28 +64,17 @@ class BookingStore {
         }
     }
 
-    async deleteBooking(deleteBookingRequest) {
+    //TODO try to reuse the same deletebooking logic like HistoryStore
+    async deleteBooking(bookingId) {
         try {
-            const url = `/api/Booking/${deleteBookingRequest.bookingId}`;
-            const response = await fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to delete booking: ${response.status}`);
-            }
-
-            this.removeBookingById(deleteBookingRequest.bookingId)
-
+            const url = "/api/Booking/" + bookingId;
+            await ApiService.fetchData(url, "Delete");
+            this.removeBookingById(bookingId);
+            HistoryStore.removeBookingById(bookingId);
         } catch (error) {
-            console.error("Error deleting booking:", error);
+            console.error(error);
         }
     }
-
-
     // Update active bookings
     setActiveBookings(bookings) {
         this.activeBookings = bookings;
