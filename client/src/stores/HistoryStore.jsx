@@ -1,6 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import Booking, {Room} from "../domain/booking";
 import ApiService from "./ApiService.jsx";
+import bookingStore from "./BookingStore";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -71,13 +72,21 @@ class HistoryStore {
 
   async deleteBooking(bookingId) {
     try {
-      const url = "/api/Booking/" + bookingId;
-        await ApiService.fetchData(url, "Delete");
+        const url = `/api/Booking/${bookingId}`;
+        
+        const response = await ApiService.fetchData(url, "DELETE");
+
+        if (!response.ok) {
+            console.error(`Failed to delete booking with ID ${bookingId}`);
+            return;
+        }
+
         this.removeBookingById(bookingId);
+        bookingStore.removeBookingById(bookingId);
     } catch (error) {
-      console.error(error);
+        console.error(`An error occurred while deleting booking with ID ${bookingId}:`, error);
     }
-  }
+}
 
     setIsFirstPage(data) {
         this.isFirstPage = data;
