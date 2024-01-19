@@ -117,9 +117,6 @@
     <None Update="..\client\src\Pages\Rooms\BigRoomPage.jsx">
       <Link>src\Pages\Rooms\BigRoomPage.jsx</Link>
     </None>
-    <None Update="..\client\src\Pages\Rooms\RoomPage.jsx">
-      <Link>src\Pages\Rooms\RoomPage.jsx</Link>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -137,6 +134,11 @@
   <ItemGroup>
     <Compile Remove="Migrations\20231110113625_InitialCreate.cs" />
     <Compile Remove="Migrations\20231110113625_InitialCreate.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="..\client\src\Pages\Rooms\RoomPage.jsx" />
+    <None Remove="..\client\src\stores\RoomStore.jsx" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

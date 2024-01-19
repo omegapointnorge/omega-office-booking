@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { Room } from "../domain/room";
 
+
 class OverviewStore {
   rooms = [];
 

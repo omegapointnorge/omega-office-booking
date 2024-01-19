@@ -24,7 +24,6 @@ namespace server.Repository
         public Task<List<Booking>> GetBookingsWithSeatForUserAsync(String userId)
         {
             return _dbContext.Bookings
-                .Include(booking => booking.Seat)
                 .Where(booking => booking.UserId == userId)
                 .ToListAsync();
         }

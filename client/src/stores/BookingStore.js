@@ -1,5 +1,8 @@
 import { makeAutoObservable } from "mobx";
 import Booking from '../domain/booking';
+import toast from "react-hot-toast";
+import ApiService from "./ApiService.jsx";
+import historyStore from "./HistoryStore";
 
 class BookingStore {
   activeBookings = [];
@@ -18,92 +21,69 @@ class BookingStore {
   // Fetch all active bookings
   async fetchAllActiveBookings() {
     try {
-      const response = await fetch('/api/booking/activeBookings');
-      
-      if (!response.ok) { 
-        throw new Error('Failed to fetch active bookings');
-      }
-      
+      const response = await ApiService.fetchData('/api/booking/activeBookings', 'Get');
+
       const bookingsAsJson = await response.json();
       const bookings = this.convertJsonObjectsToBookings(bookingsAsJson)
+
       this.setActiveBookings(bookings);
     } catch (error) {
       console.error("Error fetching active bookings:", error);
     }
   }
 
-  // Fetch all bookings for a specific user
-  async fetchUserBookings(userId) {
-    try {
-      const response = await fetch(`/api/Booking/Bookings/MyActiveBookings`);
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch user bookings');
-      }
+    async createBooking(bookingRequest) {
+        try {
+            const response = await fetch('/api/Booking/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify(bookingRequest),
+            });
 
-      const data = await response.json();
-      this.setUserBookings(data);
-    } catch (error) {
-      console.error("Error fetching user bookings:", error);
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error:', errorText);
+                toast.error("Error creating booking:" + errorText);
+               //refresh the page in case someone has booked the seat recently
+                await this.fetchAllActiveBookings();
+
+            }
+            else {
+                const newBookingJson = await response.json();
+                const newBookingData = newBookingJson.value
+                const newBooking = new Booking(newBookingData.id, newBookingData.userId, newBookingData.userName, newBookingData.seatId, newBookingData.bookingDateTime);
+                // Update the store's state with the new booking
+                this.activeBookings.push(newBooking);
+                historyStore.myActiveBookings.unshift(newBooking)
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
-  }
 
-  async createBooking(bookingRequest) {
-    try {
-      const response = await fetch('/api/Booking/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify(bookingRequest),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create booking');
+    //TODO try to reuse the same deletebooking logic like HistoryStore
+    async deleteBooking(booking) {
+      try {
+          const bookingId = booking.bookingId;
+          const url = `/api/Booking/${bookingId}`;
+          
+          const response = await ApiService.fetchData(url, "DELETE");
+  
+          if (!response.ok) {
+              console.error(`Failed to delete booking with ID ${bookingId}`);
+              return;
+          }
+  
+          this.removeBookingById(bookingId);
+          historyStore.removeBookingById(bookingId);
+      } catch (error) {
+          console.error(`An error occurred while deleting booking with ID ${booking.bookingId}:`, error);
       }
-      const newBookingJson = await response.json();
-      const newBookingData = newBookingJson.value
-      const newBooking = new Booking(newBookingData.id, newBookingData.userId, newBookingData.userName, newBookingData.seatId, newBookingData.bookingDateTime);
-
-      // Update the store's state with the new booking
-      this.activeBookings.push(newBooking);
-
-    } catch (error) {
-      console.error("Error creating booking:", error);
-    }
-  }
-
-  async deleteBooking(deleteBookingRequest) {
-    try {
-      const url = `/api/Booking/${deleteBookingRequest.bookingId}`;
-      const response = await fetch(url, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to delete booking: ${response.status}`);
-      }
-
-      this.removeBookingById(deleteBookingRequest.bookingId)
-
-    } catch (error) {
-      console.error("Error deleting booking:", error);
-    }
-  }
-
-
-  // Update active bookings
-  setActiveBookings(bookings) {
-    this.activeBookings = bookings;
-  }
-
-  // Update user bookings
-  setUserBookings(bookings) {
-    this.userBookings = bookings;
   }
 
   removeBookingById(bookingId) {
@@ -117,6 +97,16 @@ class BookingStore {
   setDisplayDate(date) {
     this.displayDate = date;
   }
+    // Update active bookings
+    setActiveBookings(bookings) {
+        this.activeBookings = bookings;
+    }
+
+    // Update user bookings
+    setUserBookings(bookings) {
+        this.userBookings = bookings;
+    }
+
 }
 
 const bookingStore = new BookingStore();

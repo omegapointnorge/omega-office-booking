@@ -1,6 +1,7 @@
 import {makeAutoObservable} from "mobx";
-import {MyBookingsResponse} from "../domain/booking";
+import Booking, {Room} from "../domain/booking";
 import ApiService from "./ApiService.jsx";
+import bookingStore from "./BookingStore";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -8,6 +9,7 @@ class HistoryStore {
     myActiveBookings = [];
     myPreviousBookings = [];
     myPreviousBookingsCurrentPage = [];
+
     openDialog = false;
     bookingIdToDelete = null;
 
@@ -16,6 +18,8 @@ class HistoryStore {
     isFirstPage = true;
     isLastPage = false;
     isLoading = false;
+    rooms = [];
+
 
     constructor() {
         this.initBookings();
@@ -26,6 +30,7 @@ class HistoryStore {
         try {
             this.isLoading = true;
             await this.fetchMyBookings();
+            await this.seatIdToRoomId()
             this.initPreviousBookings();
 
         } catch (error) {
@@ -33,6 +38,21 @@ class HistoryStore {
         } finally {
             this.isLoading = false;
         }
+
+    }
+
+    async seatIdToRoomId(){
+           try {
+            const url = "/api/room/rooms";
+            const response = await ApiService.fetchData(url, "Get", null);
+            const data = await response.json();
+
+            this.rooms = data.value.map(room => new Room(room.id, room.name, room.seats));
+
+        } catch (error) {
+            console.error("Error fetching bookings:", error);
+        }
+
     }
 
     async fetchMyBookings() {
@@ -53,13 +73,21 @@ class HistoryStore {
 
   async deleteBooking(bookingId) {
     try {
-      const url = "/api/Booking/" + bookingId;
-        await ApiService.fetchData(url, "Delete");
-      this.removeBookingById(bookingId)
+        const url = `/api/Booking/${bookingId}`;
+        
+        const response = await ApiService.fetchData(url, "DELETE");
+
+        if (!response.ok) {
+            console.error(`Failed to delete booking with ID ${bookingId}`);
+            return;
+        }
+
+        this.removeBookingById(bookingId);
+        bookingStore.removeBookingById(bookingId);
     } catch (error) {
-      console.error(error);
+        console.error(`An error occurred while deleting booking with ID ${bookingId}:`, error);
     }
-  }
+}
 
     setIsFirstPage(data) {
         this.isFirstPage = data;
@@ -135,8 +163,20 @@ class HistoryStore {
             return isActive ? dateA - dateB : dateB - dateA;
         });
 
-        return sortedBookings.map((myBookingsResponse) => new MyBookingsResponse(myBookingsResponse.id, myBookingsResponse.userId, myBookingsResponse.userName, myBookingsResponse.seatId, myBookingsResponse.bookingDateTime, myBookingsResponse.roomId));
+        return sortedBookings.map((booking) => new Booking(booking.id, booking.userId, booking.userName, booking.seatId, booking.bookingDateTime));
     }
+
+    getRoomIdBySeatId(seatId) {
+    for (const room of this.rooms) {
+        const foundSeat = room.seats.find(seat => seat.id === seatId);
+        if (foundSeat) {
+            return room.id;
+        }
+    }
+    console.error(`Seat with ID ${seatId} not found in any room.`);
+    return null; 
+}
+
 }
 
 const historyStore = new HistoryStore();

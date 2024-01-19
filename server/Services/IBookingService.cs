@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
-using server.Models.DTOs.Response;
 
 namespace server.Services
 {
@@ -12,7 +11,7 @@ namespace server.Services
 
         Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings();
 
-        Task<ActionResult<IEnumerable<MyBookingsResponse>>> GetAllBookingsForUser(string userid);
+        Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(string userid);
 
         Task<ActionResult<BookingDto>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user);
        

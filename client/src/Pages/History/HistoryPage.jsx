@@ -11,15 +11,15 @@ const ActiveBookings = observer(() => (
     <button onClick={() => historyStore.navigatePrevious()} className="opacity-0" disabled={true}>
       <IoIosArrowBack />
     </button>
-    {historyStore.myActiveBookings.map((myBookingsResponse) => (
+    {historyStore.myActiveBookings.map((booking) => (
       <BookingItem
-        key={myBookingsResponse.id}
-        seatId={myBookingsResponse.seatId}
-        bookingDateTime={myBookingsResponse.bookingDateTime}
+        key={booking.id}
+        seatId={booking.seatId}
+        bookingDateTime={booking.bookingDateTime}
         showDeleteButton={true}
-        roomId={myBookingsResponse.roomId}
+        roomId={historyStore.getRoomIdBySeatId(booking.seatId)}
         onClick={() => {
-          historyStore.handleOpenDialog(myBookingsResponse.id);
+          historyStore.handleOpenDialog(booking.id);
         }}
       ></BookingItem>
     ))}
@@ -43,17 +43,17 @@ const PreviousBookings = observer(() => (
     <button
       onClick={() => historyStore.navigatePrevious()}
       className={`${historyStore.isFirstPage ? 'opacity-0' : 'opacity-100'}`}
-      disabled={historyStore.isFirstPage}
+      disabled={historyStore.isFirstPage} 
     >
       <IoIosArrowBack />
     </button>
-    {historyStore.myPreviousBookingsCurrentPage.map((myBookingsResponse) => (
+    {historyStore.myPreviousBookingsCurrentPage.map((booking) => (
       <BookingItem
-        key={myBookingsResponse.id}
-        seatId={myBookingsResponse.seatId}
-        bookingDateTime={myBookingsResponse.bookingDateTime}
+        key={booking.id}
+        seatId={booking.seatId}
+        bookingDateTime={booking.bookingDateTime}
         showDeleteButton={false}
-        roomId={myBookingsResponse.roomId}
+        roomId={historyStore.getRoomIdBySeatId(booking.seatId)}
       ></BookingItem>
     ))}
     <button

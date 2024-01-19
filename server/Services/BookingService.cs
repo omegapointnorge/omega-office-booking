@@ -4,7 +4,6 @@ using server.Models.Domain;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
-using server.Models.DTOs.Response;
 using server.Repository;
 
 namespace server.Services
@@ -20,22 +19,32 @@ namespace server.Services
 
         public async Task<ActionResult<BookingDto>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user)
         {
-
-
-            var booking = new Booking
+            try
             {
-                UserId = user.UserId,
-                UserName = user.UserName,
-                SeatId = bookingRequest.SeatId,
-                BookingDateTime = bookingRequest.BookingDateTime
-            };
+                IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
+                var booking = new Booking
+                {
+                    UserId = user.UserId,
+                    UserName = user.UserName,
+                    SeatId = bookingRequest.SeatId,
+                    BookingDateTime = bookingRequest.BookingDateTime
+                };
 
-            await _bookingRepository.AddAsync(booking);
-            await _bookingRepository.SaveAsync();
+                if (CanBookSeatAndUser(bookingList, bookingRequest, user.UserId))
+                {
+                    await _bookingRepository.AddAsync(booking);
+                    await _bookingRepository.SaveAsync();
+                    var createBookingResponse = new BookingDto(booking);
 
-            var createBookingResponse = new BookingDto(booking);
+                    return createBookingResponse;
+                }
+                else throw new Exception("The seat may have been taken while you are booking, try again if you don't have a booking for the same day.");
 
-            return createBookingResponse;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings()
         {
@@ -52,12 +61,12 @@ namespace server.Services
         }
 
 
-        public async Task<ActionResult<IEnumerable<MyBookingsResponse>>> GetAllBookingsForUser(String userId)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
         {
             try
             {
                 var bookings = await _bookingRepository.GetBookingsWithSeatForUserAsync(userId);
-                return Mappers.MapMyBookingsResponse(bookings);
+                return Mappers.MapBookingDtos(bookings);
             }
             catch (Exception)
             {
@@ -81,6 +90,13 @@ namespace server.Services
             {
                 throw;
             }
+        }
+
+        private static bool CanBookSeatAndUser(IEnumerable<Booking> bookingList, CreateBookingRequest bookingRequest, String userId)
+        {
+            var bookingDateTime = bookingRequest.BookingDateTime;
+            // Check if the seat already has a booking on the same day,as well as user,
+            return !bookingList.Any(booking => booking.BookingDateTime.Date == bookingDateTime.Date && (booking.SeatId == bookingRequest.SeatId || booking.UserId == userId));
         }
     }
 }
