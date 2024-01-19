@@ -29,21 +29,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
   display: flex;
   flex-direction: column;
-  margin: 0;
-  padding: 0;
+  padding-top: 100px;
   height: 100vh;
   width: 100%;
   background-color: var(--warmgray25);
   color: var(--marine);
 }
 
-html,
-body {
+html {
   height: 100%;
   margin: 0;
-  padding: 0;
 }
-
 
 div {
   font-family: "Roboto", sans-serif;
@@ -56,7 +52,6 @@ div {
 .bg-warmgray {
   background-color: #d7d2cb;
 }
-
 
 .bg-marine {
   background-color: #003349;
