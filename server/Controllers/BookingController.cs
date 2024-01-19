@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
-using server.Models.DTOs.Response;
 using server.Services;
 
 namespace server.Controllers
@@ -18,12 +17,12 @@ namespace server.Controllers
             _bookingService = bookingService;
         }
 
-        [HttpGet("bookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllFutureBookings()
+        [HttpGet("activeBookings")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings()
         {
             try
             {
-                var result = await _bookingService.GetAllBookings();
+                var result = await _bookingService.GetAllActiveBookings();
                 return new OkObjectResult(result.Value);
             }
             catch (Exception ex)
@@ -34,12 +33,13 @@ namespace server.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<CreateBookingResponse>> CreateBooking(CreateBookingRequest bookingRequest)
+        public async Task<ActionResult<BookingDto>> CreateBooking(CreateBookingRequest bookingRequest)
         {
             try
             {
                     var user = GetUser();
-                    var booking = await _bookingService.CreateBookingAsync(bookingRequest, user.UserId);
+                    var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
+
                     return CreatedAtRoute(null, booking);
             }
             catch (Exception ex)

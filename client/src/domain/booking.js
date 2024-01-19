@@ -1,10 +1,10 @@
 export default class Booking {
-  constructor(id = null, userId = null, seatId = null, bookingDateTime = null) {
+  constructor(id = null, userId = null, userName = null, seatId = null, bookingDateTime = null) {
     this.id = id;
     this.userId = userId;
+    this.userName = userName;
     this.seatId = seatId;
-    this.bookingDateTime = bookingDateTime;
-
+    this.bookingDateTime = new Date(bookingDateTime);
   }
 }
 
@@ -26,8 +26,9 @@ export class Seat {
 }
 
 export class CreateBookingRequest {
-  constructor(seatId) {
+  constructor(seatId, bookingDateTime) {
     this.seatId = seatId
+    this.bookingDateTime = bookingDateTime.toISOString();
   }
 }
 

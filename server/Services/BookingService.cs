@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
+using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
-using server.Models.DTOs.Response;
 using server.Repository;
 
 namespace server.Services
@@ -17,23 +17,24 @@ namespace server.Services
             _bookingRepository = bookingRepository;
         }
 
-        public async Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, string userId)
+        public async Task<ActionResult<BookingDto>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user)
         {
             try
             {
                 IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
                 var booking = new Booking
                 {
-                    UserId = userId,
+                    UserId = user.UserId,
+                    UserName = user.UserName,
                     SeatId = bookingRequest.SeatId,
                     BookingDateTime = bookingRequest.BookingDateTime
                 };
 
-                if (CanBookSeatAndUser(bookingList, bookingRequest, userId))
+                if (CanBookSeatAndUser(bookingList, bookingRequest, user.UserId))
                 {
                     await _bookingRepository.AddAsync(booking);
                     await _bookingRepository.SaveAsync();
-                    var createBookingResponse = new CreateBookingResponse(booking);
+                    var createBookingResponse = new BookingDto(booking);
 
                     return createBookingResponse;
                 }
@@ -45,11 +46,11 @@ namespace server.Services
                 throw;
             }
         }
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookings()
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings()
         {
             try
             {
-                IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
+                IEnumerable<Booking> bookingList = await _bookingRepository.GetAllActiveBookings();
                 var bookingDtoList = Mappers.MapBookingDtos(bookingList);
                 return bookingDtoList;
             }

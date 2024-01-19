@@ -1,0 +1,38 @@
+.seat-booked-by-user {
+    fill: dodgerblue;
+  }
+  
+  .seat-booked {
+    fill: LightCoral;
+  }
+  
+  .seat-available {
+    fill: limegreen;
+  }
+  
+  .seat-unavailable {
+    fill: #E3E3E3;
+    pointer-events: none;
+  }
+
+  .seat-available-later {
+    fill: darkseagreen;
+    pointer-events: none;
+  }
+
+  .seat-booked-by-user:hover,
+  .seat-booked:hover,
+  .seat-available:hover {
+    /* shared hover styles */
+    filter: brightness(110%);
+    cursor: pointer;
+  }
+
+  .zoomed-out-room {
+    cursor: pointer;
+    @apply hover:scale-125 hover:brightness-110 duration-100;
+  }
+
+  .zoomed-in-room {
+    pointer-events: none;
+  }

@@ -13,6 +13,13 @@ namespace server.Repository
             _dbContext = context;
         }
 
+        public Task<List<Booking>> GetAllActiveBookings()
+        {
+            return _dbContext.Bookings
+                .Where(booking => booking.BookingDateTime.Date >= DateTime.Today)
+                .ToListAsync();
+        }
+
         public Task<List<Booking>> GetBookingsWithSeatForUserAsync(String userId)
         {
             return _dbContext.Bookings

@@ -162,7 +162,7 @@ class HistoryStore {
             return isActive ? dateA - dateB : dateB - dateA;
         });
 
-        return sortedBookings.map((booking) => new Booking(booking.id, booking.userId, booking.seatId, booking.bookingDateTime));
+        return sortedBookings.map((booking) => new Booking(booking.id, booking.userId, booking.userName, booking.seatId, booking.bookingDateTime));
     }
 
     getRoomIdBySeatId(seatId) {

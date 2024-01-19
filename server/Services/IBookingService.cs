@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
+using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
-using server.Models.DTOs.Response;
 
 namespace server.Services
 {
@@ -9,12 +9,12 @@ namespace server.Services
     {
         Task<ActionResult> DeleteBookingAsync(int id);
 
-        Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookings();
+        Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings();
 
         Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(string userid);
 
-        Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, string userId);
-
+        Task<ActionResult<BookingDto>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user);
+       
 
     }
 }

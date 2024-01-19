@@ -1,35 +1,41 @@
 import { makeAutoObservable } from "mobx";
+import { CreateBookingRequest } from "../domain/booking";
 import Booking from '../domain/booking';
 import toast from "react-hot-toast";
 import ApiService from "./ApiService.jsx";
 import historyStore from "./HistoryStore";
 
 class BookingStore {
-    activeBookings = [];
-    userBookings = [];
+  activeBookings = [];
+  userBookings = [];
+  displayDate = new Date()
 
-    constructor() {
-        this.initialize()
-        makeAutoObservable(this);
+  constructor() {
+    this.initialize()
+    makeAutoObservable(this);
+  }
+
+  async initialize() {
+    await this.fetchAllActiveBookings()
+  }
+
+  // Fetch all active bookings
+  async fetchAllActiveBookings() {
+    try {
+      const response = await ApiService.fetchData('/api/booking/activeBookings', 'Get');
+
+      const bookingsAsJson = await response.json();
+      const bookings = this.convertJsonObjectsToBookings(bookingsAsJson)
+
+      this.setActiveBookings(bookings);
+    } catch (error) {
+      console.error("Error fetching active bookings:", error);
     }
+  }
 
-    async initialize() {
-        await this.fetchAllActiveBookings()
-    }
 
-    // Fetch all active bookings
-    async fetchAllActiveBookings() {
-        try {
-            const response = await ApiService.fetchData('/api/booking/bookings', 'Get');
-
-            const data = await response.json();
-            this.setActiveBookings(data);
-        } catch (error) {
-            console.error("Error fetching active bookings:", error);
-        }
-    }
-
-    async createBooking(bookingRequest) {
+    async createBooking(selectedSeatId) {
+      const bookingRequest = new CreateBookingRequest(selectedSeatId, this.displayDate);
         try {
             const response = await fetch('/api/Booking/create', {
                 method: 'POST',
@@ -51,8 +57,7 @@ class BookingStore {
             else {
                 const newBookingJson = await response.json();
                 const newBookingData = newBookingJson.value
-                const newBooking = new Booking(newBookingData.id, newBookingData.userId, newBookingData.seatId, newBookingData.bookingDateTime);
-
+                const newBooking = new Booking(newBookingData.id, newBookingData.userId, newBookingData.userName, newBookingData.seatId, newBookingData.bookingDateTime);
                 // Update the store's state with the new booking
                 this.activeBookings.push(newBooking);
                 historyStore.myActiveBookings.unshift(newBooking)
@@ -64,25 +69,36 @@ class BookingStore {
     }
 
     //TODO try to reuse the same deletebooking logic like HistoryStore
-   async deleteBooking(booking) {
-    try {
-        const bookingId = booking.bookingId;
-        const url = `/api/Booking/${bookingId}`;
-        
-        const response = await ApiService.fetchData(url, "DELETE");
+    async deleteBooking(booking) {
+      try {
+          const bookingId = booking.bookingId;
+          const url = `/api/Booking/${bookingId}`;
+          
+          const response = await ApiService.fetchData(url, "DELETE");
+  
+          if (!response.ok) {
+              console.error(`Failed to delete booking with ID ${bookingId}`);
+              return;
+          }
+  
+          this.removeBookingById(bookingId);
+          historyStore.removeBookingById(bookingId);
+      } catch (error) {
+          console.error(`An error occurred while deleting booking with ID ${booking.bookingId}:`, error);
+      }
+  }
 
-        if (!response.ok) {
-            console.error(`Failed to delete booking with ID ${bookingId}`);
-            return;
-        }
+  removeBookingById(bookingId) {
+    this.activeBookings = this.activeBookings.filter(booking => booking.id !== bookingId);
+  }
 
-        this.removeBookingById(bookingId);
-        historyStore.removeBookingById(bookingId);
-    } catch (error) {
-        console.error(`An error occurred while deleting booking with ID ${booking.bookingId}:`, error);
-    }
-}
+  convertJsonObjectsToBookings(jsonArray) {
+    return jsonArray.map(obj => new Booking(obj.id, obj.userId, obj.userName, obj.seatId, obj.bookingDateTime));
+  }
 
+  setDisplayDate(date) {
+    this.displayDate = date;
+  }
     // Update active bookings
     setActiveBookings(bookings) {
         this.activeBookings = bookings;
@@ -93,9 +109,6 @@ class BookingStore {
         this.userBookings = bookings;
     }
 
-    removeBookingById(bookingId) {
-        this.activeBookings = this.activeBookings.filter(booking => booking.id !== bookingId);
-    }
 }
 
 const bookingStore = new BookingStore();

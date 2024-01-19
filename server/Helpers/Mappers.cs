@@ -12,7 +12,7 @@ namespace server.Helpers
             try
             {
                 bookingDtoList = bookings.Select(booking =>
-                    new BookingDto(booking.Id, booking.UserId, booking.SeatId, booking.BookingDateTime)
+                    new BookingDto(booking)
                 ).ToList();
             }
             catch (Exception e)
