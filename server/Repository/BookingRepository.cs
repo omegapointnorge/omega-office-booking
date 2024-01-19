@@ -17,7 +17,6 @@ namespace server.Repository
         {
             return _dbContext.Bookings
                 .Where(booking => booking.BookingDateTime.Date >= DateTime.Today)
-                .Select(booking => new Booking(booking.Id, booking.UserId, booking.UserName, booking.SeatId, booking.BookingDateTime))
                 .ToListAsync();
         }
 
