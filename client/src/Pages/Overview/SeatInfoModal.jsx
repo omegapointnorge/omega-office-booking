@@ -80,7 +80,7 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
             <h3 className="text-xl font-semibold text-gray-900 mb-4">Seat Information</h3>
             <div className="text-left space-y-3">
               <p className="text-sm text-gray-600">Sete ID: <span className="text-gray-700 font-medium">{selectedSeatId}</span></p>
-              <p className="text-sm text-gray-600">Booket av: <span className="text-gray-700 font-medium">{selectedBooking.id || 'Not booked'}</span></p>
+              <p className="text-sm text-gray-600">Booket av: <span className="text-gray-700 font-medium">{selectedBooking.userName || 'Not booked'}</span></p>
               <p className="text-sm text-gray-600">Booking dato: <span className="text-gray-700 font-medium">{displayDate.toLocaleDateString()}</span></p>
               <br/>
             </div>
