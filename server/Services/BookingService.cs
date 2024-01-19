@@ -132,18 +132,10 @@ namespace server.Services
             DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(now);
             TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
 
-            if (IsWeekend(now))
+            if (IsWeekend(now) || now.TimeOfDay > sameDayCutoff)
             {
-                while (latestAllowedBookingDate.DayOfWeek != DayOfWeek.Monday)
-                {
-                    latestAllowedBookingDate = latestAllowedBookingDate.AddDays(1);
-                }
+                latestAllowedBookingDate = GetNextWeekday(latestAllowedBookingDate);
             }
-            else if (now.TimeOfDay > sameDayCutoff)
-            {
-                latestAllowedBookingDate = latestAllowedBookingDate.AddDays(1);
-            }
-
             return latestAllowedBookingDate;
         }
 
@@ -152,6 +144,16 @@ namespace server.Services
             TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
             return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday ||
                    (date.DayOfWeek == DayOfWeek.Friday && date.TimeOfDay > sameDayCutoff);
+        }
+
+        private static DateOnly GetNextWeekday(DateOnly date)
+        {
+            DateOnly nextDay = date.AddDays(1);
+            while (nextDay.DayOfWeek == DayOfWeek.Saturday || nextDay.DayOfWeek == DayOfWeek.Sunday)
+            {
+                nextDay = nextDay.AddDays(1);
+            }
+            return nextDay;
         }
     }
 }
