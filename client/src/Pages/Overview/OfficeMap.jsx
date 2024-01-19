@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import { useLocation } from "react-router-dom";
 import { useAuthContext } from '../../api/useAuthContext';
 import {ReactComponent as ZoomOutIcon} from '../../assets/icons/zoom-out_outline.svg'
 import { observer } from 'mobx-react-lite';
@@ -10,6 +11,7 @@ const OfficeMap = observer(({showSeatInfo}) => {
 
     const { user } = useAuthContext() ?? {};
     const { activeBookings, displayDate } = bookingStore
+    const location = useLocation();
 
     const zoomedOutViewBoxParameters = "0 0 3725 2712"
     const zoomedToLargeRoomViewBoxParameters = "1900 1600 1100 1050"
@@ -20,6 +22,12 @@ const OfficeMap = observer(({showSeatInfo}) => {
     const [zoomStatus, setZoomStatus] = useState("ZoomedOut")
 
     const userId = user?.claims?.find(claim => claim.key === 'http://schemas.microsoft.com/identity/claims/objectidentifier')?.value;
+
+    useEffect(() => {
+      if (location.pathname === "/overview") {
+        zoomOut();
+      }
+    }, [location]); // Dep
 
     const getSeatClassName = (seatId) => {
       const bookingForSeat = activeBookings.find(booking => booking.seatId === seatId && isSameDate(displayDate, booking.bookingDateTime));
