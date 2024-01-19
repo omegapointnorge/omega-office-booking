@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { CreateBookingRequest } from "../domain/booking";
 import Booking from '../domain/booking';
 import toast from "react-hot-toast";
 import ApiService from "./ApiService.jsx";
@@ -33,7 +34,8 @@ class BookingStore {
   }
 
 
-    async createBooking(bookingRequest) {
+    async createBooking(selectedSeatId) {
+      const bookingRequest = new CreateBookingRequest(selectedSeatId, this.displayDate);
         try {
             const response = await fetch('/api/Booking/create', {
                 method: 'POST',

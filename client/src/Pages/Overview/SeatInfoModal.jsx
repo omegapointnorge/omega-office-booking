@@ -31,8 +31,7 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
       } 
 
     const handleBook = async () => {
-        const createBookingRequest = new CreateBookingRequest(selectedSeatId,displayDate);
-        await bookingStore.createBooking(createBookingRequest);
+        await bookingStore.createBooking(selectedSeatId);
         onClose()
     };
     
