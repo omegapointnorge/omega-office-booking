@@ -18,7 +18,7 @@ export class MyBookingsResponse extends Booking {
 export class CreateBookingRequest {
   constructor(seatId, bookingDateTime) {
     this.seatId = seatId
-    this.bookingDateTime = bookingDateTime
+    this.bookingDateTime = bookingDateTime.toISOString();
   }
 }
 

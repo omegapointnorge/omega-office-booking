@@ -27,7 +27,7 @@ namespace server.Services
                 UserId = user.UserId,
                 UserName = user.UserName,
                 SeatId = bookingRequest.SeatId,
-                BookingDateTime = DateTime.Now
+                BookingDateTime = bookingRequest.BookingDateTime
             };
 
             await _bookingRepository.AddAsync(booking);

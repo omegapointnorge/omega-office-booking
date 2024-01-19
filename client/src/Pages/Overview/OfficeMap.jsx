@@ -27,12 +27,17 @@ const OfficeMap = observer(({showSeatInfo}) => {
       if (bookingForSeat) {
         return bookingForSeat.userId === userId ? "seat-booked-by-user" : "seat-booked";
       }
+      
+      const isAnySeatBookedByUser = activeBookings.some(booking => booking.userId === userId && isSameDate(displayDate, booking.bookingDateTime));
+      if (isAnySeatBookedByUser) {
+        return "seat-unavailable"
+      }
+
       if (!hasBookingOpened()) {
         return "seat-available-later"
       }
 
-      const isAnySeatBookedByUser = activeBookings.some(booking => booking.userId === userId && isSameDate(displayDate, booking.bookingDateTime));
-      return isAnySeatBookedByUser ? "seat-unavailable" : "seat-available";
+      return "seat-available";
     }
 
     const hasBookingOpened = () => {
