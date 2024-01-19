@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { observer } from 'mobx-react-lite';
 import bookingStore from '../../stores/BookingStore';
-import Booking, { CreateBookingRequest, DeleteBookingRequest } from '../../domain/booking';
+import Booking, { DeleteBookingRequest } from '../../domain/booking';
 import { useAuthContext } from '../../api/useAuthContext';
 
 
