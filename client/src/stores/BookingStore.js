@@ -18,12 +18,12 @@ class BookingStore {
   // Fetch all active bookings
   async fetchAllActiveBookings() {
     try {
-      const response = await fetch('/api/booking/Bookings');
+      const response = await fetch('/api/booking/activeBookings');
       
       if (!response.ok) { 
         throw new Error('Failed to fetch active bookings');
       }
-
+      
       const bookingsAsJson = await response.json();
       const bookings = this.convertJsonObjectsToBookings(bookingsAsJson)
       this.setActiveBookings(bookings);
@@ -62,7 +62,6 @@ class BookingStore {
       if (!response.ok) {
         throw new Error('Failed to create booking');
       }
-
       const newBookingJson = await response.json();
       const newBookingData = newBookingJson.value
       const newBooking = new Booking(newBookingData.id, newBookingData.userId, newBookingData.seatId, newBookingData.bookingDateTime);
@@ -112,7 +111,7 @@ class BookingStore {
   }
 
   convertJsonObjectsToBookings(jsonArray) {
-    return jsonArray.map(obj => new Booking(obj.id, obj.userId, obj.seatId, obj.bookingDateTime));
+    return jsonArray.map(obj => new Booking(obj.id, obj.userId, obj.userName, obj.seatId, obj.bookingDateTime));
   }
 
   setDisplayDate(date) {
