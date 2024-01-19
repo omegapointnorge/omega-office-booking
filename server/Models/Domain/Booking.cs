@@ -16,8 +16,8 @@ namespace server.Models.Domain
         public Booking(int id, String userId, String userName, int seatId, DateTime bookingDateTime)
         {
             Id = id;
-            UserName = userName;
             UserId = userId;
+            UserName = userName;
             SeatId = seatId;
             BookingDateTime = bookingDateTime;
         }
