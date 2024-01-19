@@ -18,7 +18,7 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
         if (foundBooking) {
             setSelectedBooking(foundBooking)
         }
-    }, [selectedSeatId, activeBookings]);
+    }, [selectedSeatId, activeBookings, displayDate]);
 
     const isSameDate = (date1, date2) => {
         if (!(date1 instanceof Date) || !(date2 instanceof Date)) {
