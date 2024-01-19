@@ -34,7 +34,7 @@ namespace server.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<CreateBookingResponse>> CreateBooking(CreateBookingRequest bookingRequest)
+        public async Task<ActionResult<BookingDto>> CreateBooking(CreateBookingRequest bookingRequest)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace server.Controllers
                 if (User.Identity?.IsAuthenticated ?? false)
                 {
                     var user = GetUser();
-                    var booking = await _bookingService.CreateBookingAsync(bookingRequest, user.UserId);
+                    var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
 
                     return CreatedAtRoute(null, booking);
                 }

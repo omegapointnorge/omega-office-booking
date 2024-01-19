@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
+using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Models.DTOs.Response;
 using server.Repository;
@@ -17,13 +18,14 @@ namespace server.Services
             _bookingRepository = bookingRepository;
         }
 
-        public async Task<ActionResult<CreateBookingResponse>> CreateBookingAsync(CreateBookingRequest bookingRequest, string user)
+        public async Task<ActionResult<BookingDto>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user)
         {
 
 
             var booking = new Booking
             {
-                UserId = user,
+                UserId = user.UserId,
+                UserName = user.UserName,
                 SeatId = bookingRequest.SeatId,
                 BookingDateTime = DateTime.Now
             };
@@ -31,7 +33,7 @@ namespace server.Services
             await _bookingRepository.AddAsync(booking);
             await _bookingRepository.SaveAsync();
 
-            var createBookingResponse = new CreateBookingResponse(booking);
+            var createBookingResponse = new BookingDto(booking);
 
             return createBookingResponse;
         }
