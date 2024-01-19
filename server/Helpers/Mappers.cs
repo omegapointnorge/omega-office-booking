@@ -12,13 +12,7 @@ namespace server.Helpers
             try
             {
                 myBookingsResponseList = bookings.Select(booking =>
-                    new MyBookingsResponse(
-                        booking.Id,
-                        booking.UserId,
-                        booking.SeatId,
-                        booking.BookingDateTime,
-                        booking.Seat.RoomId
-                    )
+                    new MyBookingsResponse(booking)
                 ).ToList();
             }
             catch (Exception ex)

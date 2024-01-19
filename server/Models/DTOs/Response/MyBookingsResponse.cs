@@ -1,11 +1,13 @@
 ﻿
+using server.Models.Domain;
+
 namespace server.Models.DTOs.Response
 {
     public class MyBookingsResponse : BookingDto
     {
-        public MyBookingsResponse(int id, string userId, int seatId, DateTime dateTime, int roomId) : base(id, userId, seatId, dateTime)
+        public MyBookingsResponse(Booking booking) : base(booking)
         {
-            RoomId = roomId;
+            RoomId = booking.Seat.RoomId;
         }
         public int RoomId { get; set; }
     }
