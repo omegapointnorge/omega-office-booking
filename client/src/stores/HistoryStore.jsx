@@ -60,7 +60,6 @@ class HistoryStore {
             const url = "/api/Booking/Bookings/MyBookings";
             const response = await ApiService.fetchData(url, "Get", null);
             const data = await response.json();
-            console.log(data)
 
       this.myActiveBookings = this.filterAndSortBookings(data, true);
       this.myPreviousBookings = this.filterAndSortBookings(data, false);
