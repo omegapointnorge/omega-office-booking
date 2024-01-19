@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
+import { useLocation } from "react-router-dom";
 import { useAuthContext } from '../../api/useAuthContext';
 import {ReactComponent as ZoomOutIcon} from '../../assets/icons/zoom-out_outline.svg'
 import { observer } from 'mobx-react-lite';
@@ -10,6 +11,7 @@ const OfficeMap = observer(({showSeatInfo}) => {
 
     const { user } = useAuthContext() ?? {};
     const { activeBookings, displayDate } = bookingStore
+    const location = useLocation();
 
     const zoomedOutViewBoxParameters = "0 0 3725 2712"
     const zoomedToLargeRoomViewBoxParameters = "1900 1600 1100 1050"
@@ -18,6 +20,7 @@ const OfficeMap = observer(({showSeatInfo}) => {
 
     const [currentViewBox, setCurrentViewBox] = useState(zoomedOutViewBoxParameters);
     const [zoomStatus, setZoomStatus] = useState("ZoomedOut")
+    const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
     const userId = user?.claims?.find(claim => claim.key === 'http://schemas.microsoft.com/identity/claims/objectidentifier')?.value;
 
@@ -56,6 +59,13 @@ const OfficeMap = observer(({showSeatInfo}) => {
 
     return date1.toDateString() === date2.toDateString();
     } 
+
+    const seatClicked = (clickEvent) => {
+      showSeatInfo(clickEvent.target.id)
+  }
+
+    //--------------- Zoom functionality ------------------
+
   
     const zoomToRoom = (roomName) => {
       let newViewBox;
@@ -80,52 +90,60 @@ const OfficeMap = observer(({showSeatInfo}) => {
       // setCurrentViewBox(newViewBox);
     };
 
-    const updateZoomStatus = (newViewBox) => {
+    const updateZoomStatus = useCallback((newViewBox) => {
       if (newViewBox === zoomedOutViewBoxParameters) {
-        setZoomStatus("ZoomedOut")
+          setZoomStatus("ZoomedOut");
+      } else {
+          setZoomStatus("ZoomedIn");
       }
-      else {
-        setZoomStatus("ZoomedIn")
-      }
-    }
+  }, [zoomedOutViewBoxParameters]);
 
-    const animateViewBox = (newViewBox, duration) => {
-      const currentViewBoxValues = currentViewBox.split(' ').map(Number);
-      const newViewBoxValues = newViewBox.split(' ').map(Number);
-    
-      let startTime;
-    
-      const step = (timestamp) => {
-        if (!startTime) startTime = timestamp;
-        const progress = (timestamp - startTime) / duration;
-    
-        if (progress < 1) {
-          const intermediateViewBox = currentViewBoxValues.map((start, index) => {
-            const end = newViewBoxValues[index];
-            return start + (end - start) * progress; // Linear interpolation
-          }).join(' ');
-    
-          setCurrentViewBox(intermediateViewBox);
-          window.requestAnimationFrame(step);
-        } else {
-          setCurrentViewBox(newViewBox); // Ensure final value is set
-          updateZoomStatus(newViewBox)
-        }
-      };
-    
-      window.requestAnimationFrame(step);
+
+  const animateViewBox = useCallback((newViewBox, duration) => {
+    const currentViewBoxValues = currentViewBoxRef.current.split(' ').map(Number);
+    const newViewBoxValues = newViewBox.split(' ').map(Number);
+
+    let startTime;
+
+    const step = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const progress = (timestamp - startTime) / duration;
+
+      if (progress < 1) {
+        const intermediateViewBox = currentViewBoxValues.map((start, index) => {
+          const end = newViewBoxValues[index];
+          return start + (end - start) * progress; // Linear interpolation
+        }).join(' ');
+
+        setCurrentViewBox(intermediateViewBox);
+        window.requestAnimationFrame(step);
+      } else {
+        setCurrentViewBox(newViewBox); // Ensure final value is set
+        updateZoomStatus(newViewBox)
+      }
     };
-    
 
-    const zoomOut = () => {
-        setZoomStatus("Zooming");
-        animateViewBox(zoomedOutViewBoxParameters, 500);
+    window.requestAnimationFrame(step);
+  }, [updateZoomStatus]); // Remove currentViewBox from dependencies
+
+  // Update currentViewBoxRef whenever currentViewBox state changes
+  useEffect(() => {
+    currentViewBoxRef.current = currentViewBox;
+  }, [currentViewBox]);
+
+    const zoomOut = useCallback(() => {
+      console.log("zoomOut")
+      setZoomStatus("Zooming");
+      animateViewBox(zoomedOutViewBoxParameters, 500);
+  }, [animateViewBox, zoomedOutViewBoxParameters]);
+
+    useEffect(() => {
+      if (location.pathname === "/overview") {
+        zoomOut();
       }
+    }, [location, zoomOut]);
 
-    const seatClicked = (clickEvent) => {
-        showSeatInfo(clickEvent.target.id)
-    }
-
+//--------------- End of zoom functionality -----------------
 
   return (
     <div className='relative'>
