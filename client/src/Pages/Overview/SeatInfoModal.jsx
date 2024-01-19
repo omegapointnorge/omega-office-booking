@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { observer } from 'mobx-react-lite';
 import bookingStore from '../../stores/BookingStore';
-import Booking, { CreateBookingRequest, DeleteBookingRequest } from '../../domain/booking';
+import Booking, { DeleteBookingRequest } from '../../domain/booking';
 import { useAuthContext } from '../../api/useAuthContext';
 
 
@@ -25,14 +25,11 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
           throw new Error('Both arguments must be Date objects.');
       }
   
-      return  date1.getDate() === date2.getDate() &&
-              date1.getFullYear() === date2.getFullYear() &&
-              date1.getMonth() === date2.getMonth();
+      return date1.toDateString() === date2.toDateString();
       } 
 
     const handleBook = async () => {
-        const createBookingRequest = new CreateBookingRequest(selectedSeatId,displayDate);
-        await bookingStore.createBooking(createBookingRequest);
+        await bookingStore.createBooking(selectedSeatId);
         onClose()
     };
     

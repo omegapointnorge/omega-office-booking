@@ -8,13 +8,6 @@ export default class Booking {
   }
 }
 
-export class MyBookingsResponse extends Booking {
-  constructor(id, userId, userName, seatId, bookingDateTime, roomId) {
-    super(id, userId, userName, seatId, bookingDateTime);
-    this.roomId = roomId;
-  }
-}
-
 export  class Room {
     constructor(id = null, name = null, seats = []) {
         this.id = id;

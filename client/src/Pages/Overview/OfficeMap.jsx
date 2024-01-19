@@ -57,16 +57,15 @@ const OfficeMap = observer(({showSeatInfo}) => {
         throw new Error('Both arguments must be Date objects.');
     }
 
-    return  date1.getDate() === date2.getDate() &&
-            date1.getFullYear() === date2.getFullYear() &&
-            date1.getMonth() === date2.getMonth();
-    }
+    return date1.toDateString() === date2.toDateString();
+    } 
 
     const seatClicked = (clickEvent) => {
       showSeatInfo(clickEvent.target.id)
   }
 
     //--------------- Zoom functionality ------------------
+
   
     const zoomToRoom = (roomName) => {
       let newViewBox;
