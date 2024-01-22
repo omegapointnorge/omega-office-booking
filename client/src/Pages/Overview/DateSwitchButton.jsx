@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import bookingStore from '../../stores/BookingStore';
 
-const SwitchButton = observer(() => {
+const DateSwitchButton = observer(() => {
     const { displayDate } = bookingStore
 
     const today = new Date();
@@ -75,4 +75,4 @@ const SwitchButton = observer(() => {
   );
 });
 
-export default SwitchButton;
+export default DateSwitchButton;

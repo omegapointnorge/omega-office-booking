@@ -4,7 +4,7 @@ import { useAuthContext } from '../../api/useAuthContext';
 import { observer } from 'mobx-react-lite';
 import OfficeMap from './OfficeMap'; 
 import SeatInfoModal from './SeatInfoModal'; 
-import SwitchButton from './SwitchButton';
+import DateSwitchButton from './DateSwitchButton';
 
 
 const OverviewPage = observer(() => {
@@ -34,7 +34,7 @@ const OverviewPage = observer(() => {
       <div className="justify-center items-center flex flex-col inset-0">
         <div className="flex flex-col gap-10">
           <Heading title={welcomeTitle} subTitle={subTitle} />
-          <SwitchButton />
+          <DateSwitchButton />
           <div className="flex flex-row gap-24">
             <OfficeMap showSeatInfo={showSeatInfo}/>
           </div>
