@@ -14,10 +14,10 @@ const PrimaryDialog = ({ title, content, open, handleClose, onClick }) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={onClick} color="primary">
-          Confirm
+          Bekreft
         </Button>
         <Button onClick={handleClose} color="primary">
-          Cancel
+          Avbryt
         </Button>
       </DialogActions>
     </Dialog>

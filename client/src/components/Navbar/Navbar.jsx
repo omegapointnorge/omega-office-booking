@@ -8,22 +8,22 @@ export const Navbar = () => {
 
   return (
     <nav className="fixed w-full bg-warmgray p-4 flex justify-between z-10 items-center top-0 shadow-sm xl:px-20 md:px-10 sm:px-2 px-4">
-        <div className="flex items-center space-x-4">
-            <Logo />
-            <NavbarItem
-                label="Overview"
-                onClick={() => {
-                    navigate("/overview");
-                }}
-            />
-            <NavbarItem
-                label="History"
-                onClick={() => {
-                    navigate("/history");
-                }}
-            />
-        </div>
-        <LogoutButton/>
+      <div className="flex items-center space-x-4">
+        <Logo />
+        <NavbarItem
+          label="Oversikt"
+          onClick={() => {
+            navigate("/overview");
+          }}
+        />
+        <NavbarItem
+          label="Reservasjon"
+          onClick={() => {
+            navigate("/history");
+          }}
+        />
+      </div>
+      <LogoutButton />
     </nav>
   );
 };
