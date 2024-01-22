@@ -11,6 +11,8 @@ namespace server.Services
     public class BookingService : IBookingService
     {
         readonly IBookingRepository _bookingRepository;
+        private const int SameDayCutoffHour = 16;
+
 
         public BookingService(IBookingRepository bookingRepository)
         {
@@ -30,15 +32,15 @@ namespace server.Services
                     BookingDateTime = bookingRequest.BookingDateTime
                 };
 
-                if (CanBookSeatAndUser(bookingList, bookingRequest, user.UserId))
+                string validationError = ValidateBookingRequest(bookingRequest, bookingList, user.UserId);
+                if (validationError != null)
                 {
-                    await _bookingRepository.AddAsync(booking);
-                    await _bookingRepository.SaveAsync();
-                    var createBookingResponse = new BookingDto(booking);
-
-                    return createBookingResponse;
+                    throw new Exception(validationError);
                 }
-                else throw new Exception("The seat may have been taken while you are booking, try again if you don't have a booking for the same day.");
+
+                await _bookingRepository.AddAsync(booking);
+                await _bookingRepository.SaveAsync();
+                return new BookingDto(booking);
 
             }
             catch (Exception)
@@ -92,11 +94,66 @@ namespace server.Services
             }
         }
 
-        private static bool CanBookSeatAndUser(IEnumerable<Booking> bookingList, CreateBookingRequest bookingRequest, String userId)
+        private static string ValidateBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
         {
-            var bookingDateTime = bookingRequest.BookingDateTime;
-            // Check if the seat already has a booking on the same day,as well as user,
-            return !bookingList.Any(booking => booking.BookingDateTime.Date == bookingDateTime.Date && (booking.SeatId == bookingRequest.SeatId || booking.UserId == userId));
+            if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
+            {
+                return "Booking date exceeds the latest allowed booking date.";
+            }
+
+            if (IsSeatAlreadyBooked(bookingList, bookingRequest))
+            {
+                return "Seat is already booked for the specified time.";
+            }
+
+            if (HasUserAlreadyBookedForDay(bookingList, bookingRequest, userId))
+            {
+                return "User has already booked for the specified day.";
+            }
+
+            return null; // Validation passed
+        }
+
+        private static bool HasUserAlreadyBookedForDay(IEnumerable<Booking> bookingList, CreateBookingRequest bookingRequest, string userId)
+        {
+            var bookingDate = bookingRequest.BookingDateTime.Date;
+            return bookingList.Any(booking => booking.BookingDateTime.Date == bookingDate && booking.UserId == userId);
+        }
+
+        private static bool IsSeatAlreadyBooked(IEnumerable<Booking> bookingList, CreateBookingRequest bookingRequest)
+        {
+            var bookingDate = bookingRequest.BookingDateTime.Date;
+            return bookingList.Any(booking => booking.BookingDateTime.Date == bookingDate && booking.SeatId == bookingRequest.SeatId);
+        }
+
+        private static DateOnly GetLatestAllowedBookingDate()
+        {
+            DateTime now = DateTime.Now;
+            DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(now);
+            TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
+
+            if (IsWeekend(now) || now.TimeOfDay > sameDayCutoff)
+            {
+                latestAllowedBookingDate = GetNextWeekday(latestAllowedBookingDate);
+            }
+            return latestAllowedBookingDate;
+        }
+
+        private static bool IsWeekend(DateTime date)
+        {
+            TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
+            return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday ||
+                   (date.DayOfWeek == DayOfWeek.Friday && date.TimeOfDay > sameDayCutoff);
+        }
+
+        private static DateOnly GetNextWeekday(DateOnly date)
+        {
+            DateOnly nextDay = date.AddDays(1);
+            while (nextDay.DayOfWeek == DayOfWeek.Saturday || nextDay.DayOfWeek == DayOfWeek.Sunday)
+            {
+                nextDay = nextDay.AddDays(1);
+            }
+            return nextDay;
         }
     }
 }
