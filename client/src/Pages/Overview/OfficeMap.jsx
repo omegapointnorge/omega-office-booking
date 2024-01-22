@@ -196,7 +196,7 @@ const OfficeMap = observer(({showSeatInfo}) => {
 
 
       <button className={`absolute top-0 right-0 m-2 p-2 bg-gray-200 text-black rounded hover:bg-gray-300 text-s ${zoomStatus === "ZoomedIn" ? '' : 'opacity-50 cursor-not-allowed'}`} onClick={() => zoomOut()}>
-        <ZoomOutIcon className="h-6 w-6 inline-block mr-1" /> Zoom Out
+        <ZoomOutIcon className="h-6 w-6 inline-block mr-1" />
       </button>
     </div>
   );
