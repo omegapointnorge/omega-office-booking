@@ -12,8 +12,8 @@ using server.Context;
 namespace server.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    [Migration("20231207142208_SampledataBookingDataFix")]
-    partial class SampledataBookingDataFix
+    [Migration("20240115143502_DeleteUserTable")]
+    partial class DeleteUserTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,14 +41,13 @@ namespace server.Migrations
                     b.Property<int>("SeatId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SeatId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
 
@@ -58,14 +57,14 @@ namespace server.Migrations
                             Id = 1,
                             BookingDateTime = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580),
                             SeatId = 1,
-                            UserId = 1
+                            UserId = "860849a4-f4b8-4566-8ed1-918cf3d41a92"
                         },
                         new
                         {
                             Id = 2,
                             BookingDateTime = new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580),
                             SeatId = 2,
-                            UserId = 2
+                            UserId = "639d660b-4724-407b-b05c-12b5f619f833"
                         });
                 });
 
@@ -106,6 +105,9 @@ namespace server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
 
@@ -119,144 +121,104 @@ namespace server.Migrations
                         new
                         {
                             Id = 1,
+                            IsAvailable = true,
                             RoomId = 1
                         },
                         new
                         {
                             Id = 2,
+                            IsAvailable = true,
                             RoomId = 1
                         },
                         new
                         {
                             Id = 3,
+                            IsAvailable = true,
                             RoomId = 1
                         },
                         new
                         {
                             Id = 4,
+                            IsAvailable = true,
                             RoomId = 1
                         },
                         new
                         {
                             Id = 5,
+                            IsAvailable = true,
                             RoomId = 1
                         },
                         new
                         {
                             Id = 6,
+                            IsAvailable = true,
                             RoomId = 1
                         },
                         new
                         {
                             Id = 7,
+                            IsAvailable = true,
                             RoomId = 1
                         },
                         new
                         {
                             Id = 8,
+                            IsAvailable = true,
                             RoomId = 1
                         },
                         new
                         {
                             Id = 9,
+                            IsAvailable = true,
                             RoomId = 1
                         },
                         new
                         {
                             Id = 10,
+                            IsAvailable = true,
                             RoomId = 1
                         },
                         new
                         {
                             Id = 11,
+                            IsAvailable = true,
                             RoomId = 2
                         },
                         new
                         {
                             Id = 12,
+                            IsAvailable = true,
                             RoomId = 2
                         },
                         new
                         {
                             Id = 13,
+                            IsAvailable = true,
                             RoomId = 2
                         },
                         new
                         {
                             Id = 14,
+                            IsAvailable = true,
                             RoomId = 2
                         },
                         new
                         {
                             Id = 15,
+                            IsAvailable = true,
                             RoomId = 2
-                        });
-                });
-
-            modelBuilder.Entity("server.Models.Domain.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "code_master@example.com",
-                            Name = "Code Master Flex",
-                            PhoneNumber = ""
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Email = "debug_diva@example.com",
-                            Name = "Debug Diva",
-                            PhoneNumber = ""
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Email = "debug_omacgi@example.com",
-                            Name = "Omcma Diva",
-                            PhoneNumber = ""
                         });
                 });
 
             modelBuilder.Entity("server.Models.Domain.Booking", b =>
                 {
-                    b.HasOne("server.Models.Domain.Seat", null)
+                    b.HasOne("server.Models.Domain.Seat", "Seat")
                         .WithMany("Bookings")
                         .HasForeignKey("SeatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("server.Models.Domain.User", null)
-                        .WithMany("Bookings")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Seat");
                 });
 
             modelBuilder.Entity("server.Models.Domain.Seat", b =>
@@ -274,11 +236,6 @@ namespace server.Migrations
                 });
 
             modelBuilder.Entity("server.Models.Domain.Seat", b =>
-                {
-                    b.Navigation("Bookings");
-                });
-
-            modelBuilder.Entity("server.Models.Domain.User", b =>
                 {
                     b.Navigation("Bookings");
                 });

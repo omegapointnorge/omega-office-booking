@@ -5,7 +5,6 @@ namespace server.Context
 {
     public class OfficeDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
         public DbSet<Seat> Seats { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Booking> Bookings { get; set; }
@@ -26,12 +25,6 @@ namespace server.Context
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Booking>()
-                .HasOne(booking => booking.User)
-                .WithMany(user => user.Bookings)
-                .HasForeignKey(booking => booking.UserId)
-                .IsRequired();
-
-            modelBuilder.Entity<Booking>()
                 .HasOne(booking => booking.Seat)
                 .WithMany(seat => seat.Bookings)
                 .HasForeignKey(booking => booking.SeatId)
@@ -44,28 +37,6 @@ namespace server.Context
 
             // End of Booking setup
 
-            // User setup
-            modelBuilder.Entity<User>()
-                .HasKey(user => user.Id);
-
-            modelBuilder.Entity<User>()
-                .Property(user => user.Id)
-                .ValueGeneratedOnAdd();
-            
-            modelBuilder.Entity<User>()
-                .Property(user => user.Name)
-                .IsRequired();
-
-            modelBuilder.Entity<User>()
-                .HasIndex(user => user.Email)
-                .IsUnique();
-
-            modelBuilder.Entity<User>()
-                .HasMany(user => user.Bookings)
-                .WithOne(booking => booking.User)
-                .HasPrincipalKey(user => user.Id);
-
-            // End of User setup
 
             // Seat setup
             modelBuilder.Entity<Seat>()

@@ -1,11 +1,8 @@
-using server.Models.DTOs;
+using server.Models.Domain;
 
 namespace server.Repository;
 
-public interface IRoomRepository
+public interface IRoomRepository : IRepository<Room>
 {
-    Task<List<RoomDto>> GetAllRooms();
-
-    Task<List<SeatDto>> GetAllSeatsForRoom(int roomId);
-
+    Task<List<Room>> GetRoomsAsync();
 }

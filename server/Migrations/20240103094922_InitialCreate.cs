@@ -30,8 +30,7 @@ namespace server.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -47,7 +46,8 @@ namespace server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoomId = table.Column<int>(type: "int", nullable: false)
+                    RoomId = table.Column<int>(type: "int", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,7 +66,7 @@ namespace server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SeatId = table.Column<int>(type: "int", nullable: false),
                     BookingDateTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
@@ -101,30 +101,31 @@ namespace server.Migrations
                 columns: new[] { "Id", "Email", "Name", "PhoneNumber" },
                 values: new object[,]
                 {
-                    { 1, "code_master@example.com", "Code Master Flex", "" },
-                    { 2, "debug_diva@example.com", "Debug Diva", "" }
+                    { "093071d6-9ae9-4aef-a318-178c5875ea27", "debug_omacgi@example.com", "Omcma Diva", "" },
+                    { "639d660b-4724-407b-b05c-12b5f619f833", "debug_diva@example.com", "Debug Diva", "" },
+                    { "860849a4-f4b8-4566-8ed1-918cf3d41a92", "code_master@example.com", "Code Master Flex", "" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Seats",
-                columns: new[] { "Id", "RoomId" },
+                columns: new[] { "Id", "IsAvailable", "RoomId" },
                 values: new object[,]
                 {
-                    { 1, 1 },
-                    { 2, 1 },
-                    { 3, 1 },
-                    { 4, 1 },
-                    { 5, 1 },
-                    { 6, 1 },
-                    { 7, 1 },
-                    { 8, 1 },
-                    { 9, 1 },
-                    { 10, 1 },
-                    { 11, 2 },
-                    { 12, 2 },
-                    { 13, 2 },
-                    { 14, 2 },
-                    { 15, 2 }
+                    { 1, true, 1 },
+                    { 2, true, 1 },
+                    { 3, true, 1 },
+                    { 4, true, 1 },
+                    { 5, true, 1 },
+                    { 6, true, 1 },
+                    { 7, true, 1 },
+                    { 8, true, 1 },
+                    { 9, true, 1 },
+                    { 10, true, 1 },
+                    { 11, true, 2 },
+                    { 12, true, 2 },
+                    { 13, true, 2 },
+                    { 14, true, 2 },
+                    { 15, true, 2 }
                 });
 
             migrationBuilder.InsertData(
@@ -132,8 +133,8 @@ namespace server.Migrations
                 columns: new[] { "Id", "BookingDateTime", "SeatId", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 11, 23, 9, 49, 39, 392, DateTimeKind.Local).AddTicks(6750), 1, 1 },
-                    { 2, new DateTime(2023, 11, 24, 9, 49, 39, 392, DateTimeKind.Local).AddTicks(6790), 2, 2 }
+                    { 1, new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580), 1, "860849a4-f4b8-4566-8ed1-918cf3d41a92" },
+                    { 2, new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580), 2, "639d660b-4724-407b-b05c-12b5f619f833" }
                 });
 
             migrationBuilder.CreateIndex(

@@ -1,23 +1,22 @@
+using server.Models.Domain;
+
 namespace server.Models.DTOs
 {
     public class BookingDto
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public int SeatId { get; set; }
-        public DateTime DateTime { get; set; }
+        public String UserId { get; set; }
+        public String UserName { get; set; }
 
-        public BookingDto(int id, int userId, int seatId, DateTime dateTime)
-        {
-            Id = id;
-            UserId = userId;
-            SeatId = seatId;
-            DateTime = dateTime;
-        }
-        public BookingDto(int userId, int seatId)
-        {
-            UserId = userId;
-            SeatId = seatId;
+        public int SeatId { get; set; }
+        public String BookingDateTime { get; set; }
+
+        public BookingDto(Booking booking) {
+            Id = booking.Id;
+            UserId = booking.UserId;
+            UserName = booking.UserName;
+            SeatId = booking.SeatId;
+            BookingDateTime = booking.BookingDateTime.ToUniversalTime().ToString("o");
         }
     }
 }

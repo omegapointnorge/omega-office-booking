@@ -12,13 +12,19 @@ Get the secrets from the keyvault and store them with:
 dotnet user-secrets set "AzureAd__ClientId" "XXXXXX.."
 dotnet user-secrets set "AzureAd__ClientSecret" "XXXXXX.."
 dotnet user-secrets set "AzureAd__TentanId" "XXXXXX.."
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Initial Catalog=OfficeBookingDB; Data Source=localhost,<Port_Number>; Persist Security Info=True;User ID=SA;Password= <Your_Password>; TrustServerCertificate=True""
-```
-Prerequisit of the this is that you have docker installed in your PC,
-When you first time run the docker, you can run the script named scriptDockerConnect.ps1. 
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Initial Catalog=OfficeBookingDB; Data Source=localhost,<Port_Number>; Persist Security Info=True;User ID=SA;Password= <Your_Password>; TrustServerCertificate=True"
 
-After the image is loaded, then you can run "docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=2Secure*Password2" -p 1450:1433 --name sqlserverdb -h mysqlserver -d mcr.microsoft.com/mssql/server:2019-latest". 
-Note: the port number 1450 need to match the number of your connection in Azure data studio. 
+For macbook user, the image addressen need to be the address for Mac. change mcr.microsoft.com/mssql/server:2019-latest in the following commands
+```
+Prerequisit of the this is that you have the latest version docker desktop installed on your PC. This version will include Docker compose, which is required. 
+Run the db by issuing the command 'docker compose up -d' in your terminal.
+
+Note: The port numbers exposed are set in the docker-compose.yml file like this:
+
+ports: 
+    - "1450:1433"
+
+The port to the left (1450 in this example) need to match the number of your connection in Azure data studio. 
 
 After the image is pulled and DB is connected, you can run the .Net cli "dotnet ef database update" for migration the database to your local machine.
 ##

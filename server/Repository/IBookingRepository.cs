@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
-using server.Models.DTOs;
+using server.Models.Domain;
 
 namespace server.Repository
 {
-    public interface IBookingRepository
+    public interface IBookingRepository : IRepository<Booking>
     {
-        Task<ActionResult> DeleteBooking(int id);
-        Task<List<BookingDto>> GetAllBookings();
-        Task<List<BookingDto>> GetAllBookingsForUser(int userid);
+        Task<List<Booking>> GetAllActiveBookings();
+        Task<List<Booking>> GetBookingsWithSeatForUserAsync(string userId);
     }
 }

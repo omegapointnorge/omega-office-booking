@@ -1,15 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
+using server.Models.DTOs.Internal;
+using server.Models.DTOs.Request;
 
 namespace server.Services
 {
     public interface IBookingService
     {
-        Task<ActionResult> DeleteBooking(int id);
+        Task<ActionResult> DeleteBookingAsync(int id);
 
-        Task<ActionResult<List<BookingDto>>> GetAllBookings();
+        Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings();
 
-        Task<ActionResult<List<BookingDto>>> GetAllBookingsForUser(int userid);
+        Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(string userid);
+
+        Task<ActionResult<BookingDto>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user);
+       
+
     }
 }
-

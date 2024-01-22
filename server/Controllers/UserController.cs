@@ -1,22 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using server.Models.DTOs;
-using server.Request;
-using server.Services;
 
 namespace server.Controllers;
-
-
 
 [ApiController]
 [Route("client/[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly IUserService _userService;
-
-    public UserController(IUserService userService)
-    {
-        _userService = userService;
-    }
         
     [HttpGet]
     [ProducesResponseType(typeof(UserInfo), StatusCodes.Status200OK)]
@@ -24,7 +13,9 @@ public class UserController : ControllerBase
     {
         var claimsToExpose = new List<string>()
         {
-            "name"
+            "http://schemas.microsoft.com/identity/claims/objectidentifier",
+            "name",
+            "preferred_username",
         };
 
         var user = new UserInfo(
@@ -36,30 +27,6 @@ public class UserController : ControllerBase
 
         return Ok(user);
     }
-
-    [HttpGet("Users")]
-    public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
-    {
-        var response = await _userService.GetAllUsers();
-        return new OkObjectResult(response);
-    }
-
-    /// <summary>
-    /// Handles HTTP POST requests to upsert a user booking.
-    /// </summary>
-    /// <param name="booking">The UserBookingRequest containing information about the user booking.</param>
-    /// <returns>
-    /// If successful, returns a 200 OK response with the updated UserDto.
-    /// If the input is invalid, returns a 400 Bad Request response with validation errors.
-    /// respons object contains the corrent booking information, not the booking histories
-    /// </returns>
-    [HttpPost("UpsertUserBooking")]
-    public async Task<ActionResult<UserDto>> UpsertUserBooking(UserBookingRequest booking)
-    {
-        var response = await _userService.InsertOrUpdateUsersBooking(booking);
-        return new OkObjectResult(response);
-    }
-
 }
 
 public record UserInfo(
