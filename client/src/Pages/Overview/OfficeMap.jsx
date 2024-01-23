@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
+import React, {useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from "react-router-dom";
 import { useAuthContext } from '../../api/useAuthContext';
 import {ReactComponent as ZoomOutIcon} from '../../assets/icons/zoom-out_outline.svg'
@@ -63,6 +63,28 @@ const OfficeMap = observer(({showSeatInfo}) => {
     const seatClicked = (clickEvent) => {
       showSeatInfo(clickEvent.target.id)
   }
+
+  const countAvailableSeats = (minSeatId, maxSeatId) => {
+    let availableSeats = 0;
+  
+    for (let seatId = minSeatId; seatId <= maxSeatId; seatId++) {
+      let isSeatAvailable = true;
+  
+      for (const booking of activeBookings) {
+        if (booking.seatId === seatId && isSameDate(booking.bookingDateTime, displayDate)) {
+          isSeatAvailable = false;
+          break;
+        }
+      }
+  
+      if (isSeatAvailable) {
+        availableSeats++;
+      }
+    }
+  
+    return availableSeats;
+  }
+
 
     //--------------- Zoom functionality ------------------
 
@@ -160,14 +182,29 @@ const OfficeMap = observer(({showSeatInfo}) => {
         </g>
         <g className={zoomStatus === "ZoomedOut" ? 'zoomed-out-room origin-[55%_90%]' : 'zoomed-in-room'} onClick={() => zoomToRoom("large-room")}>
           <path id="large-room" text="Large room" stroke="black" strokeWidth="3" fill={zoomStatus === "ZoomedIn" ? "ivory" : "gray"} d="m2963.3 2158.6-31.186-12.946v-51.276l0.7653-63.265-261.99 0.5102 1.5306-111.73-260.71-0.5102v-101.53h-259.18l2.0408-105.1-262.76 1.5306v-76.531h-165.31l-5.102 194.9 49.49 118.37 1.0204 203.06-52.551 159.18 131.12 27.551 909.69 267.35z"/>
-          <text x="1920" y="1950" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" fontSize="65" fontWeight="bolder" fontFamily="Arial">Large Room</text>
-          <text x="1920" y="2030" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" fontSize="55" fontWeight="bolder" fontFamily="Arial">Available Seats:</text>
+          <text x="2110" y="2040" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" stroke="black" strokeWidth="3" fontSize="105" fontWeight="bolder" fontFamily="Arial">:</text>
+          <text x="2180" y="2045" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" stroke="black" strokeWidth="3" fontSize="115" fontWeight="bolder" fontFamily="Arial">{countAvailableSeats(1,10)}/10</text>
+
+          <text x="2110" y="2240" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" stroke="black" strokeWidth="3" fontSize="105" fontWeight="bolder" fontFamily="Arial">:</text>
+          <text x="2180" y="2245" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" stroke="black" strokeWidth="3" fontSize="115" fontWeight="bolder" fontFamily="Arial">{10-countAvailableSeats(1,10)}/10</text>
+
+          <g className={zoomStatus === "ZoomedOut" ? '' : 'hidden'} stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="5">
+            <path className='seat-available' d="m1982 2069.1v8.8107a26.249 26.249 0 0 1-7.6907 18.566l-5.4332 5.4334h78.745l-5.4335-5.4334a26.249 26.249 0 0 1-7.691-18.566v-8.8107m52.497-104.99v85.308a19.686 19.686 0 0 1-19.686 19.686h-118.12a19.686 19.686 0 0 1-19.686-19.686v-85.308m157.49 0a19.686 19.686 0 0 0-19.686-19.686h-118.12a19.686 19.686 0 0 0-19.686 19.686m157.49 0v59.059a19.686 19.686 0 0 1-19.686 19.686h-118.12a19.686 19.686 0 0 1-19.686-19.686v-59.059"/>
+            <path className='seat-booked' d="m1982 2269.2v8.8108a26.249 26.249 0 0 1-7.6907 18.566l-5.4332 5.4334h78.745l-5.4335-5.4334a26.249 26.249 0 0 1-7.691-18.566v-8.8108m52.497-104.99v85.308a19.686 19.686 0 0 1-19.686 19.686h-118.12a19.686 19.686 0 0 1-19.686-19.686v-85.308m157.49 0a19.686 19.686 0 0 0-19.686-19.686h-118.12a19.686 19.686 0 0 0-19.686 19.686m157.49 0v59.059a19.686 19.686 0 0 1-19.686 19.686h-118.12a19.686 19.686 0 0 1-19.686-19.686v-59.059"/>
+          </g>
         </g>
+
         <g className={zoomStatus === "ZoomedOut" ? 'zoomed-out-room origin-[85%_20%]' : 'zoomed-in-room'} onClick={() => zoomToRoom('small-room')}>
           <path id="small-room" stroke="black" strokeWidth="3" fill={zoomStatus === "ZoomedIn" ? "ivory" : "gray"} d="m3406.1 1169.4 214.29-481.12-592.86-230.61-315.82 715.82z"/>
-          <text x="3020" y="730" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" fontSize="65" fontWeight="bolder" fontFamily="Arial">Small Room</text>
-          <text x="2960" y="810" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" fontSize="55" fontWeight="bolder" fontFamily="Arial">Available Seats:</text>
+          <text x="3160" y="750" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" stroke="black" strokeWidth="3" fontSize="105" fontWeight="bolder" fontFamily="Arial">:</text>
+          <text x="3230" y="755" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" stroke="black" strokeWidth="3" fontSize="115" fontWeight="bolder" fontFamily="Arial">{countAvailableSeats(11,15)}/5</text>
 
+          <text x="3160" y="950" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" stroke="black" strokeWidth="3" fontSize="105" fontWeight="bolder" fontFamily="Arial">:</text>
+          <text x="3230" y="955" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" stroke="black" strokeWidth="3" fontSize="115" fontWeight="bolder" fontFamily="Arial">{5-countAvailableSeats(11,15)}/5</text>
+          <g className={zoomStatus === "ZoomedOut" ? '' : 'hidden'} stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="5">
+            <path className='seat-available' d="m3037.7 769.2v8.8108a26.249 26.249 0 0 1-7.6907 18.566l-5.4332 5.4334h78.745l-5.4335-5.4334a26.249 26.249 0 0 1-7.691-18.566v-8.8108m52.497-104.99v85.308a19.686 19.686 0 0 1-19.686 19.686h-118.12a19.686 19.686 0 0 1-19.686-19.686v-85.308m157.49 0a19.686 19.686 0 0 0-19.686-19.686h-118.12a19.686 19.686 0 0 0-19.686 19.686m157.49 0v59.059a19.686 19.686 0 0 1-19.686 19.686h-118.12a19.686 19.686 0 0 1-19.686-19.686v-59.059"/>
+            <path className='seat-booked' d="m3037.7 969.1v8.8108a26.249 26.249 0 0 1-7.6907 18.566l-5.4332 5.4334h78.745l-5.4335-5.4334a26.249 26.249 0 0 1-7.691-18.566v-8.8108m52.497-104.99v85.308a19.686 19.686 0 0 1-19.686 19.686h-118.12a19.686 19.686 0 0 1-19.686-19.686v-85.308m157.49 0a19.686 19.686 0 0 0-19.686-19.686h-118.12a19.686 19.686 0 0 0-19.686 19.686m157.49 0v59.059a19.686 19.686 0 0 1-19.686 19.686h-118.12a19.686 19.686 0 0 1-19.686-19.686v-59.059"/>
+          </g>
         </g>
         {/* <g className={zoomStatus === "ZoomedOut" ? 'zoomed-out-room origin-[5%_45%]' : 'zoomed-in-room'} opacity="1.0">
           <path id="sales" stroke="black" strokeWidth="3" fill="gray" d="m112.43 963.79 41.366 644.88 561.8-5.3033-19.092-641.7z" onClick={() => zoomToRoom('sales')}/>
@@ -193,6 +230,7 @@ const OfficeMap = observer(({showSeatInfo}) => {
           <path id="9" className={getSeatClassName(9)} onClick={(clickEvent) => seatClicked(clickEvent)} d="m2651.5 2392 5.9477 1.7396a18.462 18.462 16.304 0 1 11.015 8.8576l2.5951 4.7405 15.548-53.157-4.7406 2.5951a18.462 18.462 16.304 0 1-14.052 1.5258l-5.9477-1.7396m-60.511-56.169 57.587 16.844a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-57.587-16.844m31.096-106.31a13.846 13.846 16.304 0 0-17.176 9.4023l-23.322 79.736a13.846 13.846 16.304 0 0 9.4024 17.176m31.096-106.31 39.868 11.661a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-39.868-11.661"/>
           <path id="10" className={getSeatClassName(10)} onClick={(clickEvent) => seatClicked(clickEvent)} d="m2614.9 2514.4 5.9477 1.7396a18.462 18.462 16.304 0 1 11.015 8.8576l2.5951 4.7405 15.548-53.157-4.7406 2.5951a18.462 18.462 16.304 0 1-14.052 1.5258l-5.9477-1.7396m-60.511-56.169 57.587 16.844a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-57.587-16.844m31.096-106.31a13.846 13.846 16.304 0 0-17.176 9.4023l-23.322 79.736a13.846 13.846 16.304 0 0 9.4024 17.176m31.096-106.31 39.868 11.661a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-39.868-11.661"/>
         </g>
+
       </svg>
 
 
