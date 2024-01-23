@@ -30,6 +30,7 @@ if (builder.Environment.IsProduction())
 }
 
 // Add services to the container.
+
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 .AddMicrosoftIdentityWebApp(options =>
 {
