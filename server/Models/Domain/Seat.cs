@@ -6,7 +6,7 @@ namespace server.Models.Domain
         public int RoomId { get; set; }
         public Boolean IsAvailable { get; set; }
         public List<Booking> Bookings { get; set; } = new List<Booking>();
-        
+
         public Seat(int id, int roomId, Boolean isAvailable)
         {
             Id = id;

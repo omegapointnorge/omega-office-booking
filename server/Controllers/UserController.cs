@@ -6,7 +6,7 @@ namespace server.Controllers;
 [Route("client/[controller]")]
 public class UserController : ControllerBase
 {
-        
+
     [HttpGet]
     [ProducesResponseType(typeof(UserInfo), StatusCodes.Status200OK)]
     public IActionResult GetCurrentUser()

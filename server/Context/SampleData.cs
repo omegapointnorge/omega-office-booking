@@ -12,12 +12,12 @@ namespace server.Context
             modelBuilder.Entity<Room>().HasData(new Room(2, "Lille Rommet"));
             // Sample seats
             // Generating Seats for room 1
-            for (int i = 1; i <= 10; i++) 
+            for (int i = 1; i <= 10; i++)
             {
-                modelBuilder.Entity<Seat>().HasData(new Seat(i, 1,true));
+                modelBuilder.Entity<Seat>().HasData(new Seat(i, 1, true));
             }
             // Generatings Seats for room 2
-            for (int i = 11; i <= 15; i++) 
+            for (int i = 11; i <= 15; i++)
             {
                 modelBuilder.Entity<Seat>().HasData(new Seat(i, 2, true));
             }
