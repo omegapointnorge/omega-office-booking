@@ -3,12 +3,16 @@ import { observer } from "mobx-react-lite";
 import BookingItem from "../../components/Bookings/BookingItem";
 import historyStore from "../../stores/HistoryStore";
 import MyDialog from "../../components/Dialog";
-import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Loading from "../../components/Loading";
 
 const ActiveBookings = observer(() => (
   <div className="flex flex-row gap-5">
-    <button onClick={() => historyStore.navigatePrevious()} className="opacity-0" disabled={true}>
+    <button
+      onClick={() => historyStore.navigatePrevious()}
+      className="opacity-0"
+      disabled={true}
+    >
       <IoIosArrowBack />
     </button>
     {historyStore.myActiveBookings.map((booking) => (
@@ -23,11 +27,15 @@ const ActiveBookings = observer(() => (
         }}
       ></BookingItem>
     ))}
-    <button onClick={() => historyStore.navigateNext()} className="opacity-0" disabled={true}>
+    <button
+      onClick={() => historyStore.navigateNext()}
+      className="opacity-0"
+      disabled={true}
+    >
       <IoIosArrowForward />
     </button>
     <MyDialog
-      title="Delete your Seat?"
+      title="Slett reservasjon?"
       open={historyStore.openDialog}
       handleClose={historyStore.handleCloseDialog}
       onClick={() => {
@@ -42,8 +50,8 @@ const PreviousBookings = observer(() => (
   <div className="flex flex-row gap-5">
     <button
       onClick={() => historyStore.navigatePrevious()}
-      className={`${historyStore.isFirstPage ? 'opacity-0' : 'opacity-100'}`}
-      disabled={historyStore.isFirstPage} 
+      className={`${historyStore.isFirstPage ? "opacity-0" : "opacity-100"}`}
+      disabled={historyStore.isFirstPage}
     >
       <IoIosArrowBack />
     </button>
@@ -58,7 +66,7 @@ const PreviousBookings = observer(() => (
     ))}
     <button
       onClick={() => historyStore.navigateNext()}
-      className={`${historyStore.isLastPage ? 'opacity-0' : 'opacity-100'}`}
+      className={`${historyStore.isLastPage ? "opacity-0" : "opacity-100"}`}
       disabled={historyStore.isLastPage}
     >
       <IoIosArrowForward />
@@ -66,30 +74,33 @@ const PreviousBookings = observer(() => (
   </div>
 ));
 
-
 const HistoryPage = observer(() => {
-    if (historyStore.isLoading) {
-        return <Loading/>
-    }
+  if (historyStore.isLoading) {
+    return <Loading />;
+  }
 
   if (historyStore.isEmpty) {
     return (
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto inset-0 outline-none focus:outline-none">
-        <Heading title="You dont have any bookings" />
+        <Heading title="Du har ingen reservasjoner" />
       </div>
     );
   }
 
   return (
     <div className="justify-center items-center flex flex-col inset-0">
-      <Heading title="Your bookings" />
+      <Heading title="Dine reservasjoner" />
       <div className="container mt-3">
         <div className="flex flex-col gap-4 mb-10">
-          <p className="text-left text-xl font-semibold heading mb-3 pl-11">ACTIVE BOOKINGS</p>
+          <p className="text-left text-xl font-semibold heading mb-3 pl-11">
+            AKTIVE RESERVASJONER
+          </p>
           <ActiveBookings />
         </div>
         <div className="flex flex-col gap-4">
-          <p className="text-left text-xl font-semibold heading mb-3 pl-11">PREVIOUS BOOKINGS</p>
+          <p className="text-left text-xl font-semibold heading mb-3 pl-11">
+            TIDLIGERE RESERVASJONER
+          </p>
           <PreviousBookings />
         </div>
       </div>

@@ -148,14 +148,15 @@ const OfficeMap = observer(({showSeatInfo}) => {
   return (
     <div className='relative'>
       <svg version="1.1" width="745" height="500" viewBox={currentViewBox} xmlns="http://www.w3.org/2000/svg">
-        <g opacity="1.0">
-          <path d="m897.96 1834.7 683.29-5.5963 38.242 3.6077 42.571 14.792 36.077 23.811 23.089 24.532 7.2154 9.38 9.7407 18.038 11.905 29.222 4.69 18.399 1.4431 172.81-51.229 167.4-675.36-128.79-1.0823-138.17-122.3 0.7216z" stroke="black" strokeWidth="3" fill="none"/>
-          <path d="m2200.7 845.46 632.73-4.9004-140.82 321.68-495.92 1.0204z" stroke="black" strokeWidth="3" fill="none"/>
-          <path d="m2187.9 846.18-1.0823 317.12-476.47 2.7725-1.2347-318.35z" stroke="black" strokeWidth="3" fill="none"/>
-          <path d="m385.37 1615.7 496.39-2.8284 14.738 430.59-484.5 4z" stroke="black" strokeWidth="3" fill="none"/>
-          <path d="m663.97 283.37 32.652 666.25-584.9 2.8478-19.445-283.9 237.23-0.35355-19.445-384.67z" stroke="black" strokeWidth="3" fill="none"/>
-          <path d="m1539.4 642.76 651.78 0.53033 4.0659-362.75-660.44 2.2981z" stroke="black" strokeWidth="3" fill="none"/>
-          <path d="m1695.4 1811.7 2.125-972.95 1138.5-5.25 167.08-378.12-504.17-178.19-294.86 1.4142-1.4142 369.82-673.17 2.8284-6.364-368.4-847.82-2.1213 48.083 1321.6 165.46-0.7071 6.364 217.79z" stroke="black" strokeWidth="3" fill="none"/>
+        <g opacity="1.0" stroke="black" strokeWidth="3" fill="none">
+          <path d="m897.96 1834.7 683.29-5.5963 38.242 3.6077 42.571 14.792 36.077 23.811 23.089 24.532 7.2154 9.38 9.7407 18.038 11.905 29.222 4.69 18.399 1.4431 172.81-51.229 167.4-675.36-128.79-1.0823-138.17-122.3 0.7216z"/>
+          <path d="m2200.7 845.46 632.73-4.9004-140.82 321.68-495.92 1.0204z"/>
+          <path d="m2187.9 846.18-1.0823 317.12-476.47 2.7725-1.2347-318.35z"/>
+          <path d="m385.37 1615.7 496.39-2.8284 14.738 430.59-484.5 4z"/>
+          <path d="m663.97 283.37 32.652 666.25-584.9 2.8478-19.445-283.9 237.23-0.35355-19.445-384.67z"/>
+          <path d="m1539.4 642.76 651.78 0.53033 4.0659-362.75-660.44 2.2981z" />
+          <path d="m1695.4 1811.7 2.125-972.95 1138.5-5.25 167.08-378.12-504.17-178.19-294.86 1.4142-1.4142 369.82-673.17 2.8284-6.364-368.4-847.82-2.1213 48.083 1321.6 165.46-0.7071 6.364 217.79z" />
+          <path d="m112.43 963.79 41.366 644.88 561.8-5.3033-19.092-641.7z"/>
         </g>
         <g className={zoomStatus === "ZoomedOut" ? 'zoomed-out-room origin-[55%_90%]' : 'zoomed-in-room'} onClick={() => zoomToRoom("large-room")}>
           <path id="large-room" text="Large room" stroke="black" strokeWidth="3" fill={zoomStatus === "ZoomedIn" ? "ivory" : "gray"} d="m2963.3 2158.6-31.186-12.946v-51.276l0.7653-63.265-261.99 0.5102 1.5306-111.73-260.71-0.5102v-101.53h-259.18l2.0408-105.1-262.76 1.5306v-76.531h-165.31l-5.102 194.9 49.49 118.37 1.0204 203.06-52.551 159.18 131.12 27.551 909.69 267.35z"/>
@@ -168,11 +169,11 @@ const OfficeMap = observer(({showSeatInfo}) => {
           <text x="2960" y="810" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" fontSize="55" fontWeight="bolder" fontFamily="Arial">Available Seats:</text>
 
         </g>
-        <g className={zoomStatus === "ZoomedOut" ? 'zoomed-out-room origin-[5%_45%]' : 'zoomed-in-room'} opacity="1.0">
+        {/* <g className={zoomStatus === "ZoomedOut" ? 'zoomed-out-room origin-[5%_45%]' : 'zoomed-in-room'} opacity="1.0">
           <path id="sales" stroke="black" strokeWidth="3" fill="gray" d="m112.43 963.79 41.366 644.88 561.8-5.3033-19.092-641.7z" onClick={() => zoomToRoom('sales')}/>
           <text x="300" y="1100" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" fontSize="65" fontWeight="bolder" fontFamily="Arial">Sales</text>
           <text x="220" y="1180" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" fontSize="55" fontWeight="bolder" fontFamily="Arial">Available Seats:</text>
-        </g>
+        </g> */}
         <g className={zoomStatus === "ZoomedIn" ? '' : "hidden"} stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="5">
           <path id="11" className={getSeatClassName(11)} onClick={(clickEvent) => seatClicked(clickEvent)} d="m3368.5 1006.4-2.4516 5.6913a18.462 18.462 23.305 0 1-10.134 9.853l-5.0215 1.9979 50.866 21.911-1.998-5.0216a18.462 18.462 23.305 0 1 0.1983-14.133l2.4516-5.6913m63.126-53.214-23.737 55.105a13.846 13.846 23.305 0 1-18.194 7.2387l-76.299-32.867a13.846 13.846 23.305 0 1-7.2386-18.194l23.737-55.105m101.73 43.823a13.846 13.846 23.305 0 0-7.2386-18.194l-76.299-32.867a13.846 13.846 23.305 0 0-18.194 7.2387m101.73 43.823-16.434 38.149a13.846 13.846 23.305 0 1-18.194 7.2387l-76.299-32.867a13.846 13.846 23.305 0 1-7.2386-18.194l16.434-38.15"/>
           <path id="12" className={getSeatClassName(12)} onClick={(clickEvent) => seatClicked(clickEvent)} d="m3489.5 824.32 2.5992-5.6254a18.462 18.462 24.799 0 1 10.388-9.5854l5.0719-1.8662-50.277-23.23 1.8663 5.072a18.462 18.462 24.799 0 1-0.5667 14.123l-2.5992 5.6254m-64.492 51.549 25.166-54.467a13.846 13.846 24.799 0 1 18.377-6.7618l75.416 34.846a13.846 13.846 24.799 0 1 6.7616 18.377l-25.166 54.467m-100.55-46.461a13.846 13.846 24.799 0 0 6.7617 18.377l75.416 34.846a13.846 13.846 24.799 0 0 18.377-6.7617m-100.55-46.461 17.423-37.708a13.846 13.846 24.799 0 1 18.377-6.7618l75.416 34.846a13.846 13.846 24.799 0 1 6.7617 18.377l-17.423 37.708"/>
