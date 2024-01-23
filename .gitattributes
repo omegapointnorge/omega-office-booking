@@ -3,7 +3,7 @@
 
 # Explicitly declare text files you want to always be normalized and converted
 # to native line endings on checkout.
-*.cs text
+*.cs text eol=crlf
 *.sln text eol=crlf
 *.csproj text eol=crlf
 
