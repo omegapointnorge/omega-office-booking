@@ -8,7 +8,6 @@ namespace server.Models.DTOs
         public int Id { get; set; }
         public string Name { get; set; }
         public List<SeatDto>? Seats { get; set; }
-
         public RoomDto(int id, string name, List<Seat>? seats)
         {
             Id = id;
