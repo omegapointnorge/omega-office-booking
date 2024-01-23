@@ -47,7 +47,7 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
-      # - name: Upload EF migration script artifact for deployment job
+      # - name: Upload EF migration   artifact for deployment job
       #   if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
       #   uses: actions/upload-artifact@v3
       #   with:
