@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import bookingStore from '../../stores/BookingStore';
 
-const SwitchButton = observer(() => {
+const DateSwitchButton = observer(() => {
     const { displayDate } = bookingStore
 
     const today = new Date();
@@ -10,7 +10,7 @@ const SwitchButton = observer(() => {
     const getNextWorkday = () => {
       const nextDay = new Date();
       nextDay.setDate(nextDay.getDate() + 1);
-      
+
       while (nextDay.getDay() === 0 || nextDay.getDay() === 6) {
           nextDay.setDate(nextDay.getDate() + 1);
       }
@@ -19,6 +19,20 @@ const SwitchButton = observer(() => {
   }
 
   const nextWorkday = getNextWorkday()
+
+  const formatDate = (date) => {
+    const days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
+    
+    const dayOfWeek = days[date.getDay()];
+    const dayOfMonth = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // +1 because getMonth() returns 0-11
+
+    return (
+      <span>
+        <strong>{dayOfWeek}</strong> <span style={{ fontSize: 'smaller' }}>({dayOfMonth}.{month})</span>
+      </span>
+    );
+}
 
 
     const handleDateChange = (datePressed) => {
@@ -47,7 +61,7 @@ const SwitchButton = observer(() => {
         }`}
         onClick={() => handleDateChange('today')}
       >
-        I dag
+      {formatDate(today)}
       </button>
       <button
         className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
@@ -55,10 +69,10 @@ const SwitchButton = observer(() => {
         }`}
         onClick={() => handleDateChange('nextWorkDay')}
       >
-        I morgen
+        {formatDate(nextWorkday)}
       </button>
     </div>
   );
 });
 
-export default SwitchButton;
+export default DateSwitchButton;
