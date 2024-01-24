@@ -11,7 +11,7 @@ namespace server.Services
     public class BookingService : IBookingService
     {
         readonly IBookingRepository _bookingRepository;
-        private const int SameDayCutoffHour = 16;
+        private const int SameDayCutoffHour = 11;
 
 
         public BookingService(IBookingRepository bookingRepository)
@@ -96,7 +96,7 @@ namespace server.Services
 
         private static string ValidateBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
         {
-            if (false && DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
+            if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
             {
                 return "Booking date exceeds the latest allowed booking date.";
             }
@@ -128,7 +128,8 @@ namespace server.Services
 
         private static DateOnly GetLatestAllowedBookingDate()
         {
-            DateTime now = DateTime.Now;
+            TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+            DateTime now = TimeZoneInfo.ConvertTime(DateTime.Now, targetTimeZone);
             DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(now);
             TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
 
