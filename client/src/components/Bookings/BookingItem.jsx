@@ -21,6 +21,7 @@ const BookingItem = ({onClick, bookingDateTime, seatId, showDeleteButton, roomId
                   </p>
               </div>
               <div className="flex items-center">
+                <button>
                   <MdDelete
                       onClick={onClick}
                       color="black"
@@ -29,6 +30,7 @@ const BookingItem = ({onClick, bookingDateTime, seatId, showDeleteButton, roomId
                       alt=""
                       disabled={!showDeleteButton}
                   />
+                  </button>
               </div>
           </div>
       </li>
