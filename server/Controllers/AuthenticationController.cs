@@ -16,7 +16,7 @@ public class AuthenticationController : Controller
     {
         var redirectUri = !string.IsNullOrEmpty(returnUrl) ? returnUrl : "/";
         var properties = new AuthenticationProperties { RedirectUri = redirectUri };
-        
+
         return Challenge(properties);
     }
 
@@ -24,7 +24,7 @@ public class AuthenticationController : Controller
     [HttpGet("Logout")]
     public async Task Logout()
     {
-        
+
         await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme, new AuthenticationProperties
         {
             RedirectUri = "/",
