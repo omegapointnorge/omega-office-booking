@@ -11,9 +11,9 @@ namespace server.Context
 
         public OfficeDbContext(DbContextOptions options) : base(options)
         {
-  
+
         }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Booking setup
@@ -66,20 +66,20 @@ namespace server.Context
             modelBuilder.Entity<Room>()
                 .Property(room => room.Id)
                 .ValueGeneratedOnAdd();
-            
+
             modelBuilder.Entity<Room>()
                 .Property(seat => seat.Name)
                 .IsRequired();
-            
+
             modelBuilder.Entity<Room>()
                 .HasMany(room => room.Seats)
                 .WithOne()
                 .HasForeignKey(seat => seat.RoomId);
-            
+
             // End of Room setup
 
             SampleData.CreateSampleData(modelBuilder);
         }
-        
+
     }
 }
