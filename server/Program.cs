@@ -1,15 +1,15 @@
+using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Identity.Web;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using server.Context;
-using Azure.Identity;
 using server.Repository;
 using server.Services;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,16 +46,16 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     cookieOptions.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     cookieOptions.Cookie.SameSite = SameSiteMode.None;
 });
- builder.Services.AddAuthorization(options =>
- {
-     var defaultPolicy = new AuthorizationPolicyBuilder()
+builder.Services.AddAuthorization(options =>
+{
+    var defaultPolicy = new AuthorizationPolicyBuilder()
          .RequireAuthenticatedUser()
          .Build();
 
-     options.AddPolicy("AuthenticatedUser", defaultPolicy);
-     options.DefaultPolicy = defaultPolicy;
-     options.FallbackPolicy = defaultPolicy;
- });
+    options.AddPolicy("AuthenticatedUser", defaultPolicy);
+    options.DefaultPolicy = defaultPolicy;
+    options.FallbackPolicy = defaultPolicy;
+});
 
 builder.Services.AddControllersWithViews();
 
@@ -78,7 +78,7 @@ builder.Services.AddDbContext<OfficeDbContext>(options =>
     SqlAuthenticationProvider.SetProvider(
         SqlAuthenticationMethod.ActiveDirectoryManagedIdentity,
         new server.Helpers.AzureSqlAuthProvider());
-        options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
+    options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

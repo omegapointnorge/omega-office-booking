@@ -128,7 +128,8 @@ namespace server.Services
 
         private static DateOnly GetLatestAllowedBookingDate()
         {
-            DateTime now = DateTime.Now;
+            TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+            DateTime now = TimeZoneInfo.ConvertTime(DateTime.Now, targetTimeZone);
             DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(now);
             TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
 

@@ -14,7 +14,7 @@ namespace server.Services
         Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(string userid);
 
         Task<ActionResult<BookingDto>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user);
-       
+
 
     }
 }

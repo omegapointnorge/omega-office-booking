@@ -37,10 +37,10 @@ namespace server.Controllers
         {
             try
             {
-                    var user = GetUser();
-                    var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
+                var user = GetUser();
+                var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
 
-                    return CreatedAtRoute(null, booking);
+                return CreatedAtRoute(null, booking);
             }
             catch (Exception ex)
             {
@@ -55,10 +55,10 @@ namespace server.Controllers
         {
             try
             {
-                    var user = GetUser();
-                    var result = await _bookingService.GetAllBookingsForUser(user.UserId);
-                       
-                        return new OkObjectResult(result.Value);
+                var user = GetUser();
+                var result = await _bookingService.GetAllBookingsForUser(user.UserId);
+
+                return new OkObjectResult(result.Value);
             }
             catch (Exception ex)
             {

@@ -11,7 +11,8 @@ namespace server.Models.DTOs
         public int SeatId { get; set; }
         public String BookingDateTime { get; set; }
 
-        public BookingDto(Booking booking) {
+        public BookingDto(Booking booking)
+        {
             Id = booking.Id;
             UserId = booking.UserId;
             UserName = booking.UserName;
