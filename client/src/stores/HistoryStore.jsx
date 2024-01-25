@@ -1,5 +1,6 @@
 import {makeAutoObservable} from "mobx";
-import Booking, {Room} from "../domain/booking";
+import Booking from "../domain/booking";
+import Room from "../domain/room"
 import ApiService from "./ApiService.jsx";
 import bookingStore from "./BookingStore";
 
