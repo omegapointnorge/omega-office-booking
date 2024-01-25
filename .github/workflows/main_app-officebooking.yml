@@ -55,9 +55,11 @@ jobs:
   deploy:
     runs-on: windows-latest
     needs: build
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
     environment:
       name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
 
     steps:
       - name: Download artifact from build job
