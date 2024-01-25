@@ -1,9 +1,8 @@
 import './index.css';
-import Routers from "./Routes/Routers";
-
+import Routers from "./core/routes/Routers";
 import React from "react";
 import { Navbar } from "./components/Navbar/Navbar";
-import { useAuthContext } from "./api/useAuthContext";
+import { useAuthContext } from "./core/auth/useAuthContext";
 import { Toaster } from "react-hot-toast";
 export default function App() {
     
