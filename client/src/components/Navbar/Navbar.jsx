@@ -17,7 +17,7 @@ export const Navbar = () => {
           }}
         />
         <NavbarItem
-          label="Reservasjon"
+          label="Reservasjoner"
           onClick={() => {
             navigate("/history");
           }}
