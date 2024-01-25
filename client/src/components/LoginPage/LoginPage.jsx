@@ -1,9 +1,9 @@
-import Heading from "../../components/Heading";
-import Button from "../../components/Button";
+import Heading from "../Common/Heading";
+import Button from "../Common/Button";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuthContext } from "../../api/useAuthContext";
+import { useAuthContext } from "../../core/auth/useAuthContext";
 import { useEffect } from "react";
-import { LogoBig } from "../../components/Navbar/Logo";
+import { NavbarLogoBig } from "../Navbar/NavbarLogo/NavbarLogo";
 import "../../index.css";
 
 const LoginPage = () => {
@@ -29,7 +29,7 @@ const LoginPage = () => {
             className="translate h-full lg:h-auto md:h-auto border-0 relative 
                 flex flex-col w-full  outline-none focus:outline-none my-48"
           >
-            <LogoBig />
+            <NavbarLogoBig />
             {/* HEADER */}
             <div>
               <Heading title="Velkommen til kontorbooking" />

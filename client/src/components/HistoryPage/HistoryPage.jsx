@@ -1,10 +1,10 @@
-import Heading from "../../components/Heading";
+import Heading from "../Common/Heading";
 import { observer } from "mobx-react-lite";
-import BookingItem from "../../components/Bookings/BookingItem";
-import historyStore from "../../stores/HistoryStore";
-import MyDialog from "../../components/Dialog";
+import BookingItem from "./HistoryBookingItem/HistoryBookingItem";
+import historyStore from "../../state/stores/HistoryStore";
+import MyDialog from "../Common/Dialog";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import Loading from "../../components/Loading";
+import Loading from "../Common/Loading";
 
 const ActiveBookings = observer(() => (
   <div className="flex flex-row gap-5">

@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router-dom";
-import { IsAuthenticated } from "../Pages/Login/IsAuthenticated";
-import LoginPage from "../Pages/Login/LoginPage";
-import OverviewPage from "../Pages/Overview/OverviewPage";
+import { IsAuthenticated } from "../auth/IsAuthenticated";
+import LoginPage from "../../components/LoginPage/LoginPage";
+import OverviewPage from "../../components/OverviewPage/OverviewPage";
 import { ProtectedRoute } from "./ProtectedRoute";
-import HistoryPage from "../Pages/History/HistoryPage";
+import HistoryPage from "../../components/HistoryPage/HistoryPage";
 
 const Routers = () => {
   return (

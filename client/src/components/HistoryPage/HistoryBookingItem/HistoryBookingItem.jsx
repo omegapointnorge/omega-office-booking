@@ -1,7 +1,7 @@
 import { MdDelete } from "react-icons/md";
-import BookingSvg from "./BookingSvg";
+import BookingSvg from "./HistoryBookingSvg";
 
-const BookingItem = ({
+const HistoryBookingItem = ({
   onClick,
   bookingDateTime,
   seatId,
@@ -39,4 +39,4 @@ const BookingItem = ({
   );
 };
 
-export default BookingItem;
+export default HistoryBookingItem;

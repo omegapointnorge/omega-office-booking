@@ -1,6 +1,6 @@
 import React from 'react';
 
-const BookingSvg = ({ highlightedId }) => {
+const HistoryBookingSvg = ({ highlightedId }) => {
 
     return (
         <svg version="1.1" viewBox="0 0 3725.3 2712" xmlns="http://www.w3.org/2000/svg">
@@ -26,4 +26,4 @@ const BookingSvg = ({ highlightedId }) => {
     );
 };
 
-export default BookingSvg;
+export default HistoryBookingSvg;

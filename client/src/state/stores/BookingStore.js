@@ -1,8 +1,8 @@
 import { makeAutoObservable } from "mobx";
-import { CreateBookingRequest } from "../domain/booking";
-import Booking from '../domain/booking';
+import { CreateBookingRequest } from "../../models/booking";
+import Booking from '../../models/booking';
 import toast from "react-hot-toast";
-import ApiService from "./ApiService.jsx";
+import ApiService from "../../services/ApiService.js";
 import historyStore from "./HistoryStore";
 
 class BookingStore {

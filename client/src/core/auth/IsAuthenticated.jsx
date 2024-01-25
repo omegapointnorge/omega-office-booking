@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "../../api/useAuthContext";
+import { useAuthContext } from "./useAuthContext";
 import { useEffect } from "react";
-import Loading from "../../components/Loading";
+import Loading from "../../components/Common/Loading";
 
 export const IsAuthenticated = () => {
   const navigate = useNavigate();

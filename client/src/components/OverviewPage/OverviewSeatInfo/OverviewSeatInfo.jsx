@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { observer } from "mobx-react-lite";
-import bookingStore from "../../stores/BookingStore";
-import Booking, { DeleteBookingRequest } from "../../domain/booking";
-import { useAuthContext } from "../../api/useAuthContext";
+import bookingStore from "../../../state/stores/BookingStore";
+import Booking, { DeleteBookingRequest } from "../../../models/booking";
+import { useAuthContext } from "../../../core/auth/useAuthContext";
 
 const RECAPTCHA_SITE_KEY = "6Lc1tV8pAAAAABKV5g3LrYZNzUx1KGQkYHR-hSzo";
 
-const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
+const OverviewSeatInfo = observer(({ onClose, selectedSeatId }) => {
   const { user } = useAuthContext() ?? {};
 
   const userId = user?.claims?.find(
@@ -147,4 +147,4 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
   );
 });
 
-export default SeatInfoModal;
+export default OverviewSeatInfo;

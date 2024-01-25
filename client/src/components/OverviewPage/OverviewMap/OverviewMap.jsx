@@ -1,13 +1,13 @@
 import React, {useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from "react-router-dom";
-import { useAuthContext } from '../../api/useAuthContext';
-import {ReactComponent as ZoomOutIcon} from '../../assets/icons/zoom-out_outline.svg'
+import { useAuthContext } from '../../../core/auth/useAuthContext';
+import {ReactComponent as ZoomOutIcon} from '../../../shared/assets/icons/zoom-out_outline.svg'
 import { observer } from 'mobx-react-lite';
-import bookingStore from '../../stores/BookingStore';
-import './OfficeMap.css'
+import bookingStore from '../../../state/stores/BookingStore';
+import './OverviewMap.css'
 
 
-const OfficeMap = observer(({showSeatInfo}) => {
+const OverviewMap = observer(({showSeatInfo}) => {
 
     const { user } = useAuthContext() ?? {};
     const { activeBookings, displayDate } = bookingStore
@@ -254,4 +254,4 @@ const OfficeMap = observer(({showSeatInfo}) => {
   );
 });
 
-export default OfficeMap;
+export default OverviewMap;

@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
-import Heading from '../../components/Heading';
-import { useAuthContext } from '../../api/useAuthContext';
+import Heading from '../Common/Heading';
+import { useAuthContext } from '../../core/auth/useAuthContext';
 import { observer } from 'mobx-react-lite';
-import OfficeMap from './OfficeMap'; 
-import SeatInfoModal from './SeatInfoModal'; 
-import DateSwitchButton from './DateSwitchButton';
+import OverviewMap from './OverviewMap/OverviewMap'; 
+import SeatInfo from './OverviewSeatInfo/OverviewSeatInfo'; 
+import DateSwitchButton from './OverviewDateSwitchButton/OverviewDateSwitchButton';
 
 
 const OverviewPage = observer(() => {
@@ -36,11 +36,11 @@ const OverviewPage = observer(() => {
           <Heading title={welcomeTitle} subTitle={subTitle} />
           <DateSwitchButton />
           <div className="flex flex-row gap-24">
-            <OfficeMap showSeatInfo={showSeatInfo}/>
+            <OverviewMap showSeatInfo={showSeatInfo}/>
           </div>
         </div>
       </div>
-      {showModal && <SeatInfoModal onClose={() => setShowModal(false)} selectedSeatId={selectedSeatId}/>}
+      {showModal && <SeatInfo onClose={() => setShowModal(false)} selectedSeatId={selectedSeatId}/>}
     </>
   );
 });
