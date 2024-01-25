@@ -94,7 +94,7 @@ namespace server.Services
             }
         }
 
-        private static string ValidateBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
+        public static string ValidateBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
         {
             if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
             {
