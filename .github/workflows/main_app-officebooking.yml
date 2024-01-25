@@ -4,7 +4,13 @@
 name: Build and deploy ASP.Net Core app to Azure Web App - app-officebooking
 
 on:
-  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - closed
+    branches:
+      - main
 
 jobs:
   build:
@@ -49,6 +55,7 @@ jobs:
   deploy:
     runs-on: windows-latest
     needs: build
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
     environment:
       name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
