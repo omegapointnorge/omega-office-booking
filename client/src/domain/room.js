@@ -1,3 +1,5 @@
+import Seat from "./seat";
+
 export default class Room {
   constructor(id = null, name = null, seats = []) {
       this.id = id;
