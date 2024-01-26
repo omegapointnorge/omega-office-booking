@@ -57,6 +57,21 @@ public class BookingServiceValidationTests
     }
 
     [Fact]
+    public void ValidateBookingRequest_UserAlreadyBookedForDay_ReturnsErrorMessage()
+    {
+        // Arrange
+        var bookingRequest = GetBookingRequest();
+        var bookingList = new List<Booking> { new Booking { BookingDateTime = DateTime.Now, UserId = "testUser" } };
+        var userId = "testUser";
+
+        // Act
+        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userId);
+
+        // Assert
+        Assert.Equal("User has already booked for the specified day.", result.First());
+    }
+
+    [Fact]
     public void ValidateBookingRequest_InvalidTimeAndSeatAlreadyBooked_ReturnsErrorMessages()
     {
         // Arrange
