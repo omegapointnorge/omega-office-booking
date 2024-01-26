@@ -85,7 +85,7 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
           {selectedBooking.id === null && (
             <div>
               <ReCAPTCHA
-                sitekey="6LcuTF0pAAAAALDOXO-6IybXim3YDu-S7uo9uGi1" // Replace with your reCAPTCHA site key
+                sitekey="6LdoUF0pAAAAAFeY4G_SGfKlRx53ITsl45p8n3Cp" // Replace with your reCAPTCHA site key
                 onChange={(value) => setRecaptchaValue(value)}
               />
               <button
