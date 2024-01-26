@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { observer } from "mobx-react-lite";
+import ReCAPTCHA from "react-google-recaptcha";
 import bookingStore from "../../stores/BookingStore";
 import Booking, { DeleteBookingRequest } from "../../domain/booking";
 import { useAuthContext } from "../../api/useAuthContext";
 
 const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
   const { user } = useAuthContext() ?? {};
+  const [recaptchaValue, setRecaptchaValue] = useState(null);
 
   const userId = user?.claims?.find(
     (claim) =>
       claim.key ===
-      "http://schemas.microsoft.com/identity/claims/objectidentifier",
+      "http://schemas.microsoft.com/identity/claims/objectidentifier"
   )?.value;
 
   const { activeBookings, displayDate } = bookingStore;
@@ -20,7 +22,7 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
     const foundBooking = activeBookings.find(
       (booking) =>
         booking.seatId === selectedSeatId &&
-        isSameDate(displayDate, booking.bookingDateTime),
+        isSameDate(displayDate, booking.bookingDateTime)
     );
     if (foundBooking) {
       setSelectedBooking(foundBooking);
@@ -36,6 +38,13 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
   };
 
   const handleBook = async () => {
+    // Check if reCAPTCHA is validated
+    if (!recaptchaValue) {
+      // You can handle the case where reCAPTCHA is not validated
+      console.error("reCAPTCHA validation failed");
+      return;
+    }
+
     await bookingStore.createBooking(selectedSeatId);
     onClose();
   };
@@ -74,12 +83,18 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
             </button>
           )}
           {selectedBooking.id === null && (
-            <button
-              onClick={handleBook}
-              className="px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-            >
-              Reserver sete
-            </button>
+            <div>
+              <ReCAPTCHA
+                sitekey="6LcuTF0pAAAAALDOXO-6IybXim3YDu-S7uo9uGi1" // Replace with your reCAPTCHA site key
+                onChange={(value) => setRecaptchaValue(value)}
+              />
+              <button
+                onClick={handleBook}
+                className="px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              >
+                Reserver sete
+              </button>
+            </div>
           )}
         </div>
       );
