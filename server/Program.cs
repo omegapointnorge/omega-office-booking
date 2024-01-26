@@ -44,7 +44,7 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     cookieOptions.Cookie.HttpOnly = true;
     cookieOptions.Cookie.IsEssential = true;
     cookieOptions.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    cookieOptions.Cookie.SameSite = SameSiteMode.None;
+    cookieOptions.Cookie.SameSite = SameSiteMode.Lax;
 });
 builder.Services.AddAuthorization(options =>
 {
