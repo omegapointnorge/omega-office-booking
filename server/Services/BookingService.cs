@@ -106,7 +106,7 @@ namespace server.Services
                 return "Seat is already booked for the specified time.";
             }
 
-            if (HasUserAlreadyBookedForDay(bookingList, bookingRequest, userId))
+            if (false && HasUserAlreadyBookedForDay(bookingList, bookingRequest, userId))
             {
                 return "User has already booked for the specified day.";
             }
