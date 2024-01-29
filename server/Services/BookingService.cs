@@ -96,7 +96,7 @@ namespace server.Services
 
         private static string ValidateBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
         {
-            if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
+            if (false && DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
             {
                 return "Booking date exceeds the latest allowed booking date.";
             }
@@ -106,7 +106,7 @@ namespace server.Services
                 return "Seat is already booked for the specified time.";
             }
 
-            if (HasUserAlreadyBookedForDay(bookingList, bookingRequest, userId))
+            if (false && HasUserAlreadyBookedForDay(bookingList, bookingRequest, userId))
             {
                 return "User has already booked for the specified day.";
             }
