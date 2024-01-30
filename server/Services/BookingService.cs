@@ -12,6 +12,7 @@ namespace server.Services
     {
         readonly IBookingRepository _bookingRepository;
         private const int SameDayCutoffHour = 16;
+        private const string EventUserName = "Event";
 
 
         public BookingService(IBookingRepository bookingRepository)
@@ -62,7 +63,7 @@ namespace server.Services
                         var booking = new Booking
                         {
                             UserId = user.UserId,
-                            UserName = user.UserName,
+                            UserName = EventUserName,
                             SeatId = seat,
                             BookingDateTime = bookingRequest.BookingDateTime
                         };
@@ -77,7 +78,7 @@ namespace server.Services
                         await _bookingRepository.AddAsync(booking);
                         bookingListDto.Add(new BookingDto(booking));
                     }
-
+                    // only save repository once
                     await _bookingRepository.SaveAsync();
 
                 }
