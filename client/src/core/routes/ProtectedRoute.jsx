@@ -1,5 +1,5 @@
-import { useAuthContext } from "../auth/useAuthContext";
-import Heading from "../../components/Common/Heading";
+import { useAuthContext } from "@auth/useAuthContext";
+import Heading from "@common-components/Heading";
 
 export const ProtectedRoute = ({ outlet }) => {
   const context = useAuthContext();

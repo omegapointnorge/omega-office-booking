@@ -1,10 +1,10 @@
-import Heading from "../Common/Heading";
-import Button from "../Common/Button";
+import Heading from "@common-components/Heading";
+import Button from "@common-components/Button";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuthContext } from "../../core/auth/useAuthContext";
+import { useAuthContext } from "@auth/useAuthContext";
 import { useEffect } from "react";
-import { NavbarLogoBig } from "../Navbar/NavbarLogo/NavbarLogo";
-import "../../index.css";
+import { NavbarLogoBig } from "@components/Navbar/NavbarLogo/NavbarLogo";
+import "@/index.css";
 
 const LoginPage = () => {
   const LoginUrl = "/api/Account/Login";

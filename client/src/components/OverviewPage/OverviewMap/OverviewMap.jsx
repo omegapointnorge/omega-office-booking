@@ -1,9 +1,9 @@
 import React, {useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from "react-router-dom";
-import { useAuthContext } from '../../../core/auth/useAuthContext';
-import {ReactComponent as ZoomOutIcon} from '../../../shared/assets/icons/zoom-out_outline.svg'
+import { useAuthContext } from '@auth/useAuthContext';
+import {ReactComponent as ZoomOutIcon} from '@assets/icons/zoom-out_outline.svg'
 import { observer } from 'mobx-react-lite';
-import bookingStore from '../../../state/stores/BookingStore';
+import bookingStore from '@stores/BookingStore';
 import './OverviewMap.css'
 
 

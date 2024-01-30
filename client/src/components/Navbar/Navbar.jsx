@@ -1,7 +1,7 @@
-import { NavbarLogo } from "./NavbarLogo/NavbarLogo";
-import { LogoutButton } from "./NavbarLogoutButton/NavbarLogoutButton";
+import { NavbarLogo } from "@components/Navbar/NavbarLogo/NavbarLogo";
+import { LogoutButton } from "@components/Navbar/NavbarLogoutButton/NavbarLogoutButton";
 import { useNavigate } from "react-router-dom";
-import NavbarItem from "./NavbarItem/NavbarItem";
+import NavbarItem from "@components/Navbar/NavbarItem/NavbarItem";
 
 export const Navbar = () => {
   const navigate = useNavigate();

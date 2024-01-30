@@ -1,10 +1,10 @@
-import Heading from "../Common/Heading";
+import Heading from "@common-components/Heading";
 import { observer } from "mobx-react-lite";
 import BookingItem from "./HistoryBookingItem/HistoryBookingItem";
-import historyStore from "../../state/stores/HistoryStore";
-import MyDialog from "../Common/Dialog";
+import historyStore from "@stores/HistoryStore";
+import PrimaryDialog from "@common-components/Dialog";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import Loading from "../Common/Loading";
+import Loading from "@common-components/Loading";
 
 const ActiveBookings = observer(() => (
   <div className="flex flex-row gap-5">
@@ -34,7 +34,7 @@ const ActiveBookings = observer(() => (
     >
       <IoIosArrowForward />
     </button>
-    <MyDialog
+    <PrimaryDialog
       title="Slett reservasjon?"
       open={historyStore.openDialog}
       handleClose={historyStore.handleCloseDialog}

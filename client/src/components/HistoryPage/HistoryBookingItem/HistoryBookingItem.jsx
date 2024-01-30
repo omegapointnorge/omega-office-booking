@@ -1,5 +1,5 @@
 import { MdDelete } from "react-icons/md";
-import BookingSvg from "./HistoryBookingSvg";
+import HistoryBookingSvg from "@components/HistoryPage/HistoryBookingItem/HistoryBookingSvg";
 
 const HistoryBookingItem = ({
   onClick,
@@ -15,7 +15,7 @@ const HistoryBookingItem = ({
     <ul className="divide-y divide-gray-100 p-4 rounded-[24px] bg-white w-48">
       <li className="flex flex-col">
         <div className="flex items-center content-center justify-center">
-          <BookingSvg highlightedId={roomId} />
+          <HistoryBookingSvg highlightedId={roomId} />
         </div>
         <div className="flex flex-row justify-between">
           <div>
