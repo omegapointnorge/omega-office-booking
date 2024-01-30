@@ -1,4 +1,3 @@
-using Azure.Core;
 using System.ComponentModel.DataAnnotations;
 
 namespace server.Models.DTOs.Request
@@ -14,6 +13,7 @@ namespace server.Models.DTOs.Request
         public List<int>? SeatList { get; set; }
 
         public bool? IsEvent { get; set; } = false;
+        public string? reCAPTCHAToken { get; set; }
 
     }
 
@@ -30,7 +30,7 @@ namespace server.Models.DTOs.Request
 
             }
             return ValidationResult.Success;
-            
+
         }
     }
 

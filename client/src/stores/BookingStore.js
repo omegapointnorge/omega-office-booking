@@ -34,8 +34,8 @@ class BookingStore {
   }
 
 
-    async createBooking(selectedSeatId) {
-      const bookingRequest = new CreateBookingRequest(selectedSeatId, this.displayDate);
+    async createBooking(selectedSeatId, reCAPTCHAtoken) {
+      const bookingRequest = new CreateBookingRequest(selectedSeatId, this.displayDate, reCAPTCHAtoken);
         try {
             const response = await fetch('/api/Booking/create', {
                 method: 'POST',
