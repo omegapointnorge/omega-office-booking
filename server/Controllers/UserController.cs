@@ -19,7 +19,6 @@ public class UserController : ControllerBase
             "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
         };
 
-        y
             var user = new UserInfo(
             User.Identity?.IsAuthenticated ?? false,
             User.Claims
