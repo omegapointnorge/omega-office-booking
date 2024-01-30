@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import bookingStore from '../../../state/stores/BookingStore';
+import bookingStore from '@stores/BookingStore';
 
 const OverviewDateSwitchButton = observer(() => {
     const { displayDate } = bookingStore

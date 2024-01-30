@@ -1,4 +1,4 @@
-import Seat from './seat'
+import Seat from "@models/seat";
 
 export default class Room {
   constructor(id = null, name = null, seats = []) {

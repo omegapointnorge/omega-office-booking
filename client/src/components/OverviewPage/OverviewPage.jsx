@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
-import Heading from '../Common/Heading';
-import { useAuthContext } from '../../core/auth/useAuthContext';
+import Heading from '@common-components/Heading';
+import { useAuthContext } from '@auth/useAuthContext';
 import { observer } from 'mobx-react-lite';
-import OverviewMap from './OverviewMap/OverviewMap'; 
-import SeatInfo from './OverviewSeatInfo/OverviewSeatInfo'; 
-import DateSwitchButton from './OverviewDateSwitchButton/OverviewDateSwitchButton';
+import OverviewMap from '@components/OverviewPage/OverviewMap/OverviewMap';
+import SeatInfo from '@components/OverviewPage/OverviewSeatInfo/OverviewSeatInfo';
+import DateSwitchButton from '@components/OverviewPage/OverviewDateSwitchButton/OverviewDateSwitchButton';
 
 
 const OverviewPage = observer(() => {

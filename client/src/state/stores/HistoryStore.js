@@ -1,8 +1,8 @@
 import {makeAutoObservable} from "mobx";
-import Booking from "../../models/booking";
-import Room from "../../models/room"
-import ApiService from "../../services/ApiService.js";
-import bookingStore from "./BookingStore";
+import Booking from "@models/booking";
+import Room from "@models/room";
+import ApiService from "@services/ApiService";
+import bookingStore from "@stores/BookingStore";
 
 const ITEMS_PER_PAGE = 5;
 
