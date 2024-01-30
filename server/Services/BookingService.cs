@@ -48,6 +48,48 @@ namespace server.Services
                 throw;
             }
         }
+
+        public async Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, User user)
+        {
+            try
+            {
+                IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
+                List<BookingDto> bookingListDto = new();
+                if (bookingRequest.IsEvent.HasValue && bookingRequest.IsEvent.Value)
+                {
+                    foreach (var seat in bookingRequest.SeatList)
+                    {
+                        var booking = new Booking
+                        {
+                            UserId = user.UserId,
+                            UserName = user.UserName,
+                            SeatId = seat,
+                            BookingDateTime = bookingRequest.BookingDateTime
+                        };
+
+                        string validationError = ValidateBookingRequest(bookingRequest, bookingList, user.UserId);
+
+                        if (validationError != null)
+                        {
+                            throw new Exception(validationError);
+                        }
+
+                        await _bookingRepository.AddAsync(booking);
+                        bookingListDto.Add(new BookingDto(booking));
+                    }
+
+                    await _bookingRepository.SaveAsync();
+
+                }
+                return bookingListDto;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+         
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings()
         {
             try
