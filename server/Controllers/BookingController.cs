@@ -50,7 +50,6 @@ namespace server.Controllers
             }
         }
 
-        [Authorize(Roles = "EventAdmin")]
         [HttpPost("CreateEventBookingsForSeatsAsync")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest)
         {

@@ -162,33 +162,19 @@ namespace server.Services
             return null; // Validation passed
         }
 
-        private static string ValidateEventBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, int seatId)
-        {
-      
-            if (IsSeatAlreadyBooked(bookingList, bookingRequest.BookingDateTime, seatId))
-            {
-                return $"Seat {seatId} is already booked for the specified time.";
-            }
-
-            return null; // Validation passed
-        }
 
         private static bool HasUserAlreadyBookedForDay(IEnumerable<Booking> bookingList, DateTime bookingDate, string userId)
         {
             var dateOfBookingDate = bookingDate.Date;
-            return IsBookingAlreadyMade(bookingList, booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.UserId == userId);
+            return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.UserId == userId);
         }
 
         private static bool IsSeatAlreadyBooked(IEnumerable<Booking> bookingList, DateTime bookingDate, int seatId)
         {
             var dateOfBookingDate = bookingDate.Date;
-            return IsBookingAlreadyMade(bookingList, booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.SeatId == seatId);
+            return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.SeatId == seatId);
         }
 
-        private static bool IsBookingAlreadyMade(IEnumerable<Booking> bookingList, Func<Booking, bool> predicate)
-        {
-            return bookingList.Any(predicate);
-        }
 
         private static DateOnly GetLatestAllowedBookingDate()
         {
