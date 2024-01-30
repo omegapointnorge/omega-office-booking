@@ -13,7 +13,7 @@ namespace server.Models.DTOs.Request
         [MustContainItemsWhenIsEventIsTrue(ErrorMessage = "SeatList must contain at least one item when IsEvent is true.")]
         public List<int>? SeatList { get; set; }
 
-        public bool? IsEvent { get; set; }
+        public bool? IsEvent { get; set; } = false;
 
     }
 

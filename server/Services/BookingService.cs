@@ -61,6 +61,8 @@ namespace server.Services
                 var validationContext = new ValidationContext(bookingRequest, serviceProvider: null, items: null);
                 var validationResults = new List<ValidationResult>();
                 bool isValid = Validator.TryValidateObject(bookingRequest, validationContext, validationResults, validateAllProperties: true);
+
+
                 if (bookingRequest.IsEvent.HasValue && bookingRequest.IsEvent.Value)
                 {
                     if (!isValid)
@@ -70,6 +72,12 @@ namespace server.Services
                     }
                     foreach (var seatId in bookingRequest.SeatList)
                     {
+                        if (IsSeatAlreadyBooked(bookingList, bookingRequest.BookingDateTime, seatId))
+                        {
+                            var bookingToDelete = bookingList.First(booking => booking.BookingDateTime.Date == bookingRequest.BookingDateTime.Date && booking.SeatId == seatId);
+                            await _bookingRepository.DeleteAndCommit(bookingToDelete);
+                        }
+
                         var booking = new Booking
                         {
                             UserId = user.UserId,
@@ -85,7 +93,7 @@ namespace server.Services
                     await _bookingRepository.SaveAsync();
 
                 }
-                else throw new Exception("No value for seat list for booking Req");
+                else throw new Exception("Not a Event booking Req");
                 return bookingListDto;
             }
             catch (Exception)
@@ -94,7 +102,7 @@ namespace server.Services
             }
         }
 
-         
+
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings()
         {
             try
@@ -144,10 +152,10 @@ namespace server.Services
         private static string ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
         {
             if (false && DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
-            if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate() && bookingRequest.IsEvent == null)
-            {
-                return "Booking date exceeds the latest allowed booking date.";
-            }
+                if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate() && bookingRequest.IsEvent == null)
+                {
+                    return "Booking date exceeds the latest allowed booking date.";
+                }
 
             if (IsSeatAlreadyBooked(bookingList, bookingRequest.BookingDateTime, bookingRequest.SeatId))
             {
