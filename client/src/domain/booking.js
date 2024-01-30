@@ -26,9 +26,10 @@ export class Seat {
 }
 
 export class CreateBookingRequest {
-  constructor(seatId, bookingDateTime) {
-    this.seatId = seatId
+  constructor(seatId, bookingDateTime, reCAPTCHAToken) {
+    this.seatId = seatId;
     this.bookingDateTime = bookingDateTime.toISOString();
+    this.reCAPTCHAToken = reCAPTCHAToken;
   }
 }
 

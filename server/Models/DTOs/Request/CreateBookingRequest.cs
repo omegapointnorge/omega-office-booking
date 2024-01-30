@@ -5,5 +5,7 @@ namespace server.Models.DTOs.Request
         public required int SeatId { get; set; }
 
         public DateTime BookingDateTime { get; set; }
+
+        public string? reCAPTCHAToken { get; set; }
     }
 }

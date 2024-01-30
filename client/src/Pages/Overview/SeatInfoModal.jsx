@@ -4,6 +4,8 @@ import bookingStore from "../../stores/BookingStore";
 import Booking, { DeleteBookingRequest } from "../../domain/booking";
 import { useAuthContext } from "../../api/useAuthContext";
 
+const RECAPTCHA_SITE_KEY = "6LdxpmApAAAAAIWkP_LZvHB3lVHxN81xcXUF7cou";
+
 const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
   const { user } = useAuthContext() ?? {};
 
@@ -27,6 +29,19 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
     }
   }, [selectedSeatId, activeBookings, displayDate]);
 
+  useEffect(() => {
+    // Dynamically load reCAPTCHA script
+    const script = document.createElement("script");
+    script.src = `https://www.google.com/recaptcha/enterprise.js?render=${RECAPTCHA_SITE_KEY}`;
+    script.async = true;
+    document.head.appendChild(script);
+
+    // Clean up function to remove the script when the component is unmounted
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
   const isSameDate = (date1, date2) => {
     if (!(date1 instanceof Date) || !(date2 instanceof Date)) {
       throw new Error("Both arguments must be Date objects.");
@@ -35,8 +50,19 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
     return date1.toDateString() === date2.toDateString();
   };
 
+ const executeRecaptcha = async () => {
+    // Execute reCAPTCHA and return the token
+    return new Promise((resolve) => {
+      window.grecaptcha.enterprise.ready(async () => {
+        const token = await window.grecaptcha.enterprise.execute(RECAPTCHA_SITE_KEY, { action: 'BOOK' });
+        resolve(token);
+      });
+    });
+  };
+
   const handleBook = async () => {
-    await bookingStore.createBooking(selectedSeatId);
+    const reCAPTCHAtoken = await executeRecaptcha();
+    await bookingStore.createBooking(selectedSeatId, reCAPTCHAtoken);
     onClose();
   };
 
@@ -74,12 +100,12 @@ const SeatInfoModal = observer(({ onClose, selectedSeatId }) => {
             </button>
           )}
           {selectedBooking.id === null && (
-            <button
-              onClick={handleBook}
-              className="px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-            >
-              Reserver sete
-            </button>
+              <button
+                onClick={handleBook}
+                className="px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              >
+                Reserver sete
+              </button>
           )}
         </div>
       );
