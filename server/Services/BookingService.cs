@@ -26,6 +26,13 @@ namespace server.Services
             try
             {
                 IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
+
+                var validationErrors = ValidateUserBookingRequest(bookingRequest, bookingList, user.UserId);
+                if (validationErrors != null && validationErrors.Any())
+                {
+                    var errorMessages = string.Join(Environment.NewLine, validationErrors.Select(v => $"- {v}"));
+                    throw new Exception(errorMessages);
+                }
                 var booking = new Booking
                 {
                     UserId = user.UserId,
@@ -33,12 +40,6 @@ namespace server.Services
                     SeatId = bookingRequest.SeatId,
                     BookingDateTime = bookingRequest.BookingDateTime
                 };
-
-                string validationError = ValidateUserBookingRequest(bookingRequest, bookingList, user.UserId);
-                if (validationError != null)
-                {
-                    throw new Exception(validationError);
-                }
 
                 await _bookingRepository.AddAsync(booking);
                 await _bookingRepository.SaveAsync();
@@ -61,15 +62,14 @@ namespace server.Services
                 var validationContext = new ValidationContext(bookingRequest, serviceProvider: null, items: null);
                 var validationResults = new List<ValidationResult>();
                 bool isValid = Validator.TryValidateObject(bookingRequest, validationContext, validationResults, validateAllProperties: true);
-
-
-                if (bookingRequest.IsEvent.HasValue && bookingRequest.IsEvent.Value)
+                if (!isValid)
                 {
-                    if (!isValid)
-                    {
-                        var errorMessages = string.Join("; ", validationResults.Select(v => v.ErrorMessage));
-                        throw new BadHttpRequestException(errorMessages);
-                    }
+                    var errorMessages = string.Join("; ", validationResults.Select(v => v.ErrorMessage));
+                    throw new BadHttpRequestException(errorMessages);
+                }
+
+                if (bookingRequest.IsEvent.HasValue && bookingRequest.IsEvent.Value && bookingRequest.SeatList.Any())
+                {
                     foreach (var seatId in bookingRequest.SeatList)
                     {
                         if (IsSeatAlreadyBooked(bookingList, bookingRequest.BookingDateTime, seatId))
@@ -149,26 +149,27 @@ namespace server.Services
             }
         }
 
-        private static string ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
+        private static List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
         {
-            if (false && DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
-                if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate() && bookingRequest.IsEvent == null)
-                {
-                    return "Booking date exceeds the latest allowed booking date.";
-                }
+            List<string> validationResultsList = new();
+            if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
+
+            {
+                validationResultsList.Add("Booking date exceeds the latest allowed booking date.");
+            }
 
             if (IsSeatAlreadyBooked(bookingList, bookingRequest.BookingDateTime, bookingRequest.SeatId))
             {
                 var seatId = bookingRequest.SeatId;
-                return $"Seat {seatId} is already booked for the specified time.";
+                validationResultsList.Add($"Seat {seatId} is already booked for the specified time.");
             }
 
             if (HasUserAlreadyBookedForDay(bookingList, bookingRequest.BookingDateTime, userId))
             {
-                return "User has already booked for the specified day.";
+                validationResultsList.Add("User has already booked for the specified day.");
             }
 
-            return null; // Validation passed
+            return validationResultsList; 
         }
 
 
