@@ -5,6 +5,7 @@ using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Repository;
+using System.ComponentModel.DataAnnotations;
 
 namespace server.Services
 {
@@ -56,11 +57,16 @@ namespace server.Services
             {
                 IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
                 List<BookingDto> bookingListDto = new();
+                // Perform model validation
+                var validationContext = new ValidationContext(bookingRequest, serviceProvider: null, items: null);
+                var validationResults = new List<ValidationResult>();
+                bool isValid = Validator.TryValidateObject(bookingRequest, validationContext, validationResults, validateAllProperties: true);
                 if (bookingRequest.IsEvent.HasValue && bookingRequest.IsEvent.Value)
                 {
-                    if (bookingRequest.SeatList == null || bookingRequest.SeatList.Count == 0)
+                    if (!isValid)
                     {
-                        throw new Exception("Seat list cannot be null or 0 element");
+                        var errorMessages = string.Join("; ", validationResults.Select(v => v.ErrorMessage));
+                        throw new BadHttpRequestException(errorMessages);
                     }
                     foreach (var seatId in bookingRequest.SeatList)
                     {
@@ -137,6 +143,7 @@ namespace server.Services
 
         private static string ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
         {
+            if (false && DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
             if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate() && bookingRequest.IsEvent == null)
             {
                 return "Booking date exceeds the latest allowed booking date.";
