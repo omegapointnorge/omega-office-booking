@@ -72,13 +72,6 @@ namespace server.Services
                             BookingDateTime = bookingRequest.BookingDateTime
                         };
 
-                        string validationError = ValidateEventBookingRequest(bookingRequest, bookingList, seatId);
-
-                        if (validationError != null)
-                        {
-                            throw new Exception(validationError);
-                        }
-
                         await _bookingRepository.AddAsync(booking);
                         bookingListDto.Add(new BookingDto(booking));
                     }
@@ -86,6 +79,7 @@ namespace server.Services
                     await _bookingRepository.SaveAsync();
 
                 }
+                else throw new Exception("No value for seat list for booking Req");
                 return bookingListDto;
             }
             catch (Exception)
