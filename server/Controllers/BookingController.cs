@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
@@ -41,6 +42,23 @@ namespace server.Controllers
                 var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
 
                 return CreatedAtRoute(null, booking);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception, handle the error appropriately
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("CreateEventBookingsForSeatsAsync")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest)
+        {
+            try
+            {
+                var user = GetUser();
+                var bookingDtoList = await _bookingService.CreateEventBookingsForSeatsAsync(bookingRequest, user);
+
+                return CreatedAtRoute(null, bookingDtoList);
             }
             catch (Exception ex)
             {

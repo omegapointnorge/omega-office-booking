@@ -16,9 +16,10 @@ public class UserController : ControllerBase
             "http://schemas.microsoft.com/identity/claims/objectidentifier",
             "name",
             "preferred_username",
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
         };
 
-        var user = new UserInfo(
+            var user = new UserInfo(
             User.Identity?.IsAuthenticated ?? false,
             User.Claims
                 .Select(c => new KeyValuePair<string, string>(c.Type, c.Value))

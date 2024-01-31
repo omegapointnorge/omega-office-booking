@@ -58,7 +58,9 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddCors(options =>
+if (!builder.Environment.IsProduction())
+{
+    builder.Services.AddCors(options =>
     {
 
         options.AddPolicy(name: "Client Origin",
@@ -71,7 +73,7 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod()
         );
     });
-
+}
 builder.Services.AddDbContext<OfficeDbContext>(options =>
 {
     SqlAuthenticationProvider.SetProvider(

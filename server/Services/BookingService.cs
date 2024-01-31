@@ -5,6 +5,7 @@ using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Repository;
+using System.ComponentModel.DataAnnotations;
 
 namespace server.Services
 {
@@ -12,6 +13,7 @@ namespace server.Services
     {
         readonly IBookingRepository _bookingRepository;
         private const int SameDayCutoffHour = 16;
+        private const string EventUserName = "Event";
 
 
         public BookingService(IBookingRepository bookingRepository)
@@ -24,6 +26,13 @@ namespace server.Services
             try
             {
                 IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
+
+                var validationErrors = ValidateUserBookingRequest(bookingRequest, bookingList, user.UserId);
+                if (validationErrors != null && validationErrors.Any())
+                {
+                    var errorMessages = string.Join(Environment.NewLine, validationErrors.Select(v => $"- {v}"));
+                    throw new Exception(errorMessages);
+                }
                 var booking = new Booking
                 {
                     UserId = user.UserId,
@@ -31,12 +40,6 @@ namespace server.Services
                     SeatId = bookingRequest.SeatId,
                     BookingDateTime = bookingRequest.BookingDateTime
                 };
-
-                string validationError = ValidateBookingRequest(bookingRequest, bookingList, user.UserId);
-                if (validationError != null)
-                {
-                    throw new Exception(validationError);
-                }
 
                 await _bookingRepository.AddAsync(booking);
                 await _bookingRepository.SaveAsync();
@@ -48,6 +51,58 @@ namespace server.Services
                 throw;
             }
         }
+
+        public async Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, User user)
+        {
+            try
+            {
+                IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
+                List<BookingDto> bookingListDto = new();
+                // Perform model validation
+                var validationContext = new ValidationContext(bookingRequest, serviceProvider: null, items: null);
+                var validationResults = new List<ValidationResult>();
+                bool isValid = Validator.TryValidateObject(bookingRequest, validationContext, validationResults, validateAllProperties: true);
+                if (!isValid)
+                {
+                    var errorMessages = string.Join("; ", validationResults.Select(v => v.ErrorMessage));
+                    throw new BadHttpRequestException(errorMessages);
+                }
+
+                if (bookingRequest.IsEvent.HasValue && bookingRequest.IsEvent.Value && bookingRequest.SeatList.Any())
+                {
+                    foreach (var seatId in bookingRequest.SeatList)
+                    {
+                        if (IsSeatAlreadyBooked(bookingList, bookingRequest.BookingDateTime, seatId))
+                        {
+                            var bookingToDelete = bookingList.First(booking => booking.BookingDateTime.Date == bookingRequest.BookingDateTime.Date && booking.SeatId == seatId);
+                            await _bookingRepository.DeleteAndCommit(bookingToDelete);
+                        }
+
+                        var booking = new Booking
+                        {
+                            UserId = user.UserId,
+                            UserName = EventUserName,
+                            SeatId = seatId,
+                            BookingDateTime = bookingRequest.BookingDateTime
+                        };
+
+                        await _bookingRepository.AddAsync(booking);
+                        bookingListDto.Add(new BookingDto(booking));
+                    }
+                    // only save repository once
+                    await _bookingRepository.SaveAsync();
+
+                }
+                else throw new Exception("Not a Event booking Req");
+                return bookingListDto;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings()
         {
             try
@@ -94,37 +149,42 @@ namespace server.Services
             }
         }
 
-        private static string ValidateBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
+        private static List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
         {
-            if (false && DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
+            List<string> validationResultsList = new();
+            if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
+
             {
-                return "Booking date exceeds the latest allowed booking date.";
+                validationResultsList.Add("Booking date exceeds the latest allowed booking date.");
             }
 
-            if (IsSeatAlreadyBooked(bookingList, bookingRequest))
+            if (IsSeatAlreadyBooked(bookingList, bookingRequest.BookingDateTime, bookingRequest.SeatId))
             {
-                return "Seat is already booked for the specified time.";
+                var seatId = bookingRequest.SeatId;
+                validationResultsList.Add($"Seat {seatId} is already booked for the specified time.");
             }
 
-            if (false && HasUserAlreadyBookedForDay(bookingList, bookingRequest, userId))
+            if (HasUserAlreadyBookedForDay(bookingList, bookingRequest.BookingDateTime, userId))
             {
-                return "User has already booked for the specified day.";
+                validationResultsList.Add("User has already booked for the specified day.");
             }
 
-            return null; // Validation passed
+            return validationResultsList; 
         }
 
-        private static bool HasUserAlreadyBookedForDay(IEnumerable<Booking> bookingList, CreateBookingRequest bookingRequest, string userId)
+
+        private static bool HasUserAlreadyBookedForDay(IEnumerable<Booking> bookingList, DateTime bookingDate, string userId)
         {
-            var bookingDate = bookingRequest.BookingDateTime.Date;
-            return bookingList.Any(booking => booking.BookingDateTime.Date == bookingDate && booking.UserId == userId);
+            var dateOfBookingDate = bookingDate.Date;
+            return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.UserId == userId);
         }
 
-        private static bool IsSeatAlreadyBooked(IEnumerable<Booking> bookingList, CreateBookingRequest bookingRequest)
+        private static bool IsSeatAlreadyBooked(IEnumerable<Booking> bookingList, DateTime bookingDate, int seatId)
         {
-            var bookingDate = bookingRequest.BookingDateTime.Date;
-            return bookingList.Any(booking => booking.BookingDateTime.Date == bookingDate && booking.SeatId == bookingRequest.SeatId);
+            var dateOfBookingDate = bookingDate.Date;
+            return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.SeatId == seatId);
         }
+
 
         private static DateOnly GetLatestAllowedBookingDate()
         {
