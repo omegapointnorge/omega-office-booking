@@ -13,6 +13,14 @@ dotnet user-secrets set "AzureAd__ClientId" "XXXXXX.."
 dotnet user-secrets set "AzureAd__ClientSecret" "XXXXXX.."
 dotnet user-secrets set "AzureAd__TentanId" "XXXXXX.."
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Initial Catalog=OfficeBookingDB; Data Source=localhost,<Port_Number>; Persist Security Info=True;User ID=SA;Password= <Your_Password>; TrustServerCertificate=True"
+dotnet user-secrets set "AzureAd__ClientSecret" "XXXXXX.."
+dotnet user-secrets set "AzureAd__TentanId" "XXXXXX.."
+
+dotnet user-secrets set "GOOGLE-CLOUD-PROJECT" "office-booking-1706538315753"
+dotnet user-secrets set "GOOGLE-APPLICATION-CREDENTIALS" "XXXXXX.."
+
+
+
 
 For macbook user, the image addressen need to be the address for Mac. change mcr.microsoft.com/mssql/server:2019-latest in the following commands
 ```

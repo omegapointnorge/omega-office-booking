@@ -7,7 +7,7 @@ using server.Models.DTOs.Request;
 using server.Repository;
 using System.ComponentModel.DataAnnotations;
 
-namespace server.Services
+namespace server.Services.Internal
 {
     public class BookingService : IBookingService
     {
@@ -118,7 +118,7 @@ namespace server.Services
         }
 
 
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(String userId)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(string userId)
         {
             try
             {
@@ -169,7 +169,7 @@ namespace server.Services
                 validationResultsList.Add("User has already booked for the specified day.");
             }
 
-            return validationResultsList; 
+            return validationResultsList;
         }
 
 
@@ -204,7 +204,7 @@ namespace server.Services
         {
             TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
             return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday ||
-                   (date.DayOfWeek == DayOfWeek.Friday && date.TimeOfDay > sameDayCutoff);
+                   date.DayOfWeek == DayOfWeek.Friday && date.TimeOfDay > sameDayCutoff;
         }
 
         private static DateOnly GetNextWeekday(DateOnly date)
