@@ -1,9 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
-using server.Services;
+using server.Services.Internal;
 
 namespace server.Controllers
 {
@@ -39,6 +38,10 @@ namespace server.Controllers
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(bookingRequest.reCAPTCHAToken))
+                {
+                    throw new Exception("reCAPTCHA token is missing or empty.");
+                }
                 var score = _recaptchaEnterprise.CreateAssessment(token: bookingRequest.reCAPTCHAToken);
                 if (score < RecaptchaEnterprise.ReCaptchaThreshold)
                 {

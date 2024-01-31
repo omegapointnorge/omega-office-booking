@@ -8,7 +8,7 @@ using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using server.Context;
 using server.Repository;
-using server.Services;
+using server.Services.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 

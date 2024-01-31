@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
 
-namespace server.Services
+namespace server.Services.Internal
 {
     public interface IRoomService
     {
