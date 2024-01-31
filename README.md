@@ -17,7 +17,7 @@ dotnet user-secrets set "AzureAd__ClientSecret" "XXXXXX.."
 dotnet user-secrets set "AzureAd__TentanId" "XXXXXX.."
 
 dotnet user-secrets set "GOOGLE-CLOUD-PROJECT" "office-booking-1706538315753"
-dotnet user-secrets set "GOOGLE-APPLICATION-CREDENTIALS" "XXXXXX.."
+dotnet user-secrets set "GOOGLE-APPLICATION-CREDENTIALS" "XXXXXX..."
 
 
 
