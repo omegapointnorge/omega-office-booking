@@ -108,7 +108,8 @@ namespace server.Controllers
         {
             try
             {
-                var deleteResponse = await _bookingService.DeleteBookingAsync(bookingId);
+                var user = GetUser();
+                var deleteResponse = await _bookingService.DeleteBookingAsync(bookingId, user);
 
                 return NoContent();
             }

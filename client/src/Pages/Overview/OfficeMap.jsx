@@ -44,14 +44,27 @@ const OfficeMap = observer(({showSeatInfo}) => {
     }
 
     const hasBookingOpened = () => {
-      let bookingOpeningTime = new Date(displayDate);
-      bookingOpeningTime.setDate(bookingOpeningTime.getDate() - 1);
-      bookingOpeningTime.setHours(16, 0, 0, 0);
-
+      let bookingOpeningTime = getEarliestAllowedBookingTime(displayDate)
+      
       let currentDateTime = new Date();
       return currentDateTime > bookingOpeningTime;
     }
 
+  const getEarliestAllowedBookingTime = (date) => {
+    let earliestAllowedTime = new Date(date);
+
+    // If it's Monday, set the time to the Friday before at 16:00
+    if (earliestAllowedTime.getDay() === 1) {
+      // Monday has index 1 in JavaScript (0 is Sunday)
+      earliestAllowedTime.setDate(earliestAllowedTime.getDate() - 3); // 3 days back to Friday
+    } else {
+      // Otherwise, set the time to the day before at 16:00
+      earliestAllowedTime.setDate(earliestAllowedTime.getDate() - 1);
+    }
+    earliestAllowedTime.setHours(16, 0, 0, 0);
+    return earliestAllowedTime;
+  };
+  
     const isSameDate = (date1, date2) => {
       if (!(date1 instanceof Date) || !(date2 instanceof Date)) {
         throw new Error('Both arguments must be Date objects.');
