@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
@@ -33,6 +34,7 @@ namespace server.Controllers
                 return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
+
         [HttpPost("create")]
         public async Task<ActionResult<BookingDto>> CreateBooking(CreateBookingRequest bookingRequest)
         {
@@ -58,7 +60,7 @@ namespace server.Controllers
                 return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
-
+        [Authorize(Roles = "EventAdmin")]
         [HttpPost("CreateEventBookingsForSeatsAsync")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest)
         {

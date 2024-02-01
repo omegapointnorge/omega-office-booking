@@ -60,9 +60,10 @@ builder.Services.AddControllersWithViews();
 
 if (!builder.Environment.IsProduction())
 {
+    builder.Services.AddSwaggerGen();
+
     builder.Services.AddCors(options =>
     {
-
         options.AddPolicy(name: "Client Origin",
             builder => builder
                 .WithOrigins(
@@ -94,7 +95,7 @@ builder.Services.AddScoped<RecaptchaEnterprise>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 //swagger
-builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
@@ -102,10 +103,11 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
+} else
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
-
-app.UseSwagger();
-app.UseSwaggerUI();
 
 
 app.UseHttpsRedirection();
