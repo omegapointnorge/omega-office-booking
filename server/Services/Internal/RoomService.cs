@@ -4,7 +4,7 @@ using server.Models.DTOs;
 using server.Repository;
 
 
-namespace server.Services
+namespace server.Services.Internal
 {
     public class RoomService : IRoomService
     {

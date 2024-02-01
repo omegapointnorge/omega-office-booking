@@ -3,7 +3,7 @@ using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 
-namespace server.Services
+namespace server.Services.Internal
 {
     public interface IBookingService
     {
@@ -14,6 +14,8 @@ namespace server.Services
         Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(string userid);
 
         Task<ActionResult<BookingDto>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user);
+
+        Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, User user);
 
 
     }

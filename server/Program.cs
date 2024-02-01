@@ -4,12 +4,11 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using server.Context;
 using server.Repository;
-using server.Services;
+using server.Services.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +22,7 @@ if (builder.Environment.IsProduction())
     var clientId = builder.Configuration.GetValue<string>("AzureAd-ClientId");
     var clientSecret = builder.Configuration.GetValue<string>("AzureAd-ClientSecret");
     var tenantId = builder.Configuration.GetValue<string>("AzureAd-TenantId");
+
 
     builder.Configuration["AzureAd:TenantId"] = tenantId;
     builder.Configuration["AzureAd:ClientId"] = clientId;
@@ -58,7 +58,9 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddCors(options =>
+if (!builder.Environment.IsProduction())
+{
+    builder.Services.AddCors(options =>
     {
 
         options.AddPolicy(name: "Client Origin",
@@ -71,7 +73,7 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod()
         );
     });
-
+}
 builder.Services.AddDbContext<OfficeDbContext>(options =>
 {
     SqlAuthenticationProvider.SetProvider(
@@ -85,6 +87,9 @@ builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+
+builder.Services.AddScoped<RecaptchaEnterprise>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
