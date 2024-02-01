@@ -132,22 +132,26 @@ namespace server.Services.Internal
         }
 
 
-        public async Task<ActionResult> DeleteBookingAsync(int bookingId)
+        public async Task<ActionResult> DeleteBookingAsync(int bookingId, User user)
         {
             try
             {
-                var booking = new Booking
+                var booking = await _bookingRepository.GetAsync(b => b.Id == bookingId && b.UserId == user.UserId);
+
+                if (booking == null)
                 {
-                    Id = bookingId
-                };
+                    return new NotFoundObjectResult($"Booking with ID {bookingId} not found for user {user.UserId}");
+                }
+
                 await _bookingRepository.DeleteAndCommit(booking);
                 return new StatusCodeResult(StatusCodes.Status200OK);
             }
-            catch (Exception)
+            catch
             {
                 throw;
             }
         }
+
 
         private static List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
         {
