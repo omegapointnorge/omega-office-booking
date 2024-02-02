@@ -7,7 +7,7 @@ namespace server.Services.Internal
 {
     public interface IBookingService
     {
-        Task<ActionResult> DeleteBookingAsync(int id);
+        Task<ActionResult> DeleteBookingAsync(int id, User user);
 
         Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings();
 
