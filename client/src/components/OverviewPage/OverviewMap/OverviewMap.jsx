@@ -26,8 +26,8 @@ const OverviewMap = observer(({showSeatInfo}) => {
 
     const userId = user?.claims?.find(claim => claim.key === 'http://schemas.microsoft.com/identity/claims/objectidentifier')?.value;
     const userRole = user?.claims?.find(claim => claim.key === 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role')?.value;
-    const isAdmin = userRole === "EventAdmin";
-    const isAdminMode = userBookingMode === "EventBookingMode";
+    const isEventAdmin = userRole === "EventAdmin";
+    const isEventAdminMode = userBookingMode === "EventBookingMode";
     const isMultiBookingDayAdmin = userRole === "MultiBookingDayAdmin";
     const isMultiBookingDayAdminMode = userBookingMode === "MultiBookingDayAdminMode";
     const isNormalMode = userBookingMode === "NormalMode";
@@ -256,7 +256,7 @@ const OverviewMap = observer(({showSeatInfo}) => {
       <button className={`absolute top-0 right-0 m-2 p-2 bg-gray-200 text-black rounded hover:bg-gray-300 text-s ${zoomStatus === "ZoomedIn" ? '' : 'opacity-50 cursor-not-allowed'}`} onClick={() => zoomOut()}>
         <ZoomOutIcon className="h-6 w-6 inline-block mr-1" />
       </button>
-      <button type="radio" class="flex-1 bg-blue-200 text-gray-700 py-2 px-4 rounded-r-md" style={{ display: (isAdmin && isAdminMode) ? 'block' : 'none' }}
+      <button type="radio" class="flex-1 bg-blue-200 text-gray-700 py-2 px-4 rounded-r-md" style={{ display: (isEventAdmin && isEventAdminMode) ? 'block' : 'none' }}
       ><span><strong>Vennligst velg seter første og Gå videre</strong></span>
       </button>
     </div>
@@ -265,9 +265,9 @@ const OverviewMap = observer(({showSeatInfo}) => {
     <label for="" class="w-1/4">Your mode:</label>
     <div class="w-3/4">
         <div class="flex">
-            <button type="button" className={`flex-1 py-2 px-4 rounded-l-lg border-gray-400 cursor-pointer ${ isMultiBookingDayAdminMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => setUserBookingMode(event.target.value)} value="MultiBookingDayAdminMode">Booke for lengre perioder</button>
-            <button type="button" className={`flex-1 py-2 px-4 border-gray-400 cursor-pointer ${ isAdminMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => setUserBookingMode(event.target.value)} value="EventBookingMode">Event</button>
-            <button type="button" className={`flex-1 py-2 px-4 rounded-r-lg border-gray-400 cursor-pointer ${ isNormalMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => setUserBookingMode(event.target.value)} value="NormalMode">Normal booking</button>
+            <button type="button" className={`flex-1 py-2 px-4 rounded-l-lg border-gray-400 cursor-pointer ${ isMultiBookingDayAdminMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => setUserBookingMode(event.target.value)} value="MultiBookingDayAdminMode"  style={{ display: (isMultiBookingDayAdmin) ? 'block' : 'none' }}>Booke for lengre perioder</button>
+            <button type="button" className={`flex-1 py-2 px-4 border-gray-400 cursor-pointer ${ isEventAdminMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => setUserBookingMode(event.target.value)} value="EventBookingMode" style={{ display: (isEventAdmin) ? 'block' : 'none' }}>Event</button>
+            <button type="button" className={`flex-1 py-2 px-4 rounded-r-lg border-gray-400 cursor-pointer ${ isNormalMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => setUserBookingMode(event.target.value)} value="NormalMode" style={{ display: (isMultiBookingDayAdmin || isEventAdmin) ? 'block' : 'none' }}>Normal booking</button>
         </div>
     </div>
 </div>
