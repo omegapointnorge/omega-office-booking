@@ -60,8 +60,9 @@ namespace server.Controllers
                 return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
+
         [Authorize(Roles = "EventAdmin")]
-        [HttpPost("CreateEventBookingsForSeatsAsync")]
+        [HttpPost("CreateEventBookingsForSeats")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest)
         {
             try

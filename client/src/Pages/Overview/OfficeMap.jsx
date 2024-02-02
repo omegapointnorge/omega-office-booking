@@ -1,18 +1,17 @@
 import React, {useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from "react-router-dom";
-import { useAuthContext } from '@auth/useAuthContext';
-import {ReactComponent as ZoomOutIcon} from '@assets/icons/zoom-out_outline.svg'
+import { useAuthContext } from '../../api/useAuthContext';
+import {ReactComponent as ZoomOutIcon} from '../../assets/icons/zoom-out_outline.svg'
 import { observer } from 'mobx-react-lite';
-import bookingStore from '@stores/BookingStore';
-import './OverviewMap.css'
+import bookingStore from '../../stores/BookingStore';
+import './OfficeMap.css'
 
 
-const OverviewMap = observer(({showSeatInfo}) => {
+const OfficeMap = observer(({showSeatInfo}) => {
 
     const { user } = useAuthContext() ?? {};
-    const { activeBookings, eventAdminSeletedBookings, displayDate } = bookingStore
+    const { activeBookings, displayDate } = bookingStore
     const location = useLocation();
-    
 
     const zoomedOutViewBoxParameters = "0 0 3725 2712"
     const zoomedToLargeRoomViewBoxParameters = "1900 1600 1100 1050"
@@ -21,16 +20,10 @@ const OverviewMap = observer(({showSeatInfo}) => {
 
     const [currentViewBox, setCurrentViewBox] = useState(zoomedOutViewBoxParameters);
     const [zoomStatus, setZoomStatus] = useState("ZoomedOut")
-    const [userBookingMode, setUserBookingMode] = useState("NormalMode")
     const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
     const userId = user?.claims?.find(claim => claim.key === 'http://schemas.microsoft.com/identity/claims/objectidentifier')?.value;
-    const userRole = user?.claims?.find(claim => claim.key === 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role')?.value;
-    const isAdmin = userRole === "EventAdmin";
-    const isAdminMode = userBookingMode === "EventBookingMode";
-    const isMultiBookingDayAdmin = userRole === "MultiBookingDayAdmin";
-    const isMultiBookingDayAdminMode = userBookingMode === "MultiBookingDayAdminMode";
-    const isNormalMode = userBookingMode === "NormalMode";
+
     const getSeatClassName = (seatId) => {
       const bookingForSeat = activeBookings.find(booking => booking.seatId === seatId && isSameDate(displayDate, booking.bookingDateTime));
     
@@ -46,31 +39,19 @@ const OverviewMap = observer(({showSeatInfo}) => {
       if (!hasBookingOpened()) {
         return "seat-available-later"
       }
+
       return "seat-available";
     }
 
     const hasBookingOpened = () => {
-      let bookingOpeningTime = getEarliestAllowedBookingTime(displayDate)
-      
+      let bookingOpeningTime = new Date(displayDate);
+      bookingOpeningTime.setDate(bookingOpeningTime.getDate() - 1);
+      bookingOpeningTime.setHours(16, 0, 0, 0);
+
       let currentDateTime = new Date();
       return currentDateTime > bookingOpeningTime;
     }
 
-  const getEarliestAllowedBookingTime = (date) => {
-    let earliestAllowedTime = new Date(date);
-
-    // If it's Monday, set the time to the Friday before at 16:00
-    if (earliestAllowedTime.getDay() === 1) {
-      // Monday has index 1 in JavaScript (0 is Sunday)
-      earliestAllowedTime.setDate(earliestAllowedTime.getDate() - 3); // 3 days back to Friday
-    } else {
-      // Otherwise, set the time to the day before at 16:00
-      earliestAllowedTime.setDate(earliestAllowedTime.getDate() - 1);
-    }
-    earliestAllowedTime.setHours(16, 0, 0, 0);
-    return earliestAllowedTime;
-  };
-  
     const isSameDate = (date1, date2) => {
       if (!(date1 instanceof Date) || !(date2 instanceof Date)) {
         throw new Error('Both arguments must be Date objects.');
@@ -184,7 +165,6 @@ const OverviewMap = observer(({showSeatInfo}) => {
       }
     }, [location, zoomOut]);
 
-
 //--------------- End of zoom functionality -----------------
 
   return (
@@ -252,30 +232,13 @@ const OverviewMap = observer(({showSeatInfo}) => {
         </g>
 
       </svg>
-      <div className="flex">
+
+
       <button className={`absolute top-0 right-0 m-2 p-2 bg-gray-200 text-black rounded hover:bg-gray-300 text-s ${zoomStatus === "ZoomedIn" ? '' : 'opacity-50 cursor-not-allowed'}`} onClick={() => zoomOut()}>
         <ZoomOutIcon className="h-6 w-6 inline-block mr-1" />
       </button>
-      <button type="radio" class="flex-1 bg-blue-200 text-gray-700 py-2 px-4 rounded-r-md" style={{ display: (isAdmin && isAdminMode) ? 'block' : 'none' }}
-      ><span><strong>Vennligst velg seter første og Gå videre</strong></span>
-      </button>
     </div>
-
-    <div class="flex items-center">
-    <label for="" class="w-1/4">Your mode:</label>
-    <div class="w-3/4">
-        <div class="flex">
-            <button type="button" className={`flex-1 py-2 px-4 rounded-l-lg border-gray-400 cursor-pointer ${ isMultiBookingDayAdminMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => setUserBookingMode(event.target.value)} value="MultiBookingDayAdminMode">Booke for lengre perioder</button>
-            <button type="button" className={`flex-1 py-2 px-4 border-gray-400 cursor-pointer ${ isAdminMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => setUserBookingMode(event.target.value)} value="EventBookingMode">Event</button>
-            <button type="button" className={`flex-1 py-2 px-4 rounded-r-lg border-gray-400 cursor-pointer ${ isNormalMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => setUserBookingMode(event.target.value)} value="NormalMode">Normal booking</button>
-        </div>
-    </div>
-</div>
-
-
-    </div>
-   
   );
 });
 
-export default OverviewMap;
+export default OfficeMap;
