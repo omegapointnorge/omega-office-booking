@@ -5,13 +5,29 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 
-const PrimaryDialog = ({ title, content, open, handleClose, onClick }) => {
+interface PrimaryDialogProps {
+  title: string;
+  open: boolean;
+  handleClose: () => void;
+  onClick: () => void;
+  content?: string;
+}
+
+const PrimaryDialog = ({
+  title,
+  content,
+  open,
+  handleClose,
+  onClick,
+}: PrimaryDialogProps) => {
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
-        <p>{content}</p>
-      </DialogContent>
+      {content && (
+        <DialogContent>
+          <p>{content}</p>
+        </DialogContent>
+      )}
       <DialogActions>
         <Button onClick={onClick} color="primary">
           Bekreft

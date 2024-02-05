@@ -1,3 +1,14 @@
+import React from "react";
+//TODO: just use button from ui library, we dont need a button in a link
+interface ButtonProps {
+  label: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  outline?: boolean;
+  small?: boolean;
+  alert?: boolean;
+  icon?: any;
+}
 const Button = ({
   label,
   onClick,
@@ -6,7 +17,7 @@ const Button = ({
   small,
   alert,
   icon: Icon,
-}) => {
+}: ButtonProps) => {
   return (
     <button
       onClick={onClick}

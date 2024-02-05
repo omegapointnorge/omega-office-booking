@@ -1,4 +1,10 @@
-const Heading = ({ title, subTitle }) => {
+import React from "react";
+interface HeadingProps {
+  title: string;
+  subTitle?: string;
+}
+
+const Heading = ({ title, subTitle }: HeadingProps) => {
   return (
     <div className="text-center">
       <div className="text-2xl font-bold heading">{title}</div>
