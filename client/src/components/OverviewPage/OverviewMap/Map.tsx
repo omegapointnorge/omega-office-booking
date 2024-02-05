@@ -1,210 +1,28 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { useLocation } from "react-router-dom";
-import { useAuthContext } from "@auth/useAuthContext";
-import { ReactComponent as ZoomOutIcon } from "@assets/icons/zoom-out_outline.svg";
-import { observer } from "mobx-react-lite";
-import bookingStore from "@stores/BookingStore";
+import React from "react";
 
-import "./OverviewMap.css";
+import { Rooms } from "@/shared/types/enums";
+import { ZoomOutIcon } from "../../../shared/assets/icons/zoom-out_outline";
 
-const OverviewMap = observer(({ showSeatInfo }) => {
-  const { user } = useAuthContext() ?? {};
-  const { activeBookings, displayDate } = bookingStore;
-  const location = useLocation();
+interface MapProps {
+  currentViewBox: string;
+  zoomStatus: string;
+  zoomToRoom: (value: Rooms) => void;
+  getSeatClassName: (value: number) => string;
+  countAvailableSeats: (val1: number, val2: number) => number;
+  seatClicked: (e: React.MouseEvent<SVGPathElement>) => void;
 
-  const zoomedOutViewBoxParameters = "0 0 3725 2712";
-  const zoomedToLargeRoomViewBoxParameters = "1900 1600 1100 1050";
-  const zoomedToSmallRoomViewBoxParameters = "2600 400 900 900";
-  const zoomedToSalesBoxParameters = "0 900 800 800";
+  zoomOut: () => void;
+}
 
-  const [currentViewBox, setCurrentViewBox] = useState(
-    zoomedOutViewBoxParameters
-  );
-  const [zoomStatus, setZoomStatus] = useState("ZoomedOut");
-  const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
-
-  const userId = user?.claims?.find(
-    (claim) =>
-      claim.key ===
-      "http://schemas.microsoft.com/identity/claims/objectidentifier"
-  )?.value;
-
-  const getSeatClassName = (seatId) => {
-    const bookingForSeat = activeBookings.find(
-      (booking) =>
-        booking.seatId === seatId &&
-        isSameDate(displayDate, booking.bookingDateTime)
-    );
-
-    if (bookingForSeat) {
-      return bookingForSeat.userId === userId
-        ? "seat-booked-by-user"
-        : "seat-booked";
-    }
-
-    const isAnySeatBookedByUser = activeBookings.some(
-      (booking) =>
-        booking.userId === userId &&
-        isSameDate(displayDate, booking.bookingDateTime)
-    );
-    if (isAnySeatBookedByUser) {
-      return "seat-unavailable";
-    }
-
-    if (!hasBookingOpened()) {
-      return "seat-available-later";
-    }
-
-    return "seat-available";
-  };
-
-  const hasBookingOpened = () => {
-    let bookingOpeningTime = getEarliestAllowedBookingTime(displayDate);
-
-    let currentDateTime = new Date();
-    return currentDateTime > bookingOpeningTime;
-  };
-
-  const getEarliestAllowedBookingTime = (date) => {
-    let earliestAllowedTime = new Date(date);
-
-    // If it's Monday, set the time to the Friday before at 16:00
-    if (earliestAllowedTime.getDay() === 1) {
-      // Monday has index 1 in JavaScript (0 is Sunday)
-      earliestAllowedTime.setDate(earliestAllowedTime.getDate() - 3); // 3 days back to Friday
-    } else {
-      // Otherwise, set the time to the day before at 16:00
-      earliestAllowedTime.setDate(earliestAllowedTime.getDate() - 1);
-    }
-    earliestAllowedTime.setHours(16, 0, 0, 0);
-    return earliestAllowedTime;
-  };
-
-  const isSameDate = (date1, date2) => {
-    if (!(date1 instanceof Date) || !(date2 instanceof Date)) {
-      throw new Error("Both arguments must be Date objects.");
-    }
-
-    return date1.toDateString() === date2.toDateString();
-  };
-
-  const seatClicked = (clickEvent) => {
-    showSeatInfo(clickEvent.target.id);
-  };
-
-  const countAvailableSeats = (minSeatId, maxSeatId) => {
-    let availableSeats = 0;
-
-    for (let seatId = minSeatId; seatId <= maxSeatId; seatId++) {
-      let isSeatAvailable = true;
-
-      for (const booking of activeBookings) {
-        if (
-          booking.seatId === seatId &&
-          isSameDate(booking.bookingDateTime, displayDate)
-        ) {
-          isSeatAvailable = false;
-          break;
-        }
-      }
-
-      if (isSeatAvailable) {
-        availableSeats++;
-      }
-    }
-
-    return availableSeats;
-  };
-
-  //--------------- Zoom functionality ------------------
-
-  const zoomToRoom = (roomName) => {
-    let newViewBox;
-    // Define or calculate the new viewBox for each room
-    switch (roomName) {
-      case "large-room":
-        newViewBox = zoomedToLargeRoomViewBoxParameters;
-        break;
-      case "small-room":
-        newViewBox = zoomedToSmallRoomViewBoxParameters;
-        break;
-      case "sales":
-        newViewBox = zoomedToSalesBoxParameters;
-        break;
-      default:
-        newViewBox = zoomedOutViewBoxParameters; // Default view
-    }
-
-    setZoomStatus("Zooming");
-    animateViewBox(newViewBox, 500);
-
-    // setCurrentViewBox(newViewBox);
-  };
-
-  const updateZoomStatus = useCallback(
-    (newViewBox) => {
-      if (newViewBox === zoomedOutViewBoxParameters) {
-        setZoomStatus("ZoomedOut");
-      } else {
-        setZoomStatus("ZoomedIn");
-      }
-    },
-    [zoomedOutViewBoxParameters]
-  );
-
-  const animateViewBox = useCallback(
-    (newViewBox, duration) => {
-      const currentViewBoxValues = currentViewBoxRef.current
-        .split(" ")
-        .map(Number);
-      const newViewBoxValues = newViewBox.split(" ").map(Number);
-
-      let startTime;
-
-      const step = (timestamp) => {
-        if (!startTime) startTime = timestamp;
-        const progress = (timestamp - startTime) / duration;
-
-        if (progress < 1) {
-          const intermediateViewBox = currentViewBoxValues
-            .map((start, index) => {
-              const end = newViewBoxValues[index];
-              return start + (end - start) * progress; // Linear interpolation
-            })
-            .join(" ");
-
-          setCurrentViewBox(intermediateViewBox);
-          window.requestAnimationFrame(step);
-        } else {
-          setCurrentViewBox(newViewBox); // Ensure final value is set
-          updateZoomStatus(newViewBox);
-        }
-      };
-
-      window.requestAnimationFrame(step);
-    },
-    [updateZoomStatus]
-  ); // Remove currentViewBox from dependencies
-
-  // Update currentViewBoxRef whenever currentViewBox state changes
-  useEffect(() => {
-    currentViewBoxRef.current = currentViewBox;
-  }, [currentViewBox]);
-
-  const zoomOut = useCallback(() => {
-    console.log("zoomOut");
-    setZoomStatus("Zooming");
-    animateViewBox(zoomedOutViewBoxParameters, 500);
-  }, [animateViewBox, zoomedOutViewBoxParameters]);
-
-  useEffect(() => {
-    if (location.pathname === "/overview") {
-      zoomOut();
-    }
-  }, [location, zoomOut]);
-
-  //--------------- End of zoom functionality -----------------
-
+export const MapComponent = ({
+  currentViewBox,
+  zoomStatus,
+  zoomToRoom,
+  getSeatClassName,
+  countAvailableSeats,
+  seatClicked,
+  zoomOut,
+}: MapProps) => {
   return (
     <div className="relative">
       <svg
@@ -230,11 +48,11 @@ const OverviewMap = observer(({ showSeatInfo }) => {
               ? "zoomed-out-room origin-[55%_90%]"
               : "zoomed-in-room"
           }
-          onClick={() => zoomToRoom("large-room")}
+          onClick={() => zoomToRoom(Rooms.Large)}
         >
           <path
             id="large-room"
-            text="Large room"
+            // text="Large room"
             stroke="black"
             strokeWidth="3"
             fill={zoomStatus === "ZoomedIn" ? "ivory" : "gray"}
@@ -318,7 +136,7 @@ const OverviewMap = observer(({ showSeatInfo }) => {
               ? "zoomed-out-room origin-[85%_20%]"
               : "zoomed-in-room"
           }
-          onClick={() => zoomToRoom("small-room")}
+          onClick={() => zoomToRoom(Rooms.Small)}
         >
           <path
             id="small-room"
@@ -398,10 +216,10 @@ const OverviewMap = observer(({ showSeatInfo }) => {
           </g>
         </g>
         {/* <g className={zoomStatus === "ZoomedOut" ? 'zoomed-out-room origin-[5%_45%]' : 'zoomed-in-room'} opacity="1.0">
-          <path id="sales" stroke="black" strokeWidth="3" fill="gray" d="m112.43 963.79 41.366 644.88 561.8-5.3033-19.092-641.7z" onClick={() => zoomToRoom('sales')}/>
-          <text x="300" y="1100" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" fontSize="65" fontWeight="bolder" fontFamily="Arial">Sales</text>
-          <text x="220" y="1180" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" fontSize="55" fontWeight="bolder" fontFamily="Arial">Available Seats:</text>
-        </g> */}
+              <path id="sales" stroke="black" strokeWidth="3" fill="gray" d="m112.43 963.79 41.366 644.88 561.8-5.3033-19.092-641.7z" onClick={() => zoomToRoom('sales')}/>
+              <text x="300" y="1100" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" fontSize="65" fontWeight="bolder" fontFamily="Arial">Sales</text>
+              <text x="220" y="1180" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" fontSize="55" fontWeight="bolder" fontFamily="Arial">Available Seats:</text>
+            </g> */}
         <g
           className={zoomStatus === "ZoomedIn" ? "" : "hidden"}
           stroke="#000"
@@ -412,7 +230,7 @@ const OverviewMap = observer(({ showSeatInfo }) => {
           <path
             id="11"
             className={getSeatClassName(11)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
+            onClick={seatClicked}
             d="m3368.5 1006.4-2.4516 5.6913a18.462 18.462 23.305 0 1-10.134 9.853l-5.0215 1.9979 50.866 21.911-1.998-5.0216a18.462 18.462 23.305 0 1 0.1983-14.133l2.4516-5.6913m63.126-53.214-23.737 55.105a13.846 13.846 23.305 0 1-18.194 7.2387l-76.299-32.867a13.846 13.846 23.305 0 1-7.2386-18.194l23.737-55.105m101.73 43.823a13.846 13.846 23.305 0 0-7.2386-18.194l-76.299-32.867a13.846 13.846 23.305 0 0-18.194 7.2387m101.73 43.823-16.434 38.149a13.846 13.846 23.305 0 1-18.194 7.2387l-76.299-32.867a13.846 13.846 23.305 0 1-7.2386-18.194l16.434-38.15"
           />
           <path
@@ -516,10 +334,8 @@ const OverviewMap = observer(({ showSeatInfo }) => {
         }`}
         onClick={() => zoomOut()}
       >
-        <ZoomOutIcon className="h-6 w-6 inline-block mr-1" />
+        <ZoomOutIcon class="h-6 w-6 inline-block mr-1" />
       </button>
     </div>
   );
-});
-
-export default OverviewMap;
+};
