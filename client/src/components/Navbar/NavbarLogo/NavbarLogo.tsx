@@ -1,3 +1,4 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 export const NavbarLogo = () => {
@@ -18,6 +19,12 @@ export const NavbarLogo = () => {
 
 export const NavbarLogoBig = () => {
   return (
-    <img alt="Big Logo" height="120" width="315" className=" mx-auto" src="/omegapoint-logo-black-1200.png" />
-  )
-}
+    <img
+      alt="Big Logo"
+      height="120"
+      width="315"
+      className=" mx-auto"
+      src="/omegapoint-logo-black-1200.png"
+    />
+  );
+};
