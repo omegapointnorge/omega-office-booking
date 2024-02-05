@@ -11,7 +11,7 @@ import './OverviewMap.css'
 const OverviewMap = observer(({showSeatInfo}) => {
 
     const { user } = useAuthContext() ?? {};
-    const { activeBookings, eventAdminSeletedBookings, displayDate } = bookingStore;
+    const { activeBookings, eventAdminSeletedBookings, displayDate,userBookingMode } = bookingStore;
     const {rooms} = historyStore;
     const location = useLocation();
     
@@ -23,7 +23,7 @@ const OverviewMap = observer(({showSeatInfo}) => {
 
     const [currentViewBox, setCurrentViewBox] = useState(zoomedOutViewBoxParameters);
     const [zoomStatus, setZoomStatus] = useState("ZoomedOut")
-    const [userBookingMode, setUserBookingMode] = useState("NormalMode")
+    // const [userBookingMode, setUserBookingMode] = useState("NormalMode")
     const [selectedRoom, setSelectedRoom] = useState(null);
     const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
@@ -315,9 +315,9 @@ useEffect(() => {
     <label for="" class="w-1/4">Din modus:</label>
     <div class="w-3/4">
         <div class="flex">
-            <button type="button" className={`flex-1 py-2 px-4 rounded-l-lg border-gray-400 cursor-pointer ${ isMultiBookingDayAdminMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => setUserBookingMode(event.target.value)} value="MultiBookingDayAdminMode"  style={{ display: (isMultiBookingDayAdmin) ? 'block' : 'none' }}>Booke for lengre perioder</button>
-            <button type="button" className={`flex-1 py-2 px-4 border-gray-400 cursor-pointer ${ isEventAdminMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => setUserBookingMode(event.target.value)} value="EventBookingMode" style={{ display: (isEventAdmin) ? 'block' : 'none' }}>Event</button>
-            <button type="button" className={`flex-1 py-2 px-4 rounded-r-lg border-gray-400 cursor-pointer ${ isNormalMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => setUserBookingMode(event.target.value)} value="NormalMode" style={{ display: (isMultiBookingDayAdmin || isEventAdmin) ? 'block' : 'none' }}>Normal booking</button>
+            <button type="button" className={`flex-1 py-2 px-4 rounded-l-lg border-gray-400 cursor-pointer ${ isMultiBookingDayAdminMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => bookingStore.setUserBookingMode(event.target.value)} value="MultiBookingDayAdminMode"  style={{ display: (isMultiBookingDayAdmin) ? 'block' : 'none' }}>Booke for lengre perioder</button>
+            <button type="button" className={`flex-1 py-2 px-4 border-gray-400 cursor-pointer ${ isEventAdminMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => bookingStore.setUserBookingMode(event.target.value)} value="EventBookingMode" style={{ display: (isEventAdmin) ? 'block' : 'none' }}>Event</button>
+            <button type="button" className={`flex-1 py-2 px-4 rounded-r-lg border-gray-400 cursor-pointer ${ isNormalMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => bookingStore.setUserBookingMode(event.target.value)} value="NormalMode" style={{ display: (isMultiBookingDayAdmin || isEventAdmin) ? 'block' : 'none' }}>Normal booking</button>
         </div>
     </div>
 </div>

@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import bookingStore from '@stores/BookingStore';
 
 const OverviewDateSwitchButton = observer(() => {
-    const { displayDate } = bookingStore
+    const { displayDate,userBookingMode } = bookingStore
 
     const today = new Date();
 
@@ -55,6 +55,12 @@ const OverviewDateSwitchButton = observer(() => {
 
   return (
     <div className="flex items-center justify-center py-4">
+           <button
+        className={`px-4 py-2 text-sm font-medium rounded-l-lg bg-gray-200`}
+        style={{ display: (userBookingMode === "NormalMode") ? 'block' : 'none' }}
+      >
+      users Normal mode
+      </button>
       <button
         className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
         isSameDate(displayDate, today) ? 'bg-blue-500 text-white' : 'bg-gray-200'

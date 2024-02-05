@@ -9,6 +9,7 @@ class BookingStore {
   activeBookings = [];
   userBookings = [];
   eventAdminSeletedBookings= [];
+  userBookingMode = "NormalMode";
   displayDate = new Date()
 
   constructor() {
@@ -90,8 +91,8 @@ class BookingStore {
 
             }
             else {
-                this.fetchAllActiveBookings();
-                // historyStore.fetchMyBookings();
+                await this.fetchAllActiveBookings();
+                // historyStore refresh history
             }
 
         } catch (error) {
@@ -129,6 +130,10 @@ class BookingStore {
 
   setDisplayDate(date) {
     this.displayDate = date;
+  }
+
+  setUserBookingMode(mode) {
+    this.userBookingMode = mode;
   }
 
     // Update active bookings
