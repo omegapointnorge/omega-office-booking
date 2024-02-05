@@ -1,6 +1,6 @@
 import React from "react";
 //TODO: just use button from ui library, we dont need a button in a link
-interface ButtonProps {
+interface LoginButtonProps {
   label: string;
   onClick?: () => void;
   disabled?: boolean;
@@ -9,7 +9,7 @@ interface ButtonProps {
   alert?: boolean;
   icon?: any;
 }
-const Button = ({
+export const LoginButton = ({
   label,
   onClick,
   disabled,
@@ -17,7 +17,7 @@ const Button = ({
   small,
   alert,
   icon: Icon,
-}: ButtonProps) => {
+}: LoginButtonProps) => {
   return (
     <button
       onClick={onClick}
@@ -47,5 +47,3 @@ const Button = ({
     </button>
   );
 };
-
-export default Button;
