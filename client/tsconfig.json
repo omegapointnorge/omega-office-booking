@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "jsx": "react",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "lib": ["es2015", "es2017.object"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/App.js"],
+  "extends": "./jsconfig.paths.json",
+  "exclude": ["node_modules"]
+}
