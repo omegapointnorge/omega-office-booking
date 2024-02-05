@@ -33,18 +33,24 @@ const OverviewMap = observer(({showSeatInfo}) => {
     const isNormalMode = userBookingMode === "NormalMode";
     const getSeatClassName = (seatId) => {
       const bookingForSeat = activeBookings.find(booking => booking.seatId === seatId && isSameDate(displayDate, booking.bookingDateTime));
-    
+      if(isEventAdminMode){
+        if (eventAdminSeletedBookings.includes(seatId.toString())) {
+          return "seat-chosen"
+        }
+      }
       if (bookingForSeat) {
         return bookingForSeat.userId === userId ? "seat-booked-by-user" : "seat-booked";
       }
       
       const isAnySeatBookedByUser = activeBookings.some(booking => booking.userId === userId && isSameDate(displayDate, booking.bookingDateTime));
-      if (isAnySeatBookedByUser) {
+      if(isNormalMode){
+      if (isAnySeatBookedByUser ) {
         return "seat-unavailable"
       }
 
       if (!hasBookingOpened()) {
         return "seat-available-later"
+        }
       }
       return "seat-available";
     }
@@ -80,7 +86,16 @@ const OverviewMap = observer(({showSeatInfo}) => {
     } 
 
     const seatClicked = (clickEvent) => {
-      showSeatInfo(clickEvent.target.id)
+      if (isNormalMode)
+      showSeatInfo(clickEvent.target.id, userBookingMode);
+        if (isEventAdminMode) {
+
+          if(activeBookings.some(booking => booking.seatId === Number(clickEvent.target.id) && isSameDate(displayDate, booking.bookingDateTime) && booking.userId === userId))
+          showSeatInfo(clickEvent.target.id, "NormalMode");
+          else
+            bookingStore.addEventAdminSeletedBookings(clickEvent.target.id);
+        }
+      
   }
 
   const countAvailableSeats = (minSeatId, maxSeatId) => {
@@ -186,10 +201,28 @@ const OverviewMap = observer(({showSeatInfo}) => {
 
 
 //--------------- End of zoom functionality -----------------
-
+useEffect(() => {
+  if (isNormalMode) {
+    bookingStore.resetSelectedSeatId();
+  }
+}, [isNormalMode]);
+//--------------- End of Mode functionality -----------------
   return (
     <div className='relative'>
       <svg version="1.1" width="745" height="500" viewBox={currentViewBox} xmlns="http://www.w3.org/2000/svg">
+      <defs>
+    <pattern id="chosenPattern" patternUnits="userSpaceOnUse" width="40" height="40">
+
+<g>
+	<path fill="#808184" d="M22.01,9.989c-0.195-0.195-0.512-0.195-0.707,0L16,15.293l-5.303-5.304c-0.195-0.195-0.512-0.195-0.707,0
+		s-0.195,0.512,0,0.707L15.293,16L9.99,21.304c-0.195,0.195-0.195,0.512,0,0.707c0.098,0.098,0.226,0.146,0.354,0.146
+		s0.256-0.049,0.354-0.146L16,16.707l5.303,5.304c0.098,0.098,0.226,0.146,0.354,0.146s0.256-0.049,0.354-0.146
+		c0.195-0.195,0.195-0.512,0-0.707L16.707,16l5.303-5.304C22.206,10.501,22.206,10.185,22.01,9.989z"/>
+</g>
+
+      </pattern>
+      
+      </defs>
         <g opacity="1.0" stroke="black" strokeWidth="3" fill="none">
           <path d="m897.96 1834.7 683.29-5.5963 38.242 3.6077 42.571 14.792 36.077 23.811 23.089 24.532 7.2154 9.38 9.7407 18.038 11.905 29.222 4.69 18.399 1.4431 172.81-51.229 167.4-675.36-128.79-1.0823-138.17-122.3 0.7216z"/>
           <path d="m2200.7 845.46 632.73-4.9004-140.82 321.68-495.92 1.0204z"/>
@@ -256,13 +289,16 @@ const OverviewMap = observer(({showSeatInfo}) => {
       <button className={`absolute top-0 right-0 m-2 p-2 bg-gray-200 text-black rounded hover:bg-gray-300 text-s ${zoomStatus === "ZoomedIn" ? '' : 'opacity-50 cursor-not-allowed'}`} onClick={() => zoomOut()}>
         <ZoomOutIcon className="h-6 w-6 inline-block mr-1" />
       </button>
-      <button type="radio" class="flex-1 bg-blue-200 text-gray-700 py-2 px-4 rounded-r-md" style={{ display: (isEventAdmin && isEventAdminMode) ? 'block' : 'none' }}
-      ><span><strong>Vennligst velg seter første og Gå videre</strong></span>
+      <button className={`absolute top-10 right-0 m-2 p-2 bg-gray-200 text-black rounded hover:bg-gray-300 text-s ${zoomStatus === "ZoomedIn" ? '' : 'opacity-50 cursor-not-allowed'}`} onClick={() => zoomOut()}>
+        <ZoomOutIcon className="h-6 w-6 inline-block mr-1" />
+      </button>
+      <button type="radio" className={`absolute top-0 right-20 bg-blue-200 m-2 p-2 text-black rounded hover:bg-blue-300 text-s ${eventAdminSeletedBookings.length === 0? 'opacity-50 cursor-not-allowed' : ''}`} onClick={() => showSeatInfo(eventAdminSeletedBookings,"EventBookingMode")} style={{ display: (isEventAdmin && isEventAdminMode && zoomStatus === "ZoomedIn") ? 'block' : 'none' }}
+      ><span><strong> {eventAdminSeletedBookings.length === 0? "Vennligst velg seter første": "Gå videre til booking"} </strong></span>
       </button>
     </div>
 
     <div class="flex items-center">
-    <label for="" class="w-1/4">Your mode:</label>
+    <label for="" class="w-1/4">Din modus:</label>
     <div class="w-3/4">
         <div class="flex">
             <button type="button" className={`flex-1 py-2 px-4 rounded-l-lg border-gray-400 cursor-pointer ${ isMultiBookingDayAdminMode ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} onClick={(event) => setUserBookingMode(event.target.value)} value="MultiBookingDayAdminMode"  style={{ display: (isMultiBookingDayAdmin) ? 'block' : 'none' }}>Booke for lengre perioder</button>

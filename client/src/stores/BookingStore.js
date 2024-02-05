@@ -1,14 +1,14 @@
 import { makeAutoObservable } from "mobx";
-import { CreateBookingRequest,CreateEventBookingRequest } from "@models/booking.js";
-import Booking from "@models/booking.js";
+import { CreateBookingRequest } from "../domain/booking";
+import Booking from '../domain/booking';
 import toast from "react-hot-toast";
-import ApiService from "@services/ApiService";
-import historyStore from "@stores/HistoryStore";
+import ApiService from "./ApiService.jsx";
+import historyStore from "./HistoryStore";
 
 class BookingStore {
   activeBookings = [];
   userBookings = [];
-  eventAdminSeletedBookings= [];
+  eventAdminSeletedBookings = [];
   displayDate = new Date()
 
   constructor() {
@@ -69,36 +69,6 @@ class BookingStore {
         }
     }
 
-    async createBookingForEvent(selectedSeatIds) {
-      const bookingRequest = new CreateEventBookingRequest(selectedSeatIds, this.displayDate);
-        try {
-            const response = await fetch('/api/Booking/CreateEventBookingsForSeats', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    "Access-Control-Allow-Origin": "*",
-                },
-                body: JSON.stringify(bookingRequest),
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error:', errorText);
-                toast.error("Error creating booking:" + errorText);
-               //refresh the page in case someone has booked the seat recently
-                await this.fetchAllActiveBookings();
-
-            }
-            else {
-                this.fetchAllActiveBookings();
-                // historyStore.fetchMyBookings();
-            }
-
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
     //TODO try to reuse the same deletebooking logic like HistoryStore
     async deleteBooking(booking) {
       try {
@@ -130,24 +100,19 @@ class BookingStore {
   setDisplayDate(date) {
     this.displayDate = date;
   }
-
     // Update active bookings
     setActiveBookings(bookings) {
         this.activeBookings = bookings;
     }
 
-
     // Update user bookings
     setUserBookings(bookings) {
         this.userBookings = bookings;
     }
-
-    addEventAdminSeletedBookings(id) {
-      this.eventAdminSeletedBookings.push(id);
+       // Update user bookings
+    setEventAdminSeletedBookings(eventBookings) {
+        this.eventAdminSeletedBookings = eventBookings;
     }
-    resetSelectedSeatId() {
-     this.eventAdminSeletedBookings = [];
-   }
 
 }
 

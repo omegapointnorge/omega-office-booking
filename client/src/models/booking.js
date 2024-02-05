@@ -16,6 +16,14 @@ export class CreateBookingRequest {
   }
 }
 
+export class CreateEventBookingRequest {
+  constructor(seatIds, bookingDateTime) {
+    this.SeatList = seatIds;
+    this.bookingDateTime = bookingDateTime.toISOString();
+    this.IsEvent = true;
+  }
+}
+
 export class DeleteBookingRequest {
   constructor(bookingId) {
     this.bookingId = bookingId

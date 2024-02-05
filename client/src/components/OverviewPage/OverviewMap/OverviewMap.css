@@ -20,6 +20,11 @@
     pointer-events: none;
   }
 
+  .seat-chosen {
+    fill: url(#chosenPattern);
+    pointer-events: none;
+  }
+
   .seat-booked-by-user:hover,
   .seat-booked:hover,
   .seat-available:hover {
