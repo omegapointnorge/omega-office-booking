@@ -1,4 +1,5 @@
 import React from "react";
+
 interface HeadingProps {
   title: string;
   subTitle?: string;

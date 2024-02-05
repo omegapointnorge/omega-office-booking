@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ESNext",
     "module": "commonjs",
     "jsx": "react",
     "strict": true,
@@ -9,9 +9,9 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "isolatedModules": true,
-    "lib": ["es2015", "es2017.object"]
+    "lib": ["es2015", "es2017.object", "DOM.Iterable", "DOM"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/App.js"],
+  "include": ["src"],
   "extends": "./jsconfig.paths.json",
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "src/**/*.d.ts"]
 }
