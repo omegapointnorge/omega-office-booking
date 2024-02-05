@@ -122,10 +122,11 @@ const OverviewMap = observer(({showSeatInfo}) => {
     return availableSeats;
   }
 
-  const chooseAllSeats = () => {
+  const chooseAllSeatsAndBook = () => {
     const currentRoom = rooms.find(room => room.id == selectedRoom);
     const seats = currentRoom.seats;
     seats.forEach(seat => eventAdminSeletedBookings.push(seat.id));
+    showSeatInfo(eventAdminSeletedBookings,"EventBookingMode")
   }
 
 
@@ -302,7 +303,7 @@ useEffect(() => {
       <button className={`absolute top-0 right-0 m-2 p-2 bg-gray-200 text-black rounded hover:bg-gray-300 text-s ${zoomStatus === "ZoomedIn" ? '' : 'opacity-50 cursor-not-allowed'}`} onClick={() => zoomOut()}>
         <ZoomOutIcon className="h-6 w-6 inline-block mr-1" />
       </button>
-      <button className={`absolute top-10 right-0 m-2 p-2 bg-gray-200 text-black rounded hover:bg-gray-300 text-s 'opacity-50'}`} style={{ display: (zoomStatus === "ZoomedIn") ? 'block' : 'none' }} onClick={() => chooseAllSeats()}>
+      <button className={`m-2 p-2 bg-green-300 text-black rounded hover:bg-green-100 text-s 'opacity-50'}`} style={{ display: (zoomStatus === "ZoomedIn" && eventAdminSeletedBookings.length === 0 && isEventAdminMode) ? 'block' : 'none'  }} onClick={() => chooseAllSeatsAndBook()}>
         Velg Alle Seter
       </button>
       <button type="radio" className={`absolute top-0 right-20 bg-blue-200 m-2 p-2 text-black rounded hover:bg-blue-300 text-s ${eventAdminSeletedBookings.length === 0? 'opacity-50 cursor-not-allowed' : ''}`} onClick={() => showSeatInfo(eventAdminSeletedBookings,"EventBookingMode")} style={{ display: (isEventAdmin && isEventAdminMode && zoomStatus === "ZoomedIn") ? 'block' : 'none' }}
