@@ -4,7 +4,11 @@ type ApiOptionsType = {
   body?: string | null;
 };
 class ApiService {
-  async fetchData<T>(url: string, method: string, body: unknown | null = null) {
+  async fetchData<_T>(
+    url: string,
+    method: string,
+    body: unknown | null = null
+  ) {
     const options: ApiOptionsType = {
       method,
       headers: {

@@ -55,7 +55,8 @@ export const createBookingRequest = ({
 //   }
 // }
 
-export const deleteBookingRequest = (id: { id: number }) => {
+//TODO: trenger vi denne?
+export const deleteBookingRequest = (id: number) => {
   //TODO: check if it exsist and then send deleteReq
   const bookingExist = true;
   if (bookingExist) {

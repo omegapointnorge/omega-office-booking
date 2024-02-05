@@ -42,14 +42,14 @@ class HistoryStore {
     try {
       const url = "/api/room/rooms";
       const response = await ApiService.fetchData<Room[]>(url, "Get", null);
-      const data = (await response.json()) as Room[];
+      const data = (await response.json()) as { result: any; value: Room[] };
 
       //   this.rooms = data.value.map(
       //     (room) => new Room(room.id, room.name, room.seats)
       //   );
       //   this.rooms = data.value;
-      console.log("seatIdToRoomId", data);
-      this.rooms = data;
+      console.log("seatIdToRoomId", data.value);
+      this.rooms = data.value;
     } catch (error) {
       console.error("Error fetching bookings:", error);
     }

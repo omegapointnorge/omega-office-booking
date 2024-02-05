@@ -27,10 +27,10 @@ class BookingStore {
         "Get"
       );
 
-      const bookingsAsJson = (await response.json()) as Booking[];
+      const bookingsAsJson = (await response.json()) as { value: Booking[] };
       //TODO: test
       console.log(" bookingsAsJson ", bookingsAsJson);
-      const bookings = this.convertJsonObjectsToBookings(bookingsAsJson);
+      const bookings = this.convertJsonObjectsToBookings(bookingsAsJson.value);
 
       this.setActiveBookings(bookings);
     } catch (error) {
