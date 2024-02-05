@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { createBookingRequest } from "@models/booking";
+import { createBooking, createBookingRequest } from "@models/booking";
 import toast from "react-hot-toast";
 import ApiService from "@services/ApiService";
 import historyStore from "@stores/HistoryStore";
@@ -28,8 +28,6 @@ class BookingStore {
       );
 
       const bookingsAsJson = (await response.json()) as { value: Booking[] };
-      //TODO: test
-      console.log(" bookingsAsJson ", bookingsAsJson);
       const bookings = this.convertJsonObjectsToBookings(bookingsAsJson.value);
 
       this.setActiveBookings(bookings);
@@ -62,7 +60,6 @@ class BookingStore {
         await this.fetchAllActiveBookings();
       } else {
         const newBookingJson = (await response.json()) as Booking;
-        console.log("test - newBookingJson", newBookingJson);
         const newBooking: Booking = newBookingJson;
         // const newBookingData = newBookingJson.value;
         // const newBooking = new Booking(
@@ -111,17 +108,7 @@ class BookingStore {
   }
 
   convertJsonObjectsToBookings(jsonArray: Booking[]) {
-    return jsonArray;
-    // return jsonArray.map(
-    //   (obj) =>
-    //     new Booking(
-    //       obj.id,
-    //       obj.userId,
-    //       obj.userName,
-    //       obj.seatId,
-    //       obj.bookingDateTime
-    //     )
-    // );
+    return jsonArray.map((obj) => createBooking(obj));
   }
 
   setDisplayDate(date: Date) {
