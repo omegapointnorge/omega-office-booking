@@ -4,13 +4,15 @@ import { useAuthContext } from '@auth/useAuthContext';
 import {ReactComponent as ZoomOutIcon} from '@assets/icons/zoom-out_outline.svg'
 import { observer } from 'mobx-react-lite';
 import bookingStore from '@stores/BookingStore';
+import historyStore from '@stores/HistoryStore';
 import './OverviewMap.css'
 
 
 const OverviewMap = observer(({showSeatInfo}) => {
 
     const { user } = useAuthContext() ?? {};
-    const { activeBookings, eventAdminSeletedBookings, displayDate } = bookingStore
+    const { activeBookings, eventAdminSeletedBookings, displayDate } = bookingStore;
+    const {rooms} = historyStore;
     const location = useLocation();
     
 
@@ -22,6 +24,7 @@ const OverviewMap = observer(({showSeatInfo}) => {
     const [currentViewBox, setCurrentViewBox] = useState(zoomedOutViewBoxParameters);
     const [zoomStatus, setZoomStatus] = useState("ZoomedOut")
     const [userBookingMode, setUserBookingMode] = useState("NormalMode")
+    const [selectedRoom, setSelectedRoom] = useState(null);
     const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
     const userId = user?.claims?.find(claim => claim.key === 'http://schemas.microsoft.com/identity/claims/objectidentifier')?.value;
@@ -119,6 +122,13 @@ const OverviewMap = observer(({showSeatInfo}) => {
     return availableSeats;
   }
 
+  const chooseAllSeats = () => {
+    const currentRoom = rooms.find(room => room.id == selectedRoom);
+    const seats = currentRoom.seats;
+    seats.forEach(seat => eventAdminSeletedBookings.push(seat.id));
+  }
+
+
 
     //--------------- Zoom functionality ------------------
 
@@ -128,9 +138,11 @@ const OverviewMap = observer(({showSeatInfo}) => {
       // Define or calculate the new viewBox for each room
       switch (roomName) {
         case 'large-room':
+          setSelectedRoom(1);
           newViewBox = zoomedToLargeRoomViewBoxParameters; 
           break;
         case 'small-room':
+          setSelectedRoom(2);
           newViewBox = zoomedToSmallRoomViewBoxParameters; 
           break;
         case 'sales':
@@ -189,6 +201,7 @@ const OverviewMap = observer(({showSeatInfo}) => {
 
     const zoomOut = useCallback(() => {
       console.log("zoomOut")
+      setSelectedRoom(null);
       setZoomStatus("Zooming");
       animateViewBox(zoomedOutViewBoxParameters, 500);
   }, [animateViewBox, zoomedOutViewBoxParameters]);
@@ -289,8 +302,8 @@ useEffect(() => {
       <button className={`absolute top-0 right-0 m-2 p-2 bg-gray-200 text-black rounded hover:bg-gray-300 text-s ${zoomStatus === "ZoomedIn" ? '' : 'opacity-50 cursor-not-allowed'}`} onClick={() => zoomOut()}>
         <ZoomOutIcon className="h-6 w-6 inline-block mr-1" />
       </button>
-      <button className={`absolute top-10 right-0 m-2 p-2 bg-gray-200 text-black rounded hover:bg-gray-300 text-s ${zoomStatus === "ZoomedIn" ? '' : 'opacity-50 cursor-not-allowed'}`} onClick={() => zoomOut()}>
-        <ZoomOutIcon className="h-6 w-6 inline-block mr-1" />
+      <button className={`absolute top-10 right-0 m-2 p-2 bg-gray-200 text-black rounded hover:bg-gray-300 text-s 'opacity-50'}`} style={{ display: (zoomStatus === "ZoomedIn") ? 'block' : 'none' }} onClick={() => chooseAllSeats()}>
+        Velg Alle Seter
       </button>
       <button type="radio" className={`absolute top-0 right-20 bg-blue-200 m-2 p-2 text-black rounded hover:bg-blue-300 text-s ${eventAdminSeletedBookings.length === 0? 'opacity-50 cursor-not-allowed' : ''}`} onClick={() => showSeatInfo(eventAdminSeletedBookings,"EventBookingMode")} style={{ display: (isEventAdmin && isEventAdminMode && zoomStatus === "ZoomedIn") ? 'block' : 'none' }}
       ><span><strong> {eventAdminSeletedBookings.length === 0? "Vennligst velg seter første": "Gå videre til booking"} </strong></span>
