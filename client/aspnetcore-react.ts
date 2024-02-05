@@ -2,8 +2,10 @@
 // development certificate in the webpack development proxy.
 /// <reference types="node" />
 
-import fs from "fs";
-import path from "path";
+// import fs from "fs";
+// import path from "path";
+let fs = require("fs");
+let path = require("path");
 
 const baseFolder =
   process.env.APPDATA !== undefined && process.env.APPDATA !== ""
@@ -14,7 +16,7 @@ const certificateArg = process.argv
   .map((arg) => arg.match(/--name=(?<value>.+)/i))
   .filter(Boolean)[0];
 const certificateName = certificateArg
-  ? certificateArg.groups!.value
+  ? certificateArg.groups?.value
   : process.env.npm_package_name;
 
 if (!certificateName) {

@@ -2,6 +2,13 @@
   "name": "react-office-booking",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "prestart": "node aspnetcore-https.ts && node aspnetcore-react.ts",
+    "start": "rimraf ./build && craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
+  },
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -24,13 +31,6 @@
     "react-scripts": "^5.0.1",
     "rimraf": "^5.0.5",
     "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "prestart": "ts-node aspnetcore-https.ts && ts-node aspnetcore-react.ts",
-    "start": "rimraf ./build && craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "craco eject"
   },
   "eslintConfig": {
     "extends": [

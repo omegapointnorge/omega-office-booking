@@ -1,4 +1,4 @@
-import { createProxyMiddleware } from "http-proxy-middleware";
+import { RequestHandler, createProxyMiddleware } from "http-proxy-middleware";
 import { env } from "process";
 
 const target = env.ASPNETCORE_HTTPS_PORT
@@ -13,7 +13,7 @@ const onError = (err: { message: any }, req: any, resp: any, target: any) => {
   console.error(`${err.message}`);
 };
 
-module.exports = function (app: { use: (arg0: any) => void }) {
+module.exports = function (app: { use: (arg0: RequestHandler) => void }) {
   const appProxy = createProxyMiddleware(context, {
     target: target,
     onError: onError,
