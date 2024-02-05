@@ -12,6 +12,6 @@
     "lib": ["es2015", "es2017.object", "DOM.Iterable", "DOM"]
   },
   "include": ["src"],
-  "extends": "./jsconfig.paths.json",
-  "exclude": ["node_modules", "src/**/*.d.ts"]
+  "extends": "./tsconfig.paths.json",
+  "exclude": ["node_modules"]
 }
