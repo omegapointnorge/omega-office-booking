@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
@@ -21,7 +20,7 @@ namespace server.Services.Internal
             _bookingRepository = bookingRepository;
         }
 
-        public async Task<ActionResult<BookingDto>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user)
+        public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, User user)
         {
             try
             {
@@ -52,7 +51,7 @@ namespace server.Services.Internal
             }
         }
 
-        public async Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, User user)
+        public async Task<IEnumerable<BookingDto>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, User user)
         {
             try
             {
@@ -103,7 +102,7 @@ namespace server.Services.Internal
         }
 
 
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings()
+        public async Task<IEnumerable<BookingDto>> GetAllActiveBookings()
         {
             try
             {
@@ -118,7 +117,7 @@ namespace server.Services.Internal
         }
 
 
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(string userId)
+        public async Task<IEnumerable<BookingDto>> GetAllBookingsForUser(string userId)
         {
             try
             {
@@ -132,7 +131,7 @@ namespace server.Services.Internal
         }
 
 
-        public async Task<ActionResult> DeleteBookingAsync(int bookingId, User user)
+        public async Task DeleteBookingAsync(int bookingId, User user)
         {
             try
             {
@@ -140,18 +139,17 @@ namespace server.Services.Internal
 
                 if (booking == null)
                 {
-                    return new NotFoundObjectResult($"Booking with ID {bookingId} not found for user {user.UserId}");
+                    throw new Exception($"Booking with ID {bookingId} not found for user {user.UserId}");
                 }
 
                 await _bookingRepository.DeleteAndCommit(booking);
-                return new StatusCodeResult(StatusCodes.Status200OK);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                // Log the exception or handle it accordingly
+                throw new Exception("An error occurred while deleting the booking.", ex);
             }
         }
-
 
         private static List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
         {

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
@@ -7,15 +6,15 @@ namespace server.Services.Internal
 {
     public interface IBookingService
     {
-        Task<ActionResult> DeleteBookingAsync(int id, User user);
+        Task DeleteBookingAsync(int id, User user);
 
-        Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings();
+        Task<IEnumerable<BookingDto>> GetAllActiveBookings();
 
-        Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(string userid);
+        Task<IEnumerable<BookingDto>> GetAllBookingsForUser(string userid);
 
-        Task<ActionResult<BookingDto>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user);
+        Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, User user);
 
-        Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, User user);
+        Task<IEnumerable<BookingDto>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, User user);
 
 
     }

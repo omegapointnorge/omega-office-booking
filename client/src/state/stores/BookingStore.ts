@@ -62,8 +62,8 @@ class BookingStore {
 
         const newBookingJson = await response.json();
         const newBooking: Booking = {
-          ...newBookingJson.value,
-          bookingDateTime: new Date(newBookingJson.value.bookingDateTime),
+          ...newBookingJson,
+          bookingDateTime: new Date(newBookingJson.bookingDateTime),
         };
         // const newBookingData = newBookingJson.value;
         // const newBooking = new Booking(
