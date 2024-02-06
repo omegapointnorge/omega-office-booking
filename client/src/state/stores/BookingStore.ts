@@ -59,8 +59,12 @@ class BookingStore {
         //refresh the page in case someone has booked the seat recently
         await this.fetchAllActiveBookings();
       } else {
-        const newBookingJson = (await response.json()) as Booking;
-        const newBooking: Booking = newBookingJson;
+
+        const newBookingJson = await response.json();
+        const newBooking: Booking = {
+          ...newBookingJson.value,
+          bookingDateTime: new Date(newBookingJson.value.bookingDateTime),
+        };
         // const newBookingData = newBookingJson.value;
         // const newBooking = new Booking(
         //   newBookingData.id,
