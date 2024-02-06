@@ -4,7 +4,6 @@ type ApiOptionsType = {
   body?: string | null;
 };
 class ApiService {
-  // eslint-disable-next-line no-unused-vars
   async fetchData<_T>(
     url: string,
     method: string,
