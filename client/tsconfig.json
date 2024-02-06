@@ -10,7 +10,8 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "lib": ["es2015", "es2017.object", "DOM.Iterable", "DOM"],
-    "no-unused-vars": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
   },
   "include": ["src"],
   "extends": "./jsconfig.paths.json",
