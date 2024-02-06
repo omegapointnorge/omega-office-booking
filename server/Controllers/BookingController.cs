@@ -26,7 +26,7 @@ namespace server.Controllers
             try
             {
                 var result = await _bookingService.GetAllActiveBookings();
-                return new OkObjectResult(result.Value);
+                return new OkObjectResult(result);
             }
             catch (Exception ex)
             {
@@ -88,7 +88,7 @@ namespace server.Controllers
                 var user = GetUser();
                 var result = await _bookingService.GetAllBookingsForUser(user.UserId);
 
-                return new OkObjectResult(result.Value);
+                return new OkObjectResult(result);
             }
             catch (Exception ex)
             {
@@ -109,8 +109,7 @@ namespace server.Controllers
             try
             {
                 var user = GetUser();
-                var deleteResponse = await _bookingService.DeleteBookingAsync(bookingId, user);
-
+                await _bookingService.DeleteBookingAsync(bookingId, user);
                 return NoContent();
             }
             catch (Exception ex)
