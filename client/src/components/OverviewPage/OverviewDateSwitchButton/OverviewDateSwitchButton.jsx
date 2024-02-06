@@ -1,9 +1,14 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import bookingStore from '@stores/BookingStore';
+import { Calendar } from "react-multi-date-picker";
+
 
 const OverviewDateSwitchButton = observer(() => {
-    const { displayDate,userBookingMode } = bookingStore
+    const { displayDate  } = bookingStore
+    const isEventAdminMode = bookingStore.userBookingMode === "EventBookingMode";
+    console.log(bookingStore.userBookingMode)
+
 
     const today = new Date();
 
@@ -54,31 +59,42 @@ const OverviewDateSwitchButton = observer(() => {
     } 
 
   return (
-    <div className="flex items-center justify-center py-4">
-           <button
-        className={`px-4 py-2 text-sm font-medium rounded-l-lg bg-gray-200`}
-        style={{ display: (userBookingMode === "NormalMode") ? 'block' : 'none' }}
-      >
-      users Normal mode
-      </button>
-      <button
-        className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
-        isSameDate(displayDate, today) ? 'bg-blue-500 text-white' : 'bg-gray-200'
-        }`}
-        onClick={() => handleDateChange('today')}
-      >
-      {formatDate(today)}
-      </button>
-      <button
-        className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
-        isSameDate(displayDate, nextWorkday) ? 'bg-blue-500 text-white' : 'bg-gray-200'
-        }`}
-        onClick={() => handleDateChange('nextWorkDay')}
-      >
-        {formatDate(nextWorkday)}
-      </button>
+    <div className="flex items-center justify-center py-4">   
+      <>
+        {isEventAdminMode ? (
+          <Calendar
+            value={displayDate} 
+            onChange={(newDate) => bookingStore.setDisplayDate(newDate)}
+            minDate={today}
+          />
+        ) : (
+          <>
+            <button
+              className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
+                isSameDate(displayDate, today)
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200"
+              }`}
+              onClick={() => handleDateChange("today")}
+            >
+              {formatDate(today)}
+            </button>
+            <button
+              className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
+                isSameDate(displayDate, nextWorkday)
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200"
+              }`}
+              onClick={() => handleDateChange("nextWorkDay")}
+            >
+              {formatDate(nextWorkday)}
+            </button>
+          </>
+        )}
+      </>
     </div>
   );
+
 });
 
 export default OverviewDateSwitchButton;
