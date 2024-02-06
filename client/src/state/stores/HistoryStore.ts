@@ -29,7 +29,7 @@ class HistoryStore {
     try {
       this.isLoading = true;
       await this.fetchMyBookings();
-      await this.seatIdToRoomId();
+      await this.fetchRoomsAndSeatsForRoomLookup();
       this.initPreviousBookings();
     } catch (error) {
       console.error(error);
@@ -38,13 +38,13 @@ class HistoryStore {
     }
   }
 
-  async seatIdToRoomId() {
+  async fetchRoomsAndSeatsForRoomLookup() {
     try {
       const url = "/api/room/rooms";
       const response = await ApiService.fetchData<Room[]>(url, "Get", null);
-      const data = (await response.json()) as { result: any; value: Room[] };
+      const data = await response.json() as Room[];
+      this.rooms = data;
 
-      this.rooms = data.value;
     } catch (error) {
       console.error("Error fetching bookings:", error);
     }

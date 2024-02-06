@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using server.Helpers;
 using server.Models.DTOs;
 using server.Repository;
@@ -16,7 +15,7 @@ namespace server.Services.Internal
             _roomRepository = roomRepository;
         }
 
-        public async Task<ActionResult<List<RoomDto>>> GetAllRooms()
+        public async Task<List<RoomDto>> GetAllRooms()
         {
             try
             {
@@ -31,7 +30,7 @@ namespace server.Services.Internal
         }
 
         //TODO check if frontend need this method. Delete it if not in use
-        public async Task<ActionResult<List<SeatDto>>> GetAllSeatsForRoom(int roomId)
+        public async Task<List<SeatDto>> GetAllSeatsForRoom(int roomId)
         {
             try
             {
