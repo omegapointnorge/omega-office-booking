@@ -27,8 +27,8 @@ class BookingStore {
         "Get"
       );
 
-      const bookingsAsJson = (await response.json()) as { value: Booking[] };
-      const bookings = this.convertJsonObjectsToBookings(bookingsAsJson.value);
+      const bookingsAsJson = (await response.json());
+      const bookings = this.convertJsonObjectsToBookings(bookingsAsJson);
 
       this.setActiveBookings(bookings);
     } catch (error) {
@@ -111,7 +111,7 @@ class BookingStore {
     );
   }
 
-  convertJsonObjectsToBookings(jsonArray: Booking[]) {
+  convertJsonObjectsToBookings(jsonArray: any[]) {
     return jsonArray.map((obj) => createBooking(obj));
   }
 
