@@ -1,3 +1,5 @@
+import React from "react";
+
 import Heading from "@common-components/Heading";
 import { observer } from "mobx-react-lite";
 import BookingItem from "./HistoryBookingItem/HistoryBookingItem";
@@ -34,12 +36,14 @@ const ActiveBookings = observer(() => (
     >
       <IoIosArrowForward />
     </button>
+
     <PrimaryDialog
       title="Slett reservasjon?"
       open={historyStore.openDialog}
       handleClose={historyStore.handleCloseDialog}
       onClick={() => {
-        historyStore.deleteBooking(historyStore.bookingIdToDelete);
+        historyStore.bookingIdToDelete &&
+          historyStore.deleteBooking(historyStore.bookingIdToDelete);
         historyStore.handleCloseDialog();
       }}
     />

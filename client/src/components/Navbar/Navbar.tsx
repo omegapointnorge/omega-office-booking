@@ -1,3 +1,5 @@
+import React from "react";
+
 import { NavbarLogo } from "@components/Navbar/NavbarLogo/NavbarLogo";
 import { LogoutButton } from "@components/Navbar/NavbarLogoutButton/NavbarLogoutButton";
 import { useNavigate } from "react-router-dom";

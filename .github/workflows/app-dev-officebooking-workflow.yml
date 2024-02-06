@@ -33,7 +33,9 @@ jobs:
         run: dotnet build -c Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp --no-build
+        env:
+          CI: ""
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp --no-build 
 
       - name: Generate EF migration script
         run: |

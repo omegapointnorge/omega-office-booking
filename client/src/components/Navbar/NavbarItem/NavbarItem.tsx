@@ -1,4 +1,10 @@
-const NavbarItem = ({ onClick, label }) => {
+import React from "react";
+
+interface NavbarItemProps {
+  onClick: () => void;
+  label: string;
+}
+const NavbarItem = ({ onClick, label }: NavbarItemProps) => {
   return (
     <div
       onClick={onClick}
