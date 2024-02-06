@@ -89,7 +89,7 @@ const OverviewMap = observer(({ showSeatInfo }) => {
   };
 
   const seatClicked = (clickEvent) => {
-    showSeatInfo(clickEvent.target.id);
+    showSeatInfo(clickEvent.currentTarget.id);
   };
 
   const countAvailableSeats = (minSeatId, maxSeatId) => {
