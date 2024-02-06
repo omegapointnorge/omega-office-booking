@@ -10,7 +10,6 @@ interface MapProps {
   getSeatClassName: (value: number) => string;
   countAvailableSeats: (val1: number, val2: number) => number;
   seatClicked: (e: React.MouseEvent<SVGPathElement>) => void;
-
   zoomOut: () => void;
 }
 
