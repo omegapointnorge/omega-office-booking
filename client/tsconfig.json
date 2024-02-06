@@ -9,7 +9,8 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "isolatedModules": true,
-    "lib": ["es2015", "es2017.object", "DOM.Iterable", "DOM"]
+    "lib": ["es2015", "es2017", "DOM.Iterable", "DOM"],
+    "typeRoots": ["src/shared/types/*"]
   },
   "include": ["src"],
   "extends": "./tsconfig.paths.json",

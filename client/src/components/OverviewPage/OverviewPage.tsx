@@ -9,14 +9,16 @@ import DateSwitchButton from "@components/OverviewPage/OverviewDateSwitchButton/
 const OverviewPage = observer(() => {
   const { user } = useAuthContext() ?? {};
 
-  const userName = user?.claims?.find((claim) => claim.key === "name")?.value;
+  const userName = user?.claims?.find(
+    (claim: { key: string }) => claim.key === "name"
+  )?.value;
   const welcomeTitle = `Velkommen ${userName || ""}`; // Handle undefined userName
   const subTitle = "Vennligst velg rom for å booke";
 
   const [showModal, setShowModal] = useState(false);
-  const [selectedSeatId, setSelectedSeatId] = useState(null);
+  const [selectedSeatId, setSelectedSeatId] = useState<number>();
 
-  const showSeatInfo = (seatId) => {
+  const showSeatInfo = (seatId: string) => {
     try {
       setSelectedSeatId(Number(seatId));
       setShowModal(true);
@@ -36,7 +38,7 @@ const OverviewPage = observer(() => {
           </div>
         </div>
       </div>
-      {showModal && (
+      {showModal && selectedSeatId && (
         <SeatInfo
           onClose={() => setShowModal(false)}
           selectedSeatId={selectedSeatId}

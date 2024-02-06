@@ -26,9 +26,8 @@ class BookingStore {
         "/api/booking/activeBookings",
         "Get"
       );
-
-      const bookingsAsJson = (await response.json()) as { value: Booking[] };
-      const bookings = this.convertJsonObjectsToBookings(bookingsAsJson.value);
+      const bookingsAsJson = (await response.json()) as Booking[];
+      const bookings = bookingsAsJson.map((booking) => createBooking(booking));
 
       this.setActiveBookings(bookings);
     } catch (error) {
@@ -105,10 +104,6 @@ class BookingStore {
     this.activeBookings = this.activeBookings.filter(
       (booking) => booking.id !== bookingId
     );
-  }
-
-  convertJsonObjectsToBookings(jsonArray: Booking[]) {
-    return jsonArray.map((obj) => createBooking(obj));
   }
 
   setDisplayDate(date: Date) {

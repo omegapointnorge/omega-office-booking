@@ -5,3 +5,7 @@ export enum Rooms {
 }
 
 //TODO: CHECK IF ID small-room, large-room, sales-room needs to be changed
+export enum DatePressed {
+  Today = "TODAY",
+  NextWorkDay = "NEXTWORKDAY",
+}
