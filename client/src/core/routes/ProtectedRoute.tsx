@@ -1,11 +1,13 @@
+import React from "react";
+
 import { useAuthContext } from "@auth/useAuthContext";
 import Heading from "@common-components/Heading";
 
-export const ProtectedRoute = ({ outlet }) => {
+export const ProtectedRoute = ({ outlet }: { outlet: React.JSX.Element }) => {
   const context = useAuthContext();
 
-  if(context?.loading) {
-    return "Loading...";
+  if (context?.loading) {
+    return <>"Loading..."</>;
   }
 
   if (context?.user?.isAuthenticated) {
@@ -16,11 +18,7 @@ export const ProtectedRoute = ({ outlet }) => {
 
   return (
     <div className="h-[60vh] flex flex-col gap-2 justify-center items-center">
-      <Heading
-        center
-        title="Unauthorized!"
-        subTitle="Please return and login"
-      />
+      <Heading title="Unauthorized!" subTitle="Please return and login" />
     </div>
   );
 };
