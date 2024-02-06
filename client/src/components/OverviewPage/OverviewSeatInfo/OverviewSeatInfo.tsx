@@ -16,7 +16,7 @@ const OverviewSeatInfo = observer(
   ({ onClose, selectedSeatId }: OverviewSeatInfoProps) => {
     const { user } = useAuthContext() ?? {};
 
-    const userId = user?.claims?.find(
+    const claimKey = user?.claims?.find(
       (claim: { key: string }) =>
         claim.key ===
         "http://schemas.microsoft.com/identity/claims/objectidentifier"
@@ -87,7 +87,7 @@ const OverviewSeatInfo = observer(
     };
 
     const getButtonGroup = () => {
-      if (selectedBooking?.id && userId !== selectedBooking.userId) {
+      if (selectedBooking?.id && claimKey !== selectedBooking.userId) {
         return (
           <button
             onClick={onClose}
@@ -105,7 +105,7 @@ const OverviewSeatInfo = observer(
             >
               Lukk
             </button>
-            {userId === selectedBooking?.userId && (
+            {claimKey === selectedBooking?.userId && (
               <button
                 onClick={handleDelete}
                 className="px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
@@ -113,7 +113,7 @@ const OverviewSeatInfo = observer(
                 Slett reservasjon
               </button>
             )}
-            {selectedBooking?.id === null && (
+            {!selectedBooking?.id && (
               <button
                 onClick={handleBook}
                 className="px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
