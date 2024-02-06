@@ -26,8 +26,10 @@ class BookingStore {
         "/api/booking/activeBookings",
         "Get"
       );
-      const bookingsAsJson = (await response.json()) as Booking[];
-      const bookings = bookingsAsJson.map((booking) => createBooking(booking));
+      const bookingsAsJson = (await response.json()) as { value: Booking[] };
+      const bookings = bookingsAsJson.value.map((booking) =>
+        createBooking(booking)
+      );
 
       this.setActiveBookings(bookings);
     } catch (error) {
@@ -58,8 +60,11 @@ class BookingStore {
         //refresh the page in case someone has booked the seat recently
         await this.fetchAllActiveBookings();
       } else {
-        const newBookingJson = (await response.json()) as Booking;
-        const newBooking: Booking = newBookingJson;
+        const newBookingJson = await response.json();
+        const newBooking: Booking = {
+          ...newBookingJson.value,
+          bookingDateTime: new Date(newBookingJson.value.bookingDateTime),
+        };
         // const newBookingData = newBookingJson.value;
         // const newBooking = new Booking(
         //   newBookingData.id,
