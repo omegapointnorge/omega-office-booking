@@ -4,7 +4,11 @@ import { useState, useEffect } from "react";
 import { getUser } from "@services/userService";
 import AuthContext from "@auth/AuthContext";
 
-export const AuthProvider: React.FC = ({ children }) => {
+interface AuthProviderProps {
+  children: React.ReactNode; // Define the type of children prop
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   //TODO: define user
   const [user, setUser] = useState<{ isAuthenticated: boolean } | any | null>(
     null
