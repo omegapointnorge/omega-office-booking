@@ -25,13 +25,12 @@ class ApiService {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      let data;
-      if (response.body) {
-        data = await response.json();
-      } else {
-        data = response;
+
+      if (response.status == 204) {
+        return response as unknown as T;
       }
-      return data as T;
+
+      return (await response.json()) as T;
     } catch (e) {
       console.error("Error fetching data:", e);
       throw e;

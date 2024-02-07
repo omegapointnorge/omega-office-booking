@@ -67,9 +67,12 @@ class HistoryStore {
     try {
       const url = `/api/Booking/${bookingId}`;
 
-      const response = await ApiService.fetchData(url, "DELETE");
+      const response = await ApiService.fetchData<{ ok: boolean }>(
+        url,
+        "DELETE"
+      );
 
-      if (!response) {
+      if (!response.ok) {
         console.error(`Failed to delete booking with ID ${bookingId}`);
         return;
       }
