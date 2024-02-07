@@ -4,6 +4,7 @@ import bookingStore from "../../../state/stores/BookingStore";
 import { useAuthContext } from "../../../core/auth/useAuthContext";
 import { Booking } from "@/shared/types/entities";
 import { deleteBookingRequest } from "@models/booking";
+import { log } from "console";
 
 interface OverviewSeatInfoProps {
   onClose: () => void;
@@ -16,7 +17,7 @@ const OverviewSeatInfo = observer(
   ({ onClose, selectedSeatId }: OverviewSeatInfoProps) => {
     const { user } = useAuthContext() ?? {};
 
-    const claimKey  = user?.user?.objectidentifier;
+    const claimKey  = user.claims.objectidentifier;
 
     const { activeBookings, displayDate } = bookingStore;
     const [selectedBooking, setSelectedBooking] = useState<Booking>();
