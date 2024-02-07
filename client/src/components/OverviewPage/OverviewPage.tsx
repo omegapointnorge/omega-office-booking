@@ -9,7 +9,7 @@ import DateSwitchButton from "@components/OverviewPage/OverviewDateSwitchButton/
 const OverviewPage = observer(() => {
   const { user } = useAuthContext() ?? {};
 
-  const userName = user.claims.name
+  const userName = user.claims.userName
 
 
   const welcomeTitle = `Velkommen ${userName || ""}`; // Handle undefined userName
