@@ -35,4 +35,4 @@ public class UserController : ControllerBase
 
 public record UserInfo(
     bool IsAuthenticated,
-    UserClaims? User);
+    UserClaims? Claims);
