@@ -86,7 +86,7 @@ namespace server.Controllers
             try
             {
                 var user = GetUser();
-                var result = await _bookingService.GetAllBookingsForUser(user.UserId);
+                var result = await _bookingService.GetAllBookingsForUser(user.Objectidentifier);
 
                 return new OkObjectResult(result);
             }
@@ -108,8 +108,9 @@ namespace server.Controllers
         {
             try
             {
-                var user = GetUser();
-                await _bookingService.DeleteBookingAsync(bookingId, user);
+                var userClaim = GetUser();
+                await _bookingService.DeleteBookingAsync(bookingId, userClaim);
+
                 return NoContent();
             }
             catch (Exception ex)
@@ -118,11 +119,11 @@ namespace server.Controllers
                 return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
-        private User GetUser()
+        private UserClaims GetUser()
         {
             var id = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
             var name = User.FindFirst("name")?.Value ?? String.Empty;
-            User user = new(name, id);
+            UserClaims user = new(name, id);
             return user;
 
         }

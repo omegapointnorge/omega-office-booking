@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web;
+using server.Models.DTOs.Internal;
 
 namespace server.Controllers;
 
@@ -11,20 +13,14 @@ public class UserController : ControllerBase
     [ProducesResponseType(typeof(UserInfo), StatusCodes.Status200OK)]
     public IActionResult GetCurrentUser()
     {
-        var claimsToExpose = new List<string>()
-        {
-            "http://schemas.microsoft.com/identity/claims/objectidentifier",
-            "name",
-            "preferred_username",
-            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-        };
-
-            var user = new UserInfo(
+        var id = User.FindFirst(ClaimConstants.ObjectId)?.Value ?? String.Empty;
+        var name = User.FindFirst(ClaimConstants.Name)?.Value ?? String.Empty;
+        var email = User.FindFirst(ClaimConstants.PreferredUserName)?.Value ?? String.Empty;
+        var role = User.FindFirst(ClaimConstants.Role)?.Value ?? String.Empty;
+        var userClaims = new UserClaims(name, id, email,role);
+        var user = new UserInfo(
             User.Identity?.IsAuthenticated ?? false,
-            User.Claims
-                .Select(c => new KeyValuePair<string, string>(c.Type, c.Value))
-                .Where(c => claimsToExpose.Contains(c.Key))
-                .ToList());
+            userClaims);
 
         return Ok(user);
     }
@@ -32,4 +28,4 @@ public class UserController : ControllerBase
 
 public record UserInfo(
     bool IsAuthenticated,
-    List<KeyValuePair<string, string>> Claims);
+    UserClaims? User);

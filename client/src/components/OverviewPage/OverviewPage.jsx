@@ -10,7 +10,7 @@ import DateSwitchButton from '@components/OverviewPage/OverviewDateSwitchButton/
 const OverviewPage = observer(() => {
   const { user } = useAuthContext() ?? {};
 
-  const userName = user?.claims?.find(claim => claim.key === 'name')?.value;
+  const userName = user?.user?.userName;
   const welcomeTitle = `Velkommen ${userName || ''}`; // Handle undefined userName
   const subTitle = 'Vennligst velg rom for å booke';
 
