@@ -72,21 +72,21 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 ### Folder structure
 
 src/
-  |- components/
-      |- common/             // Shared components
-      |- Component1/         // Other specific components
-          |- Component1Item/ // Subcomponents of specific components
-  |- core/
-      |- auth/               // Authentication related components and logic
-      |- routes/             // Directory for routing components
-  |- models/                 // Data models or entities
-  |- services/               // Services for external API interactions
-  |- shared/
-      |- assets/             // Static files like images and fonts       
-      |- hooks/              // Custom React hooks        
-      |- utils/              // Utility functions
-  |- state/
-      |- context/            // Context files
-      |- stores/             // State management (e.g., mobx store)
-  |- App.js                  // Main application component
-  |- index.js                // Entry point
+|- components/
+|- common/ // Shared components
+|- Component1/ // Other specific components
+|- Component1Item/ // Subcomponents of specific components
+|- core/
+|- auth/ // Authentication related components and logic
+|- routes/ // Directory for routing components
+|- models/ // Data models or entities
+|- services/ // Services for external API interactions
+|- shared/
+|- assets/ // Static files like images and fonts  
+ |- hooks/ // Custom React hooks  
+ |- utils/ // Utility functions
+|- state/
+|- context/ // Context files
+|- stores/ // State management (e.g., mobx store)
+|- App.js // Main application component
+|- index.js // Entry point
