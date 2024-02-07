@@ -4,7 +4,6 @@ import bookingStore from "../../../state/stores/BookingStore";
 import { useAuthContext } from "../../../core/auth/useAuthContext";
 import { Booking } from "@/shared/types/entities";
 import { deleteBookingRequest } from "@models/booking";
-import { log } from "console";
 
 interface OverviewSeatInfoProps {
   onClose: () => void;

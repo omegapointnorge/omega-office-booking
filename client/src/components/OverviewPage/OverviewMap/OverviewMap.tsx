@@ -30,7 +30,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const [zoomStatus, setZoomStatus] = useState("ZoomedOut");
   const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
-  const userId = user.claims.id
+  const userId = user.claims.objectidentifier
   
 
   const getSeatClassName = (seatId: number) => {
