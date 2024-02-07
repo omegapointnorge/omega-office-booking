@@ -1,3 +1,5 @@
+import React from "react";
+
 import { Routes, Route } from "react-router-dom";
 import { IsAuthenticated } from "@auth/IsAuthenticated";
 import LoginPage from "@components/LoginPage/LoginPage";

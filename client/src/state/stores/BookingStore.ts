@@ -22,14 +22,12 @@ class BookingStore {
   // Fetch all active bookings
   async fetchAllActiveBookings() {
     try {
-      const response = await ApiService.fetchData<Booking[]>(
+      const data = await ApiService.fetchData<Booking[]>(
         "/api/booking/activeBookings",
         "Get"
       );
 
-      const bookingsAsJson = (await response.json());
-      const bookings = this.convertJsonObjectsToBookings(bookingsAsJson);
-
+      const bookings = data.map((booking) => createBooking(booking));
       this.setActiveBookings(bookings);
     } catch (error) {
       console.error("Error fetching active bookings:", error);
@@ -37,42 +35,30 @@ class BookingStore {
   }
 
   async createBooking(seatId: number, reCAPTCHAToken: string) {
-    const bookingRequest = createBookingRequest({
-      seatId,
-      bookingDateTime: this.displayDate,
-      reCAPTCHAToken,
-    });
     try {
-      const response = await fetch("/api/Booking/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify(bookingRequest),
+      const url = "/api/Booking/create";
+      const bookingRequest = createBookingRequest({
+        seatId,
+        bookingDateTime: this.displayDate,
+        reCAPTCHAToken,
       });
+      const response = await ApiService.fetchData<Booking>(
+        url,
+        "POST",
+        bookingRequest
+      );
 
-      if (!response.ok) {
-        const errorText = await response.text();
+      if (!response) {
+        const errorText = `Failed to create booking`;
         console.error("Error:", errorText);
         toast.error("Error creating booking:" + errorText);
         //refresh the page in case someone has booked the seat recently
         await this.fetchAllActiveBookings();
       } else {
-
-        const newBookingJson = await response.json();
         const newBooking: Booking = {
-          ...newBookingJson,
-          bookingDateTime: new Date(newBookingJson.bookingDateTime),
+          ...response,
+          bookingDateTime: new Date(response.bookingDateTime),
         };
-        // const newBookingData = newBookingJson.value;
-        // const newBooking = new Booking(
-        //   newBookingData.id,
-        //   newBookingData.userId,
-        //   newBookingData.userName,
-        //   newBookingData.seatId,
-        //   newBookingData.bookingDateTime
-        // );
 
         // Update the store's state with the new booking
         this.activeBookings.push(newBooking);
@@ -88,9 +74,9 @@ class BookingStore {
     try {
       const url = `/api/Booking/${bookingId}`;
 
-      const response = await ApiService.fetchData(url, "DELETE");
+      const response = await ApiService.fetchData<undefined>(url, "DELETE");
 
-      if (!response.ok) {
+      if (!response) {
         console.error(`Failed to delete booking with ID ${bookingId}`);
         return;
       }
@@ -109,10 +95,6 @@ class BookingStore {
     this.activeBookings = this.activeBookings.filter(
       (booking) => booking.id !== bookingId
     );
-  }
-
-  convertJsonObjectsToBookings(jsonArray: any[]) {
-    return jsonArray.map((obj) => createBooking(obj));
   }
 
   setDisplayDate(date: Date) {

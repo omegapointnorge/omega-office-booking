@@ -41,10 +41,8 @@ class HistoryStore {
   async fetchRoomsAndSeatsForRoomLookup() {
     try {
       const url = "/api/room/rooms";
-      const response = await ApiService.fetchData<Room[]>(url, "Get", null);
-      const data = await response.json() as Room[];
+      const data = await ApiService.fetchData<Room[]>(url, "Get", null);
       this.rooms = data;
-
     } catch (error) {
       console.error("Error fetching bookings:", error);
     }
@@ -53,8 +51,7 @@ class HistoryStore {
   async fetchMyBookings() {
     try {
       const url = "/api/Booking/Bookings/MyBookings";
-      const response = await ApiService.fetchData<Booking[]>(url, "Get", null);
-      const data = (await response.json()) as Booking[];
+      const data = await ApiService.fetchData<Booking[]>(url, "Get", null);
 
       this.myActiveBookings = this.filterAndSortBookings(data, true);
       this.myPreviousBookings = this.filterAndSortBookings(data, false);
@@ -70,7 +67,10 @@ class HistoryStore {
     try {
       const url = `/api/Booking/${bookingId}`;
 
-      const response = await ApiService.fetchData(url, "DELETE");
+      const response = await ApiService.fetchData<{ ok: boolean }>(
+        url,
+        "DELETE"
+      );
 
       if (!response.ok) {
         console.error(`Failed to delete booking with ID ${bookingId}`);

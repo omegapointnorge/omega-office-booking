@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@common-components/*": ["./src/components/Common/*"],
+      "@components/*": ["./src/components/*"],
+      "@auth/*": ["./src/core/auth/*"],
+      "@routes/*": ["./src/core/routes/*"],
+      "@models/*": ["./src/models/*"],
+      "@services/*": ["./src/services/*"],
+      "@assets/*": ["./src/shared/assets/*"],
+      "@hooks/*": ["./src/shared/hooks/*"],
+      "@utils/*": ["./src/shared/utils/*"],
+      "@types/*": ["./src/shared/types/*"],
+      "@context/*": ["./src/state/context/*"],
+      "@stores/*": ["./src/state/stores/*"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"]
+}
