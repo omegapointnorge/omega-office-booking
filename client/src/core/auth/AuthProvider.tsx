@@ -16,7 +16,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       .then((response) => {
         setUser(response);
       })
-      .catch((e) => setUser({ isAuthenticated: false }))
+      .catch(() => setUser({ isAuthenticated: false }))
       .finally(() => setLoading(false));
   }, []);
 
