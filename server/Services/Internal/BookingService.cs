@@ -20,13 +20,13 @@ namespace server.Services.Internal
             _bookingRepository = bookingRepository;
         }
 
-        public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, User user)
+        public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user)
         {
             try
             {
                 IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
 
-                var validationErrors = ValidateUserBookingRequest(bookingRequest, bookingList, user.UserId);
+                var validationErrors = ValidateUserBookingRequest(bookingRequest, bookingList, user.Objectidentifier);
                 if (validationErrors != null && validationErrors.Any())
                 {
                     var errorMessages = string.Join(Environment.NewLine, validationErrors.Select(v => $"- {v}"));
@@ -34,7 +34,7 @@ namespace server.Services.Internal
                 }
                 var booking = new Booking
                 {
-                    UserId = user.UserId,
+                    UserId = user.Objectidentifier,
                     UserName = user.UserName,
                     SeatId = bookingRequest.SeatId,
                     BookingDateTime = bookingRequest.BookingDateTime
@@ -51,7 +51,7 @@ namespace server.Services.Internal
             }
         }
 
-        public async Task<IEnumerable<BookingDto>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, User user)
+        public async Task<IEnumerable<BookingDto>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, UserClaims user)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace server.Services.Internal
 
                         var booking = new Booking
                         {
-                            UserId = user.UserId,
+                            UserId = user.Objectidentifier,
                             UserName = EventUserName,
                             SeatId = seatId,
                             BookingDateTime = bookingRequest.BookingDateTime
@@ -131,15 +131,15 @@ namespace server.Services.Internal
         }
 
 
-        public async Task DeleteBookingAsync(int bookingId, User user)
+        public async Task DeleteBookingAsync(int bookingId, UserClaims user)
         {
             try
             {
-                var booking = await _bookingRepository.GetAsync(b => b.Id == bookingId && b.UserId == user.UserId);
+                var booking = await _bookingRepository.GetAsync(b => b.Id == bookingId && b.UserId == user.Objectidentifier);
 
                 if (booking == null)
                 {
-                    throw new Exception($"Booking with ID {bookingId} not found for user {user.UserId}");
+                    throw new Exception($"Booking with ID {bookingId} not found for user {user.Objectidentifier}");
                 }
 
                 await _bookingRepository.DeleteAndCommit(booking);
