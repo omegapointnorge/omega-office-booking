@@ -30,11 +30,8 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const [zoomStatus, setZoomStatus] = useState("ZoomedOut");
   const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
-  const userId = user?.claims?.find(
-    (claim: { key: string }) =>
-      claim.key ===
-      "http://schemas.microsoft.com/identity/claims/objectidentifier"
-  )?.value;
+  const userId = user.claims.objectidentifier
+  
 
   const getSeatClassName = (seatId: number) => {
     const bookingForSeat = activeBookings.find(

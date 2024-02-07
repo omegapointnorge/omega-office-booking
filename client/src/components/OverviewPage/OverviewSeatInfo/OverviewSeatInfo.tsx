@@ -16,11 +16,7 @@ const OverviewSeatInfo = observer(
   ({ onClose, selectedSeatId }: OverviewSeatInfoProps) => {
     const { user } = useAuthContext() ?? {};
 
-    const claimKey = user?.claims?.find(
-      (claim: { key: string }) =>
-        claim.key ===
-        "http://schemas.microsoft.com/identity/claims/objectidentifier"
-    )?.value;
+    const claimKey  = user.claims.objectidentifier;
 
     const { activeBookings, displayDate } = bookingStore;
     const [selectedBooking, setSelectedBooking] = useState<Booking>();
