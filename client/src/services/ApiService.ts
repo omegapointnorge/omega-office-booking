@@ -1,3 +1,5 @@
+import { dark } from "@mui/material/styles/createPalette";
+
 type ApiOptionsType = {
   method: string;
   headers: { [key: string]: string };
@@ -23,7 +25,13 @@ class ApiService {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      return (await response.json()) as T;
+      let data;
+      if (response.body) {
+        data = await response.json();
+      } else {
+        data = response;
+      }
+      return data as T;
     } catch (e) {
       console.error("Error fetching data:", e);
       throw e;
