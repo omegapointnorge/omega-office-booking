@@ -10,6 +10,10 @@
   fill: limegreen;
 }
 
+.seat-selected-for-event {
+  fill: yellow;
+  }
+
 .seat-unavailable {
   fill: #e3e3e3;
   pointer-events: none;
@@ -28,6 +32,12 @@
   cursor: pointer;
 }
 
+.seat-selected-for-event:hover {
+  /* shared hover styles */
+  filter: brightness(110%);
+  cursor: pointer;
+}
+
 .zoomed-out-room {
   cursor: pointer;
   @apply hover:scale-125 hover:brightness-110 duration-100;
@@ -36,8 +46,3 @@
 .zoomed-in-room {
   pointer-events: none;
 }
-
-.seat-selected {
-    fill: url(#chosenPattern);
-    pointer-events: none;
-  }

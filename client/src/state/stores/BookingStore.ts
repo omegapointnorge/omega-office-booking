@@ -93,11 +93,21 @@ class BookingStore {
     }
   }
 
-  removeBookingById(bookingId: number) {
+  removeBookingById(bookingId: number) {  
     this.activeBookings = this.activeBookings.filter(
       (booking) => booking.id !== bookingId
     );
   }
+
+  toggleSeatSelectionForNewEvent(seatId: number): void {
+    const index = this.seatIdSelectedForNewEvent.indexOf(seatId);
+    if (index !== -1) {
+        this.seatIdSelectedForNewEvent.splice(index, 1);
+    } else {
+        this.seatIdSelectedForNewEvent.push(seatId);
+    }
+}
+
 
   setDisplayDate(date: Date) {
     this.displayDate = date;
@@ -107,8 +117,9 @@ class BookingStore {
     this.activeBookings = bookings;
   }
 
-  setBookEventMode(inEventMode : boolean) {
-    this.bookEventMode = inEventMode;
+  toggleEventMode() {
+    this.bookEventMode = !this.bookEventMode;
+    this.seatIdSelectedForNewEvent = []
   }
 
   // Update user bookings

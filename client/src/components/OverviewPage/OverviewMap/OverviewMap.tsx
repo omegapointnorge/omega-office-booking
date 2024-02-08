@@ -16,7 +16,9 @@ interface OverviewMapProps {
 
 const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const { user } = useAuthContext() ?? {};
-  const { activeBookings, displayDate } = bookingStore;
+  const isEventAdmin = user.claims.role === "EventAdmin"
+
+  const { activeBookings, displayDate, bookEventMode } = bookingStore;
   const location = useLocation();
 
   const zoomedOutViewBoxParameters = "0 0 3725 2712";
@@ -39,6 +41,12 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         booking.seatId === seatId &&
         isSameDate(displayDate, booking.bookingDateTime)
     );
+    
+    if(bookEventMode){
+      if(bookingStore.seatIdSelectedForNewEvent.includes(seatId)){
+        return "seat-selected-for-event"
+      }
+    }
 
     if (bookingForSeat) {
       return bookingForSeat.userId === userId
@@ -55,7 +63,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
       return "seat-unavailable";
     }
 
-    if (!hasBookingOpened()) {
+    if (!hasBookingOpened() && !isEventAdmin) {
       return "seat-available-later";
     }
 
@@ -85,6 +93,11 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   };
 
   const seatClicked = (e: React.MouseEvent<SVGPathElement>) => {
+
+    if(bookEventMode){
+      bookingStore.toggleSeatSelectionForNewEvent(Number(e.currentTarget.id));
+      return
+    }
     showSeatInfo(e.currentTarget.id);
   };
 
