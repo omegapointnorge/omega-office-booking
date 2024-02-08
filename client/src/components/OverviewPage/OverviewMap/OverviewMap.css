@@ -36,3 +36,8 @@
 .zoomed-in-room {
   pointer-events: none;
 }
+
+.seat-selected {
+    fill: url(#chosenPattern);
+    pointer-events: none;
+  }

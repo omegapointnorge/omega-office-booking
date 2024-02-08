@@ -10,6 +10,7 @@ class BookingStore {
   userBookings = [];
   displayDate = new Date();
   bookEventMode = false
+  seatIdSelectedForNewEvent : number[] = [];
 
   constructor() {
     this.initialize();
