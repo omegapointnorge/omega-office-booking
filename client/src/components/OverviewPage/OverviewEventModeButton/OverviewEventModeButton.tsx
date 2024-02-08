@@ -1,10 +1,8 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import bookingStore from '@stores/BookingStore';
-import { DateObject } from 'react-multi-date-picker';
 
 const OverviewEventModeButton = () => {
-  let text;
 
   const handleBook = async () => {
     await bookingStore.createBookingForEvent(bookingStore.seatIdSelectedForNewEvent);
@@ -20,7 +18,7 @@ const OverviewEventModeButton = () => {
     });
   };
 
-   text = bookingStore.isEventDateChosen
+   let text = bookingStore.isEventDateChosen
     ? `Oppretter arrangement for ${formatDate(bookingStore.displayDate)}`
     : `Viser seter for ${formatDate(bookingStore.displayDate)}`;
 

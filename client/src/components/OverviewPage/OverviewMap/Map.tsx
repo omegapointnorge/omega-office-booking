@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Rooms } from "@/shared/types/enums";
 import { ZoomOutIcon } from "../../../shared/assets/icons/zoom-out_outline";
+import bookingStore from "../../../state/stores/BookingStore";
 
 interface MapProps {
   currentViewBox: string;
@@ -11,6 +12,7 @@ interface MapProps {
   countAvailableSeats: (val1: number, val2: number) => number;
   seatClicked: (e: React.MouseEvent<SVGPathElement>) => void;
   zoomOut: () => void;
+  needsUpdate: boolean
 }
 
 export const MapComponent = ({
@@ -21,7 +23,12 @@ export const MapComponent = ({
   countAvailableSeats,
   seatClicked,
   zoomOut,
+  needsUpdate
 }: MapProps) => {
+
+  useEffect( () => {console.log(needsUpdate);
+  }, [needsUpdate])
+  
   return (
     <div className="relative">
       <svg

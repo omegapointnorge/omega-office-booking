@@ -18,7 +18,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const { user } = useAuthContext() ?? {};
   const isEventAdmin = user.claims.role === "EventAdmin"
 
-  const { activeBookings, displayDate, bookEventMode } = bookingStore;
+  const { activeBookings, displayDate, bookEventMode, seatIdSelectedForNewEvent} = bookingStore;
   const location = useLocation();
 
   const zoomedOutViewBoxParameters = "0 0 3725 2712";
@@ -33,6 +33,9 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
   const userId = user.claims.objectidentifier
+
+
+  const [needsUpdate, setNeedsUpdate] = useState(false);
   
 
   const getSeatClassName = (seatId: number) => {
@@ -43,7 +46,8 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
     );
 
     if(bookEventMode){
-      if(bookingStore.seatIdSelectedForNewEvent.includes(seatId)){
+      if(seatIdSelectedForNewEvent.includes(seatId)){
+        setNeedsUpdate(true)
         return "seat-selected-for-event"
       }
     }
@@ -93,13 +97,24 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   };
 
   const seatClicked = (e: React.MouseEvent<SVGPathElement>) => {
+  const seatId = e.currentTarget.id;
+  
+   if (bookEventMode) {
+  const seatIsBooked = bookingStore.activeBookings.some(booking => {
+    return isSameDate(booking.bookingDateTime, bookingStore.displayDate) && booking.seatId === Number(seatId);
+  });
 
-    if(bookEventMode){
-      bookingStore.toggleSeatSelectionForNewEvent(Number(e.currentTarget.id));
-      return
-    }
-    showSeatInfo(e.currentTarget.id);
-  };
+  if (seatIsBooked) {
+    showSeatInfo(seatId); 
+    return;
+  }
+
+  bookingStore.toggleSeatSelectionForNewEvent(Number(seatId));
+  return;
+}
+
+  showSeatInfo(seatId);
+};
 
   const countAvailableSeats = (minSeatId: number, maxSeatId: number) => {
     let availableSeats = 0;
@@ -223,6 +238,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         countAvailableSeats={countAvailableSeats}
         seatClicked={seatClicked}
         zoomOut={zoomOut}
+        needsUpdate={needsUpdate}
       />
     </>
   );
