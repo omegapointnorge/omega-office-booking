@@ -11,6 +11,7 @@ class BookingStore {
   displayDate = new Date();
   bookEventMode = false
   seatIdSelectedForNewEvent : number[] = [];
+  eventDate : Date | undefined = undefined;
 
   constructor() {
     this.initialize();
@@ -108,6 +109,10 @@ class BookingStore {
     }
 }
 
+  handleEventDate(date : Date){
+    this.setDisplayDate(date)
+    this.eventDate = date;
+  }
 
   setDisplayDate(date: Date) {
     this.displayDate = date;
@@ -120,6 +125,7 @@ class BookingStore {
   toggleEventMode() {
     this.bookEventMode = !this.bookEventMode;
     this.seatIdSelectedForNewEvent = []
+    this.eventDate = undefined
   }
 
   // Update user bookings
