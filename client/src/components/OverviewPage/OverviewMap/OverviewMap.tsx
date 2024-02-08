@@ -41,7 +41,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         booking.seatId === seatId &&
         isSameDate(displayDate, booking.bookingDateTime)
     );
-    
+
     if(bookEventMode){
       if(bookingStore.seatIdSelectedForNewEvent.includes(seatId)){
         return "seat-selected-for-event"
