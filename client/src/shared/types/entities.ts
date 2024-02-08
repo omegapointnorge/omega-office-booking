@@ -28,3 +28,11 @@ export interface BookingRequest {
   bookingDateTime: Date;
   reCAPTCHAToken: string;
 }
+
+export interface EventBookingRequest {
+  seatIds: number[];
+  bookingDateTime: Date;
+  isEvent: boolean;
+}
+
+

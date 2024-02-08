@@ -22,6 +22,10 @@ const OverviewPage = observer(() => {
   const [showModal, setShowModal] = useState(false);
   const [selectedSeatId, setSelectedSeatId] = useState<number>();
 
+  const handleBook = async () => {
+    await bookingStore.createBookingForEvent(bookingStore.seatIdSelectedForNewEvent);
+  };
+
   const showSeatInfo = (seatId: string) => {
     try {
       setSelectedSeatId(Number(seatId));
@@ -37,12 +41,13 @@ const OverviewPage = observer(() => {
 
   return (
     <>
+      <button onClick={handleBook}>Book Event</button>
       <div className="flex flex-col justify-center items-center h-full">
         <div className="flex flex-col gap-10">
           <Heading title={welcomeTitle} subTitle={subTitle} />
           {isEventAdmin ? <OverviewEventModeButton/> : <DateSwitchButton />}
           <div className="flex justify-center"> {/* Center the calendar */}
-            {bookEventMode && bookingStore.eventDate === undefined ? <Calendar
+            {bookingStore.bookEventMode && bookingStore.isEventDateChosen === false ? <Calendar
               onChange={(newDate: DateObject) => bookingStore.handleEventDate(dateObjectToDate(newDate))}
               minDate={new Date()}
               multiple={false}
