@@ -9,6 +9,7 @@ class BookingStore {
   activeBookings: Booking[] = [];
   userBookings = [];
   displayDate = new Date();
+  bookEventMode = false
 
   constructor() {
     this.initialize();
@@ -103,6 +104,10 @@ class BookingStore {
   // Update active bookings
   setActiveBookings(bookings: Booking[]) {
     this.activeBookings = bookings;
+  }
+
+  setBookEventMode(inEventMode : boolean) {
+    this.bookEventMode = inEventMode;
   }
 
   // Update user bookings
