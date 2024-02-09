@@ -16,9 +16,14 @@ interface OverviewMapProps {
 
 const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const { user } = useAuthContext() ?? {};
-  const isEventAdmin = user.claims.role === "EventAdmin"
+  const isEventAdmin = user.claims.role === "EventAdmin";
 
-  const { activeBookings, displayDate, bookEventMode, seatIdSelectedForNewEvent} = bookingStore;
+  const {
+    activeBookings,
+    displayDate,
+    bookEventMode,
+    seatIdSelectedForNewEvent,
+  } = bookingStore;
   const location = useLocation();
 
   const zoomedOutViewBoxParameters = "0 0 3725 2712";
@@ -32,23 +37,19 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const [zoomStatus, setZoomStatus] = useState("ZoomedOut");
   const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
-  const userId = user.claims.objectidentifier
+  const userId = user.claims.objectidentifier;
 
-
-  const [needsUpdate, setNeedsUpdate] = useState(false);
-  
-
-  const getSeatClassName = (seatId: number) => {
+  const getSeatClassName = (seatId: number): string => {
+    
     const bookingForSeat = activeBookings.find(
       (booking) =>
         booking.seatId === seatId &&
         isSameDate(displayDate, booking.bookingDateTime)
     );
 
-    if(bookEventMode){
-      if(seatIdSelectedForNewEvent.includes(seatId)){
-        setNeedsUpdate(true)
-        return "seat-selected-for-event"
+    if (bookEventMode) {
+      if (seatIdSelectedForNewEvent.includes(seatId)) {
+        return "seat-selected-for-event";
       }
     }
 
@@ -80,7 +81,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
     let currentDateTime = new Date();
     return currentDateTime > bookingOpeningTime;
   };
-
+  //TODO: movce utils function to other files
   const getEarliestAllowedBookingTime = (date: Date) => {
     let earliestAllowedTime = new Date(date);
 
@@ -97,24 +98,28 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   };
 
   const seatClicked = (e: React.MouseEvent<SVGPathElement>) => {
-  const seatId = e.currentTarget.id;
-  
-   if (bookEventMode) {
-  const seatIsBooked = bookingStore.activeBookings.some(booking => {
-    return isSameDate(booking.bookingDateTime, bookingStore.displayDate) && booking.seatId === Number(seatId);
-  });
+    const seatId = e.currentTarget.id;
 
-  if (seatIsBooked) {
-    showSeatInfo(seatId); 
-    return;
-  }
+    if (bookEventMode) {
+      const seatIsBooked = bookingStore.activeBookings.some((booking) => {
+        return (
+          isSameDate(booking.bookingDateTime, bookingStore.displayDate) &&
+          booking.seatId === Number(seatId)
+        );
+      });
 
-  bookingStore.toggleSeatSelectionForNewEvent(Number(seatId));
-  return;
-}
+      if (seatIsBooked) {
+        showSeatInfo(seatId);
+        return;
+      }
 
-  showSeatInfo(seatId);
-};
+      bookingStore.toggleSeatSelectionForNewEvent(Number(seatId));
+      getSeatClassName(Number(seatId));
+      return;
+    }
+
+    showSeatInfo(seatId);
+  };
 
   const countAvailableSeats = (minSeatId: number, maxSeatId: number) => {
     let availableSeats = 0;
@@ -238,7 +243,6 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         countAvailableSeats={countAvailableSeats}
         seatClicked={seatClicked}
         zoomOut={zoomOut}
-        needsUpdate={needsUpdate}
       />
     </>
   );
