@@ -11,7 +11,6 @@ namespace server.Services.Internal
     public class BookingService : IBookingService
     {
         readonly IBookingRepository _bookingRepository;
-        private const int SameDayCutoffHour = 16;
         private const string EventUserName = "Event";
 
 
