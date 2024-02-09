@@ -150,7 +150,7 @@ namespace server.Services.Internal
             }
         }
 
-        private static List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
+        public static List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
         {
             List<string> validationResultsList = new();
             if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > BookingTimeUtils.GetLatestAllowedBookingDate())
