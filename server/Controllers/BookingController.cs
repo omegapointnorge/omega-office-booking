@@ -61,7 +61,7 @@ namespace server.Controllers
             }
         }
         [Authorize(Roles = "EventAdmin")]
-        [HttpPost("CreateEventBookingsForSeatsAsync")]
+        [HttpPost("CreateEventBookingsForSeats")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest)
         {
             try
@@ -123,7 +123,9 @@ namespace server.Controllers
         {
             var id = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
             var name = User.FindFirst("name")?.Value ?? String.Empty;
-            UserClaims user = new(name, id);
+            var role = User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value ?? String.Empty;
+
+            UserClaims user = new(name, id, role);
             return user;
 
         }

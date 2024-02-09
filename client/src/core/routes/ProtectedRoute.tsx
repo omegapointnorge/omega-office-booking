@@ -2,12 +2,13 @@ import React from "react";
 
 import { useAuthContext } from "@auth/useAuthContext";
 import Heading from "@common-components/Heading";
+import Loading from "@common-components/Loading";
 
 export const ProtectedRoute = ({ outlet }: { outlet: React.JSX.Element }) => {
   const context = useAuthContext();
 
   if (context?.loading) {
-    return <>"Loading..."</>;
+    return <Loading />;
   }
 
   if (context?.user?.isAuthenticated) {

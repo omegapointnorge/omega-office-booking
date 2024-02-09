@@ -25,7 +25,7 @@ namespace server.Services.Internal
             {
                 IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
 
-                var validationErrors = ValidateUserBookingRequest(bookingRequest, bookingList, user.Objectidentifier);
+                var validationErrors = ValidateUserBookingRequest(bookingRequest, bookingList, user);
                 if (validationErrors != null && validationErrors.Any())
                 {
                     var errorMessages = string.Join(Environment.NewLine, validationErrors.Select(v => $"- {v}"));
@@ -134,11 +134,13 @@ namespace server.Services.Internal
         {
             try
             {
-                var booking = await _bookingRepository.GetAsync(b => b.Id == bookingId && b.UserId == user.Objectidentifier);
+                var booking = await _bookingRepository.GetAsync(b => b.Id == bookingId);
 
-                if (booking == null)
+                var validationErrors = ValidateUserDeleteBookingRequest(booking, user);
+                if (validationErrors != null && validationErrors.Any())
                 {
-                    throw new Exception($"Booking with ID {bookingId} not found for user {user.Objectidentifier}");
+                    var errorMessages = string.Join(Environment.NewLine, validationErrors.Select(v => $"- {v}"));
+                    throw new Exception(errorMessages);
                 }
 
                 await _bookingRepository.DeleteAndCommit(booking);
@@ -150,11 +152,15 @@ namespace server.Services.Internal
             }
         }
 
-        public static List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
+        public static List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, UserClaims user)
         {
             List<string> validationResultsList = new();
-            if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > BookingTimeUtils.GetLatestAllowedBookingDate())
+            if (isEventAdmin(user))
+            {
+                return validationResultsList;
+            }
 
+            if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > BookingTimeUtils.GetLatestAllowedBookingDate())
             {
                 validationResultsList.Add("Booking date exceeds the latest allowed booking date.");
             }
@@ -165,9 +171,32 @@ namespace server.Services.Internal
                 validationResultsList.Add($"Seat {seatId} is already booked for the specified time.");
             }
 
-            if (HasUserAlreadyBookedForDay(bookingList, bookingRequest.BookingDateTime, userId))
+            if (HasUserAlreadyBookedForDay(bookingList, bookingRequest.BookingDateTime, user.Objectidentifier))
             {
                 validationResultsList.Add("User has already booked for the specified day.");
+            }
+
+            return validationResultsList;
+        }
+
+
+        private static List<string> ValidateUserDeleteBookingRequest(Booking? booking, UserClaims user)
+        {
+            List<string> validationResultsList = new();
+
+            if (booking == null)
+            {
+                validationResultsList.Add($"Booking with {booking.Id} not found");
+            }
+
+            if (isEventAdmin(user))
+            {
+                return validationResultsList;
+            }
+
+            if (booking.UserId != user.Objectidentifier)
+            {
+                validationResultsList.Add("User is not authorized to delete the booking.");
             }
 
             return validationResultsList;
@@ -186,5 +215,9 @@ namespace server.Services.Internal
             return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.SeatId == seatId);
         }
 
+        private static bool isEventAdmin(UserClaims user)
+        {
+            return user.Role == "EventAdmin";
+        }
     }
 }

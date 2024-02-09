@@ -4,11 +4,15 @@ import toast from "react-hot-toast";
 import ApiService from "@services/ApiService";
 import historyStore from "@stores/HistoryStore";
 import { Booking } from "@/shared/types/entities";
+import { createEventBookingRequest } from "../../models/booking";
 
 class BookingStore {
   activeBookings: Booking[] = [];
   userBookings = [];
   displayDate = new Date();
+  bookEventMode = false
+  seatIdSelectedForNewEvent : number[] = [];
+  isEventDateChosen : boolean = false;
 
   constructor() {
     this.initialize();
@@ -42,6 +46,7 @@ class BookingStore {
         bookingDateTime: this.displayDate,
         reCAPTCHAToken,
       });
+
       const response = await ApiService.fetchData<Booking>(
         url,
         "POST",
@@ -69,6 +74,37 @@ class BookingStore {
     }
   }
 
+  async createBookingForEvent(selectedSeatIds : number[]) {
+      const bookingRequest = createEventBookingRequest({ seatIds: selectedSeatIds, bookingDateTime: this.displayDate, isEvent : true });
+
+        try {
+            const response = await fetch('/api/Booking/CreateEventBookingsForSeats', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify(bookingRequest),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error:', errorText);
+                toast.error("Error creating booking:" + errorText);
+               //refresh the page in case someone has booked the seat recently
+                await this.fetchAllActiveBookings();
+
+            }
+                await this.fetchAllActiveBookings();
+                this.resetCurrentEvent()
+                historyStore.fetchMyBookings()
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+
   //TODO: try to reuse the same deletebooking logic like HistoryStore
   async deleteBooking(bookingId: number) {
     try {
@@ -91,10 +127,26 @@ class BookingStore {
     }
   }
 
-  removeBookingById(bookingId: number) {
+  removeBookingById(bookingId: number) {  
     this.activeBookings = this.activeBookings.filter(
       (booking) => booking.id !== bookingId
     );
+  }
+
+  toggleSeatSelectionForNewEvent(seatId: number): void {
+    const index = this.seatIdSelectedForNewEvent.indexOf(seatId);
+    if (index !== -1) {
+        this.seatIdSelectedForNewEvent.splice(index, 1);
+    } else {
+        this.seatIdSelectedForNewEvent.push(seatId);
+    }
+}
+
+  handleEventDate(date : Date){
+    const newDate = new Date(date);
+    newDate.setHours(newDate.getHours() + 12); 
+    this.setDisplayDate(newDate)
+    this.isEventDateChosen = true
   }
 
   setDisplayDate(date: Date) {
@@ -103,6 +155,20 @@ class BookingStore {
   // Update active bookings
   setActiveBookings(bookings: Booking[]) {
     this.activeBookings = bookings;
+  }
+
+  toggleEventMode() {
+    this.bookEventMode = !this.bookEventMode;
+    
+    if(!this.bookEventMode){
+      this.resetCurrentEvent()
+    }
+  }
+
+  resetCurrentEvent(){
+    this.seatIdSelectedForNewEvent = []
+    this.bookEventMode = false
+    this.isEventDateChosen  = false;
   }
 
   // Update user bookings

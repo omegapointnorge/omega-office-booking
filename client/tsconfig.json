@@ -11,8 +11,8 @@
     "isolatedModules": true,
     "lib": ["es2015", "es2017", "DOM.Iterable", "DOM"],
     "typeRoots": ["src/shared/types/*"],
-    "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "include": ["src"],
   "extends": "./tsconfig.paths.json",

@@ -2,10 +2,10 @@
  * Former models
  */
 export interface Booking {
-  id: 0;
+  id: number;
   userId: string;
   userName: string;
-  seatId: 0;
+  seatId: number;
   bookingDateTime: Date;
 }
 
@@ -27,4 +27,20 @@ export interface BookingRequest {
   seatId: number;
   bookingDateTime: Date;
   reCAPTCHAToken: string;
+}
+
+export interface EventBookingRequest {
+  seatIds: number[];
+  bookingDateTime: Date;
+  isEvent: boolean;
+}
+
+export interface SeatPath {
+  id: string;
+  d: string;
+}
+export interface SeatInRoom extends SeatPath {
+  seatClicked: (e: React.MouseEvent<SVGPathElement>) => void;
+  getSeatClassName: (seatId: number) => string;
+  class?: string;
 }

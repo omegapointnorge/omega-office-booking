@@ -1,4 +1,5 @@
 import { Booking, BookingRequest } from "@/shared/types/entities";
+import { EventBookingRequest } from '../shared/types/entities';
 // export default class Booking {
 //   constructor(
 //     id = null,
@@ -37,6 +38,18 @@ export const createBooking = ({
 //     this.reCAPTCHAToken = reCAPTCHAToken;
 //   }
 // }
+
+export const createEventBookingRequest = ({ 
+  seatIds, 
+  bookingDateTime 
+}: EventBookingRequest) => {
+  const isEvent = true;
+  return {
+    SeatList: seatIds,
+    bookingDateTime: bookingDateTime.toISOString(),
+    isEvent: isEvent
+  };
+};
 
 export const createBookingRequest = ({
   seatId,

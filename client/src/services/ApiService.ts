@@ -1,5 +1,3 @@
-import { dark } from "@mui/material/styles/createPalette";
-
 type ApiOptionsType = {
   method: string;
   headers: { [key: string]: string };

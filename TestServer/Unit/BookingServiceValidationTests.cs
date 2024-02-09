@@ -1,4 +1,5 @@
 using server.Models.Domain;
+using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Services.Internal;
 
@@ -15,10 +16,10 @@ public class BookingServiceValidationTests
         // Arrange
         var bookingRequest = GetBookingRequest();
         var bookingList = new List<Booking>();
-        var userId = "testUser";
+        UserClaims userClaims = new UserClaims("name", "testUser", "noRole");
 
         // Act
-        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userId);
+        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userClaims);
 
         // Assert
         Assert.True(result.Count() == 0);
@@ -31,10 +32,10 @@ public class BookingServiceValidationTests
         var bookingRequest = GetBookingRequest();
         bookingRequest.BookingDateTime = DateTime.Now.AddDays(10);
         var bookingList = new List<Booking>();
-        var userId = "testUser";
+        UserClaims userClaims = new UserClaims("name", "testUser", "noRole");
 
         // Act
-        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userId);
+        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userClaims);
 
         // Assert
         Assert.Equal("Booking date exceeds the latest allowed booking date.", result.First());
@@ -47,10 +48,10 @@ public class BookingServiceValidationTests
         var bookingRequest = GetBookingRequest();
         var bookedSeatId = 1;
         var bookingList = new List<Booking> { new Booking { BookingDateTime = DateTime.Now, SeatId = bookedSeatId } };
-        var userId = "testUser";
+        UserClaims userClaims = new UserClaims("name", "testUser", "noRole");
 
         // Act
-        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userId);
+        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userClaims);
 
         // Assert
         Assert.Equal($"Seat {bookedSeatId} is already booked for the specified time.", result.First());
@@ -60,12 +61,12 @@ public class BookingServiceValidationTests
     public void ValidateBookingRequest_UserAlreadyBookedForDay_ReturnsErrorMessage()
     {
         // Arrange
+        UserClaims userClaims = new UserClaims("name", "testUser", "noRole");
         var bookingRequest = GetBookingRequest();
-        var bookingList = new List<Booking> { new Booking { BookingDateTime = DateTime.Now, UserId = "testUser" } };
-        var userId = "testUser";
+        var bookingList = new List<Booking> { new Booking { BookingDateTime = DateTime.Now, UserId = userClaims.Objectidentifier } };
 
         // Act
-        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userId);
+        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userClaims);
 
         // Assert
         Assert.Equal("User has already booked for the specified day.", result.First());
@@ -79,10 +80,10 @@ public class BookingServiceValidationTests
         bookingRequest.BookingDateTime = DateTime.Now.AddDays(2); // Choose a date outside the allowed booking window
 
         var bookingList = new List<Booking> { new Booking { BookingDateTime = bookingRequest.BookingDateTime, SeatId = bookingRequest.SeatId } };
-        var userId = "testUser";
+        UserClaims userClaims = new UserClaims("name", "testUser", "noRole");
 
         // Act
-        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userId);
+        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userClaims);
 
         // Assert
         Assert.Contains("Booking date exceeds the latest allowed booking date.", result);

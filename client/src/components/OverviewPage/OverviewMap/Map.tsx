@@ -2,14 +2,19 @@ import React from "react";
 
 import { Rooms } from "@/shared/types/enums";
 import { ZoomOutIcon } from "../../../shared/assets/icons/zoom-out_outline";
+import { WorkRoom } from "./SmallWorkRoom";
+import { seatsLargeRoom, seatsSmallRoom } from "./SeatPaths";
+import { Booking } from "@/shared/types/entities";
+import { isSameDate } from "@/shared/utils";
 
 interface MapProps {
   currentViewBox: string;
   zoomStatus: string;
   zoomToRoom: (value: Rooms) => void;
   getSeatClassName: (value: number) => string;
-  countAvailableSeats: (val1: number, val2: number) => number;
+  displayDate: Date;
   seatClicked: (e: React.MouseEvent<SVGPathElement>) => void;
+  activeBookings: Booking[];
   zoomOut: () => void;
 }
 
@@ -18,10 +23,38 @@ export const MapComponent = ({
   zoomStatus,
   zoomToRoom,
   getSeatClassName,
-  countAvailableSeats,
+  displayDate,
+  activeBookings,
   seatClicked,
   zoomOut,
 }: MapProps) => {
+  const countAvailableSeats = (
+    minSeatId: number,
+    maxSeatId: number
+  ): number => {
+    let availableSeats = 0;
+
+    for (let seatId = minSeatId; seatId <= maxSeatId; seatId++) {
+      let isSeatAvailable = true;
+
+      for (const booking of activeBookings) {
+        if (
+          booking.seatId === seatId &&
+          isSameDate(booking.bookingDateTime, displayDate)
+        ) {
+          isSeatAvailable = false;
+          break;
+        }
+      }
+
+      if (isSeatAvailable) {
+        availableSeats++;
+      }
+    }
+
+    return availableSeats;
+  };
+
   return (
     <div className="relative">
       <svg
@@ -51,7 +84,6 @@ export const MapComponent = ({
         >
           <path
             id="large-room"
-            // text="Large room"
             stroke="black"
             strokeWidth="3"
             fill={zoomStatus === "ZoomedIn" ? "ivory" : "gray"}
@@ -214,117 +246,62 @@ export const MapComponent = ({
             />
           </g>
         </g>
-        {/* <g className={zoomStatus === "ZoomedOut" ? 'zoomed-out-room origin-[5%_45%]' : 'zoomed-in-room'} opacity="1.0">
-              <path id="sales" stroke="black" strokeWidth="3" fill="gray" d="m112.43 963.79 41.366 644.88 561.8-5.3033-19.092-641.7z" onClick={() => zoomToRoom('sales')}/>
-              <text x="300" y="1100" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" fontSize="65" fontWeight="bolder" fontFamily="Arial">Sales</text>
-              <text x="220" y="1180" className={zoomStatus === "ZoomedOut" ? '' : "hidden"} fill="white" fontSize="55" fontWeight="bolder" fontFamily="Arial">Available Seats:</text>
-            </g> */}
-        <g
-          className={zoomStatus === "ZoomedIn" ? "" : "hidden"}
-          stroke="#000"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="5"
+
+        {/* Draft for sales */}
+        {/* <g
+          className={
+            zoomStatus === "ZoomedOut"
+              ? "zoomed-out-room origin-[5%_45%]"
+              : "zoomed-in-room"
+          }
+          opacity="1.0"
         >
           <path
-            id="11"
-            className={getSeatClassName(11)}
-            onClick={seatClicked}
-            d="m3368.5 1006.4-2.4516 5.6913a18.462 18.462 23.305 0 1-10.134 9.853l-5.0215 1.9979 50.866 21.911-1.998-5.0216a18.462 18.462 23.305 0 1 0.1983-14.133l2.4516-5.6913m63.126-53.214-23.737 55.105a13.846 13.846 23.305 0 1-18.194 7.2387l-76.299-32.867a13.846 13.846 23.305 0 1-7.2386-18.194l23.737-55.105m101.73 43.823a13.846 13.846 23.305 0 0-7.2386-18.194l-76.299-32.867a13.846 13.846 23.305 0 0-18.194 7.2387m101.73 43.823-16.434 38.149a13.846 13.846 23.305 0 1-18.194 7.2387l-76.299-32.867a13.846 13.846 23.305 0 1-7.2386-18.194l16.434-38.15"
+            id="sales"
+            stroke="black"
+            strokeWidth="3"
+            fill="gray"
+            d="m112.43 963.79 41.366 644.88 561.8-5.3033-19.092-641.7z"
+            onClick={() => zoomToRoom(Rooms.Sales)}
           />
-          <path
-            id="12"
-            className={getSeatClassName(12)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m3489.5 824.32 2.5992-5.6254a18.462 18.462 24.799 0 1 10.388-9.5854l5.0719-1.8662-50.277-23.23 1.8663 5.072a18.462 18.462 24.799 0 1-0.5667 14.123l-2.5992 5.6254m-64.492 51.549 25.166-54.467a13.846 13.846 24.799 0 1 18.377-6.7618l75.416 34.846a13.846 13.846 24.799 0 1 6.7616 18.377l-25.166 54.467m-100.55-46.461a13.846 13.846 24.799 0 0 6.7617 18.377l75.416 34.846a13.846 13.846 24.799 0 0 18.377-6.7617m-100.55-46.461 17.423-37.708a13.846 13.846 24.799 0 1 18.377-6.7618l75.416 34.846a13.846 13.846 24.799 0 1 6.7617 18.377l-17.423 37.708"
-          />
-          <path
-            id="13"
-            className={getSeatClassName(13)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m3194.9 1093.5h6.1969a18.462 18.462 0 0 1 13.058 5.4091l3.8215 3.8214v-55.384l-3.8215 3.8216a18.462 18.462 0 0 1-13.058 5.4093h-6.1969m-73.846-36.923h60a13.846 13.846 0 0 1 13.846 13.846v83.077a13.846 13.846 0 0 1-13.846 13.846h-60m0-110.77a13.846 13.846 0 0 0-13.846 13.846v83.077a13.846 13.846 0 0 0 13.846 13.846m0-110.77h41.538a13.846 13.846 0 0 1 13.846 13.846v83.077a13.846 13.846 0 0 1-13.846 13.846h-41.538"
-          />
-          <path
-            id="14"
-            className={getSeatClassName(14)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m3124.7 601.4 2.3474-5.7351a18.462 18.462 22.26 0 1 9.9527-10.036l4.9841-2.0891-51.257-20.98 2.0892 4.9844a18.462 18.462 22.26 0 1 0.059 14.134l-2.3474 5.7351m-62.145 54.356 22.728-55.529a13.846 13.846 22.26 0 1 18.059-7.5693l76.886 31.47a13.846 13.846 22.26 0 1 7.5692 18.059l-22.728 55.529m-102.51-41.96a13.846 13.846 22.26 0 0 7.5691 18.059l76.886 31.47a13.846 13.846 22.26 0 0 18.059-7.5693m-102.51-41.96 15.735-38.443a13.846 13.846 22.26 0 1 18.059-7.5693l76.886 31.47a13.846 13.846 22.26 0 1 7.5691 18.059l-15.735 38.443"
-          />
-          <path
-            id="15"
-            className={getSeatClassName(15)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m2969.8 1056.5h-6.1969a18.462 18.462 0 0 1-13.058-5.4091l-3.8215-3.8214v55.384l3.8215-3.8216a18.462 18.462 0 0 1 13.058-5.4093h6.1969m73.846 36.923h-60a13.846 13.846 0 0 1-13.846-13.846v-83.077a13.846 13.846 0 0 1 13.846-13.846h60m0 110.77a13.846 13.846 0 0 0 13.846-13.846v-83.077a13.846 13.846 0 0 0-13.846-13.846m0 110.77h-41.538a13.846 13.846 0 0 1-13.846-13.846v-83.077a13.846 13.846 0 0 1 13.846-13.846h41.538"
-          />
-        </g>
-        <g
-          className={zoomStatus === "ZoomedIn" ? "" : "hidden"}
-          stroke="#000"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="5"
-        >
-          <path
-            id="1"
-            className={getSeatClassName(1)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m1984.3 2151.3-5.9477-1.7396a18.462 18.462 16.304 0 1-11.015-8.8576l-2.5951-4.7405-15.548 53.157 4.7406-2.5951a18.462 18.462 16.304 0 1 14.052-1.5258l5.9477 1.7396m60.511 56.169-57.587-16.844a13.846 13.846 16.304 0 1-9.4023-17.176l23.322-79.736a13.846 13.846 16.304 0 1 17.176-9.4023l57.587 16.844m-31.096 106.31a13.846 13.846 16.304 0 0 17.176-9.4023l23.322-79.736a13.846 13.846 16.304 0 0-9.4024-17.176m-31.096 106.31-39.868-11.661a13.846 13.846 16.304 0 1-9.4023-17.176l23.322-79.736a13.846 13.846 16.304 0 1 17.176-9.4023l39.868 11.661"
-          />
-          <path
-            id="2"
-            className={getSeatClassName(2)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m1945.7 2277.2-5.9477-1.7396a18.462 18.462 16.304 0 1-11.015-8.8576l-2.5951-4.7405-15.548 53.157 4.7406-2.5951a18.462 18.462 16.304 0 1 14.052-1.5258l5.9477 1.7396m60.511 56.169-57.587-16.844a13.846 13.846 16.304 0 1-9.4023-17.176l23.322-79.736a13.846 13.846 16.304 0 1 17.176-9.4023l57.587 16.844m-31.096 106.31a13.846 13.846 16.304 0 0 17.176-9.4023l23.322-79.736a13.846 13.846 16.304 0 0-9.4024-17.176m-31.096 106.31-39.868-11.661a13.846 13.846 16.304 0 1-9.4023-17.176l23.322-79.736a13.846 13.846 16.304 0 1 17.176-9.4023l39.868 11.661"
-          />
-          <path
-            id="3"
-            className={getSeatClassName(3)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m2164 2244.3 5.9477 1.7396a18.462 18.462 16.304 0 1 11.015 8.8576l2.5951 4.7405 15.548-53.157-4.7406 2.5951a18.462 18.462 16.304 0 1-14.052 1.5258l-5.9477-1.7396m-60.511-56.169 57.587 16.844a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-57.587-16.844m31.096-106.31a13.846 13.846 16.304 0 0-17.176 9.4023l-23.322 79.736a13.846 13.846 16.304 0 0 9.4024 17.176m31.096-106.31 39.868 11.661a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-39.868-11.661"
-          />
-          <path
-            id="4"
-            className={getSeatClassName(4)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m2125.4 2368.2 5.9477 1.7396a18.462 18.462 16.304 0 1 11.015 8.8576l2.5951 4.7405 15.548-53.157-4.7406 2.5951a18.462 18.462 16.304 0 1-14.052 1.5258l-5.9477-1.7396m-60.511-56.169 57.587 16.844a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-57.587-16.844m31.096-106.31a13.846 13.846 16.304 0 0-17.176 9.4023l-23.322 79.736a13.846 13.846 16.304 0 0 9.4024 17.176m31.096-106.31 39.868 11.661a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-39.868-11.661"
-          />
-          <path
-            id="5"
-            className={getSeatClassName(5)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m2513.2 2179.3-5.9477-1.7396a18.462 18.462 16.304 0 1-11.015-8.8576l-2.5951-4.7405-15.548 53.157 4.7406-2.5951a18.462 18.462 16.304 0 1 14.052-1.5258l5.9477 1.7396m60.511 56.169-57.587-16.844a13.846 13.846 16.304 0 1-9.4023-17.176l23.322-79.736a13.846 13.846 16.304 0 1 17.176-9.4023l57.587 16.844m-31.096 106.31a13.846 13.846 16.304 0 0 17.176-9.4023l23.322-79.736a13.846 13.846 16.304 0 0-9.4024-17.176m-31.096 106.31-39.868-11.661a13.846 13.846 16.304 0 1-9.4023-17.176l23.322-79.736a13.846 13.846 16.304 0 1 17.176-9.4023l39.868 11.661"
-          />
-          <path
-            id="6"
-            className={getSeatClassName(6)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m2476.6 2302.1-5.9477-1.7396a18.462 18.462 16.304 0 1-11.015-8.8576l-2.5951-4.7405-15.548 53.157 4.7406-2.5951a18.462 18.462 16.304 0 1 14.052-1.5258l5.9477 1.7396m60.511 56.169-57.587-16.844a13.846 13.846 16.304 0 1-9.4023-17.176l23.322-79.736a13.846 13.846 16.304 0 1 17.176-9.4023l57.587 16.844m-31.096 106.31a13.846 13.846 16.304 0 0 17.176-9.4023l23.322-79.736a13.846 13.846 16.304 0 0-9.4024-17.176m-31.096 106.31-39.868-11.661a13.846 13.846 16.304 0 1-9.4023-17.176l23.322-79.736a13.846 13.846 16.304 0 1 17.176-9.4023l39.868 11.661"
-          />
-          <path
-            id="7"
-            className={getSeatClassName(7)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m2440.7 2425.7-5.9477-1.7396a18.462 18.462 16.304 0 1-11.015-8.8576l-2.5951-4.7405-15.548 53.157 4.7406-2.5951a18.462 18.462 16.304 0 1 14.052-1.5258l5.9477 1.7396m60.511 56.169-57.587-16.844a13.846 13.846 16.304 0 1-9.4023-17.176l23.322-79.736a13.846 13.846 16.304 0 1 17.176-9.4023l57.587 16.844m-31.096 106.31a13.846 13.846 16.304 0 0 17.176-9.4023l23.322-79.736a13.846 13.846 16.304 0 0-9.4024-17.176m-31.096 106.31-39.868-11.661a13.846 13.846 16.304 0 1-9.4023-17.176l23.322-79.736a13.846 13.846 16.304 0 1 17.176-9.4023l39.868 11.661"
-          />
-          <path
-            id="8"
-            className={getSeatClassName(8)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m2690.3 2270.6 5.9477 1.7396a18.462 18.462 16.304 0 1 11.015 8.8576l2.5951 4.7405 15.548-53.157-4.7406 2.5951a18.462 18.462 16.304 0 1-14.052 1.5258l-5.9477-1.7396m-60.511-56.169 57.587 16.844a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-57.587-16.844m31.096-106.31a13.846 13.846 16.304 0 0-17.176 9.4023l-23.322 79.736a13.846 13.846 16.304 0 0 9.4024 17.176m31.096-106.31 39.868 11.661a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-39.868-11.661"
-          />
-          <path
-            id="9"
-            className={getSeatClassName(9)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m2651.5 2392 5.9477 1.7396a18.462 18.462 16.304 0 1 11.015 8.8576l2.5951 4.7405 15.548-53.157-4.7406 2.5951a18.462 18.462 16.304 0 1-14.052 1.5258l-5.9477-1.7396m-60.511-56.169 57.587 16.844a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-57.587-16.844m31.096-106.31a13.846 13.846 16.304 0 0-17.176 9.4023l-23.322 79.736a13.846 13.846 16.304 0 0 9.4024 17.176m31.096-106.31 39.868 11.661a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-39.868-11.661"
-          />
-          <path
-            id="10"
-            className={getSeatClassName(10)}
-            onClick={(clickEvent) => seatClicked(clickEvent)}
-            d="m2614.9 2514.4 5.9477 1.7396a18.462 18.462 16.304 0 1 11.015 8.8576l2.5951 4.7405 15.548-53.157-4.7406 2.5951a18.462 18.462 16.304 0 1-14.052 1.5258l-5.9477-1.7396m-60.511-56.169 57.587 16.844a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-57.587-16.844m31.096-106.31a13.846 13.846 16.304 0 0-17.176 9.4023l-23.322 79.736a13.846 13.846 16.304 0 0 9.4024 17.176m31.096-106.31 39.868 11.661a13.846 13.846 16.304 0 1 9.4023 17.176l-23.322 79.736a13.846 13.846 16.304 0 1-17.176 9.4023l-39.868-11.661"
-          />
-        </g>
+          <text
+            x="300"
+            y="1100"
+            className={zoomStatus === "ZoomedOut" ? "" : "hidden"}
+            fill="white"
+            fontSize="65"
+            fontWeight="bolder"
+            fontFamily="Arial"
+          >
+            Sales
+          </text>
+          <text
+            x="220"
+            y="1180"
+            className={zoomStatus === "ZoomedOut" ? "" : "hidden"}
+            fill="white"
+            fontSize="55"
+            fontWeight="bolder"
+            fontFamily="Arial"
+          >
+            Available Seats:
+          </text>
+        </g> */}
+
+        {/* SMALL WORK ROOM */}
+        <WorkRoom
+          className={zoomStatus === "ZoomedIn" ? undefined : "hidden"}
+          seats={seatsSmallRoom}
+          seatClicked={seatClicked}
+          getSeatClassName={getSeatClassName}
+        />
+        {/* LARGE WORK ROOM */}
+        <WorkRoom
+          className={zoomStatus === "ZoomedIn" ? undefined : "hidden"}
+          seats={seatsLargeRoom}
+          seatClicked={seatClicked}
+          getSeatClassName={getSeatClassName}
+        />
       </svg>
 
       <button

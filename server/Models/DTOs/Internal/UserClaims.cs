@@ -1,7 +1,4 @@
-﻿using server.Models.Domain;
-using System.Security.Cryptography.Pkcs;
-
-namespace server.Models.DTOs.Internal
+﻿namespace server.Models.DTOs.Internal
 {
     public record UserClaims
     {
@@ -10,8 +7,8 @@ namespace server.Models.DTOs.Internal
         public string Email { get; set; }
         public string? Role { get; set; }
         // Constructor overloading
-        public UserClaims(string userName, string userId)
-            : this(userName, userId, String.Empty, String.Empty) { }
+        public UserClaims(string userName, string userId, string role)
+            : this(userName, userId, String.Empty, role) { }
 
         public UserClaims(String name, String id, String email, String? role)
         {
