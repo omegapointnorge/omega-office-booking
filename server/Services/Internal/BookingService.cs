@@ -154,7 +154,7 @@ namespace server.Services.Internal
         private static List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
         {
             List<string> validationResultsList = new();
-            if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
+            if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > BookingTimeUtils.GetLatestAllowedBookingDate())
 
             {
                 validationResultsList.Add("Booking date exceeds the latest allowed booking date.");
@@ -187,36 +187,5 @@ namespace server.Services.Internal
             return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.SeatId == seatId);
         }
 
-
-        private static DateOnly GetLatestAllowedBookingDate()
-        {
-            TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
-            DateTime now = TimeZoneInfo.ConvertTime(DateTime.Now, targetTimeZone);
-            DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(now);
-            TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
-
-            if (IsWeekend(now) || now.TimeOfDay > sameDayCutoff)
-            {
-                latestAllowedBookingDate = GetNextWeekday(latestAllowedBookingDate);
-            }
-            return latestAllowedBookingDate;
-        }
-
-        private static bool IsWeekend(DateTime date)
-        {
-            TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
-            return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday ||
-                   date.DayOfWeek == DayOfWeek.Friday && date.TimeOfDay > sameDayCutoff;
-        }
-
-        private static DateOnly GetNextWeekday(DateOnly date)
-        {
-            DateOnly nextDay = date.AddDays(1);
-            while (nextDay.DayOfWeek == DayOfWeek.Saturday || nextDay.DayOfWeek == DayOfWeek.Sunday)
-            {
-                nextDay = nextDay.AddDays(1);
-            }
-            return nextDay;
-        }
     }
 }
