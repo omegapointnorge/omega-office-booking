@@ -6,6 +6,7 @@ import { Booking } from "@/shared/types/entities";
 import { deleteBookingRequest } from "@models/booking";
 import { isSameDate } from "@/shared/utils";
 
+
 interface OverviewSeatInfoProps {
   onClose: () => void;
   selectedSeatId: number;
@@ -13,9 +14,11 @@ interface OverviewSeatInfoProps {
 
 const RECAPTCHA_SITE_KEY = "6Lc1tV8pAAAAABKV5g3LrYZNzUx1KGQkYHR-hSzo";
 
+
 const OverviewSeatInfo = observer(
   ({ onClose, selectedSeatId }: OverviewSeatInfoProps) => {
     const { user } = useAuthContext() ?? {};
+    const isEventAdmin = user.claims.role === "EventAdmin";
 
     const claimKey = user.claims.objectidentifier;
 
@@ -95,7 +98,7 @@ const OverviewSeatInfo = observer(
             >
               Lukk
             </button>
-            {claimKey === selectedBooking?.userId && (
+            {(claimKey === selectedBooking?.userId || selectedBooking?.userId && isEventAdmin)&& (
               <button
                 onClick={handleDelete}
                 className="px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
