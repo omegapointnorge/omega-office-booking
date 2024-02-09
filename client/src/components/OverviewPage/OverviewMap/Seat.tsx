@@ -10,6 +10,7 @@ export const Seat = ({ id, d, seatClicked, getSeatClassName }: SeatInRoom) => {
     setIsSeatClicked(!isSeatClicked);
     seatClicked(e);
   };
+
   return (
     <path
       key={id}
