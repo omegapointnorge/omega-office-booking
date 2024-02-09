@@ -2,6 +2,8 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.RecaptchaEnterprise.V1;
 using Grpc.Auth;
+using server.Helpers;
+using server.Models.DTOs.Request;
 
 public class RecaptchaEnterprise
 {
@@ -29,9 +31,9 @@ public class RecaptchaEnterprise
         _client = InitializeRecaptchaClient();
     }
 
-    public double CreateAssessment(string token, string recaptchaKey = DefaultRecaptchaKey, string recaptchaAction = DefaultRecaptchaActionName)
+    public double CreateAssessment(CreateBookingRequest bookingRequest, string recaptchaKey = DefaultRecaptchaKey, string recaptchaAction = DefaultRecaptchaActionName)
     {
-        // Build the assessment request
+        string token = bookingRequest.reCAPTCHAToken;
         var createAssessmentRequest = BuildAssessmentRequest(token, recaptchaKey, recaptchaAction);
 
         try
@@ -50,6 +52,16 @@ public class RecaptchaEnterprise
             {
                 _logger.LogError($"The action attribute in reCAPTCHA tag is: {response.TokenProperties.Action}\nThe action attribute in the reCAPTCHA tag does not match the action you are expecting to score");
                 throw new InvalidOperationException($"The action attribute in reCAPTCHA tag is: {response.TokenProperties.Action}\nThe action attribute in the reCAPTCHA tag does not match the action you are expecting to score");
+            }
+
+
+            DateTime EarliestAllowedBookingTime = BookingTimeUtils.GetBookingOpeningTime(DateOnly.FromDateTime(bookingRequest.BookingDateTime));
+            DateTime ReCaptchaCreationTime = BookingTimeUtils.ConvertToNorwegianTime(response.TokenProperties.CreateTime.ToDateTime());
+
+            if (ReCaptchaCreationTime < EarliestAllowedBookingTime)
+            {
+                _logger.LogError("The reCaptchaToken was created before the booking opened");
+                throw new InvalidOperationException("The reCaptchaToken was created before the booking opened");
             }
 
             return response.RiskAnalysis.Score;

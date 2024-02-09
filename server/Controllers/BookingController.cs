@@ -44,7 +44,7 @@ namespace server.Controllers
                 {
                     throw new Exception("reCAPTCHA token is missing or empty.");
                 }
-                var score = _recaptchaEnterprise.CreateAssessment(token: bookingRequest.reCAPTCHAToken);
+                var score = _recaptchaEnterprise.CreateAssessment(bookingRequest);
                 if (score < RecaptchaEnterprise.ReCaptchaThreshold)
                 {
                     throw new Exception("The reCAPTCHA score is below the threshold.");
