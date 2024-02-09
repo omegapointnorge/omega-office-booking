@@ -4,14 +4,17 @@ import { Rooms } from "@/shared/types/enums";
 import { ZoomOutIcon } from "../../../shared/assets/icons/zoom-out_outline";
 import { WorkRoom } from "./SmallWorkRoom";
 import { seatsLargeRoom, seatsSmallRoom } from "./SeatPaths";
+import { Booking } from "@/shared/types/entities";
+import { isSameDate } from "@/shared/utils";
 
 interface MapProps {
   currentViewBox: string;
   zoomStatus: string;
   zoomToRoom: (value: Rooms) => void;
   getSeatClassName: (value: number) => string;
-  countAvailableSeats: (val1: number, val2: number) => number;
+  displayDate: Date;
   seatClicked: (e: React.MouseEvent<SVGPathElement>) => void;
+  activeBookings: Booking[];
   zoomOut: () => void;
 }
 
@@ -20,10 +23,38 @@ export const MapComponent = ({
   zoomStatus,
   zoomToRoom,
   getSeatClassName,
-  countAvailableSeats,
+  displayDate,
+  activeBookings,
   seatClicked,
   zoomOut,
 }: MapProps) => {
+  const countAvailableSeats = (
+    minSeatId: number,
+    maxSeatId: number
+  ): number => {
+    let availableSeats = 0;
+
+    for (let seatId = minSeatId; seatId <= maxSeatId; seatId++) {
+      let isSeatAvailable = true;
+
+      for (const booking of activeBookings) {
+        if (
+          booking.seatId === seatId &&
+          isSameDate(booking.bookingDateTime, displayDate)
+        ) {
+          isSeatAvailable = false;
+          break;
+        }
+      }
+
+      if (isSeatAvailable) {
+        availableSeats++;
+      }
+    }
+
+    return availableSeats;
+  };
+
   return (
     <div className="relative">
       <svg

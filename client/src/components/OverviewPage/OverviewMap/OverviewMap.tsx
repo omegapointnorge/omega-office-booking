@@ -5,7 +5,7 @@ import { useAuthContext } from "@auth/useAuthContext";
 import { observer } from "mobx-react-lite";
 import bookingStore from "@stores/BookingStore";
 import { MapComponent } from "./Map";
-import { isSameDate } from "@/shared/utils";
+import { hasBookingOpened, isSameDate } from "@/shared/utils";
 import { Rooms } from "@/shared/types/enums";
 
 import "./OverviewMap.css";
@@ -16,7 +16,9 @@ interface OverviewMapProps {
 
 const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const { user } = useAuthContext() ?? {};
+
   const isEventAdmin = user.claims.role === "EventAdmin";
+  const userId = user.claims.objectidentifier;
 
   const {
     activeBookings,
@@ -24,6 +26,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
     bookEventMode,
     seatIdSelectedForNewEvent,
   } = bookingStore;
+
   const location = useLocation();
 
   const zoomedOutViewBoxParameters = "0 0 3725 2712";
@@ -37,10 +40,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const [zoomStatus, setZoomStatus] = useState("ZoomedOut");
   const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
-  const userId = user.claims.objectidentifier;
-
   const getSeatClassName = (seatId: number): string => {
-    
     const bookingForSeat = activeBookings.find(
       (booking) =>
         booking.seatId === seatId &&
@@ -68,36 +68,14 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
       return "seat-unavailable";
     }
 
-    if (!hasBookingOpened() && !isEventAdmin) {
+    if (!hasBookingOpened(displayDate) && !isEventAdmin) {
       return "seat-available-later";
     }
 
     return "seat-available";
   };
 
-  const hasBookingOpened = () => {
-    let bookingOpeningTime = getEarliestAllowedBookingTime(displayDate);
-
-    let currentDateTime = new Date();
-    return currentDateTime > bookingOpeningTime;
-  };
-  //TODO: movce utils function to other files
-  const getEarliestAllowedBookingTime = (date: Date) => {
-    let earliestAllowedTime = new Date(date);
-
-    // If it's Monday, set the time to the Friday before at 16:00
-    if (earliestAllowedTime.getDay() === 1) {
-      // Monday has index 1 in JavaScript (0 is Sunday)
-      earliestAllowedTime.setDate(earliestAllowedTime.getDate() - 3); // 3 days back to Friday
-    } else {
-      // Otherwise, set the time to the day before at 16:00
-      earliestAllowedTime.setDate(earliestAllowedTime.getDate() - 1);
-    }
-    earliestAllowedTime.setHours(16, 0, 0, 0);
-    return earliestAllowedTime;
-  };
-
-  const seatClicked = (e: React.MouseEvent<SVGPathElement>) => {
+  const seatClicked = (e: React.MouseEvent<SVGPathElement>): void => {
     const seatId = e.currentTarget.id;
 
     if (bookEventMode) {
@@ -114,40 +92,15 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
       }
 
       bookingStore.toggleSeatSelectionForNewEvent(Number(seatId));
-      getSeatClassName(Number(seatId));
       return;
     }
 
     showSeatInfo(seatId);
   };
 
-  const countAvailableSeats = (minSeatId: number, maxSeatId: number) => {
-    let availableSeats = 0;
-
-    for (let seatId = minSeatId; seatId <= maxSeatId; seatId++) {
-      let isSeatAvailable = true;
-
-      for (const booking of activeBookings) {
-        if (
-          booking.seatId === seatId &&
-          isSameDate(booking.bookingDateTime, displayDate)
-        ) {
-          isSeatAvailable = false;
-          break;
-        }
-      }
-
-      if (isSeatAvailable) {
-        availableSeats++;
-      }
-    }
-
-    return availableSeats;
-  };
-
   //--------------- Zoom functionality ------------------
   //TODO: ta ut zoom
-  const zoomToRoom = (roomName: Rooms) => {
+  const zoomToRoom = (roomName: Rooms): void => {
     let newViewBox;
     // Define or calculate the new viewBox for each room
     switch (roomName) {
@@ -234,17 +187,16 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   //--------------- End of zoom functionality -----------------
 
   return (
-    <>
-      <MapComponent
-        zoomStatus={zoomStatus}
-        currentViewBox={currentViewBox}
-        zoomToRoom={zoomToRoom}
-        getSeatClassName={getSeatClassName}
-        countAvailableSeats={countAvailableSeats}
-        seatClicked={seatClicked}
-        zoomOut={zoomOut}
-      />
-    </>
+    <MapComponent
+      zoomStatus={zoomStatus}
+      currentViewBox={currentViewBox}
+      zoomToRoom={zoomToRoom}
+      activeBookings={activeBookings}
+      getSeatClassName={getSeatClassName}
+      displayDate={displayDate}
+      seatClicked={seatClicked}
+      zoomOut={zoomOut}
+    />
   );
 });
 
