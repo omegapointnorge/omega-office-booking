@@ -95,11 +95,9 @@ class BookingStore {
                 await this.fetchAllActiveBookings();
 
             }
-            else {
                 await this.fetchAllActiveBookings();
                 this.resetCurrentEvent()
-                // historyStore refresh history
-            }
+                historyStore.fetchMyBookings()
 
         } catch (error) {
             console.error('Error:', error);
