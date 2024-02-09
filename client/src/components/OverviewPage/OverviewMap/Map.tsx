@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { Rooms } from "@/shared/types/enums";
 import { ZoomOutIcon } from "../../../shared/assets/icons/zoom-out_outline";

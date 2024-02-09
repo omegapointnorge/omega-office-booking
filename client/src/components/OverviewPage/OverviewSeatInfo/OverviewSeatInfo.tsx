@@ -4,6 +4,7 @@ import bookingStore from "../../../state/stores/BookingStore";
 import { useAuthContext } from "../../../core/auth/useAuthContext";
 import { Booking } from "@/shared/types/entities";
 import { deleteBookingRequest } from "@models/booking";
+import { isSameDate } from "@/shared/utils";
 
 interface OverviewSeatInfoProps {
   onClose: () => void;
@@ -16,7 +17,7 @@ const OverviewSeatInfo = observer(
   ({ onClose, selectedSeatId }: OverviewSeatInfoProps) => {
     const { user } = useAuthContext() ?? {};
 
-    const claimKey  = user.claims.objectidentifier;
+    const claimKey = user.claims.objectidentifier;
 
     const { activeBookings, displayDate } = bookingStore;
     const [selectedBooking, setSelectedBooking] = useState<Booking>();
@@ -45,14 +46,6 @@ const OverviewSeatInfo = observer(
       };
     }, []);
 
-    const isSameDate = (date1: Date, date2: Date) => {
-      if (!(date1 instanceof Date) || !(date2 instanceof Date)) {
-        throw new Error("Both arguments must be Date objects.");
-      }
-
-      return date1.toDateString() === date2.toDateString();
-    };
-
     const executeRecaptcha = async (): Promise<string> => {
       // Execute reCAPTCHA and return the token
       return new Promise((resolve) => {
@@ -74,6 +67,7 @@ const OverviewSeatInfo = observer(
 
     const handleDelete = async () => {
       if (selectedBooking?.id) {
+        
         const deleteOnId = deleteBookingRequest(selectedBooking.id);
         !!deleteOnId && (await bookingStore.deleteBooking(deleteOnId));
         onClose();
