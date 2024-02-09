@@ -64,7 +64,8 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         booking.userId === userId &&
         isSameDate(displayDate, booking.bookingDateTime)
     );
-    if (isAnySeatBookedByUser) {
+
+    if (isAnySeatBookedByUser && !isEventAdmin) {
       return "seat-unavailable";
     }
 
