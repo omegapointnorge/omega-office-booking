@@ -4,7 +4,11 @@ using System;
 
 public static class BookingTimeUtils
 {
-    private const int SameDayCutoffHour = 16;
+    private static IConfiguration? _configuration;
+    public static void SetConfig(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
 
     public static DateTime ConvertToNorwegianTime(DateTime time)
     {
@@ -16,9 +20,9 @@ public static class BookingTimeUtils
     {
         DateTime now = ConvertToNorwegianTime(DateTime.Now);
         DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(now);
-        TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
+        TimeOnly openingTime = getOpeningTime();
 
-        if (IsWeekend(now) || now.TimeOfDay > sameDayCutoff)
+        if (IsWeekend(now) || TimeOnly.FromDateTime(now) >= openingTime)
         {
             latestAllowedBookingDate = GetNextWeekday(latestAllowedBookingDate);
         }
@@ -28,9 +32,9 @@ public static class BookingTimeUtils
     // Check if it's Saturday, Sunday, or Friday after the same day cutoff hour
     private static bool IsWeekend(DateTime date)
     {
-        TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
+        TimeOnly openingTime = getOpeningTime();
         return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday ||
-               date.DayOfWeek == DayOfWeek.Friday && date.TimeOfDay > sameDayCutoff;
+               (date.DayOfWeek == DayOfWeek.Friday && TimeOnly.FromDateTime(date) >= openingTime);
     }
 
     private static DateOnly GetNextWeekday(DateOnly date)
@@ -43,9 +47,9 @@ public static class BookingTimeUtils
         return nextDay;
     }
 
-    public static DateTime GetBookingOpeningTime(DateOnly bookingDate)
+    public static DateTime GetBookingOpeningDateTime(DateOnly bookingDate)
     {
-        TimeOnly openingTime = new TimeOnly(SameDayCutoffHour, 0);
+        TimeOnly openingTime = getOpeningTime();
         DateOnly openingDate = bookingDate.AddDays(-1);
         DateTime openingDateTime = new DateTime(openingDate.Year, openingDate.Month, openingDate.Day, openingTime.Hour, openingTime.Minute, openingTime.Second);
 
@@ -56,7 +60,9 @@ public static class BookingTimeUtils
         return openingDateTime;
     }
 
-
-
-
+    private static TimeOnly getOpeningTime()
+    {
+        string openingTime = _configuration["OpeningTime"];
+        return TimeOnly.Parse(openingTime);
+    }
 }
