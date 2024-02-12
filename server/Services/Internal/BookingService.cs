@@ -186,7 +186,8 @@ namespace server.Services.Internal
 
             if (booking == null)
             {
-                validationResultsList.Add($"Booking with {booking.Id} not found");
+                validationResultsList.Add("Booking not found");
+                return validationResultsList;
             }
 
             if (isEventAdmin(user))

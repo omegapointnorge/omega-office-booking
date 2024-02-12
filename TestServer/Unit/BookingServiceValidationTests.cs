@@ -137,4 +137,20 @@ public class BookingServiceValidationTests
         // Assert
         Assert.Empty(result);
     }
+
+    [Fact]
+    public void ValidateUserDeleteBookingRequest_BookingNotFound_ReturnsErrorMessage()
+    {
+        // Arrange
+        Booking booking = null; // Simulating a scenario where booking is not found
+        UserClaims userClaims = new UserClaims("name", "testUser", "noRole");
+
+        // Act
+        var result = BookingService.ValidateUserDeleteBookingRequest(booking, userClaims);
+
+        // Assert
+        Assert.Single(result);
+        Assert.Contains("Booking not found", result);
+    }
+
 }
