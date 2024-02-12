@@ -3,9 +3,8 @@ import { observer } from "mobx-react-lite";
 import bookingStore from "../../../state/stores/BookingStore";
 import { useAuthContext } from "../../../core/auth/useAuthContext";
 import { Booking } from "@/shared/types/entities";
-import { deleteBookingRequest } from "@models/booking";
 import { isSameDate } from "@/shared/utils";
-
+import { CircularProgress } from "@mui/material";
 
 interface OverviewSeatInfoProps {
   onClose: () => void;
@@ -13,7 +12,6 @@ interface OverviewSeatInfoProps {
 }
 
 const RECAPTCHA_SITE_KEY = "6Lc1tV8pAAAAABKV5g3LrYZNzUx1KGQkYHR-hSzo";
-
 
 const OverviewSeatInfo = observer(
   ({ onClose, selectedSeatId }: OverviewSeatInfoProps) => {
@@ -24,6 +22,7 @@ const OverviewSeatInfo = observer(
 
     const { activeBookings, displayDate } = bookingStore;
     const [selectedBooking, setSelectedBooking] = useState<Booking>();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
       const foundBooking = activeBookings.find(
@@ -62,18 +61,22 @@ const OverviewSeatInfo = observer(
       });
     };
 
-    const handleBook = async () => {
+    const handleBooking = async () => {
+      setLoading(true);
       const reCAPTCHAtoken = await executeRecaptcha();
-      await bookingStore.createBooking(selectedSeatId, reCAPTCHAtoken);
+      await bookingStore
+        .createBookingRequest(selectedSeatId, reCAPTCHAtoken)
+        .then(() => setLoading(false));
       onClose();
     };
 
     const handleDelete = async () => {
+      setLoading(true);
       if (selectedBooking?.id) {
-        
-        const deleteOnId = deleteBookingRequest(selectedBooking.id);
-        !!deleteOnId && (await bookingStore.deleteBooking(deleteOnId));
-        onClose();
+        await bookingStore.deleteBooking(selectedBooking.id).then(() => {
+          setLoading(false);
+          onClose();
+        });
       } else {
         console.error("Unable to delete on id");
       }
@@ -98,7 +101,8 @@ const OverviewSeatInfo = observer(
             >
               Lukk
             </button>
-            {(claimKey === selectedBooking?.userId || selectedBooking?.userId && isEventAdmin)&& (
+            {(claimKey === selectedBooking?.userId ||
+              (selectedBooking?.userId && isEventAdmin)) && (
               <button
                 onClick={handleDelete}
                 className="px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
@@ -108,7 +112,7 @@ const OverviewSeatInfo = observer(
             )}
             {!selectedBooking?.id && (
               <button
-                onClick={handleBook}
+                onClick={handleBooking}
                 className="px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
               >
                 Reserver sete
@@ -126,27 +130,40 @@ const OverviewSeatInfo = observer(
             <h3 className="text-xl font-semibold text-gray-900 mb-4">
               Seteinformasjon
             </h3>
-            <div className="text-left space-y-3">
-              <p className="text-sm text-gray-600">
-                Sete ID:{" "}
-                <span className="text-gray-700 font-medium">
-                  {selectedSeatId}
-                </span>
-              </p>
-              <p className="text-sm text-gray-600">
-                Reservert av:{" "}
-                <span className="text-gray-700 font-medium">
-                  {selectedBooking?.userName || "Ikke reservert"}
-                </span>
-              </p>
-              <p className="text-sm text-gray-600">
-                Dato:{" "}
-                <span className="text-gray-700 font-medium">
-                  {displayDate.toLocaleDateString()}
-                </span>
-              </p>
-              <br />
+
+            <div className="flex flex-row space-y-3">
+              <div className="basis-2/3 text-left">
+                <p className="text-sm text-gray-600">
+                  Sete ID:{" "}
+                  <span className="text-gray-700 font-medium">
+                    {selectedSeatId}
+                  </span>
+                </p>
+                <p className="text-sm text-gray-600">
+                  Reservert av:{" "}
+                  <span className="text-gray-700 font-medium">
+                    {selectedBooking?.userName || "Ikke reservert"}
+                  </span>
+                </p>
+                <p className="text-sm text-gray-600">
+                  Dato:{" "}
+                  <span className="text-gray-700 font-medium">
+                    {displayDate.toLocaleDateString()}
+                  </span>
+                </p>
+                <br />
+              </div>
+              {loading && (
+                <div className="basis-1/3">
+                  <CircularProgress
+                    color="primary"
+                    size={30}
+                    style={{ margin: "1rem" }}
+                  />
+                </div>
+              )}
             </div>
+
             {getButtonGroup()}
           </div>
         </div>

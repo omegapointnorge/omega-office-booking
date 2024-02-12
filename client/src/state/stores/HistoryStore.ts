@@ -76,9 +76,7 @@ class HistoryStore {
         console.error(`Failed to delete booking with ID ${bookingId}`);
         return;
       }
-
-      this.removeBookingById(bookingId);
-      bookingStore.removeBookingById(bookingId);
+      this.updateBookings(bookingId);
     } catch (error) {
       console.error(
         `An error occurred while deleting booking with ID ${bookingId}:`,
@@ -87,6 +85,10 @@ class HistoryStore {
     }
   }
 
+  async updateBookings(bookingId: number) {
+    this.removeBookingById(bookingId);
+    bookingStore.removeBookingById(bookingId);
+  }
   setIsFirstPage(data: boolean) {
     this.isFirstPage = data;
   }
@@ -175,16 +177,6 @@ class HistoryStore {
       }
     );
 
-    // return sortedBookings.map(
-    //   (booking) =>
-    //     new Booking(
-    //       booking.id,
-    //       booking.userId,
-    //       booking.userName,
-    //       booking.seatId,
-    //       booking.bookingDateTime
-    //     )
-    // );
     return sortedBookings;
   }
 

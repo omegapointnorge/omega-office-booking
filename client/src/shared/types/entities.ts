@@ -10,7 +10,6 @@ export interface Booking {
 }
 
 export interface Seat {
-  //todo: id er nok number
   id: number | null;
   roomId: string | null;
   isAvailable: boolean;
@@ -25,7 +24,7 @@ export interface Room {
 
 export interface BookingRequest {
   seatId: number;
-  bookingDateTime: Date;
+  bookingDateTime: string;
   reCAPTCHAToken: string;
 }
 

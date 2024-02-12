@@ -3,12 +3,19 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { getUser } from "@services/userService";
 import AuthContext from "@auth/AuthContext";
+import { UserRole } from "@/shared/types/enums";
 
+interface UserContextType {
+  isAuthenticated: boolean;
+  claims?: {
+    userName: string;
+    objectidentifier: string;
+    email: string;
+    role: UserRole;
+  };
+}
 export const AuthProvider: React.FC = ({ children }) => {
-  //TODO: define user
-  const [user, setUser] = useState<{ isAuthenticated: boolean } | any | null>(
-    null
-  );
+  const [user, setUser] = useState<UserContextType | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

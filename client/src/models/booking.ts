@@ -1,20 +1,6 @@
-import { Booking, BookingRequest } from "@/shared/types/entities";
-import { EventBookingRequest } from '../shared/types/entities';
-// export default class Booking {
-//   constructor(
-//     id = null,
-//     userId = null,
-//     userName = null,
-//     seatId = null,
-//     bookingDateTime = null
-//   ) {
-//     this.id = id;
-//     this.userId = userId;
-//     this.userName = userName;
-//     this.seatId = seatId;
-//     this.bookingDateTime = new Date(bookingDateTime);
-//   }
-// }
+import { Booking } from "@/shared/types/entities";
+import { EventBookingRequest } from "../shared/types/entities";
+
 export const createBooking = ({
   id,
   userId,
@@ -31,48 +17,14 @@ export const createBooking = ({
   };
 };
 
-// export class CreateBookingRequest {
-//   constructor(seatId, bookingDateTime, reCAPTCHAToken) {
-//     this.seatId = seatId;
-//     this.bookingDateTime = bookingDateTime.toISOString();
-//     this.reCAPTCHAToken = reCAPTCHAToken;
-//   }
-// }
-
-export const createEventBookingRequest = ({ 
-  seatIds, 
-  bookingDateTime 
+export const createEventBookingRequest = ({
+  seatIds,
+  bookingDateTime,
 }: EventBookingRequest) => {
   const isEvent = true;
   return {
     SeatList: seatIds,
     bookingDateTime: bookingDateTime.toISOString(),
-    isEvent: isEvent
+    isEvent: isEvent,
   };
-};
-
-export const createBookingRequest = ({
-  seatId,
-  bookingDateTime,
-  reCAPTCHAToken,
-}: BookingRequest) => {
-  return {
-    seatId,
-    bookingDateTime: bookingDateTime.toISOString(),
-    reCAPTCHAToken,
-  };
-};
-// export class DeleteBookingRequest {
-//   constructor(bookingId) {
-//     this.bookingId = bookingId
-//   }
-// }
-
-//TODO: trenger vi denne?
-export const deleteBookingRequest = (id: number) => {
-  //TODO: check if it exsist and then send deleteReq
-  const bookingExist = true;
-  if (bookingExist) {
-    return id;
-  }
 };
