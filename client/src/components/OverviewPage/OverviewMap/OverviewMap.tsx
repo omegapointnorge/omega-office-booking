@@ -5,7 +5,7 @@ import { useAuthContext } from "@auth/useAuthContext";
 import { observer } from "mobx-react-lite";
 import bookingStore from "@stores/BookingStore";
 import { MapComponent } from "./Map";
-import { hasBookingOpened, isSameDate } from "@/shared/utils";
+import { isSameDate } from "@/shared/utils";
 import { Rooms } from "@/shared/types/enums";
 
 import "./OverviewMap.css";
@@ -69,7 +69,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
       return "seat-unavailable";
     }
 
-    if (!hasBookingOpened(displayDate) && !isEventAdmin) {
+    if (!bookingStore.hasBookingOpened(displayDate) && !isEventAdmin) {
       return "seat-available-later";
     }
 

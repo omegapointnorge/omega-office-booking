@@ -20,6 +20,7 @@ class BookingStore {
   seatIdSelectedForNewEvent: number[] = [];
   isEventDateChosen: boolean = false;
   apiStatus: ApiStatus = ApiStatus.Idle;
+  openingTime: string = "";
 
   constructor() {
     makeAutoObservable(this);
@@ -27,6 +28,7 @@ class BookingStore {
 
   async initialize() {
     await this.fetchAllActiveBookings();
+    await this.fetchOpeningTimeOfDay();
   }
 
   async fetchAllActiveBookings() {
@@ -88,6 +90,22 @@ class BookingStore {
     } catch (error) {
       this.apiStatus = ApiStatus.Error;
       console.error("Error:", error);
+    }
+  }
+
+  async fetchOpeningTimeOfDay() {
+    try {
+      const response = await fetch("/api/Booking/OpeningTime");
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch opening time");
+      }
+
+      const openingTime = await response.text();
+      this.openingTime = openingTime;
+    } catch (error) {
+      console.error("Error fetching opening time:", error);
+      throw error;
     }
   }
 
@@ -172,6 +190,35 @@ class BookingStore {
     this.bookEventMode = false;
     this.isEventDateChosen = false;
   }
+
+  getEarliestAllowedBookingTime = (date: Date): Date => {
+    let earliestAllowedTime = new Date(date);
+
+    if (earliestAllowedTime.getDay() === 1) {
+      // If it's Monday, set the date to the Friday before
+      earliestAllowedTime.setDate(earliestAllowedTime.getDate() - 3); // Subtract 3 days to get to Friday
+    } else {
+      // Otherwise, set the date to the day before
+      earliestAllowedTime.setDate(earliestAllowedTime.getDate() - 1);
+    }
+
+    // The time of day the booking opens is decided by the backend
+    const [hours, minutes, seconds] = this.openingTime.split(":").map(Number);
+    earliestAllowedTime.setHours(hours, minutes, seconds);
+    return earliestAllowedTime;
+  };
+
+  hasBookingOpened = (displayDate: Date): boolean => {
+    let bookingOpeningTime = this.getEarliestAllowedBookingTime(displayDate);
+    let currentDateTime = new Date();
+    return currentDateTime > bookingOpeningTime;
+  };
+
+  // Update user bookings
+  //TODO: brukes denne?
+  // setUserBookings(bookings: Booking[]) {
+  //   this.userBookings = bookings;
+  // }
 }
 
 const bookingStore = new BookingStore();

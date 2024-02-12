@@ -13,11 +13,13 @@ namespace server.Controllers
     {
         private readonly IBookingService _bookingService;
         private readonly RecaptchaEnterprise _recaptchaEnterprise;
+        private readonly IConfiguration _configuration;
 
-        public BookingController(IBookingService bookingService, RecaptchaEnterprise recaptchaEnterprise)
+        public BookingController(IBookingService bookingService, RecaptchaEnterprise recaptchaEnterprise, IConfiguration configuration)
         {
             _bookingService = bookingService;
             _recaptchaEnterprise = recaptchaEnterprise;
+            _configuration = configuration;
         }
 
         [HttpGet("activeBookings")]
@@ -119,6 +121,22 @@ namespace server.Controllers
                 return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
+
+        [HttpGet("OpeningTime")]
+        public ActionResult<string> GetOpeningTime()
+        {
+            try
+            {
+                var openingTime = _configuration["OpeningTime"];
+                return Ok(openingTime);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred processing your request." + ex.Message);
+            }
+        }
+
+
         private UserClaims GetUser()
         {
             var id = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
