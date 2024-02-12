@@ -104,28 +104,12 @@ class BookingStore {
     }
   }
 
-  //TODO: try to reuse the same deletebooking logic like HistoryStore
   async deleteBooking(bookingId: number) {
-    try {
-      const url = `/api/Booking/${bookingId}`;
-
-      const response = await ApiService.fetchData<undefined>(url, "DELETE");
-
-      if (!response) {
-        console.error(`Failed to delete booking with ID ${bookingId}`);
-        return;
-      }
-
+    historyStore.deleteBooking(bookingId).then(() => {
       this.removeBookingById(bookingId);
       historyStore.removeBookingById(bookingId);
-    } catch (error) {
-      console.error(
-        `An error occurred while deleting booking with ID ${bookingId}:`,
-        error
-      );
-    }
+    });
   }
-
   removeBookingById(bookingId: number) {
     this.activeBookings = this.activeBookings.filter(
       (booking) => booking.id !== bookingId
