@@ -10,6 +10,11 @@ public class BookingServiceValidationTests
         return new CreateBookingRequest { BookingDateTime = DateTime.Now, SeatId = 1 };
     }
 
+    private Booking GetBooking()
+    {
+        return new Booking { BookingDateTime = DateTime.Now, UserId = "testUser" };
+    }
+
     [Fact]
     public void ValidateBookingRequest_ValidBooking_ReturnsNull()
     {
@@ -88,5 +93,48 @@ public class BookingServiceValidationTests
         // Assert
         Assert.Contains("Booking date exceeds the latest allowed booking date.", result);
         Assert.Contains($"Seat {bookingRequest.SeatId} is already booked for the specified time.", result);
+    }
+
+    [Fact]
+    public void ValidateUserDeleteBookingRequest_ValidBooking_ReturnsEmptyList()
+    {
+        // Arrange
+        var booking = GetBooking();
+        var userClaims = new UserClaims("name", booking.UserId, "noRole");
+
+        // Act
+        var result = BookingService.ValidateUserDeleteBookingRequest(booking, userClaims);
+
+        // Assert
+        Assert.Empty(result);
+    }
+
+    [Fact]
+    public void ValidateUserDeleteBookingRequest_UserNotAuthorized_ReturnsErrorMessage()
+    {
+        // Arrange
+        var booking = GetBooking();
+        var userClaims = new UserClaims("name", "someOtherUserId", "noRole");
+
+        // Act
+        var result = BookingService.ValidateUserDeleteBookingRequest(booking, userClaims);
+
+        // Assert
+        Assert.Single(result);
+        Assert.Contains("User is not authorized to delete the booking.", result[0]);
+    }
+
+    [Fact]
+    public void ValidateUserDeleteBookingRequest_UserIsEventAdmin_ReturnsEmptyList()
+    {
+        // Arrange
+        var booking = GetBooking();
+        var userClaims = new UserClaims("name", "userId123", "EventAdmin");
+
+        // Act
+        var result = BookingService.ValidateUserDeleteBookingRequest(booking, userClaims);
+
+        // Assert
+        Assert.Empty(result);
     }
 }

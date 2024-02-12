@@ -180,7 +180,7 @@ namespace server.Services.Internal
         }
 
 
-        private static List<string> ValidateUserDeleteBookingRequest(Booking? booking, UserClaims user)
+        public static List<string> ValidateUserDeleteBookingRequest(Booking? booking, UserClaims user)
         {
             List<string> validationResultsList = new();
 
