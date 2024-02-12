@@ -9,3 +9,8 @@ export enum DatePressed {
   Today = "TODAY",
   NextWorkDay = "NEXTWORKDAY",
 }
+
+export enum UserRole {
+  EventAdmin = "EventAdmin",
+  User = "User"
+}
