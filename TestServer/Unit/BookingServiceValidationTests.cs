@@ -1,92 +1,105 @@
+using Moq;
 using server.Models.Domain;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
-using server.Services.Internal;
+using server.Repository;
 
-public class BookingServiceValidationTests
+namespace server.Services.Internal.Tests
 {
-    private CreateBookingRequest GetBookingRequest()
+    public class BookingServiceTests
     {
-        return new CreateBookingRequest { BookingDateTime = DateTime.Now, SeatId = 1 };
-    }
+        private Mock<IBookingRepository> _bookingRepositoryMock = new Mock<IBookingRepository>();
 
-    [Fact]
-    public void ValidateBookingRequest_ValidBooking_ReturnsNull()
-    {
-        // Arrange
-        var bookingRequest = GetBookingRequest();
-        var bookingList = new List<Booking>();
-        UserClaims userClaims = new UserClaims("name", "testUser", "noRole");
+        private UserClaims GetUserClaims()
+        {
+            return new UserClaims("name", "testUser", "noRole");
+        }
 
-        // Act
-        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userClaims);
+        private UserClaims GetEventAdminClaims()
+        {
+            return new UserClaims("name", "testUser", "EventAdmin");
+        }
 
-        // Assert
-        Assert.True(result.Count() == 0);
-    }
 
-    [Fact]
-    public void ValidateBookingRequest_DateExceedsAllowedBookingDate_ReturnsErrorMessage()
-    {
-        // Arrange
-        var bookingRequest = GetBookingRequest();
-        bookingRequest.BookingDateTime = DateTime.Now.AddDays(10);
-        var bookingList = new List<Booking>();
-        UserClaims userClaims = new UserClaims("name", "testUser", "noRole");
+        private CreateBookingRequest GetBookingRequest()
+        {
+            return new CreateBookingRequest { BookingDateTime = DateTime.Now, SeatId = 1 };
+        }
 
-        // Act
-        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userClaims);
+        [Fact]
+        public async Task CreateBookingAsync_ValidBooking_ReturnsBookingDto()
+        {
+            // Arrange
+            var bookingRequest = GetBookingRequest();
+            var userClaims = GetUserClaims();
+            var bookingService = new BookingService(_bookingRepositoryMock.Object);
+            _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking>());
 
-        // Assert
-        Assert.Equal("Booking date exceeds the latest allowed booking date.", result.First());
-    }
+            // Act
+            var result = await bookingService.CreateBookingAsync(bookingRequest, userClaims);
 
-    [Fact]
-    public void ValidateBookingRequest_SeatAlreadyBooked_ReturnsErrorMessage()
-    {
-        // Arrange
-        var bookingRequest = GetBookingRequest();
-        var bookedSeatId = 1;
-        var bookingList = new List<Booking> { new Booking { BookingDateTime = DateTime.Now, SeatId = bookedSeatId } };
-        UserClaims userClaims = new UserClaims("name", "testUser", "noRole");
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(userClaims.Objectidentifier, result.UserId);
+            Assert.Equal(userClaims.UserName, result.UserName);
+            Assert.Equal(bookingRequest.SeatId, result.SeatId);
+            Assert.Equal(bookingRequest.BookingDateTime.ToUniversalTime().ToString("o"), result.BookingDateTime);
+        }
 
-        // Act
-        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userClaims);
 
-        // Assert
-        Assert.Equal($"Seat {bookedSeatId} is already booked for the specified time.", result.First());
-    }
+        [Fact]
+        public async Task CreateBookingAsync_SeatAlreadyBooked_ThrowsException()
+        {
+            // Arrange
+            var bookingRequest = GetBookingRequest();
+            var userClaims = GetUserClaims();
+            var bookingService = new BookingService(_bookingRepositoryMock.Object);
+            _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking> { new Booking { SeatId = bookingRequest.SeatId, BookingDateTime = bookingRequest.BookingDateTime } });
 
-    [Fact]
-    public void ValidateBookingRequest_UserAlreadyBookedForDay_ReturnsErrorMessage()
-    {
-        // Arrange
-        UserClaims userClaims = new UserClaims("name", "testUser", "noRole");
-        var bookingRequest = GetBookingRequest();
-        var bookingList = new List<Booking> { new Booking { BookingDateTime = DateTime.Now, UserId = userClaims.Objectidentifier } };
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => bookingService.CreateBookingAsync(bookingRequest, userClaims));
+        }
 
-        // Act
-        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userClaims);
+        [Fact]
+        public async Task CreateBookingAsync_UserAlreadyBookedForDay_ThrowsException()
+        {
+            // Arrange
+            var bookingRequest = GetBookingRequest();
+            var userClaims = GetUserClaims();
+            var bookingService = new BookingService(_bookingRepositoryMock.Object);
+            _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking> { new Booking { UserId = userClaims.Objectidentifier, BookingDateTime = bookingRequest.BookingDateTime } });
 
-        // Assert
-        Assert.Equal("User has already booked for the specified day.", result.First());
-    }
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => bookingService.CreateBookingAsync(bookingRequest, userClaims));
+        }
 
-    [Fact]
-    public void ValidateBookingRequest_InvalidTimeAndSeatAlreadyBooked_ReturnsErrorMessages()
-    {
-        // Arrange
-        var bookingRequest = GetBookingRequest();
-        bookingRequest.BookingDateTime = DateTime.Now.AddDays(2); // Choose a date outside the allowed booking window
+        [Fact]
+        public async Task CreateBookingAsync_EventAdminMultipleBookingsSameDay_ReturnsMultipleBookingDtos()
+        {
+            // Arrange
+            var bookingRequest1 = GetBookingRequest();
+            var bookingRequest2 = GetBookingRequest();
+            var userClaims = GetEventAdminClaims();
+            var bookingService = new BookingService(_bookingRepositoryMock.Object);
+            _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking>());
 
-        var bookingList = new List<Booking> { new Booking { BookingDateTime = bookingRequest.BookingDateTime, SeatId = bookingRequest.SeatId } };
-        UserClaims userClaims = new UserClaims("name", "testUser", "noRole");
+            // Act
+            var result1 = await bookingService.CreateBookingAsync(bookingRequest1, userClaims);
+            bookingRequest2.SeatId = 2; // Change the seat ID for the second booking request
+            var result2 = await bookingService.CreateBookingAsync(bookingRequest2, userClaims);
 
-        // Act
-        var result = BookingService.ValidateUserBookingRequest(bookingRequest, bookingList, userClaims);
+            // Assert
+            Assert.NotNull(result1);
+            Assert.NotNull(result2);
+            Assert.Equal(userClaims.Objectidentifier, result1.UserId);
+            Assert.Equal(userClaims.Objectidentifier, result2.UserId);
+            Assert.Equal(userClaims.UserName, result1.UserName);
+            Assert.Equal(userClaims.UserName, result2.UserName);
+            Assert.Equal(bookingRequest1.SeatId, result1.SeatId);
+            Assert.Equal(bookingRequest2.SeatId, result2.SeatId);
+            Assert.Equal(bookingRequest1.BookingDateTime.ToUniversalTime().ToString("o"), result1.BookingDateTime);
+            Assert.Equal(bookingRequest2.BookingDateTime.ToUniversalTime().ToString("o"), result2.BookingDateTime);
+        }
 
-        // Assert
-        Assert.Contains("Booking date exceeds the latest allowed booking date.", result);
-        Assert.Contains($"Seat {bookingRequest.SeatId} is already booked for the specified time.", result);
     }
 }
