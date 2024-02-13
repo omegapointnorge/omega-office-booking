@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Heading from "@common-components/Heading";
 import { observer } from "mobx-react-lite";
@@ -79,6 +79,10 @@ const PreviousBookings = observer(() => (
 ));
 
 const HistoryPage = observer(() => {
+  useEffect(() => {
+    historyStore.initBookings();
+  }, []);
+
   if (historyStore.isLoading) {
     return <Loading />;
   }

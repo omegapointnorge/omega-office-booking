@@ -6,6 +6,12 @@ import historyStore from "@stores/HistoryStore";
 import { Booking, BookingRequest } from "@/shared/types/entities";
 import { createEventBookingRequest } from "../../models/booking";
 
+enum ApiStatus {
+  Idle = "IDLE",
+  Pending = "PENDING",
+  Error = "ERROR",
+  Success = "SUCCESS",
+}
 class BookingStore {
   activeBookings: Booking[] = [];
   userBookings = [];
@@ -13,9 +19,9 @@ class BookingStore {
   bookEventMode = false;
   seatIdSelectedForNewEvent: number[] = [];
   isEventDateChosen: boolean = false;
+  apiStatus: ApiStatus = ApiStatus.Idle;
 
   constructor() {
-    this.initialize();
     makeAutoObservable(this);
   }
 
@@ -24,33 +30,45 @@ class BookingStore {
   }
 
   async fetchAllActiveBookings() {
+    if (this.apiStatus === ApiStatus.Pending) return;
     try {
+      this.apiStatus = ApiStatus.Pending;
+
       const data = await ApiService.fetchData<Booking[]>(
         "/api/booking/activeBookings",
         "Get"
-      );
+      ).then((response) => {
+        this.apiStatus = ApiStatus.Success;
+        return response;
+      });
 
       const bookings = data.map((booking) => createBooking(booking));
       this.setActiveBookings(bookings);
     } catch (error) {
       console.error("Error fetching active bookings:", error);
+      this.apiStatus = ApiStatus.Error;
     }
   }
 
   async createBookingRequest(seatId: number, reCAPTCHAToken: string) {
+    if (this.apiStatus === ApiStatus.Pending) return;
     try {
+      this.apiStatus = ApiStatus.Pending;
+
       const url = "/api/Booking/create";
       const bookingRequest: BookingRequest = {
         seatId,
         bookingDateTime: this.displayDate.toISOString(),
         reCAPTCHAToken,
       };
-
       const response = await ApiService.fetchData<Booking>(
         url,
         "POST",
         bookingRequest
-      );
+      ).then((response) => {
+        this.apiStatus = ApiStatus.Success;
+        return response;
+      });
 
       if (!response) {
         const errorText = `Failed to create booking`;
@@ -68,6 +86,7 @@ class BookingStore {
         historyStore.myActiveBookings.unshift(newBooking);
       }
     } catch (error) {
+      this.apiStatus = ApiStatus.Error;
       console.error("Error:", error);
     }
   }

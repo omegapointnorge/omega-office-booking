@@ -21,7 +21,6 @@ class HistoryStore {
   rooms: Room[] = [];
 
   constructor() {
-    this.initBookings();
     makeAutoObservable(this);
   }
 
