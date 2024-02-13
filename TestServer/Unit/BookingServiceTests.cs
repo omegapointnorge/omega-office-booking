@@ -76,32 +76,25 @@ namespace server.Services.Internal.Tests
             await Assert.ThrowsAsync<Exception>(() => Sut.CreateBookingAsync(bookingRequest, userClaims));
         }
 
+
         [Fact]
-        public async Task CreateBookingAsync_EventAdminMultipleBookingsSameDay_ReturnsMultipleBookingDtos()
+        public async Task CreateBookingAsync_AdminAlreadyBookedForDay_ReturnsBookingDto()
         {
             // Arrange
-            var bookingRequest1 = GetBookingRequest();
-            var bookingRequest2 = GetBookingRequest();
-            var userClaims = GetEventAdminClaims();
-            _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking>());
+            var bookingRequest = new CreateBookingRequest { BookingDateTime = DateTime.Now, SeatId = 1 };
+            var existingBookingRequest = new CreateBookingRequest { BookingDateTime = DateTime.Now, SeatId = 2 };
+            var adminClaims = GetEventAdminClaims();
+            _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking> { new Booking { UserId = adminClaims.Objectidentifier, BookingDateTime = existingBookingRequest.BookingDateTime, SeatId = existingBookingRequest.SeatId } });
 
             // Act
-            var result1 = await Sut.CreateBookingAsync(bookingRequest1, userClaims);
-            bookingRequest2.SeatId = 2; // Change the seat ID for the second booking request
-            var result2 = await Sut.CreateBookingAsync(bookingRequest2, userClaims);
+            var result = await Sut.CreateBookingAsync(bookingRequest, adminClaims);
 
             // Assert
-            Assert.NotNull(result1);
-            Assert.NotNull(result2);
-            Assert.Equal(userClaims.Objectidentifier, result1.UserId);
-            Assert.Equal(userClaims.Objectidentifier, result2.UserId);
-            Assert.Equal(userClaims.UserName, result1.UserName);
-            Assert.Equal(userClaims.UserName, result2.UserName);
-            Assert.Equal(bookingRequest1.SeatId, result1.SeatId);
-            Assert.Equal(bookingRequest2.SeatId, result2.SeatId);
-            Assert.Equal(bookingRequest1.BookingDateTime.ToUniversalTime().ToString("o"), result1.BookingDateTime);
-            Assert.Equal(bookingRequest2.BookingDateTime.ToUniversalTime().ToString("o"), result2.BookingDateTime);
+            Assert.NotNull(result);
+            Assert.Equal(adminClaims.Objectidentifier, result.UserId);
+            Assert.Equal(adminClaims.UserName, result.UserName);
+            Assert.Equal(bookingRequest.SeatId, result.SeatId);
+            Assert.Equal(bookingRequest.BookingDateTime.ToUniversalTime().ToString("o"), result.BookingDateTime);
         }
-
     }
 }
