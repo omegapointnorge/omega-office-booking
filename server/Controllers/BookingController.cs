@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using server.Helpers;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
@@ -13,13 +14,11 @@ namespace server.Controllers
     {
         private readonly IBookingService _bookingService;
         private readonly RecaptchaEnterprise _recaptchaEnterprise;
-        private readonly IConfiguration _configuration;
 
-        public BookingController(IBookingService bookingService, RecaptchaEnterprise recaptchaEnterprise, IConfiguration configuration)
+        public BookingController(IBookingService bookingService, RecaptchaEnterprise recaptchaEnterprise)
         {
             _bookingService = bookingService;
             _recaptchaEnterprise = recaptchaEnterprise;
-            _configuration = configuration;
         }
 
         [HttpGet("activeBookings")]
@@ -127,7 +126,7 @@ namespace server.Controllers
         {
             try
             {
-                var openingTime = _configuration["OpeningTime"];
+                var openingTime = BookingTimeUtils.GetOpeningTime();
                 return Ok(openingTime);
             }
             catch (Exception ex)

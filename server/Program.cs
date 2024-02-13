@@ -97,7 +97,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 //swagger
 
-BookingTimeUtils.SetConfig(builder.Configuration);
+BookingTimeUtils.SetOpeningTime(TimeOnly.Parse(builder.Configuration["OpeningTime"]));
 
 
 var app = builder.Build();

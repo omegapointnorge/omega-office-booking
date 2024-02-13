@@ -52,6 +52,25 @@ class BookingStore {
     }
   }
 
+  async fetchOpeningTimeOfDay() {
+  try {
+    const response = await ApiService.fetchData<string>(
+      "/api/Booking/OpeningTime",
+      "GET"
+    );
+    
+    if (!response) {
+      throw new Error("Failed to fetch opening time");
+    }
+
+    this.openingTime = response;
+
+  } catch (error) {
+    console.error("Error fetching opening time:", error);
+    throw error;
+  }
+}
+
   async createBookingRequest(seatId: number, reCAPTCHAToken: string) {
     if (this.apiStatus === ApiStatus.Pending) return;
     try {
@@ -93,21 +112,6 @@ class BookingStore {
     }
   }
 
-  async fetchOpeningTimeOfDay() {
-    try {
-      const response = await fetch("/api/Booking/OpeningTime");
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch opening time");
-      }
-
-      const openingTime = await response.text();
-      this.openingTime = openingTime;
-    } catch (error) {
-      console.error("Error fetching opening time:", error);
-      throw error;
-    }
-  }
 
   async createBookingForEvent(selectedSeatIds: number[]) {
     const bookingRequest = createEventBookingRequest({

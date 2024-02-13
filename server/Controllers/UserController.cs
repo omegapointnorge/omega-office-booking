@@ -19,12 +19,12 @@ public class UserController : ControllerBase
         var role = User.FindFirst(ClaimConstants.Role)?.Value ?? null;
 
 
-        if(id == null|| name == null || email == null)
+        if (id == null || name == null || email == null)
         {
             return BadRequest("Some of the user claims are null");
         }
 
-        var userClaims = new UserClaims(name, id, email,role);
+        var userClaims = new UserClaims(name, id, email, role);
         var user = new UserInfo(
             User.Identity?.IsAuthenticated ?? false,
             userClaims);
