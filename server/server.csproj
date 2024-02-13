@@ -34,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <!-- TODO: update imports to ts -->
     <Content Remove="$(SpaRoot)**" />
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
@@ -51,9 +52,6 @@
     </None>
     <None Update="..\client\src\components\Heading.jsx">
       <Link>src\components\Heading.jsx</Link>
-    </None>
-    <None Update="..\client\src\components\Buttons\LoginButton.jsx">
-      <Link>src\components\Buttons\LoginButton.jsx</Link>
     </None>
     <None Update="..\client\src\components\Buttons\Button.jsx">
       <Link>src\components\Buttons\Button.jsx</Link>
