@@ -1,8 +1,8 @@
 // This script configures the .env.development.local file with additional environment variables to configure HTTPS using the ASP.NET Core
 // development certificate in the webpack development proxy.
 
-const fs = require("fs");
-const path = require("path");
+import { existsSync, writeFileSync, readFileSync, appendFileSync } from "fs";
+import { join } from "path";
 
 const baseFolder =
   process.env.APPDATA !== undefined && process.env.APPDATA !== ""
@@ -13,7 +13,7 @@ const certificateArg = process.argv
   .map((arg) => arg.match(/--name=(?<value>.+)/i))
   .filter(Boolean)[0];
 const certificateName = certificateArg
-  ? certificateArg.groups.value
+  ? certificateArg.groups?.value
   : process.env.npm_package_name;
 
 if (!certificateName) {
@@ -23,17 +23,17 @@ if (!certificateName) {
   process.exit(-1);
 }
 
-const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
-const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
+const certFilePath = join(baseFolder, `${certificateName}.pem`);
+const keyFilePath = join(baseFolder, `${certificateName}.key`);
 
-if (!fs.existsSync(".env.development.local")) {
-  fs.writeFileSync(
+if (!existsSync(".env.development.local")) {
+  writeFileSync(
     ".env.development.local",
     `SSL_CRT_FILE=${certFilePath}
 SSL_KEY_FILE=${keyFilePath}`
   );
 } else {
-  let lines = fs.readFileSync(".env.development.local").toString().split("\n");
+  let lines = readFileSync(".env.development.local").toString().split("\n");
 
   let hasCert,
     hasCertKey = false;
@@ -46,15 +46,9 @@ SSL_KEY_FILE=${keyFilePath}`
     }
   }
   if (!hasCert) {
-    fs.appendFileSync(
-      ".env.development.local",
-      `\nSSL_CRT_FILE=${certFilePath}`
-    );
+    appendFileSync(".env.development.local", `\nSSL_CRT_FILE=${certFilePath}`);
   }
   if (!hasCertKey) {
-    fs.appendFileSync(
-      ".env.development.local",
-      `\nSSL_KEY_FILE=${keyFilePath}`
-    );
+    appendFileSync(".env.development.local", `\nSSL_KEY_FILE=${keyFilePath}`);
   }
 }

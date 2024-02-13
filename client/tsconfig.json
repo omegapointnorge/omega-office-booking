@@ -10,11 +10,18 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "lib": ["es2015", "es2017", "DOM.Iterable", "DOM"],
-    "typeRoots": ["src/shared/types/*"],
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "types": ["node"],
+    "noUnusedParameters": true,
+    "sourceMap": true
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "playwright.config.ts",
+    "tailwind.config.ts",
+    "aspnetcore-https.ts",
+    "aspnetcore-react.ts"
+  ],
   "extends": "./tsconfig.paths.json",
   "exclude": ["node_modules"]
 }
