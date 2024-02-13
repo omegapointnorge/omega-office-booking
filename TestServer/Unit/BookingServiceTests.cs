@@ -3,13 +3,18 @@ using server.Models.Domain;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Repository;
+using TestServer.Unit;
 
 namespace server.Services.Internal.Tests
 {
-    public class BookingServiceTests
+    public class BookingServiceTests : TestServiceBase<BookingService>
     {
-        private readonly Mock<IBookingRepository> _bookingRepositoryMock = new Mock<IBookingRepository>();
+        private readonly Mock<IBookingRepository> _bookingRepositoryMock;
 
+        public BookingServiceTests()
+        {
+            _bookingRepositoryMock = Mocker.GetMock<IBookingRepository>();
+        }
         private UserClaims GetUserClaims()
         {
             return new UserClaims("name", "testUser", "noRole");
@@ -33,11 +38,10 @@ namespace server.Services.Internal.Tests
             var bookingRequest = GetBookingRequest();
             var userClaims = GetUserClaims();
 
-            var bookingService = new BookingService(_bookingRepositoryMock.Object);
             _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking>());
 
             // Act
-            var result = await bookingService.CreateBookingAsync(bookingRequest, userClaims);
+            var result = await Sut.CreateBookingAsync(bookingRequest, userClaims);
 
             // Assert
             Assert.NotNull(result);
