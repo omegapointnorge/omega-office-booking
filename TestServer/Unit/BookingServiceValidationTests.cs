@@ -32,6 +32,7 @@ namespace server.Services.Internal.Tests
             // Arrange
             var bookingRequest = GetBookingRequest();
             var userClaims = GetUserClaims();
+
             var bookingService = new BookingService(_bookingRepositoryMock.Object);
             _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking>());
 
