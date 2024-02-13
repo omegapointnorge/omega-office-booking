@@ -58,11 +58,10 @@ namespace server.Services.Internal.Tests
             // Arrange
             var bookingRequest = GetBookingRequest();
             var userClaims = GetUserClaims();
-            var bookingService = new BookingService(_bookingRepositoryMock.Object);
             _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking> { new Booking { SeatId = bookingRequest.SeatId, BookingDateTime = bookingRequest.BookingDateTime } });
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => bookingService.CreateBookingAsync(bookingRequest, userClaims));
+            await Assert.ThrowsAsync<Exception>(() => Sut.CreateBookingAsync(bookingRequest, userClaims));
         }
 
         [Fact]
@@ -71,11 +70,10 @@ namespace server.Services.Internal.Tests
             // Arrange
             var bookingRequest = GetBookingRequest();
             var userClaims = GetUserClaims();
-            var bookingService = new BookingService(_bookingRepositoryMock.Object);
             _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking> { new Booking { UserId = userClaims.Objectidentifier, BookingDateTime = bookingRequest.BookingDateTime } });
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => bookingService.CreateBookingAsync(bookingRequest, userClaims));
+            await Assert.ThrowsAsync<Exception>(() => Sut.CreateBookingAsync(bookingRequest, userClaims));
         }
 
         [Fact]
@@ -85,13 +83,12 @@ namespace server.Services.Internal.Tests
             var bookingRequest1 = GetBookingRequest();
             var bookingRequest2 = GetBookingRequest();
             var userClaims = GetEventAdminClaims();
-            var bookingService = new BookingService(_bookingRepositoryMock.Object);
             _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking>());
 
             // Act
-            var result1 = await bookingService.CreateBookingAsync(bookingRequest1, userClaims);
+            var result1 = await Sut.CreateBookingAsync(bookingRequest1, userClaims);
             bookingRequest2.SeatId = 2; // Change the seat ID for the second booking request
-            var result2 = await bookingService.CreateBookingAsync(bookingRequest2, userClaims);
+            var result2 = await Sut.CreateBookingAsync(bookingRequest2, userClaims);
 
             // Assert
             Assert.NotNull(result1);
