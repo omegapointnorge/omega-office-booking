@@ -1,4 +1,5 @@
 using Azure.Identity;
+using Google.Api;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -89,11 +90,16 @@ builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 
-builder.Services.AddScoped<RecaptchaEnterprise>();
-
+builder.Services.AddScoped<RecaptchaEnterprise>(); 
+builder.Services.AddApplicationInsightsTelemetry(options =>
+{
+    // Set the connection string
+    options.ConnectionString = builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddApplicationInsightsTelemetry();
 //swagger
 
 

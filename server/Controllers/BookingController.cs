@@ -1,5 +1,7 @@
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Abstractions;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
@@ -12,12 +14,15 @@ namespace server.Controllers
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
+        private readonly TelemetryClient _telemetryClient;
         private readonly RecaptchaEnterprise _recaptchaEnterprise;
+     
 
-        public BookingController(IBookingService bookingService, RecaptchaEnterprise recaptchaEnterprise)
+        public BookingController(IBookingService bookingService, TelemetryClient telemetryClient, RecaptchaEnterprise recaptchaEnterprise)
         {
             _bookingService = bookingService;
             _recaptchaEnterprise = recaptchaEnterprise;
+            _telemetryClient = telemetryClient;
         }
 
         [HttpGet("activeBookings")]
@@ -52,7 +57,11 @@ namespace server.Controllers
 
                 var user = GetUser();
                 var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
-
+                var eventData = new Dictionary<string, string>
+                {
+                    { "ReCAPTCHAToken", bookingRequest.reCAPTCHAToken }
+                };
+                _telemetryClient.TrackEvent("ReCAPTCHAToken", eventData);
                 return CreatedAtRoute(null, booking);
             }
             catch (Exception ex)
