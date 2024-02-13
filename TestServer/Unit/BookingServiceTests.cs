@@ -8,7 +8,7 @@ namespace server.Services.Internal.Tests
 {
     public class BookingServiceTests
     {
-        private Mock<IBookingRepository> _bookingRepositoryMock = new Mock<IBookingRepository>();
+        private readonly Mock<IBookingRepository> _bookingRepositoryMock = new Mock<IBookingRepository>();
 
         private UserClaims GetUserClaims()
         {
