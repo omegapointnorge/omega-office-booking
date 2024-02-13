@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs.Internal;
@@ -7,20 +6,7 @@ using server.Services.Internal;
 
 public class BookingServiceValidationTests
 {
-
-    static BookingServiceValidationTests()
-    {
-        IConfiguration config = new ConfigurationBuilder()
-             .AddInMemoryCollection(new Dictionary<string, string>
-             {
-                { "OpeningTime", "15:00:00" }
-             })
-             .Build();
-
-        // Set config in BookingTimeUtils
-        BookingTimeUtils.SetConfig(config);
-    }
-
+    static BookingServiceValidationTests() { BookingTimeUtils.SetOpeningTime(new TimeOnly(15, 00)); }
     private CreateBookingRequest GetBookingRequest()
     {
         return new CreateBookingRequest { BookingDateTime = DateTime.Now, SeatId = 1 };
