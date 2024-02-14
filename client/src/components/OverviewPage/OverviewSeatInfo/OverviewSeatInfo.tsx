@@ -5,6 +5,7 @@ import { useAuthContext } from "../../../core/auth/useAuthContext";
 import { Booking } from "@/shared/types/entities";
 import { isSameDate } from "@/shared/utils";
 import { CircularProgress } from "@mui/material";
+import toast from "react-hot-toast";
 
 interface OverviewSeatInfoProps {
   onClose: () => void;
@@ -72,6 +73,9 @@ const OverviewSeatInfo = observer(
 
     const handleDelete = async () => {
       setLoading(true);
+      if (claimKey !== selectedBooking?.userId) {
+        toast.success("Husk å meld fra til: " + selectedBooking?.userName);
+      }
       if (selectedBooking?.id) {
         await bookingStore.deleteBooking(selectedBooking.id).then(() => {
           setLoading(false);
