@@ -18,7 +18,7 @@ const OverviewSeatInfo = observer(
     const { user } = useAuthContext() ?? {};
     const isEventAdmin = user.claims.role === "EventAdmin";
 
-    const claimKey = user.claims.objectidentifier;
+    const userGuid = user.claims.objectidentifier;
 
     const { activeBookings, displayDate } = bookingStore;
     const [selectedBooking, setSelectedBooking] = useState<Booking>();
@@ -85,7 +85,7 @@ const OverviewSeatInfo = observer(
     const getButtonGroup = () => {
 
       const isBooked = !!selectedBooking?.userId
-      const isYourBooking = claimKey === selectedBooking?.userId;
+      const isYourBooking = userGuid === selectedBooking?.userId;
 
       if (isBooked && !isYourBooking && !isEventAdmin) {
         return (
