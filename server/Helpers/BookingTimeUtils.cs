@@ -6,54 +6,55 @@
     {
         private static TimeOnly? _openingTime;
 
+        public static DateTime GetBookingOpeningDateTime(DateOnly bookingDate)
+        {
+            DateOnly openingDateTime = bookingDate.AddDays(-1);
+
+            while (IsWeekend(openingDateTime))
+            {
+                openingDateTime = openingDateTime.AddDays(-1);
+            }
+            return openingDateTime.ToDateTime(GetOpeningTime());
+        }
+
+
+        public static DateOnly GetLatestAllowedBookingDate()
+        {
+            DateTime currentNorwegianTime = ConvertToNorwegianTime(DateTime.Now);
+            return CalculateLatestAllowedBookingDate(currentNorwegianTime);
+        }
+
+        public static DateOnly CalculateLatestAllowedBookingDate(DateTime time)
+        {
+            DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(time);
+
+            if (TimeOnly.FromDateTime(time) >= GetOpeningTime())
+            {
+                latestAllowedBookingDate = GetNextWeekday(latestAllowedBookingDate);
+            }
+
+            return latestAllowedBookingDate;
+        }
+
         public static DateTime ConvertToNorwegianTime(DateTime time)
         {
             TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             return TimeZoneInfo.ConvertTime(time, targetTimeZone);
         }
 
-        public static DateOnly GetLatestAllowedBookingDate()
+        private static bool IsWeekend(DateOnly date)
         {
-            DateTime now = ConvertToNorwegianTime(DateTime.Now);
-            DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(now);
-            TimeOnly openingTime = GetOpeningTime();
-
-            if (IsWeekend(now) || TimeOnly.FromDateTime(now) >= openingTime)
-            {
-                latestAllowedBookingDate = GetNextWeekday(latestAllowedBookingDate);
-            }
-            return latestAllowedBookingDate;
-        }
-
-        // Check if it's Saturday, Sunday, or Friday after the same day cutoff hour
-        private static bool IsWeekend(DateTime date)
-        {
-            TimeOnly openingTime = GetOpeningTime();
-            return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday ||
-                   (date.DayOfWeek == DayOfWeek.Friday && TimeOnly.FromDateTime(date) >= openingTime);
+            return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
         }
 
         private static DateOnly GetNextWeekday(DateOnly date)
         {
             DateOnly nextDay = date.AddDays(1);
-            while (nextDay.DayOfWeek == DayOfWeek.Saturday || nextDay.DayOfWeek == DayOfWeek.Sunday)
+            while (IsWeekend(nextDay))
             {
                 nextDay = nextDay.AddDays(1);
             }
             return nextDay;
-        }
-
-        public static DateTime GetBookingOpeningDateTime(DateOnly bookingDate)
-        {
-            TimeOnly openingTime = GetOpeningTime();
-            DateOnly openingDate = bookingDate.AddDays(-1);
-            DateTime openingDateTime = new DateTime(openingDate.Year, openingDate.Month, openingDate.Day, openingTime.Hour, openingTime.Minute, openingTime.Second);
-
-            while (IsWeekend(openingDateTime))
-            {
-                openingDateTime = openingDateTime.AddDays(-1);
-            }
-            return openingDateTime;
         }
 
         public static TimeOnly GetOpeningTime()
