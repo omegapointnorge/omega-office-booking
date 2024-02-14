@@ -84,10 +84,8 @@ const OverviewSeatInfo = observer(
 
     const getButtonGroup = () => {
 
-      const isBooked = selectedBooking?.userId ? true : false;
-      const isYourBooking = selectedBooking && claimKey === selectedBooking.userId;
-
-
+      const isBooked = !!selectedBooking?.userId
+      const isYourBooking = claimKey === selectedBooking?.userId;
 
       if (isBooked && !isYourBooking && !isEventAdmin) {
         return (
