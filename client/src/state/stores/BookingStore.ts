@@ -5,16 +5,12 @@ import ApiService from "@services/ApiService";
 import historyStore from "@stores/HistoryStore";
 import { Booking, BookingRequest } from "@/shared/types/entities";
 import { createEventBookingRequest } from "../../models/booking";
+import { ApiStatus } from "@/shared/types/enums";
 
-enum ApiStatus {
-  Idle = "IDLE",
-  Pending = "PENDING",
-  Error = "ERROR",
-  Success = "SUCCESS",
-}
 class BookingStore {
   activeBookings: Booking[] = [];
-  userBookings = [];
+  //TODO: brukes denne? om ikke slett
+  // userBookings = [];
   displayDate = new Date();
   bookEventMode = false;
   seatIdSelectedForNewEvent: number[] = [];
@@ -32,13 +28,13 @@ class BookingStore {
   async fetchAllActiveBookings() {
     if (this.apiStatus === ApiStatus.Pending) return;
     try {
-      this.apiStatus = ApiStatus.Pending;
+      this.setApiStatus(ApiStatus.Pending);
 
       const data = await ApiService.fetchData<Booking[]>(
         "/api/booking/activeBookings",
         "Get"
       ).then((response) => {
-        this.apiStatus = ApiStatus.Success;
+        this.setApiStatus(ApiStatus.Success);
         return response;
       });
 
@@ -46,14 +42,14 @@ class BookingStore {
       this.setActiveBookings(bookings);
     } catch (error) {
       console.error("Error fetching active bookings:", error);
-      this.apiStatus = ApiStatus.Error;
+      this.setApiStatus(ApiStatus.Error);
     }
   }
 
   async createBookingRequest(seatId: number, reCAPTCHAToken: string) {
     if (this.apiStatus === ApiStatus.Pending) return;
     try {
-      this.apiStatus = ApiStatus.Pending;
+      this.setApiStatus(ApiStatus.Pending);
 
       const url = "/api/Booking/create";
       const bookingRequest: BookingRequest = {
@@ -66,7 +62,7 @@ class BookingStore {
         "POST",
         bookingRequest
       ).then((response) => {
-        this.apiStatus = ApiStatus.Success;
+        this.setApiStatus(ApiStatus.Success);
         return response;
       });
 
@@ -86,7 +82,7 @@ class BookingStore {
         historyStore.myActiveBookings.unshift(newBooking);
       }
     } catch (error) {
-      this.apiStatus = ApiStatus.Error;
+      this.setApiStatus(ApiStatus.Error);
       console.error("Error:", error);
     }
   }
@@ -129,6 +125,7 @@ class BookingStore {
       historyStore.removeBookingById(bookingId);
     });
   }
+
   removeBookingById(bookingId: number) {
     this.activeBookings = this.activeBookings.filter(
       (booking) => booking.id !== bookingId
@@ -171,6 +168,10 @@ class BookingStore {
     this.seatIdSelectedForNewEvent = [];
     this.bookEventMode = false;
     this.isEventDateChosen = false;
+  }
+
+  setApiStatus(status: ApiStatus) {
+    this.apiStatus = status;
   }
 }
 

@@ -12,5 +12,12 @@ export enum DatePressed {
 
 export enum UserRole {
   EventAdmin = "EventAdmin",
-  User = "User"
+  User = "User",
+}
+
+export enum ApiStatus {
+  Idle = "IDLE",
+  Pending = "PENDING",
+  Error = "ERROR",
+  Success = "SUCCESS",
 }
