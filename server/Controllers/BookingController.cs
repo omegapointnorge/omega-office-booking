@@ -13,6 +13,7 @@ namespace server.Controllers
     {
         private readonly IBookingService _bookingService;
         private readonly RecaptchaEnterprise _recaptchaEnterprise;
+        private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
         public BookingController(IBookingService bookingService, RecaptchaEnterprise recaptchaEnterprise)
         {
@@ -51,9 +52,17 @@ namespace server.Controllers
                 }
 
                 var user = GetUser();
-                var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
-
-                return CreatedAtRoute(null, booking);
+                await semaphore.WaitAsync();
+                try
+                {
+                    var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
+                    return CreatedAtRoute(null, booking);
+                }
+                finally
+                {
+                    // Ensure semaphore release even if an exception occurs
+                    semaphore.Release();
+                }
             }
             catch (Exception ex)
             {
