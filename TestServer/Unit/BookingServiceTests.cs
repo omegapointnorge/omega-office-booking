@@ -1,4 +1,5 @@
 using Moq;
+using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
@@ -9,6 +10,12 @@ namespace server.Services.Internal.Tests
 {
     public class BookingServiceTests : TestServiceBase<BookingService>
     {
+
+        static BookingServiceTests()
+        {
+            BookingTimeUtils.SetOpeningTime(new TimeOnly(15, 00));
+        }
+
         private readonly Mock<IBookingRepository> _bookingRepositoryMock;
 
         public BookingServiceTests()
