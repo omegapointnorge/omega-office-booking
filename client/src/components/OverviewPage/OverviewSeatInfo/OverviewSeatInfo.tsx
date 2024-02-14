@@ -83,7 +83,13 @@ const OverviewSeatInfo = observer(
     };
 
     const getButtonGroup = () => {
-      if (selectedBooking?.id && claimKey !== selectedBooking.userId) {
+
+      const isBooked = selectedBooking?.userId ? true : false;
+      const isYourBooking = selectedBooking && claimKey === selectedBooking.userId;
+
+
+
+      if (isBooked && !isYourBooking && !isEventAdmin) {
         return (
           <button
             onClick={onClose}
@@ -101,8 +107,8 @@ const OverviewSeatInfo = observer(
             >
               Lukk
             </button>
-            {(claimKey === selectedBooking?.userId ||
-              (selectedBooking?.userId && isEventAdmin)) && (
+            {(isYourBooking ||
+              (isBooked && isEventAdmin)) && (
               <button
                 onClick={handleDelete}
                 className="px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
@@ -110,7 +116,7 @@ const OverviewSeatInfo = observer(
                 Slett reservasjon
               </button>
             )}
-            {!selectedBooking?.id && (
+            {!isBooked && (
               <button
                 onClick={handleBooking}
                 className="px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
