@@ -23,6 +23,7 @@
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.Identity.Web" Version="2.15.3" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.0.3" />
+    <PackageReference Include="Moq.AutoMock" Version="3.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
@@ -35,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <!-- TODO: update imports to ts -->
     <Content Remove="$(SpaRoot)**" />
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
@@ -52,9 +54,6 @@
     </None>
     <None Update="..\client\src\components\Heading.jsx">
       <Link>src\components\Heading.jsx</Link>
-    </None>
-    <None Update="..\client\src\components\Buttons\LoginButton.jsx">
-      <Link>src\components\Buttons\LoginButton.jsx</Link>
     </None>
     <None Update="..\client\src\components\Buttons\Button.jsx">
       <Link>src\components\Buttons\Button.jsx</Link>

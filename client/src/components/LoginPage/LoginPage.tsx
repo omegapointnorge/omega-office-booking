@@ -1,10 +1,10 @@
 import React from "react";
 import Heading from "@common-components/Heading";
-import { LoginButton } from "@common-components/LoginButton";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "@auth/useAuthContext";
 import { useEffect } from "react";
 import { NavbarLogoBig } from "@components/Navbar/NavbarLogo/NavbarLogo";
+
 import "@/index.css";
 
 const LoginPage = () => {
@@ -34,11 +34,11 @@ const LoginPage = () => {
             <div className="flex flex-col gap-2 p-6">
               <div className="flex flex-row items-center gap-4">
                 <Link
-                  className="flex flex-row items-center gap-4 w-full"
+                  className={`text-center hover:opacity-80 transition relative rounded-lg w-full bg-marine bg-blue-900 border-blue-900 text-white py-3 text-md font-semibold border-2`}
                   to={LoginUrl}
                   reloadDocument
                 >
-                  <LoginButton label="Logg inn" />
+                  Login inn
                 </Link>
               </div>
             </div>

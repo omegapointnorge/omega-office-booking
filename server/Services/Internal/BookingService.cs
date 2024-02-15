@@ -152,7 +152,7 @@ namespace server.Services.Internal
             }
         }
 
-        public static List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, UserClaims user)
+        private List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, UserClaims user)
         {
             List<string> validationResultsList = new();
             if (isEventAdmin(user))
@@ -180,7 +180,7 @@ namespace server.Services.Internal
         }
 
 
-        private static List<string> ValidateUserDeleteBookingRequest(Booking? booking, UserClaims user)
+        private List<string> ValidateUserDeleteBookingRequest(Booking? booking, UserClaims user)
         {
             List<string> validationResultsList = new();
 
@@ -203,21 +203,22 @@ namespace server.Services.Internal
         }
 
 
-        private static bool HasUserAlreadyBookedForDay(IEnumerable<Booking> bookingList, DateTime bookingDate, string userId)
+        private bool HasUserAlreadyBookedForDay(IEnumerable<Booking> bookingList, DateTime bookingDate, string userId)
         {
             var dateOfBookingDate = bookingDate.Date;
             return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.UserId == userId);
         }
 
-        private static bool IsSeatAlreadyBooked(IEnumerable<Booking> bookingList, DateTime bookingDate, int seatId)
+        private bool IsSeatAlreadyBooked(IEnumerable<Booking> bookingList, DateTime bookingDate, int seatId)
         {
             var dateOfBookingDate = bookingDate.Date;
             return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.SeatId == seatId);
         }
 
-        private static bool isEventAdmin(UserClaims user)
+        private bool isEventAdmin(UserClaims user)
         {
             return user.Role == "EventAdmin";
         }
     }
+
 }

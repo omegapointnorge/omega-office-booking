@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Heading from "@common-components/Heading";
 import { observer } from "mobx-react-lite";
@@ -7,48 +7,54 @@ import historyStore from "@stores/HistoryStore";
 import PrimaryDialog from "@common-components/Dialog";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Loading from "@common-components/Loading";
+import { ApiStatus } from "@/shared/types/enums";
 
-const ActiveBookings = observer(() => (
-  <div className="flex flex-row gap-5">
-    <button
-      onClick={() => historyStore.navigatePrevious()}
-      className="opacity-0"
-      disabled={true}
-    >
-      <IoIosArrowBack />
-    </button>
-    {historyStore.myActiveBookings.map((booking) => (
-      <BookingItem
-        key={booking.id}
-        seatId={booking.seatId}
-        bookingDateTime={booking.bookingDateTime}
-        showDeleteButton={true}
-        roomId={historyStore.getRoomIdBySeatId(booking.seatId)}
-        onClick={() => {
-          historyStore.handleOpenDialog(booking.id);
-        }}
-      ></BookingItem>
-    ))}
-    <button
-      onClick={() => historyStore.navigateNext()}
-      className="opacity-0"
-      disabled={true}
-    >
-      <IoIosArrowForward />
-    </button>
+const ActiveBookings = observer(() => {
+  const handleDelete = () => {
+    //TODO: sjekk om det er event admin som sletter reservasjon gjort av noen andre
+    // kanskje event admin skal få se navn under sete nummer på Reservasjoner/History page
+    historyStore.deleteBooking(historyStore.bookingIdToDelete);
+    historyStore.handleCloseDialog();
+  };
 
-    <PrimaryDialog
-      title="Slett reservasjon?"
-      open={historyStore.openDialog}
-      handleClose={historyStore.handleCloseDialog}
-      onClick={() => {
-        historyStore.bookingIdToDelete &&
-          historyStore.deleteBooking(historyStore.bookingIdToDelete);
-        historyStore.handleCloseDialog();
-      }}
-    />
-  </div>
-));
+  return (
+    <div className="flex flex-row gap-5">
+      <button
+        onClick={() => historyStore.navigatePrevious()}
+        className="opacity-0"
+        disabled={true}
+      >
+        <IoIosArrowBack />
+      </button>
+      {historyStore.myActiveBookings.map((booking) => (
+        <BookingItem
+          key={booking.id}
+          seatId={booking.seatId}
+          bookingDateTime={booking.bookingDateTime}
+          showDeleteButton={true}
+          roomId={historyStore.getRoomIdBySeatId(booking.seatId)}
+          onClick={() => {
+            historyStore.handleOpenDialog(booking.id);
+          }}
+        ></BookingItem>
+      ))}
+      <button
+        onClick={() => historyStore.navigateNext()}
+        className="opacity-0"
+        disabled={true}
+      >
+        <IoIosArrowForward />
+      </button>
+      {/* //TODO: Ta i bruk samme dialog! */}
+      <PrimaryDialog
+        title="Slett reservasjon?"
+        open={historyStore.openDialog}
+        handleClose={historyStore.handleCloseDialog}
+        onClick={handleDelete}
+      />
+    </div>
+  );
+});
 
 const PreviousBookings = observer(() => (
   <div className="flex flex-row gap-5">
@@ -79,7 +85,11 @@ const PreviousBookings = observer(() => (
 ));
 
 const HistoryPage = observer(() => {
-  if (historyStore.isLoading) {
+  useEffect(() => {
+    historyStore.initialize();
+  }, []);
+
+  if (historyStore.apiStatus === ApiStatus.Pending) {
     return <Loading />;
   }
 

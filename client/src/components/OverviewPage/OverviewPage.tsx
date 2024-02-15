@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Heading from "@common-components/Heading";
 import { useAuthContext } from "@auth/useAuthContext";
 import { observer } from "mobx-react-lite";
@@ -11,6 +11,10 @@ import { Calendar, DateObject } from "react-multi-date-picker";
 
 const OverviewPage = observer(() => {
   const { user } = useAuthContext() ?? {};
+
+  useEffect(() => {
+    bookingStore.initialize();
+  }, []);
 
   const userName = user.claims.userName;
   const isEventAdmin = user.claims.role === "EventAdmin";
