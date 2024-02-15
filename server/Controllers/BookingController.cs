@@ -13,13 +13,11 @@ namespace server.Controllers
     {
         private readonly IBookingService _bookingService;
         private readonly RecaptchaEnterprise _recaptchaEnterprise;
-        private readonly ILogger _logger;
 
-        public BookingController(IBookingService bookingService, RecaptchaEnterprise recaptchaEnterprise, ILogger logger)
+        public BookingController(IBookingService bookingService, RecaptchaEnterprise recaptchaEnterprise)
         {
             _bookingService = bookingService;
             _recaptchaEnterprise = recaptchaEnterprise;
-            _logger = logger;
         }
 
         [HttpGet("activeBookings")]
@@ -49,8 +47,7 @@ namespace server.Controllers
                 var score = _recaptchaEnterprise.CreateAssessment(bookingRequest);
                 if (score < RecaptchaEnterprise.ReCaptchaThreshold)
                 {
-                    _logger.LogError($"The reCAPTCHA score is below the threshold. Score: {score}");
-                    //throw new Exception("The reCAPTCHA score is below the threshold.");
+                    throw new Exception("The reCAPTCHA score is below the threshold.");
                 }
 
                 var user = GetUser();
