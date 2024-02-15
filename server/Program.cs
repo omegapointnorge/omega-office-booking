@@ -69,6 +69,7 @@ if (!builder.Environment.IsProduction())
                 .WithOrigins(
                 "https://app-officebooking.azurewebsites.net/",
                 "https://app-dev-officebooking.azurewebsites.net/",
+                "https://localhost:44469",
                 "http://localhost:5001")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
