@@ -16,7 +16,7 @@ namespace server.Controllers
         private readonly IBookingService _bookingService;
         private readonly TelemetryClient _telemetryClient;
         private readonly RecaptchaEnterprise _recaptchaEnterprise;
-     
+
 
         public BookingController(IBookingService bookingService, TelemetryClient telemetryClient, RecaptchaEnterprise recaptchaEnterprise)
         {
@@ -52,16 +52,18 @@ namespace server.Controllers
                 var score = _recaptchaEnterprise.CreateAssessment(bookingRequest);
                 if (score < RecaptchaEnterprise.ReCaptchaThreshold)
                 {
-                    throw new Exception("The reCAPTCHA score is below the threshold.");
+                    var eventData = new Dictionary<string, string>
+                    {
+                        { 
+                            "ReCAPTCHAToken", "The reCAPTCHA score is below the threshold." 
+                        }
+                    };
+                    _telemetryClient.TrackEvent("ReCAPTCHAToken", eventData);
                 }
 
                 var user = GetUser();
                 var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
-                var eventData = new Dictionary<string, string>
-                {
-                    { "ReCAPTCHAToken", bookingRequest.reCAPTCHAToken }
-                };
-                _telemetryClient.TrackEvent("ReCAPTCHAToken", eventData);
+
                 return CreatedAtRoute(null, booking);
             }
             catch (Exception ex)
