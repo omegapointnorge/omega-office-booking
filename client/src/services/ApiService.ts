@@ -24,7 +24,7 @@ class ApiService {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      if (response.status == 204) {
+      if (response.status === 204) {
         return response as unknown as T;
       }
 
