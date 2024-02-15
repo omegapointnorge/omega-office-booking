@@ -11,6 +11,11 @@ namespace server.Services.Internal.Tests
     {
         private readonly Mock<IBookingRepository> _bookingRepositoryMock;
 
+        static BookingServiceTests()
+        {
+            BookingTimeUtils.SetOpeningTime(new TimeOnly(15, 00));
+        }
+
         public BookingServiceTests()
         {
             _bookingRepositoryMock = Mocker.GetMock<IBookingRepository>();
