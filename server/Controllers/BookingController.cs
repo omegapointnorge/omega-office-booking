@@ -1,7 +1,7 @@
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Abstractions;
+using server.Helpers;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
@@ -124,6 +124,20 @@ namespace server.Controllers
             catch (Exception ex)
             {
                 // Log the exception
+                return StatusCode(500, "An error occurred processing your request." + ex.Message);
+            }
+        }
+
+        [HttpGet("OpeningTime")]
+        public ActionResult<string> GetOpeningTime()
+        {
+            try
+            {
+                var openingTime = BookingTimeUtils.GetOpeningTime();
+                return Ok(openingTime);
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
