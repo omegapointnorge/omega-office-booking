@@ -47,18 +47,15 @@ namespace server.Controllers
             {
                 if (string.IsNullOrWhiteSpace(bookingRequest.reCAPTCHAToken))
                 {
-                    throw new Exception("reCAPTCHA token is missing or empty.");
+                    TrackReCAPTCHATokenError("reCAPTCHA token is missing or empty.");
                 }
-                var score = _recaptchaEnterprise.CreateAssessment(bookingRequest);
-                if (score < RecaptchaEnterprise.ReCaptchaThreshold)
-                {
-                    var eventData = new Dictionary<string, string>
+                else 
+                { 
+                    var score = _recaptchaEnterprise.CreateAssessment(bookingRequest);
+                    if (score < RecaptchaEnterprise.ReCaptchaThreshold)
                     {
-                        { 
-                            "ReCAPTCHAToken", "The reCAPTCHA score is below the threshold." 
-                        }
-                    };
-                    _telemetryClient.TrackEvent("ReCAPTCHAToken", eventData);
+                        TrackReCAPTCHATokenError("The reCAPTCHA score is below the threshold.");
+                    }
                 }
 
                 var user = GetUser();
@@ -139,6 +136,15 @@ namespace server.Controllers
             UserClaims user = new(name, id, role);
             return user;
 
+        }
+        // Helper method to track the event
+        private void TrackReCAPTCHATokenError(string errorMessage)
+        {
+            var eventData = new Dictionary<string, string>
+            {
+                { "ReCAPTCHATokenError", errorMessage }
+            };
+            _telemetryClient.TrackEvent("ReCAPTCHATokenError", eventData);
         }
     }
 }
