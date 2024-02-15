@@ -1,62 +1,74 @@
-﻿namespace server.Helpers;
-
-using System;
-
-public static class BookingTimeUtils
+﻿namespace server.Helpers
 {
-    private const int SameDayCutoffHour = 16;
+    using System;
 
-    public static DateTime ConvertToNorwegianTime(DateTime time)
+    public static class BookingTimeUtils
     {
-        TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
-        return TimeZoneInfo.ConvertTime(time, targetTimeZone);
-    }
+        private static TimeOnly? _openingTime;
 
-    public static DateOnly GetLatestAllowedBookingDate()
-    {
-        DateTime now = ConvertToNorwegianTime(DateTime.Now);
-        DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(now);
-        TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
-
-        if (IsWeekend(now) || now.TimeOfDay > sameDayCutoff)
+        public static DateTime GetBookingOpeningDateTime(DateOnly bookingDate)
         {
-            latestAllowedBookingDate = GetNextWeekday(latestAllowedBookingDate);
+            DateOnly openingDateTime = bookingDate.AddDays(-1);
+
+            while (IsWeekend(openingDateTime))
+            {
+                openingDateTime = openingDateTime.AddDays(-1);
+            }
+            return openingDateTime.ToDateTime(GetOpeningTime());
         }
-        return latestAllowedBookingDate;
-    }
 
-    // Check if it's Saturday, Sunday, or Friday after the same day cutoff hour
-    private static bool IsWeekend(DateTime date)
-    {
-        TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
-        return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday ||
-               date.DayOfWeek == DayOfWeek.Friday && date.TimeOfDay > sameDayCutoff;
-    }
 
-    private static DateOnly GetNextWeekday(DateOnly date)
-    {
-        DateOnly nextDay = date.AddDays(1);
-        while (nextDay.DayOfWeek == DayOfWeek.Saturday || nextDay.DayOfWeek == DayOfWeek.Sunday)
+        public static DateOnly GetLatestAllowedBookingDate()
         {
-            nextDay = nextDay.AddDays(1);
+            DateTime currentNorwegianTime = ConvertToNorwegianTime(DateTime.Now);
+            return CalculateLatestAllowedBookingDate(currentNorwegianTime);
         }
-        return nextDay;
-    }
 
-    public static DateTime GetBookingOpeningTime(DateOnly bookingDate)
-    {
-        TimeOnly openingTime = new TimeOnly(SameDayCutoffHour, 0);
-        DateOnly openingDate = bookingDate.AddDays(-1);
-        DateTime openingDateTime = new DateTime(openingDate.Year, openingDate.Month, openingDate.Day, openingTime.Hour, openingTime.Minute, openingTime.Second);
-
-        while (IsWeekend(openingDateTime))
+        public static DateOnly CalculateLatestAllowedBookingDate(DateTime time)
         {
-            openingDateTime = openingDateTime.AddDays(-1);
+            DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(time);
+
+            if (TimeOnly.FromDateTime(time) >= GetOpeningTime())
+            {
+                latestAllowedBookingDate = GetNextWeekday(latestAllowedBookingDate);
+            }
+
+            return latestAllowedBookingDate;
         }
-        return openingDateTime;
+
+        public static DateTime ConvertToNorwegianTime(DateTime time)
+        {
+            TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+            return TimeZoneInfo.ConvertTime(time, targetTimeZone);
+        }
+
+        private static bool IsWeekend(DateOnly date)
+        {
+            return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+        }
+
+        private static DateOnly GetNextWeekday(DateOnly date)
+        {
+            DateOnly nextDay = date.AddDays(1);
+            while (IsWeekend(nextDay))
+            {
+                nextDay = nextDay.AddDays(1);
+            }
+            return nextDay;
+        }
+
+        public static TimeOnly GetOpeningTime()
+        {
+            if (_openingTime == null)
+            {
+                throw new Exception("Opening time is not set.");
+            }
+            return (TimeOnly)_openingTime;
+        }
+
+        public static void SetOpeningTime(TimeOnly openingTime)
+        {
+            _openingTime = openingTime;
+        }
     }
-
-
-
-
 }

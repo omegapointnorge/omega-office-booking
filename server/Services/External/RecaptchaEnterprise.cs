@@ -55,7 +55,7 @@ public class RecaptchaEnterprise
             }
 
 
-            DateTime EarliestAllowedBookingTime = BookingTimeUtils.GetBookingOpeningTime(DateOnly.FromDateTime(bookingRequest.BookingDateTime));
+            DateTime EarliestAllowedBookingTime = BookingTimeUtils.GetBookingOpeningDateTime(DateOnly.FromDateTime(bookingRequest.BookingDateTime));
             DateTime ReCaptchaCreationTime = BookingTimeUtils.ConvertToNorwegianTime(response.TokenProperties.CreateTime.ToDateTime());
 
             if (ReCaptchaCreationTime < EarliestAllowedBookingTime)

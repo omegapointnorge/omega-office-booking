@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using server.Context;
+using server.Helpers;
 using server.Repository;
 using server.Services.Internal;
 
@@ -103,6 +104,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplicationInsightsTelemetry();
 //swagger
 
+BookingTimeUtils.SetOpeningTime(TimeOnly.Parse(builder.Configuration["OpeningTime"]));
 
 var app = builder.Build();
 
@@ -110,7 +112,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
-} else
+}
+else
 {
     app.UseSwagger();
     app.UseSwaggerUI();
