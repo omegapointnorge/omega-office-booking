@@ -34,41 +34,36 @@
   </ItemGroup>
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <!-- TODO: update links; delete and add missing  -->
     <Content Remove="$(SpaRoot)**" />
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-    <None Update="..\client\src\setupProxy.js">
-      <Link>src\setupProxy.js</Link>
+    <None Update="..\client\src\setupProxy.ts">
+      <Link>src\setupProxy.7s</Link>
     </None>
-    <None Update="..\client\src\overview.js">
-      <Link>src\overview.js</Link>
+    <None Update="..\client\src\components\OverviewPage\OverviewPage.tsx">
+      <Link>src\components\OverviewPage\OverviewPage.tsx</Link>
     </None>
-    <None Update="..\client\src\loginpage.js">
-      <Link>src\loginpage.js</Link>
+    <None Update="..\client\src\components\LoginPage\LoginPage.tsx.js">
+      <Link>src\components\LoginPage\LoginPage.tsx</Link>
     </None>
-    <None Update="..\client\src\Pages\Login\LoginPage.jsx">
-      <Link>src\Pages\Login\LoginPage.jsx</Link>
+    <None Update="..\client\src\components\Heading.tsx">
+      <Link>src\components\Heading.tsx</Link>
     </None>
-    <None Update="..\client\src\components\Heading.jsx">
-      <Link>src\components\Heading.jsx</Link>
+    <None Update="..\client\src\components\Buttons\Button.tsx">
+      <Link>src\components\Buttons\Button.tsx</Link>
     </None>
-    <None Update="..\client\src\components\Buttons\LoginButton.jsx">
-      <Link>src\components\Buttons\LoginButton.jsx</Link>
+    <None Update="..\client\src\components\Button.tsx">
+      <Link>src\components\Button.tsx</Link>
     </None>
-    <None Update="..\client\src\components\Buttons\Button.jsx">
-      <Link>src\components\Buttons\Button.jsx</Link>
+    <None Update="..\client\src\Pages\Overview\OverviewPage.tsx">
+      <Link>src\Pages\Overview\OverviewPage.tsx</Link>
     </None>
-    <None Update="..\client\src\components\Button.jsx">
-      <Link>src\components\Button.jsx</Link>
+    <None Update="..\client\src\Pages\Login\IsAuthenticated.tsx">
+      <Link>src\Pages\Login\IsAuthenticated.tsx</Link>
     </None>
-    <None Update="..\client\src\Pages\Overview\OverviewPage.jsx">
-      <Link>src\Pages\Overview\OverviewPage.jsx</Link>
-    </None>
-    <None Update="..\client\src\Pages\Login\IsAuthenticated.jsx">
-      <Link>src\Pages\Login\IsAuthenticated.jsx</Link>
-    </None>
-    <None Update="..\client\src\api\useIsAuthenticated.jsx">
-      <Link>src\api\useIsAuthenticated.jsx</Link>
+    <None Update="..\client\src\api\useIsAuthenticated.tsx">
+      <Link>src\api\useIsAuthenticated.tsx</Link>
     </None>
     <None Update="..\client\src\auth\AuthContext.js">
       <Link>src\auth\AuthContext.js</Link>
@@ -82,35 +77,32 @@
     <None Update="..\client\src\api\userService.js">
       <Link>src\api\userService.js</Link>
     </None>
-    <None Update="..\client\src\Routes\Routers.jsx">
-      <Link>src\Routes\Routes.jsx</Link>
+    <None Update="..\client\src\Routes\Routers.tsx">
+      <Link>src\Routes\Routes.tsx</Link>
     </None>
-    <None Update="..\client\src\Routes\ProtectedRoute.jsx">
-      <Link>src\Routes\ProtectedRoute.jsx</Link>
+    <None Update="..\client\src\Routes\ProtectedRoute.tsx">
+      <Link>src\Routes\ProtectedRoute.tsx</Link>
     </None>
-    <None Update="..\client\src\components\Navbar\Navbar.jsx">
-      <Link>src\components\Navbar\Navbar.jsx</Link>
+    <None Update="..\client\src\components\Navbar\Navbar.tsx">
+      <Link>src\components\Navbar\Navbar.tsx</Link>
     </None>
-    <None Update="..\client\src\components\Logo.jsx">
-      <Link>src\components\Logo.jsx</Link>
+    <None Update="..\client\src\components\Logo.tsx">
+      <Link>src\components\Logo.tsx</Link>
     </None>
-    <None Update="..\client\src\components\Navbar\Logo.jsx">
-      <Link>src\components\Navbar\Logo.jsx</Link>
+    <None Update="..\client\src\components\Navbar\Logo.tsx">
+      <Link>src\components\Navbar\Logo.tsx</Link>
     </None>
-    <None Update="..\client\src\components\Buttons\LogoutButton.jsx">
-      <Link>src\components\Buttons\LogoutButton.jsx</Link>
+    <None Update="..\client\src\components\Navbar\NavbarItem.tsx">
+      <Link>src\components\Navbar\NavbarItem.tsx</Link>
     </None>
-    <None Update="..\client\src\components\Navbar\NavbarItem.jsx">
-      <Link>src\components\Navbar\NavbarItem.jsx</Link>
+    <None Update="..\client\src\Pages\Rooms\Rooms.tsx">
+      <Link>src\Pages\Rooms\Rooms.tsx</Link>
     </None>
-    <None Update="..\client\src\Pages\Rooms\Rooms.jsx">
-      <Link>src\Pages\Rooms\Rooms.jsx</Link>
+    <None Update="..\client\src\Pages\History\HistoryPage.tsx">
+      <Link>src\Pages\History\HistoryPage.tsx</Link>
     </None>
-    <None Update="..\client\src\Pages\History\HistoryPage.jsx">
-      <Link>src\Pages\History\HistoryPage.jsx</Link>
-    </None>
-    <None Update="..\client\src\Pages\Rooms\BigRoomPage.jsx">
-      <Link>src\Pages\Rooms\BigRoomPage.jsx</Link>
+    <None Update="..\client\src\Pages\Rooms\BigRoomPage.tsx">
+      <Link>src\Pages\Rooms\BigRoomPage.tsx</Link>
     </None>
   </ItemGroup>
   <ItemGroup>

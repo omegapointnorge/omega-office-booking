@@ -9,11 +9,11 @@ const target = env.ASPNETCORE_HTTPS_PORT
 
 const context = ["/api", "/client"];
 
-const onError = (err, req, resp, target) => {
+const onError = (err: { message: any; }, req: any, resp: any, target: any) => {
   console.error(`${err.message}`);
 };
 
-module.exports = function (app) {
+module.exports = function (app: { use: (arg0: any) => void; }) {
   const appProxy = createProxyMiddleware(context, {
     target: target,
     onError: onError,
