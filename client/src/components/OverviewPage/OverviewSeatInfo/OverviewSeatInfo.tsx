@@ -74,7 +74,9 @@ const OverviewSeatInfo = observer(
     const handleDelete = async () => {
       setLoading(true);
       if (claimKey !== selectedBooking?.userId) {
-        toast.success("Husk å meld fra til: " + selectedBooking?.userName);
+        toast.success(
+          `Vennligst informer ${selectedBooking?.userName} om at du har kansellert reservasjonen deres?`
+        );
       }
       if (selectedBooking?.id) {
         await bookingStore.deleteBooking(selectedBooking.id).then(() => {
