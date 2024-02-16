@@ -8,6 +8,7 @@ namespace server.Models.Domain
         public int SeatId { get; set; }
         public Seat Seat { get; set; } = null!;
         public DateTime BookingDateTime { get; set; }
+        public DateTime? BookingDateTime_DayOnly { get; }
         public Booking()
         {
             UserId = string.Empty;
