@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using server.Context;
+using server.Helpers;
 using server.Repository;
 using server.Services.Internal;
 
@@ -69,6 +70,7 @@ if (!builder.Environment.IsProduction())
                 .WithOrigins(
                 "https://app-officebooking.azurewebsites.net/",
                 "https://app-dev-officebooking.azurewebsites.net/",
+                "https://localhost:44469",
                 "http://localhost:5001")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
@@ -90,11 +92,27 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 
 builder.Services.AddScoped<RecaptchaEnterprise>();
-
+builder.Services.AddApplicationInsightsTelemetry(options =>
+{
+    // Set the connection string
+    options.ConnectionString = builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddApplicationInsightsTelemetry();
 //swagger
+
+string? openingtime = builder.Configuration["OpeningTime"];
+if (openingtime != null)
+{
+    BookingTimeUtils.SetOpeningTime(TimeOnly.Parse(openingtime));
+}
+else
+{
+    //Defualt opening time
+    BookingTimeUtils.SetOpeningTime(new TimeOnly(15, 00));
+}
 
 
 var app = builder.Build();
@@ -103,7 +121,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
-} else
+}
+else
 {
     app.UseSwagger();
     app.UseSwaggerUI();

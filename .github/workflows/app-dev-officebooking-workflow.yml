@@ -31,9 +31,14 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build -c Release
+      
+      - name: dotnet test
+        run: dotnet test omega-office-booking.sln -c Release --no-build
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp --no-build
+        env:
+          CI: ""
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp --no-build 
 
       - name: Generate EF migration script
         run: |

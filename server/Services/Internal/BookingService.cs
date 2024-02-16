@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
@@ -12,7 +11,6 @@ namespace server.Services.Internal
     public class BookingService : IBookingService
     {
         readonly IBookingRepository _bookingRepository;
-        private const int SameDayCutoffHour = 16;
         private const string EventUserName = "Event";
 
 
@@ -21,13 +19,13 @@ namespace server.Services.Internal
             _bookingRepository = bookingRepository;
         }
 
-        public async Task<ActionResult<BookingDto>> CreateBookingAsync(CreateBookingRequest bookingRequest, User user)
+        public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user)
         {
             try
             {
                 IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
 
-                var validationErrors = ValidateUserBookingRequest(bookingRequest, bookingList, user.UserId);
+                var validationErrors = ValidateUserBookingRequest(bookingRequest, bookingList, user);
                 if (validationErrors != null && validationErrors.Any())
                 {
                     var errorMessages = string.Join(Environment.NewLine, validationErrors.Select(v => $"- {v}"));
@@ -35,7 +33,7 @@ namespace server.Services.Internal
                 }
                 var booking = new Booking
                 {
-                    UserId = user.UserId,
+                    UserId = user.Objectidentifier,
                     UserName = user.UserName,
                     SeatId = bookingRequest.SeatId,
                     BookingDateTime = bookingRequest.BookingDateTime
@@ -52,7 +50,7 @@ namespace server.Services.Internal
             }
         }
 
-        public async Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, User user)
+        public async Task<IEnumerable<BookingDto>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, UserClaims user)
         {
             try
             {
@@ -80,7 +78,7 @@ namespace server.Services.Internal
 
                         var booking = new Booking
                         {
-                            UserId = user.UserId,
+                            UserId = user.Objectidentifier,
                             UserName = EventUserName,
                             SeatId = seatId,
                             BookingDateTime = bookingRequest.BookingDateTime
@@ -103,7 +101,7 @@ namespace server.Services.Internal
         }
 
 
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings()
+        public async Task<IEnumerable<BookingDto>> GetAllActiveBookings()
         {
             try
             {
@@ -118,7 +116,7 @@ namespace server.Services.Internal
         }
 
 
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser(string userId)
+        public async Task<IEnumerable<BookingDto>> GetAllBookingsForUser(string userId)
         {
             try
             {
@@ -132,32 +130,37 @@ namespace server.Services.Internal
         }
 
 
-        public async Task<ActionResult> DeleteBookingAsync(int bookingId, User user)
+        public async Task DeleteBookingAsync(int bookingId, UserClaims user)
         {
             try
             {
-                var booking = await _bookingRepository.GetAsync(b => b.Id == bookingId && b.UserId == user.UserId);
+                var booking = await _bookingRepository.GetAsync(b => b.Id == bookingId);
 
-                if (booking == null)
+                var validationErrors = ValidateUserDeleteBookingRequest(booking, user);
+                if (validationErrors != null && validationErrors.Any())
                 {
-                    return new NotFoundObjectResult($"Booking with ID {bookingId} not found for user {user.UserId}");
+                    var errorMessages = string.Join(Environment.NewLine, validationErrors.Select(v => $"- {v}"));
+                    throw new Exception(errorMessages);
                 }
 
                 await _bookingRepository.DeleteAndCommit(booking);
-                return new StatusCodeResult(StatusCodes.Status200OK);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                // Log the exception or handle it accordingly
+                throw new Exception("An error occurred while deleting the booking.", ex);
             }
         }
 
-
-        private static List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, string userId)
+        private List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, UserClaims user)
         {
             List<string> validationResultsList = new();
-            if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > GetLatestAllowedBookingDate())
+            if (isEventAdmin(user))
+            {
+                return validationResultsList;
+            }
 
+            if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > BookingTimeUtils.GetLatestAllowedBookingDate())
             {
                 validationResultsList.Add("Booking date exceeds the latest allowed booking date.");
             }
@@ -168,7 +171,7 @@ namespace server.Services.Internal
                 validationResultsList.Add($"Seat {seatId} is already booked for the specified time.");
             }
 
-            if (HasUserAlreadyBookedForDay(bookingList, bookingRequest.BookingDateTime, userId))
+            if (HasUserAlreadyBookedForDay(bookingList, bookingRequest.BookingDateTime, user.Objectidentifier))
             {
                 validationResultsList.Add("User has already booked for the specified day.");
             }
@@ -177,48 +180,45 @@ namespace server.Services.Internal
         }
 
 
-        private static bool HasUserAlreadyBookedForDay(IEnumerable<Booking> bookingList, DateTime bookingDate, string userId)
+        private List<string> ValidateUserDeleteBookingRequest(Booking? booking, UserClaims user)
+        {
+            List<string> validationResultsList = new();
+
+            if (booking == null)
+            {
+                validationResultsList.Add($"Booking with {booking.Id} not found");
+            }
+
+            if (isEventAdmin(user))
+            {
+                return validationResultsList;
+            }
+
+            if (booking.UserId != user.Objectidentifier)
+            {
+                validationResultsList.Add("User is not authorized to delete the booking.");
+            }
+
+            return validationResultsList;
+        }
+
+
+        private bool HasUserAlreadyBookedForDay(IEnumerable<Booking> bookingList, DateTime bookingDate, string userId)
         {
             var dateOfBookingDate = bookingDate.Date;
             return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.UserId == userId);
         }
 
-        private static bool IsSeatAlreadyBooked(IEnumerable<Booking> bookingList, DateTime bookingDate, int seatId)
+        private bool IsSeatAlreadyBooked(IEnumerable<Booking> bookingList, DateTime bookingDate, int seatId)
         {
             var dateOfBookingDate = bookingDate.Date;
             return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.SeatId == seatId);
         }
 
-
-        private static DateOnly GetLatestAllowedBookingDate()
+        private bool isEventAdmin(UserClaims user)
         {
-            TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
-            DateTime now = TimeZoneInfo.ConvertTime(DateTime.Now, targetTimeZone);
-            DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(now);
-            TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
-
-            if (IsWeekend(now) || now.TimeOfDay > sameDayCutoff)
-            {
-                latestAllowedBookingDate = GetNextWeekday(latestAllowedBookingDate);
-            }
-            return latestAllowedBookingDate;
-        }
-
-        private static bool IsWeekend(DateTime date)
-        {
-            TimeSpan sameDayCutoff = new TimeSpan(SameDayCutoffHour, 0, 0);
-            return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday ||
-                   date.DayOfWeek == DayOfWeek.Friday && date.TimeOfDay > sameDayCutoff;
-        }
-
-        private static DateOnly GetNextWeekday(DateOnly date)
-        {
-            DateOnly nextDay = date.AddDays(1);
-            while (nextDay.DayOfWeek == DayOfWeek.Saturday || nextDay.DayOfWeek == DayOfWeek.Sunday)
-            {
-                nextDay = nextDay.AddDays(1);
-            }
-            return nextDay;
+            return user.Role == "EventAdmin";
         }
     }
+
 }

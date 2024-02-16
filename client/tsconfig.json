@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "commonjs",
+    "jsx": "react",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "lib": ["es2015", "es2017", "DOM.Iterable", "DOM"],
+    "typeRoots": ["src/shared/types/*"],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "include": ["src"],
+  "extends": "./tsconfig.paths.json",
+  "exclude": ["node_modules"]
+}

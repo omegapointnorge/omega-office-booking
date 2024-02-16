@@ -1,5 +1,7 @@
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using server.Helpers;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
@@ -12,12 +14,15 @@ namespace server.Controllers
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
+        private readonly TelemetryClient _telemetryClient;
         private readonly RecaptchaEnterprise _recaptchaEnterprise;
 
-        public BookingController(IBookingService bookingService, RecaptchaEnterprise recaptchaEnterprise)
+
+        public BookingController(IBookingService bookingService, TelemetryClient telemetryClient, RecaptchaEnterprise recaptchaEnterprise)
         {
             _bookingService = bookingService;
             _recaptchaEnterprise = recaptchaEnterprise;
+            _telemetryClient = telemetryClient;
         }
 
         [HttpGet("activeBookings")]
@@ -26,7 +31,7 @@ namespace server.Controllers
             try
             {
                 var result = await _bookingService.GetAllActiveBookings();
-                return new OkObjectResult(result.Value);
+                return new OkObjectResult(result);
             }
             catch (Exception ex)
             {
@@ -42,12 +47,15 @@ namespace server.Controllers
             {
                 if (string.IsNullOrWhiteSpace(bookingRequest.reCAPTCHAToken))
                 {
-                    throw new Exception("reCAPTCHA token is missing or empty.");
+                    TrackReCAPTCHATokenError("reCAPTCHA token is missing or empty.");
                 }
-                var score = _recaptchaEnterprise.CreateAssessment(token: bookingRequest.reCAPTCHAToken);
-                if (score < RecaptchaEnterprise.ReCaptchaThreshold)
-                {
-                    throw new Exception("The reCAPTCHA score is below the threshold.");
+                else 
+                { 
+                    var score = _recaptchaEnterprise.CreateAssessment(bookingRequest);
+                    if (score < RecaptchaEnterprise.ReCaptchaThreshold)
+                    {
+                        TrackReCAPTCHATokenError("The reCAPTCHA score is below the threshold.");
+                    }
                 }
 
                 var user = GetUser();
@@ -61,7 +69,7 @@ namespace server.Controllers
             }
         }
         [Authorize(Roles = "EventAdmin")]
-        [HttpPost("CreateEventBookingsForSeatsAsync")]
+        [HttpPost("CreateEventBookingsForSeats")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest)
         {
             try
@@ -86,9 +94,9 @@ namespace server.Controllers
             try
             {
                 var user = GetUser();
-                var result = await _bookingService.GetAllBookingsForUser(user.UserId);
+                var result = await _bookingService.GetAllBookingsForUser(user.Objectidentifier);
 
-                return new OkObjectResult(result.Value);
+                return new OkObjectResult(result);
             }
             catch (Exception ex)
             {
@@ -108,8 +116,8 @@ namespace server.Controllers
         {
             try
             {
-                var user = GetUser();
-                var deleteResponse = await _bookingService.DeleteBookingAsync(bookingId, user);
+                var userClaim = GetUser();
+                await _bookingService.DeleteBookingAsync(bookingId, userClaim);
 
                 return NoContent();
             }
@@ -119,13 +127,38 @@ namespace server.Controllers
                 return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
-        private User GetUser()
+
+        [HttpGet("OpeningTime")]
+        public ActionResult<string> GetOpeningTime()
+        {
+            try
+            {
+                var openingTime = BookingTimeUtils.GetOpeningTime();
+                return Ok(openingTime);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred processing your request." + ex.Message);
+            }
+        }
+        private UserClaims GetUser()
         {
             var id = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
             var name = User.FindFirst("name")?.Value ?? String.Empty;
-            User user = new(name, id);
+            var role = User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value ?? String.Empty;
+
+            UserClaims user = new(name, id, role);
             return user;
 
+        }
+        // Helper method to track the event
+        private void TrackReCAPTCHATokenError(string errorMessage)
+        {
+            var eventData = new Dictionary<string, string>
+            {
+                { "ReCAPTCHATokenError", errorMessage }
+            };
+            _telemetryClient.TrackEvent("ReCAPTCHATokenError", eventData);
         }
     }
 }
