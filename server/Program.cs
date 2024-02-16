@@ -1,5 +1,4 @@
 using Azure.Identity;
-using Google.Api;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -92,7 +91,7 @@ builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 
-builder.Services.AddScoped<RecaptchaEnterprise>(); 
+builder.Services.AddScoped<RecaptchaEnterprise>();
 builder.Services.AddApplicationInsightsTelemetry(options =>
 {
     // Set the connection string
@@ -104,7 +103,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplicationInsightsTelemetry();
 //swagger
 
-BookingTimeUtils.SetOpeningTime(TimeOnly.Parse(builder.Configuration["OpeningTime"]));
+string? openingtime = builder.Configuration["OpeningTime"];
+if (openingtime != null)
+{
+    BookingTimeUtils.SetOpeningTime(TimeOnly.Parse(openingtime));
+}
+else
+{
+    //Defualt opening time
+    BookingTimeUtils.SetOpeningTime(new TimeOnly(15, 00));
+}
+
 
 var app = builder.Build();
 
