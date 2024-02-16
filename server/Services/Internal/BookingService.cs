@@ -31,13 +31,7 @@ namespace server.Services.Internal
                     var errorMessages = string.Join(Environment.NewLine, validationErrors.Select(v => $"- {v}"));
                     throw new Exception(errorMessages);
                 }
-                var booking = new Booking
-                {
-                    UserId = user.Objectidentifier,
-                    UserName = user.UserName,
-                    SeatId = bookingRequest.SeatId,
-                    BookingDateTime = bookingRequest.BookingDateTime
-                };
+                var booking = CreateBookingFromRequest(bookingRequest, user, user.UserName);
 
                 await _bookingRepository.AddAsync(booking);
                 await _bookingRepository.SaveAsync();
@@ -76,13 +70,7 @@ namespace server.Services.Internal
                             await _bookingRepository.DeleteAndCommit(bookingToDelete);
                         }
 
-                        var booking = new Booking
-                        {
-                            UserId = user.Objectidentifier,
-                            UserName = EventUserName,
-                            SeatId = seatId,
-                            BookingDateTime = bookingRequest.BookingDateTime
-                        };
+                        var booking = CreateBookingFromRequest(bookingRequest, user, EventUserName, seatId);
 
                         await _bookingRepository.AddAsync(booking);
                         bookingListDto.Add(new BookingDto(booking));
@@ -99,7 +87,17 @@ namespace server.Services.Internal
                 throw;
             }
         }
-
+        private Booking CreateBookingFromRequest(CreateBookingRequest bookingRequest, UserClaims user, string userName, int? seatId = null)
+        {
+            return new Booking
+            {
+                UserId = user.Objectidentifier,
+                UserName = userName,
+                SeatId = seatId ?? bookingRequest.SeatId,
+                BookingDateTime = bookingRequest.BookingDateTime,
+                BookingDateTime_DayOnly = bookingRequest.BookingDateTime.Date,
+            };
+        }
 
         public async Task<IEnumerable<BookingDto>> GetAllActiveBookings()
         {

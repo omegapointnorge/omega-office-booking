@@ -35,8 +35,8 @@ namespace server.Context
                 .HasDefaultValueSql("GETDATE()")
                 .IsRequired();
             modelBuilder.Entity<Booking>()
-                .Property(booking => booking.BookingDateTime_DayOnly)
-                .HasComputedColumnSql("CONVERT(date, [BookingDateTime])");
+                .Property(booking => booking.BookingDateTime_DayOnly);
+          
             // End of Booking setup
 
 
