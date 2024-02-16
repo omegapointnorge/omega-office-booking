@@ -1,74 +1,73 @@
-﻿namespace server.Helpers
+﻿namespace server.Helpers;
+
+using System;
+
+public static class BookingTimeUtils
 {
-    using System;
+    private static TimeOnly? _openingTime;
 
-    public static class BookingTimeUtils
+    public static DateTime GetBookingOpeningDateTime(DateOnly bookingDate)
     {
-        private static TimeOnly? _openingTime;
+        DateOnly openingDateTime = bookingDate.AddDays(-1);
 
-        public static DateTime GetBookingOpeningDateTime(DateOnly bookingDate)
+        while (IsWeekend(openingDateTime))
         {
-            DateOnly openingDateTime = bookingDate.AddDays(-1);
+            openingDateTime = openingDateTime.AddDays(-1);
+        }
+        return openingDateTime.ToDateTime(GetOpeningTime());
+    }
 
-            while (IsWeekend(openingDateTime))
-            {
-                openingDateTime = openingDateTime.AddDays(-1);
-            }
-            return openingDateTime.ToDateTime(GetOpeningTime());
+
+    public static DateOnly GetLatestAllowedBookingDate()
+    {
+        DateTime currentNorwegianTime = ConvertToNorwegianTime(DateTime.Now);
+        return CalculateLatestAllowedBookingDate(currentNorwegianTime);
+    }
+
+    public static DateOnly CalculateLatestAllowedBookingDate(DateTime time)
+    {
+        DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(time);
+
+        if (TimeOnly.FromDateTime(time) >= GetOpeningTime())
+        {
+            latestAllowedBookingDate = GetNextWeekday(latestAllowedBookingDate);
         }
 
+        return latestAllowedBookingDate;
+    }
 
-        public static DateOnly GetLatestAllowedBookingDate()
+    public static DateTime ConvertToNorwegianTime(DateTime time)
+    {
+        TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+        return TimeZoneInfo.ConvertTime(time, targetTimeZone);
+    }
+
+    private static bool IsWeekend(DateOnly date)
+    {
+        return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+    }
+
+    private static DateOnly GetNextWeekday(DateOnly date)
+    {
+        DateOnly nextDay = date.AddDays(1);
+        while (IsWeekend(nextDay))
         {
-            DateTime currentNorwegianTime = ConvertToNorwegianTime(DateTime.Now);
-            return CalculateLatestAllowedBookingDate(currentNorwegianTime);
+            nextDay = nextDay.AddDays(1);
         }
+        return nextDay;
+    }
 
-        public static DateOnly CalculateLatestAllowedBookingDate(DateTime time)
+    public static TimeOnly GetOpeningTime()
+    {
+        if (_openingTime == null)
         {
-            DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(time);
-
-            if (TimeOnly.FromDateTime(time) >= GetOpeningTime())
-            {
-                latestAllowedBookingDate = GetNextWeekday(latestAllowedBookingDate);
-            }
-
-            return latestAllowedBookingDate;
+            throw new Exception("Opening time is not set.");
         }
+        return (TimeOnly)_openingTime;
+    }
 
-        public static DateTime ConvertToNorwegianTime(DateTime time)
-        {
-            TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
-            return TimeZoneInfo.ConvertTime(time, targetTimeZone);
-        }
-
-        private static bool IsWeekend(DateOnly date)
-        {
-            return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
-        }
-
-        private static DateOnly GetNextWeekday(DateOnly date)
-        {
-            DateOnly nextDay = date.AddDays(1);
-            while (IsWeekend(nextDay))
-            {
-                nextDay = nextDay.AddDays(1);
-            }
-            return nextDay;
-        }
-
-        public static TimeOnly GetOpeningTime()
-        {
-            if (_openingTime == null)
-            {
-                throw new Exception("Opening time is not set.");
-            }
-            return (TimeOnly)_openingTime;
-        }
-
-        public static void SetOpeningTime(TimeOnly openingTime)
-        {
-            _openingTime = openingTime;
-        }
+    public static void SetOpeningTime(TimeOnly openingTime)
+    {
+        _openingTime = openingTime;
     }
 }
