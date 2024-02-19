@@ -38,6 +38,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
     zoomedOutViewBoxParameters
   );
   const [zoomStatus, setZoomStatus] = useState("ZoomedOut");
+
   const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
   const getSeatClassName = (seatId: number): string => {
