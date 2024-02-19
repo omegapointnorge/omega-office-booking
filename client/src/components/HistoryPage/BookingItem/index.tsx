@@ -1,7 +1,7 @@
 import React from "react";
 
 import { MdDelete } from "react-icons/md";
-import HistoryBookingSvg from "@components/HistoryPage/HistoryBookingItem/HistoryBookingSvg";
+import { BookingSvg } from "@components/HistoryPage/BookingItem/BookingSvg";
 
 interface BookingItemProps {
   bookingDateTime: Date;
@@ -10,7 +10,8 @@ interface BookingItemProps {
   roomId: number | null;
   onClick?: () => void;
 }
-const HistoryBookingItem = ({
+
+export const BookingItem = ({
   onClick,
   bookingDateTime,
   seatId,
@@ -25,7 +26,7 @@ const HistoryBookingItem = ({
       <li className="flex flex-col">
         {roomId && (
           <div className="flex items-center content-center justify-center">
-            <HistoryBookingSvg highlightedId={roomId} />
+            <BookingSvg highlightedId={roomId} />
           </div>
         )}
         <div className="flex flex-row justify-between">
@@ -51,5 +52,3 @@ const HistoryBookingItem = ({
     </ul>
   );
 };
-
-export default HistoryBookingItem;

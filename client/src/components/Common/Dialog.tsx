@@ -13,7 +13,7 @@ interface PrimaryDialogProps {
   content?: string;
 }
 
-const PrimaryDialog = ({
+export const PrimaryDialog = ({
   title,
   content,
   open,
@@ -39,5 +39,3 @@ const PrimaryDialog = ({
     </Dialog>
   );
 };
-
-export default PrimaryDialog;

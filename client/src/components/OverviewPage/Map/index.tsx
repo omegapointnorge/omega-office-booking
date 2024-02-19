@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { useAuthContext } from "@auth/useAuthContext";
 import { observer } from "mobx-react-lite";
 import bookingStore from "@stores/BookingStore";
-import { MapComponent } from "./Map";
+import { MapComponent } from "./MapComponent";
 import { isSameDate } from "@/shared/utils";
 import { Rooms } from "@/shared/types/enums";
 
