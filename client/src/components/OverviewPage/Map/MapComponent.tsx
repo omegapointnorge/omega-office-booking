@@ -59,7 +59,7 @@ export const MapComponent = ({
     <div className="relative">
       <svg
         version="1.1"
-        width="745"
+        width="800"
         height="500"
         viewBox={currentViewBox}
         xmlns="http://www.w3.org/2000/svg"
