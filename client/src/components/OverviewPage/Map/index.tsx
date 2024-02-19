@@ -30,7 +30,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const location = useLocation();
 
   const zoomedOutViewBoxParameters = "0 0 3725 2712";
-  const zoomedToLargeRoomViewBoxParameters = "1900 1600 1100 1050";
+  const zoomedToLargeRoomViewBoxParameters = "1575 1600 1100 1050";
   const zoomedToSmallRoomViewBoxParameters = "2600 400 900 900";
   const zoomedToSalesBoxParameters = "0 900 800 800";
 
