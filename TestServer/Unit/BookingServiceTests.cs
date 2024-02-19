@@ -100,8 +100,8 @@ public class BookingServiceTests : TestServiceBase<BookingService>
     }
 
     [Theory]
-    [InlineData("2024-02-13T12:00", "2024-02-14")] // Tuesday, Wednesday
-    [InlineData("2024-02-16T12:00", "2024-02-19")] // Friday, Monday
+    [InlineData("2024-02-13T14:00", "2024-02-14")] // Tuesday, Wednesday
+    [InlineData("2024-02-16T14:00", "2024-02-19")] // Friday, Monday
     public async Task CreateBookingAsync_AttemptToBookBefore15_ThrowsException(string testDateTimeString, string bookingDateTimeString)
     {
         // Arrange
@@ -118,6 +118,10 @@ public class BookingServiceTests : TestServiceBase<BookingService>
         _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking>());
 
         // Act & Assert
+        Assert.True(TimeOnly.FromDateTime(bookingRequest.BookingDateTime) > BookingTimeUtils.GetOpeningTime());
+        Assert.True(TimeOnly.FromDateTime(bookingRequest.BookingDateTime) < BookingTimeUtils.GetOpeningTime());
+
+
         await Assert.ThrowsAsync<Exception>(() => Sut.CreateBookingAsync(bookingRequest, userClaims));
     }
 

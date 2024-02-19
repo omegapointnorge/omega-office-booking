@@ -27,6 +27,7 @@ namespace server.Services.Internal
             {
                 IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
 
+                System.Diagnostics.Debug.WriteLine("kommer hit 1");
                 var validationErrors = ValidateUserBookingRequest(bookingRequest, bookingList, user);
                 if (validationErrors != null && validationErrors.Any())
                 {
@@ -167,7 +168,7 @@ namespace server.Services.Internal
                 validationResultsList.Add("Booking date exceeds the latest allowed booking date.");
             }
 
-            _logger.LogError("bookingRequest.BookingDateTime " + DateOnly.FromDateTime(bookingRequest.BookingDateTime).ToString() + " < (latest) " + BookingTimeUtils.GetLatestAllowedBookingDate());
+            System.Diagnostics.Debug.WriteLine("bookingRequest.BookingDateTime " + DateOnly.FromDateTime(bookingRequest.BookingDateTime).ToString() + " < (latest) " + BookingTimeUtils.GetLatestAllowedBookingDate());
 
             if (IsSeatAlreadyBooked(bookingList, bookingRequest.BookingDateTime, bookingRequest.SeatId))
             {
