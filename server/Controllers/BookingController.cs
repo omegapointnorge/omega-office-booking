@@ -50,12 +50,20 @@ namespace server.Controllers
                     TrackReCAPTCHATokenError("reCAPTCHA token is missing or empty.");
                 }
                 else 
-                { 
-                    var score = _recaptchaEnterprise.CreateAssessment(bookingRequest);
-                    if (score < RecaptchaEnterprise.ReCaptchaThreshold)
+                {
+                    try
                     {
-                        TrackReCAPTCHATokenError("The reCAPTCHA score is below the threshold.");
+                        var score = _recaptchaEnterprise.CreateAssessment(bookingRequest);
+                        if (score < RecaptchaEnterprise.ReCaptchaThreshold)
+                        {
+                            TrackReCAPTCHATokenError("The reCAPTCHA score is below the threshold.");
+                        }
                     }
+                    catch (Exception error)
+                    {
+                        TrackReCAPTCHATokenError(error.ToString());
+                    }
+                  
                 }
 
                 var user = GetUser();
