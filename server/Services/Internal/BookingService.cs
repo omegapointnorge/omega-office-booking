@@ -11,14 +11,12 @@ namespace server.Services.Internal
     public class BookingService : IBookingService
     {
         readonly IBookingRepository _bookingRepository;
-        private readonly ILogger _logger;
         private const string EventUserName = "Event";
 
 
-        public BookingService(IBookingRepository bookingRepository, ILogger logger)
+        public BookingService(IBookingRepository bookingRepository)
         {
             _bookingRepository = bookingRepository;
-            _logger = logger;
         }
 
         public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user)
