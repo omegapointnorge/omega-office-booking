@@ -28,6 +28,7 @@ public static class BookingTimeUtils
     public static DateOnly GetLatestAllowedBookingDate()
     {
         DateTime currentNorwegianTime = ConvertToNorwegianTime(_dateTimeProvider.GetCurrentDateTime());
+
         return CalculateLatestAllowedBookingDate(_dateTimeProvider.GetCurrentDateTime());
     }
 
