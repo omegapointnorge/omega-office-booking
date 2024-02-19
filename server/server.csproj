@@ -39,82 +39,93 @@
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
     <None Update="..\client\src\setupProxy.ts">
-      <Link>src\setupProxy.7s</Link>
+      <Link>src\setupProxy.ts</Link>
     </None>
-    <None Update="..\client\src\components\OverviewPage\OverviewPage.tsx">
-      <Link>src\components\OverviewPage\OverviewPage.tsx</Link>
+    <!-- Common -->    
+    <None Update="..\client\src\components\Common\Dialog.tsx">
+      <Link>src\components\Common\Dialog.tsx</Link>
     </None>
+    <None Update="..\client\src\components\Common\Heading.tsx">
+      <Link>src\components\Common\Heading.tsx</Link>
+    </None>
+    <None Update="..\client\src\components\Common\Loading.tsx">
+      <Link>src\components\Common\Loading.tsx</Link>
+    </None>
+    <None Update="..\client\src\components\Common\LoginButton.tsx">
+      <Link>src\components\Common\LoginButton.tsx</Link>
+    </None>
+    <!-- History Page -->
+    <None Update="..\client\src\components\HistoryPage\HistoryPage.tsx">
+      <Link>src\components\HistoryPage\HistoryPage.tsx</Link>
+    </None>
+    <None Update="..\client\src\components\HistoryPage\HistoryBookingItem.tsx">
+      <Link>src\components\HistoryPage\HistoryBookingItem.tsx</Link>
+    </None>
+    <None Update="..\client\src\components\HistoryPage\HistoryBookingSvg.tsx">
+      <Link>src\components\HistoryPage\HistoryBookingSvg.tsx</Link>
+    </None>
+    <!-- Login Page -->
     <None Update="..\client\src\components\LoginPage\LoginPage.tsx.js">
       <Link>src\components\LoginPage\LoginPage.tsx</Link>
     </None>
-    <None Update="..\client\src\components\Heading.tsx">
-      <Link>src\components\Heading.tsx</Link>
-    </None>
-    <None Update="..\client\src\components\Buttons\Button.tsx">
-      <Link>src\components\Buttons\Button.tsx</Link>
-    </None>
-    <None Update="..\client\src\components\Button.tsx">
-      <Link>src\components\Button.tsx</Link>
-    </None>
-    <None Update="..\client\src\Pages\Overview\OverviewPage.tsx">
-      <Link>src\Pages\Overview\OverviewPage.tsx</Link>
-    </None>
-    <None Update="..\client\src\Pages\Login\IsAuthenticated.tsx">
-      <Link>src\Pages\Login\IsAuthenticated.tsx</Link>
-    </None>
-    <None Update="..\client\src\api\useIsAuthenticated.tsx">
-      <Link>src\api\useIsAuthenticated.tsx</Link>
-    </None>
-    <None Update="..\client\src\auth\AuthContext.js">
-      <Link>src\auth\AuthContext.js</Link>
-    </None>
-    <None Update="..\client\src\auth\AuthProvider.js">
-      <Link>src\auth\AuthProvider.js</Link>
-    </None>
-    <None Update="..\client\src\api\useAuthContext.js">
-      <Link>src\api\useAuthContext.js</Link>
-    </None>
-    <None Update="..\client\src\api\userService.js">
-      <Link>src\api\userService.js</Link>
-    </None>
-    <None Update="..\client\src\Routes\Routers.tsx">
-      <Link>src\Routes\Routes.tsx</Link>
-    </None>
-    <None Update="..\client\src\Routes\ProtectedRoute.tsx">
-      <Link>src\Routes\ProtectedRoute.tsx</Link>
-    </None>
+    <!-- Navbar -->
     <None Update="..\client\src\components\Navbar\Navbar.tsx">
       <Link>src\components\Navbar\Navbar.tsx</Link>
     </None>
-    <None Update="..\client\src\components\Logo.tsx">
-      <Link>src\components\Logo.tsx</Link>
+    <None Update="..\client\src\components\Navbar\NavbarLogo\NavbarLogo.tsx">
+      <Link>src\components\Navbar\NavbarLogo\NavbarLogo.tsx</Link>
     </None>
-    <None Update="..\client\src\components\Navbar\Logo.tsx">
-      <Link>src\components\Navbar\Logo.tsx</Link>
+    <None Update="..\client\src\components\Navbar\NavbarItem\NavbarItem.tsx">
+      <Link>src\components\Navbar\NavbarItem\NavbarItem.tsx</Link>
     </None>
-    <None Update="..\client\src\components\Navbar\NavbarItem.tsx">
-      <Link>src\components\Navbar\NavbarItem.tsx</Link>
+    <None Update="..\client\src\components\Navbar\NavbarLogoutButton\NavbarLogoutButton.tsx">
+      <Link>src\components\Navbar\NavbarLogoutButton\NavbarLogoutButton.tsx</Link>
     </None>
-    <None Update="..\client\src\Pages\Rooms\Rooms.tsx">
-      <Link>src\Pages\Rooms\Rooms.tsx</Link>
+    <!-- Overview Page -->
+    <None Update="..\client\src\components\OverviewPage\OverviewPage.tsx">
+      <Link>src\components\OverviewPage\OverviewPage.tsx</Link>
     </None>
-    <None Update="..\client\src\Pages\History\HistoryPage.tsx">
-      <Link>src\Pages\History\HistoryPage.tsx</Link>
+    <None Update="..\client\src\components\OverviewPage\OverviewDateSwitchButton.tsx">
+      <Link>src\components\OverviewPage\OverviewDateSwitchButton.tsx</Link>
     </None>
-    <None Update="..\client\src\Pages\Rooms\BigRoomPage.tsx">
-      <Link>src\Pages\Rooms\BigRoomPage.tsx</Link>
+    <None Update="..\client\src\components\OverviewPage\OverviewEventModeButton.tsx">
+      <Link>src\components\OverviewPage\OverviewEventModeButton.tsx</Link>
+    </None>
+    <None Update="..\client\src\components\OverviewPage\OverviewMap\OverviewMap.tsx">
+      <Link>src\components\OverviewPage\OverviewMap\OverviewMap.tsx</Link>
+    </None>
+    <None Update="..\client\src\components\OverviewPage\OverviewMap\Map.tsx">
+      <Link>src\components\OverviewPage\OverviewMap\Map.tsx</Link>
+    </None>
+    <!-- Core -->
+    <!-- Auth  -->
+    <None Update="..\client\src\core\auth\AuthContext.ts">
+      <Link>src\core\auth\AuthContext.ts</Link>
+    </None>
+    <None Update="..\client\src\core\auth\AuthProvider.ts">
+      <Link>src\core\auth\AuthProvider.ts</Link>
+    </None>
+    <None Update="..\client\src\core\auth\isAuthenticated.tsx">
+      <Link>src\core\auth\isAuthenticated.tsx</Link>
+    </None>
+    <None Update="..\client\src\core\auth\useAuthContext.ts">
+      <Link>src\core\auth\useAuthContext.ts</Link>
+    </None>
+    <!-- Routes  -->
+    <None Update="..\client\src\routes\ProtectedRoute.tsx">
+      <Link>src\routes\ProtectedRoute.tsx</Link>
+    </None>
+    <None Update="..\client\src\routes\Routers.tsx">
+      <Link>src\routes\Routes.tsx</Link>
     </None>
   </ItemGroup>
+
   <ItemGroup>
     <Folder Include="..\client\public\images\">
       <Link>public\images</Link>
     </Folder>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="..\client\src\components\Buttons\">
-      <Link>src\components\Buttons</Link>
-    </Folder>
-  </ItemGroup>
+
   <ItemGroup>
     <Compile Remove="Migrations\20231110113625_InitialCreate.cs" />
     <Compile Remove="Migrations\20231110113625_InitialCreate.Designer.cs" />

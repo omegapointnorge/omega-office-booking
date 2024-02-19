@@ -11,14 +11,18 @@
     "isolatedModules": true,
     "lib": ["es2015", "es2017", "DOM.Iterable", "DOM"],
     "noUnusedLocals": true,
-    "types": ["node"],
+    "types": ["node", "ts-node"],
     "noUnusedParameters": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "outDir": "/build",
+    "allowJs": true
   },
   "include": [
     "src",
+    "src/**/*.css",
     "playwright.config.ts",
     "tailwind.config.ts",
+    "craco.config.ts",
     "aspnetcore-https.ts",
     "aspnetcore-react.ts"
   ],
