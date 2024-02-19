@@ -10,17 +10,16 @@ namespace server.Models.Domain
         public DateTime BookingDateTime { get; set; }
         public DateTime? BookingDateTime_DayOnly { get; set; }
         public Booking()
-        {
-            UserId = string.Empty;
-            UserName = string.Empty;
+        {      
         }
-        public Booking(int id, String userId, String userName, int seatId, DateTime bookingDateTime)
+        public Booking(int id, String userId, String userName, int seatId, DateTime bookingDateTime, DateTime? bookingDateTimeDayOnly = null)
         {
             Id = id;
             UserId = userId;
             UserName = userName;
             SeatId = seatId;
             BookingDateTime = bookingDateTime;
+            BookingDateTime_DayOnly = bookingDateTimeDayOnly ?? bookingDateTime.Date;
         }
     }
 }
