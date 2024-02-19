@@ -4,7 +4,7 @@ import bookingStore from "@stores/BookingStore";
 import { DatePressed } from "../../../shared/types/enums";
 import { isSameDate } from "@/shared/utils";
 
-const OverviewDateSwitchButton = observer(() => {
+export const DateSwitchButton = observer(() => {
   const { displayDate } = bookingStore;
 
   const today = new Date();
@@ -79,5 +79,3 @@ const OverviewDateSwitchButton = observer(() => {
     </div>
   );
 });
-
-export default OverviewDateSwitchButton;

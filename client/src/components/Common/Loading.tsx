@@ -1,7 +1,7 @@
 import React from "react";
 import { CircularProgress } from "@mui/material";
 
-const Loading = () => {
+export const Loading = () => {
   return (
     <div className="flex flex-col">
       <CircularProgress size={100} style={{ margin: "10vh auto" }} />
@@ -9,5 +9,3 @@ const Loading = () => {
     </div>
   );
 };
-
-export default Loading;
