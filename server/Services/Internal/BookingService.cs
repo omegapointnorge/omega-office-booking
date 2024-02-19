@@ -11,12 +11,14 @@ namespace server.Services.Internal
     public class BookingService : IBookingService
     {
         readonly IBookingRepository _bookingRepository;
+        private readonly ILogger _logger;
         private const string EventUserName = "Event";
 
 
-        public BookingService(IBookingRepository bookingRepository)
+        public BookingService(IBookingRepository bookingRepository, ILogger logger)
         {
             _bookingRepository = bookingRepository;
+            _logger = logger;
         }
 
         public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user)
@@ -164,6 +166,8 @@ namespace server.Services.Internal
             {
                 validationResultsList.Add("Booking date exceeds the latest allowed booking date.");
             }
+
+            _logger.LogError("bookingRequest.BookingDateTime " + DateOnly.FromDateTime(bookingRequest.BookingDateTime).ToString() + " < (latest) " + BookingTimeUtils.GetLatestAllowedBookingDate());
 
             if (IsSeatAlreadyBooked(bookingList, bookingRequest.BookingDateTime, bookingRequest.SeatId))
             {

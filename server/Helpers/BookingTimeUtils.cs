@@ -2,9 +2,16 @@
 
 using System;
 
+
 public static class BookingTimeUtils
 {
     private static TimeOnly? _openingTime;
+    private static IDateTimeProvider _dateTimeProvider = new SystemDateTimeProvider(); // Default provider
+
+    public static void SetDateTimeProvider(IDateTimeProvider provider)
+    {
+        _dateTimeProvider = provider;
+    }
 
     public static DateTime GetBookingOpeningDateTime(DateOnly bookingDate)
     {
@@ -20,7 +27,7 @@ public static class BookingTimeUtils
 
     public static DateOnly GetLatestAllowedBookingDate()
     {
-        DateTime currentNorwegianTime = ConvertToNorwegianTime(DateTime.Now);
+        DateTime currentNorwegianTime = ConvertToNorwegianTime(_dateTimeProvider.GetCurrentDateTime());
         return CalculateLatestAllowedBookingDate(currentNorwegianTime);
     }
 
@@ -70,4 +77,14 @@ public static class BookingTimeUtils
     {
         _openingTime = openingTime;
     }
+}
+
+public interface IDateTimeProvider
+{
+    DateTime GetCurrentDateTime();
+}
+
+public class SystemDateTimeProvider : IDateTimeProvider
+{
+    public DateTime GetCurrentDateTime() => DateTime.Now;
 }
