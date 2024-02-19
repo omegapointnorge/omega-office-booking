@@ -23,6 +23,7 @@ namespace server.Services.Internal
 
         public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user)
         {
+            _logger.LogError("CreateBookingAsync called");
             try
             {
                 IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
@@ -33,6 +34,8 @@ namespace server.Services.Internal
                     var errorMessages = string.Join(Environment.NewLine, validationErrors.Select(v => $"- {v}"));
                     throw new Exception(errorMessages);
                 }
+                _logger.LogError("CreateBookingAsync validation passed");
+
                 var booking = new Booking
                 {
                     UserId = user.Objectidentifier,
@@ -167,7 +170,6 @@ namespace server.Services.Internal
                 validationResultsList.Add("Booking date exceeds the latest allowed booking date.");
             }
 
-            _logger.LogError("bookingRequest.BookingDateTime " + DateOnly.FromDateTime(bookingRequest.BookingDateTime).ToString() + " < (latest) " + BookingTimeUtils.GetLatestAllowedBookingDate());
 
             if (IsSeatAlreadyBooked(bookingList, bookingRequest.BookingDateTime, bookingRequest.SeatId))
             {

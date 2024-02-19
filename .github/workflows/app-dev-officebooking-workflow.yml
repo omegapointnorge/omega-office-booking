@@ -32,7 +32,7 @@ jobs:
       - name: Build with dotnet
         run: dotnet build -c Release
       
-      - name: dotnet test
+      - name: dotnet test --logger GitHubActions --RunConfiguration.CollectSourceInformation=true
         run: dotnet test omega-office-booking.sln -c Release --no-build
 
       - name: dotnet publish
