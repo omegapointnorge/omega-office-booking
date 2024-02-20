@@ -1,4 +1,5 @@
 using Google.Api;
+using Google.Cloud.RecaptchaEnterprise.V1;
 using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
@@ -94,14 +95,12 @@ namespace server.Services.Internal
         }
         private Booking CreateBookingFromRequest(CreateBookingRequest bookingRequest, UserClaims user, string userName, int? seatId = null)
         {
-            return new Booking()
-            {
-                UserId = user.Objectidentifier,
-                UserName = userName,
-                SeatId = seatId ?? bookingRequest.SeatId,
-                BookingDateTime = bookingRequest.BookingDateTime,
-                BookingDateTime_DayOnly = bookingRequest.BookingDateTime.Date,
-            };
+            var userId = user.Objectidentifier;
+            var user_Name = userName;
+            var seat_Id = seatId ?? bookingRequest.SeatId;
+            var bookingDateTime = bookingRequest.BookingDateTime;
+            var bookingDateTime_DayOnly = bookingRequest.BookingDateTime.Date;
+            return new Booking(userId, user_Name, seat_Id, bookingDateTime,bookingDateTime_DayOnly);
         }
 
         public async Task<IEnumerable<BookingDto>> GetAllActiveBookings()
