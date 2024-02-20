@@ -24,21 +24,15 @@ public static class BookingTimeUtils
         return openingDateTime.ToDateTime(GetOpeningTime());
     }
 
-
     public static DateOnly GetLatestAllowedBookingDate()
     {
-        return CalculateLatestAllowedBookingDate(_dateTimeProvider.GetCurrentDateTime());
-    }
+        var now = _dateTimeProvider.GetCurrentDateTime();
+        DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(now);
 
-    public static DateOnly CalculateLatestAllowedBookingDate(DateTime time)
-    {
-        DateOnly latestAllowedBookingDate = DateOnly.FromDateTime(time);
-
-        if (TimeOnly.FromDateTime(time) >= GetOpeningTime())
+        if (TimeOnly.FromDateTime(now) >= GetOpeningTime())
         {
             latestAllowedBookingDate = GetNextWeekday(latestAllowedBookingDate);
         }
-
         return latestAllowedBookingDate;
     }
 
