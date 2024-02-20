@@ -6,6 +6,7 @@ import { Booking } from "@/shared/types/entities";
 import { isSameDate } from "@/shared/utils";
 import toast from "react-hot-toast";
 import { SeatInfoComponent } from "./SeatInfoComponent";
+import { createHubconnection } from "@services/bookingHubConnection";
 
 interface OverviewSeatInfoProps {
   onClose: () => void;
@@ -23,6 +24,7 @@ const OverviewSeatInfo = observer(
     const { activeBookings, displayDate } = bookingStore;
     const [selectedBooking, setSelectedBooking] = useState<Booking>();
     const [loading, setLoading] = useState(false);
+    const [connection, setConnection] = useState<null | any>();
 
     useEffect(() => {
       const foundBooking = activeBookings.find(
@@ -48,6 +50,31 @@ const OverviewSeatInfo = observer(
       };
     }, []);
 
+    useEffect(() => {
+      setUpConnection(userGuid, selectedSeatId);
+      return () => {
+        console.log("disconnect ------");
+        setConnection(null);
+        // bookingHub.stop();
+      };
+    }, []);
+
+    const setUpConnection = async (user: string, seatId: number) => {
+      const bookingHub = createHubconnection();
+
+      bookingHub.on("BookingNotification", (user, seatId) => {
+        const message = `Seat ${seatId} has been booked by ${user}.`;
+        console.log(message);
+        //TODO: update store -> send to server if
+      });
+      await bookingHub.start();
+      await bookingHub.invoke("BookingNotification", {
+        user,
+        seatId,
+      });
+      console.log(connection);
+      setConnection(bookingHub);
+    };
     const executeRecaptcha = async (): Promise<string> => {
       // Execute reCAPTCHA and return the token
       return new Promise((resolve) => {
