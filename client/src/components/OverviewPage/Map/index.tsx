@@ -5,7 +5,7 @@ import { useAuthContext } from "@auth/useAuthContext";
 import { observer } from "mobx-react-lite";
 import bookingStore from "@stores/BookingStore";
 import { MapComponent } from "./MapComponent";
-import { isSameDate } from "@/shared/utils";
+import { isSameDate } from "@utils/utils";
 import { Rooms } from "@/shared/types/enums";
 
 import "./OverviewMap.css";

@@ -2,7 +2,7 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 import bookingStore from "@stores/BookingStore";
 import { DatePressed } from "../../../shared/types/enums";
-import { isSameDate } from "@/shared/utils";
+import { isSameDate } from "@utils/utils";
 
 export const DateSwitchButton = observer(() => {
   const { displayDate } = bookingStore;

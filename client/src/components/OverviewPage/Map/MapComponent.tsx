@@ -5,7 +5,7 @@ import { ZoomOutIcon } from "../../../shared/assets/icons/zoom-out_outline";
 import { WorkRoom } from "./WorkRoom";
 import { seatsLargeRoom, seatsSmallRoom } from "./SeatPaths";
 import { Booking } from "@/shared/types/entities";
-import { isSameDate } from "@/shared/utils";
+import { isSameDate } from "@utils/utils";
 
 interface MapProps {
   currentViewBox: string;
