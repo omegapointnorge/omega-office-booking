@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 
-import Heading from "@common-components/Heading";
+import { Heading } from "@common-components/Heading";
 import { observer } from "mobx-react-lite";
-import BookingItem from "./HistoryBookingItem/HistoryBookingItem";
+import { BookingItem } from "./BookingItem";
 import historyStore from "@stores/HistoryStore";
-import PrimaryDialog from "@common-components/Dialog";
+import { PrimaryDialog } from "@common-components/Dialog";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import Loading from "@common-components/Loading";
+import { Loading } from "@common-components/Loading";
 import { ApiStatus } from "@/shared/types/enums";
 
 const ActiveBookings = observer(() => {
@@ -84,7 +84,7 @@ const PreviousBookings = observer(() => (
   </div>
 ));
 
-const HistoryPage = observer(() => {
+export const HistoryPage = observer(() => {
   useEffect(() => {
     historyStore.initialize();
   }, []);
@@ -121,5 +121,3 @@ const HistoryPage = observer(() => {
     </div>
   );
 });
-
-export default HistoryPage;

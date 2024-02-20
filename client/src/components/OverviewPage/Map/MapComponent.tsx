@@ -2,7 +2,7 @@ import React from "react";
 
 import { Rooms } from "@/shared/types/enums";
 import { ZoomOutIcon } from "../../../shared/assets/icons/zoom-out_outline";
-import { WorkRoom } from "./SmallWorkRoom";
+import { WorkRoom } from "./WorkRoom";
 import { seatsLargeRoom, seatsSmallRoom } from "./SeatPaths";
 import { Booking } from "@/shared/types/entities";
 import { isSameDate } from "@/shared/utils";

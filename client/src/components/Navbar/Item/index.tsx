@@ -4,7 +4,7 @@ interface NavbarItemProps {
   onClick: () => void;
   label: string;
 }
-const NavbarItem = ({ onClick, label }: NavbarItemProps) => {
+export const NavbarItem = ({ onClick, label }: NavbarItemProps) => {
   return (
     <div
       onClick={onClick}
@@ -14,5 +14,3 @@ const NavbarItem = ({ onClick, label }: NavbarItemProps) => {
     </div>
   );
 };
-
-export default NavbarItem;

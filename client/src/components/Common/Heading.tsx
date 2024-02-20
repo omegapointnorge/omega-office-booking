@@ -5,7 +5,7 @@ interface HeadingProps {
   subTitle?: string;
 }
 
-const Heading = ({ title, subTitle }: HeadingProps) => {
+export const Heading = ({ title, subTitle }: HeadingProps) => {
   return (
     <div className="text-center">
       <div className="text-2xl font-bold heading">{title}</div>
@@ -14,4 +14,4 @@ const Heading = ({ title, subTitle }: HeadingProps) => {
   );
 };
 
-export default Heading;
+ 

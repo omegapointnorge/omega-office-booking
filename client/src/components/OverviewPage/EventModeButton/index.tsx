@@ -2,7 +2,7 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 import bookingStore from "@stores/BookingStore";
 
-const OverviewEventModeButton = () => {
+export const EventModeButton = observer(() => {
   const handleBook = async () => {
     await bookingStore.createBookingForEvent(
       bookingStore.seatIdSelectedForNewEvent
@@ -56,6 +56,4 @@ const OverviewEventModeButton = () => {
       </div>
     </div>
   );
-};
-
-export default observer(OverviewEventModeButton);
+});

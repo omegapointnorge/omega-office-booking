@@ -1,13 +1,13 @@
 import React from "react";
-import Heading from "@common-components/Heading";
+import { Heading } from "@common-components/Heading";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "@auth/useAuthContext";
 import { useEffect } from "react";
-import { NavbarLogoBig } from "@components/Navbar/NavbarLogo/NavbarLogo";
+import { NavbarLogoBig } from "@components/Navbar/Logo";
 
 import "@/index.css";
 
-const LoginPage = () => {
+export const LoginPage = () => {
   const LoginUrl = "/api/Account/Login";
   const context = useAuthContext();
   const navigate = useNavigate();
@@ -48,5 +48,3 @@ const LoginPage = () => {
     </main>
   );
 };
-
-export default LoginPage;
