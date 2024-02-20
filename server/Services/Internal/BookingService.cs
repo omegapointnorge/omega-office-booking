@@ -161,9 +161,11 @@ namespace server.Services.Internal
                 return validationResultsList;
             }
 
-            if (DateOnly.FromDateTime(bookingRequest.BookingDateTime) > BookingTimeUtils.GetLatestAllowedBookingDate())
+            //ConvertToNorwegianTime(_dateTimeProvider.GetCurrentDateTime())
+
+            if (!BookingTimeUtils.BookingIsOpen(bookingRequest.BookingDateTime))
             {
-                validationResultsList.Add("Booking date exceeds the latest allowed booking date.");
+                validationResultsList.Add("Booking is not open for the given BookingDateTime.");
             }
 
             System.Diagnostics.Debug.WriteLine("bookingRequest.BookingDateTime " + DateOnly.FromDateTime(bookingRequest.BookingDateTime).ToString() + " < (latest) " + BookingTimeUtils.GetLatestAllowedBookingDate());

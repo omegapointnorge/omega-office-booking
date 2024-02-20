@@ -1,5 +1,6 @@
 ﻿namespace server.Helpers;
 
+using Microsoft.OpenApi.Models;
 using System;
 
 
@@ -29,6 +30,35 @@ public static class BookingTimeUtils
     {
         DateTime currentNorwegianTime = ConvertToNorwegianTime(_dateTimeProvider.GetCurrentDateTime());
         return CalculateLatestAllowedBookingDate(currentNorwegianTime);
+    }
+
+    public static DateTime GetEarlistBookingOpenDateAndTime(DateTime bookingDateTime)
+    {
+        DateTime lastWeekday = GetLastWeekday(bookingDateTime);
+        TimeOnly timeOnlyOpeningTime = GetOpeningTime();
+  
+        var earlistOpentime = lastWeekday.Date.Add(timeOnlyOpeningTime.ToTimeSpan());
+        return earlistOpentime;
+    }
+
+    public static bool BookingIsOpen(DateTime bookingDateTime)
+    {
+        DateTime earlistOpentime = GetEarlistBookingOpenDateAndTime(bookingDateTime);
+        var currentTime = _dateTimeProvider.GetCurrentDateTime();
+        return currentTime > earlistOpentime;
+    }
+
+    static DateTime GetLastWeekday(DateTime referenceTime)
+    {
+        // Subtract a day
+        DateTime lastWeekday = referenceTime.AddDays(-1);
+        // Subtract days until you find a weekday (Monday to Friday)
+        while (lastWeekday.DayOfWeek == DayOfWeek.Saturday || lastWeekday.DayOfWeek == DayOfWeek.Sunday)
+        {
+            lastWeekday = lastWeekday.AddDays(-1);
+        }
+
+        return lastWeekday;
     }
 
     public static DateOnly CalculateLatestAllowedBookingDate(DateTime time)

@@ -33,12 +33,14 @@ public class BookingServiceTests : TestServiceBase<BookingService>
     }
 
     [Theory]
-    [InlineData("2024-02-13T15:00:00", "2024-02-14")] // Tuesday, Wednesday
-    [InlineData("2024-02-16T15:00:00", "2024-02-19")] // Friday, Monday
+    [InlineData("2024-02-13T15:01:00", "2024-02-14")] // Tuesday, Wednesday
+    [InlineData("2024-02-16T15:01:00", "2024-02-19")] // Friday, Monday
     public async Task CreateBookingAsync_ValidBooking_ReturnsBookingDto(string testDateTimeString, string bookingDateTimeString)
     {
         // Arrange
+        //testDateTime is the time which send out the request
         var testDateTime = DateTime.Parse(testDateTimeString);
+        //bookingDateTime is the time we want to book the seat
         var bookingDateTime = DateTime.Parse(bookingDateTimeString);
         var bookingRequest = new CreateBookingRequest { BookingDateTime = bookingDateTime, SeatId = 1 };
         var userClaims = GetUserClaims();
@@ -100,8 +102,10 @@ public class BookingServiceTests : TestServiceBase<BookingService>
     }
 
     [Theory]
+    [InlineData("2024-02-13T13:00", "2024-02-14")] // Tuesday, Wednesday
     [InlineData("2024-02-13T14:00", "2024-02-14")] // Tuesday, Wednesday
-    [InlineData("2024-02-16T14:00", "2024-02-19")] // Friday, Monday
+    [InlineData("2024-02-23T14:00", "2024-02-26")] // Friday, Monday
+    [InlineData("2024-02-22T14:00", "2024-02-26")] // Thursday, Monday
     public async Task CreateBookingAsync_AttemptToBookBefore15_ThrowsException(string testDateTimeString, string bookingDateTimeString)
     {
         // Arrange
@@ -114,14 +118,9 @@ public class BookingServiceTests : TestServiceBase<BookingService>
         var bookingRequest = new CreateBookingRequest { BookingDateTime = bookingDateTime, SeatId = 2 };
         var userClaims = GetUserClaims();
 
-
         _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking>());
 
         // Act & Assert
-        Assert.True(TimeOnly.FromDateTime(bookingRequest.BookingDateTime) > BookingTimeUtils.GetOpeningTime());
-        Assert.True(TimeOnly.FromDateTime(bookingRequest.BookingDateTime) < BookingTimeUtils.GetOpeningTime());
-
-
         await Assert.ThrowsAsync<Exception>(() => Sut.CreateBookingAsync(bookingRequest, userClaims));
     }
 
