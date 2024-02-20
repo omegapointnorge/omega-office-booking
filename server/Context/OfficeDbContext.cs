@@ -34,7 +34,11 @@ namespace server.Context
                 .Property(booking => booking.BookingDateTime)
                 .HasDefaultValueSql("GETDATE()")
                 .IsRequired();
-
+            modelBuilder.Entity<Booking>()
+                .Property(booking => booking.BookingDateTime_DayOnly);
+            modelBuilder.Entity<Booking>()
+                .HasAlternateKey(booking => new { booking.SeatId, booking.BookingDateTime_DayOnly })
+                .HasName("unique_seat_time_constraint");
             // End of Booking setup
 
 

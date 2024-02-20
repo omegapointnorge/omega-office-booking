@@ -1,3 +1,4 @@
+using Google.Api;
 using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
@@ -31,13 +32,7 @@ namespace server.Services.Internal
                     var errorMessages = string.Join(Environment.NewLine, validationErrors.Select(v => $"- {v}"));
                     throw new Exception(errorMessages);
                 }
-                var booking = new Booking
-                {
-                    UserId = user.Objectidentifier,
-                    UserName = user.UserName,
-                    SeatId = bookingRequest.SeatId,
-                    BookingDateTime = bookingRequest.BookingDateTime
-                };
+                var booking = CreateBookingFromRequest(bookingRequest, user, user.UserName);
 
                 await _bookingRepository.AddAsync(booking);
                 await _bookingRepository.SaveAsync();
@@ -54,7 +49,7 @@ namespace server.Services.Internal
         {
             try
             {
-                IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
+                IEnumerable<Booking> existedBookingList = await _bookingRepository.GetAsync();
                 List<BookingDto> bookingListDto = new();
                 // Perform model validation
                 var validationContext = new ValidationContext(bookingRequest, serviceProvider: null, items: null);
@@ -70,19 +65,17 @@ namespace server.Services.Internal
                 {
                     foreach (var seatId in bookingRequest.SeatList)
                     {
-                        if (IsSeatAlreadyBooked(bookingList, bookingRequest.BookingDateTime, seatId))
+                        if (IsSeatAlreadyBooked(existedBookingList, bookingRequest.BookingDateTime, seatId))
                         {
-                            var bookingToDelete = bookingList.First(booking => booking.BookingDateTime.Date == bookingRequest.BookingDateTime.Date && booking.SeatId == seatId);
-                            await _bookingRepository.DeleteAndCommit(bookingToDelete);
+                            //In case of double booked or deleting issues
+                            var bookingsToDeleteList = existedBookingList
+                            .Where(booking => booking.BookingDateTime.Date == bookingRequest.BookingDateTime.Date && booking.SeatId == seatId)
+                            .ToList();
+
+                            bookingsToDeleteList.ForEach(async bookingToDelete => await _bookingRepository.Delete(bookingToDelete));
                         }
 
-                        var booking = new Booking
-                        {
-                            UserId = user.Objectidentifier,
-                            UserName = EventUserName,
-                            SeatId = seatId,
-                            BookingDateTime = bookingRequest.BookingDateTime
-                        };
+                        var booking = CreateBookingFromRequest(bookingRequest, user, EventUserName, seatId);
 
                         await _bookingRepository.AddAsync(booking);
                         bookingListDto.Add(new BookingDto(booking));
@@ -99,7 +92,17 @@ namespace server.Services.Internal
                 throw;
             }
         }
-
+        private Booking CreateBookingFromRequest(CreateBookingRequest bookingRequest, UserClaims user, string userName, int? seatId = null)
+        {
+            return new Booking()
+            {
+                UserId = user.Objectidentifier,
+                UserName = userName,
+                SeatId = seatId ?? bookingRequest.SeatId,
+                BookingDateTime = bookingRequest.BookingDateTime,
+                BookingDateTime_DayOnly = bookingRequest.BookingDateTime.Date,
+            };
+        }
 
         public async Task<IEnumerable<BookingDto>> GetAllActiveBookings()
         {
@@ -143,7 +146,8 @@ namespace server.Services.Internal
                     throw new Exception(errorMessages);
                 }
 
-                await _bookingRepository.DeleteAndCommit(booking);
+                await _bookingRepository.Delete(booking);
+                await _bookingRepository.SaveAsync();
             }
             catch (Exception ex)
             {
