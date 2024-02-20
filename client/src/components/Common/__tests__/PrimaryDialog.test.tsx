@@ -1,8 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { PrimaryDialog } from "../PrimaryDialog";
-import "@testing-library/jest-dom";
- 
+  
 describe("PrimaryDialog", () => {
   const defaultProps = {
     title: "Test Dialog",
