@@ -6,7 +6,5 @@ namespace server.Services.Internal
     {
         Task<List<RoomDto>> GetAllRooms();
 
-        Task<List<SeatDto>> GetAllSeatsForRoom(int roomId);
-
     }
 }
