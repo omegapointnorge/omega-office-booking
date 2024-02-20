@@ -8,16 +8,19 @@ export interface Booking {
   seatId: number;
   bookingDateTime: Date;
 }
+export interface BookingsWithEvent extends Booking {
+  seatIds: number[];
+}
 
 export interface Seat {
-  id: number | null;
+  id: number;
   roomId: string | null;
   isAvailable: boolean;
-  bookings: Booking[];
+  bookings: BookingsWithEvent[];
 }
 
 export interface Room {
-  id: number | null;
+  id: number;
   name: string | null;
   seats: Seat[];
 }

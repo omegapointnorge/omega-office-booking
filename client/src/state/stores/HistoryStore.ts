@@ -1,15 +1,15 @@
 import { makeAutoObservable } from "mobx";
 import ApiService from "@services/ApiService";
 import bookingStore from "@stores/BookingStore";
-import { Room, Booking } from "@/shared/types/entities";
+import { Room, Booking, BookingsWithEvent } from "@/shared/types/entities";
 import { ApiStatus } from "@/shared/types/enums";
 
 const ITEMS_PER_PAGE = 5;
 
 class HistoryStore {
-  myActiveBookings: Booking[] = [];
-  myPreviousBookings: Booking[] = [];
-  myPreviousBookingsCurrentPage: Booking[] = [];
+  myActiveBookings: BookingsWithEvent[] = [];
+  myPreviousBookings: BookingsWithEvent[] = [];
+  myPreviousBookingsCurrentPage: BookingsWithEvent[] = [];
 
   openDialog = false;
   bookingIdToDelete!: number;
@@ -172,7 +172,7 @@ class HistoryStore {
     }
   }
 
-  filterAndSortBookings(bookings: Booking[], isActive: boolean) {
+  filterAndSortBookings(bookings: BookingsWithEvent[], isActive: boolean) {
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 00:00:00.000
 
@@ -195,14 +195,20 @@ class HistoryStore {
     return sortedBookings;
   }
 
-  getRoomIdBySeatId(seatId: number) {
+  getRoomIdBySeatId(seatIds: number[]): number[] | null {
+    const roomIds: number[] = [];
     for (const room of this.rooms) {
-      const foundSeat = room.seats.find((seat) => seat.id === seatId);
-      if (foundSeat) {
-        return room.id;
-      }
+      room.seats.map((seat) => {
+        if (seatIds.includes(seat.id)) roomIds.push(room.id);
+      });
     }
-    console.error(`Seat with ID ${seatId} not found in any room.`);
+    if (!!roomIds.length) {
+      return roomIds;
+    } else {
+      console.error(
+        `Seat with ID ${seatIds.join(", ")} not found in any room.`
+      );
+    }
     return null;
   }
 
@@ -214,12 +220,40 @@ class HistoryStore {
     this.rooms = rooms;
   }
 
+  addSeatIdsArray = (bookings: Booking[]) => {
+    return bookings.reduce(
+      (combined: BookingsWithEvent[], current: Booking) => {
+        const existingEntry = combined.find(
+          (object) =>
+            object.bookingDateTime === current.bookingDateTime &&
+            object.userName === current.userName
+        );
+
+        if (existingEntry) {
+          existingEntry.seatIds?.push(current.seatId);
+        } else {
+          combined.push({ ...current, seatIds: [current.seatId] });
+        }
+        return combined;
+      },
+      []
+    );
+  };
+
   setMyActiveBookings(bookings: Booking[]) {
-    this.myActiveBookings = this.filterAndSortBookings(bookings, true);
+    const bookingsWithEvents = this.addSeatIdsArray(bookings);
+    this.myActiveBookings = this.filterAndSortBookings(
+      bookingsWithEvents,
+      true
+    );
   }
 
   setMyPreviousBookings(bookings: Booking[]) {
-    this.myPreviousBookings = this.filterAndSortBookings(bookings, false);
+    const bookingsWithEvents = this.addSeatIdsArray(bookings);
+    this.myPreviousBookings = this.filterAndSortBookings(
+      bookingsWithEvents,
+      false
+    );
     this.lastPage = Math.ceil(this.myPreviousBookings.length / ITEMS_PER_PAGE);
   }
 }

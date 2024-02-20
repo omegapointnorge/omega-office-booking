@@ -2,24 +2,27 @@ import React from "react";
 
 import { MdDelete } from "react-icons/md";
 import { BookingSvg } from "@components/HistoryPage/BookingItem/BookingSvg";
+import { BookingsWithEvent } from "@/shared/types/entities";
 
 interface BookingItemProps {
-  bookingDateTime: Date;
-  seatId: number;
+  booking: BookingsWithEvent;
   showDeleteButton: boolean;
-  roomId: number | null;
+  roomId: number[] | null;
   onClick?: () => void;
 }
 
 export const BookingItem = ({
+  booking,
   onClick,
-  bookingDateTime,
-  seatId,
   showDeleteButton,
   roomId,
 }: BookingItemProps) => {
+  const { bookingDateTime, seatIds, userName } = booking;
   const date = new Date(bookingDateTime);
   const dateString = date.toLocaleDateString();
+
+  const seatText =
+    seatIds.length > 1 ? `Seter ${seatIds.join(", ")}` : `Sete ${seatIds[0]}`;
 
   return (
     <ul className="divide-y divide-gray-100 p-4 rounded-[24px] bg-white w-48">
@@ -33,7 +36,8 @@ export const BookingItem = ({
           <div>
             <p className="text-sm leading-6 text-gray-900">{dateString}</p>
             <p className="truncate text-xs leading-5 text-gray-900">
-              Sete {seatId}
+              <div>{seatText}</div>
+              <div>{`${userName == "Event" ? `[ ${userName} ]` : ""}`}</div>
             </p>
           </div>
           <div className="flex items-center">

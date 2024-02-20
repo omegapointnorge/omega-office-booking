@@ -3,23 +3,26 @@ import { createBooking } from "@models/booking";
 import toast from "react-hot-toast";
 import ApiService from "@services/ApiService";
 import historyStore from "@stores/HistoryStore";
-import { Booking, BookingRequest } from "@/shared/types/entities";
+import {
+  Booking,
+  BookingRequest,
+  BookingsWithEvent,
+} from "@/shared/types/entities";
 import { createEventBookingRequest } from "../../models/booking";
 import { ApiStatus } from "@/shared/types/enums";
-import { fetchOpeningTimeOfDay, getEarliestAllowedBookingDate } from "@/shared/utils";
-
+import {
+  fetchOpeningTimeOfDay,
+  getEarliestAllowedBookingDate,
+} from "@/shared/utils";
 
 class BookingStore {
-  activeBookings: Booking[] = [];
-  //TODO: brukes denne? om ikke slett
-  // userBookings = [];
+  activeBookings: BookingsWithEvent[] = [];
   displayDate = new Date();
   bookEventMode = false;
   seatIdSelectedForNewEvent: number[] = [];
   isEventDateChosen: boolean = false;
   apiStatus: ApiStatus = ApiStatus.Idle;
-  openintTime : string | undefined;
-
+  openintTime: string | undefined;
 
   constructor() {
     makeAutoObservable(this);
@@ -83,8 +86,9 @@ class BookingStore {
         };
 
         // Update the store's state with the new booking
-        this.activeBookings.push(newBooking);
-        historyStore.myActiveBookings.unshift(newBooking);
+        const newBookingWithEvent = { ...newBooking, seatIds: [seatId] };
+        this.activeBookings.push(newBookingWithEvent);
+        historyStore.myActiveBookings.unshift(newBookingWithEvent);
       }
     } catch (error) {
       this.setApiStatus(ApiStatus.Error);
@@ -158,7 +162,8 @@ class BookingStore {
   }
   // Update active bookings
   setActiveBookings(bookings: Booking[]) {
-    this.activeBookings = bookings;
+    const BookingsWithEvent = historyStore.addSeatIdsArray(bookings);
+    this.activeBookings = BookingsWithEvent;
   }
 
   toggleEventMode() {
@@ -180,21 +185,19 @@ class BookingStore {
   }
 
   hasBookingOpened = (displayDate: Date): boolean => {
-  if (!this.openintTime) {
-    return false;
-  }
+    if (!this.openintTime) {
+      return false;
+    }
 
-  let bookingOpeningTime = getEarliestAllowedBookingDate(displayDate);
+    let bookingOpeningTime = getEarliestAllowedBookingDate(displayDate);
 
+    const [hour, minutes, seconds] = this.openintTime.split(":").map(Number);
 
-  const [hour, minutes, seconds] = this.openintTime.split(':').map(Number);
+    bookingOpeningTime.setHours(hour, minutes, seconds);
 
-  bookingOpeningTime.setHours(hour, minutes, seconds);
-  
-
-  let currentDateTime = new Date();
-  return currentDateTime > bookingOpeningTime;
-};
+    let currentDateTime = new Date();
+    return currentDateTime > bookingOpeningTime;
+  };
 }
 
 const bookingStore = new BookingStore();

@@ -29,10 +29,9 @@ const ActiveBookings = observer(() => {
       {historyStore.myActiveBookings.map((booking) => (
         <BookingItem
           key={booking.id}
-          seatId={booking.seatId}
-          bookingDateTime={booking.bookingDateTime}
+          booking={booking}
           showDeleteButton={true}
-          roomId={historyStore.getRoomIdBySeatId(booking.seatId)}
+          roomId={historyStore.getRoomIdBySeatId(booking.seatIds)}
           onClick={() => {
             historyStore.handleOpenDialog(booking.id);
           }}
@@ -68,10 +67,9 @@ const PreviousBookings = observer(() => (
     {historyStore.myPreviousBookingsCurrentPage.map((booking) => (
       <BookingItem
         key={booking.id}
-        seatId={booking.seatId}
-        bookingDateTime={booking.bookingDateTime}
+        booking={booking}
         showDeleteButton={false}
-        roomId={historyStore.getRoomIdBySeatId(booking.seatId)}
+        roomId={historyStore.getRoomIdBySeatId(booking.seatIds)}
       ></BookingItem>
     ))}
     <button
