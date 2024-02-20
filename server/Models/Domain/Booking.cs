@@ -9,12 +9,19 @@ namespace server.Models.Domain
         public Seat Seat { get; set; } = null!;
         public DateTime BookingDateTime { get; set; }
         public DateTime? BookingDateTime_DayOnly { get; set; }
-        public Booking()
-        {      
-        }
+
+        private Booking() { }
         public Booking(int id, String userId, String userName, int seatId, DateTime bookingDateTime, DateTime? bookingDateTimeDayOnly = null)
         {
-            Id = id;
+            UserId = userId;
+            UserName = userName;
+            SeatId = seatId;
+            BookingDateTime = bookingDateTime;
+            BookingDateTime_DayOnly = bookingDateTimeDayOnly ?? bookingDateTime.Date;
+            Id = id; 
+        }
+        public Booking(String userId, String userName, int seatId, DateTime bookingDateTime, DateTime? bookingDateTimeDayOnly = null)
+        {
             UserId = userId;
             UserName = userName;
             SeatId = seatId;
