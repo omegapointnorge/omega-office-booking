@@ -10,6 +10,7 @@ using server.Context;
 using server.Helpers;
 using server.Repository;
 using server.Services.Internal;
+using SignalRChat.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +75,7 @@ if (!builder.Environment.IsProduction())
                 "http://localhost:5001")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
+                .AllowCredentials()
         );
     });
 }
@@ -102,6 +104,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplicationInsightsTelemetry();
 //swagger
+builder.Services.AddSignalR();
 
 string? openingtime = builder.Configuration["OpeningTime"];
 if (openingtime != null)
@@ -139,10 +142,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-app.MapControllers();
+app.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
+app.MapHub<BookingHub>("/bookingHub");
+
+// app.MapControllers();
 
 app.MapFallbackToFile("index.html");
 

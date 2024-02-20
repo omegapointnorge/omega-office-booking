@@ -14,6 +14,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@headlessui/react": "^1.7.17",
+    "@microsoft/signalr": "^8.0.0",
     "@mui/material": "^5.14.17",
     "@tanstack/react-query": "^5.7.2",
     "@testing-library/jest-dom": "^5.17.0",

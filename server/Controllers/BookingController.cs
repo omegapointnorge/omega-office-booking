@@ -1,29 +1,24 @@
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using server.Helpers;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Services.Internal;
+using SignalRChat.Hubs;
 
 namespace server.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
-    public class BookingController : ControllerBase
+    public class BookingController(IBookingService bookingService, TelemetryClient telemetryClient, RecaptchaEnterprise recaptchaEnterprise, IHubContext<BookingHub> hubContext) : ControllerBase
     {
-        private readonly IBookingService _bookingService;
-        private readonly TelemetryClient _telemetryClient;
-        private readonly RecaptchaEnterprise _recaptchaEnterprise;
-
-
-        public BookingController(IBookingService bookingService, TelemetryClient telemetryClient, RecaptchaEnterprise recaptchaEnterprise)
-        {
-            _bookingService = bookingService;
-            _recaptchaEnterprise = recaptchaEnterprise;
-            _telemetryClient = telemetryClient;
-        }
+        private readonly IBookingService _bookingService = bookingService;
+        private readonly TelemetryClient _telemetryClient = telemetryClient;
+        private readonly RecaptchaEnterprise _recaptchaEnterprise = recaptchaEnterprise;
+        private readonly IHubContext<BookingHub> _hubContext = hubContext;
 
         [HttpGet("activeBookings")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllActiveBookings()
@@ -69,6 +64,8 @@ namespace server.Controllers
                 var user = GetUser();
                 var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
 
+                //TODO: PUSH THIS TO OTHE CONNECTED
+                await _hubContext.Clients.All.SendAsync("hubContext", bookingRequest.SeatId);
                 return CreatedAtRoute(null, booking);
             }
             catch (Exception ex)
