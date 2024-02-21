@@ -9,6 +9,10 @@ namespace server.Models.Domain
         public Seat Seat { get; set; } = null!;
         public DateTime BookingDateTime { get; set; }
         public DateTime? BookingDateTime_DayOnly { get; set; }
+
+        public int? EventId { get; set; }
+
+        public Event? Event { get; set; }
         public Booking()
         {      
         }

@@ -90,8 +90,9 @@ builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
-
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<RecaptchaEnterprise>();
+
 builder.Services.AddApplicationInsightsTelemetry(options =>
 {
     // Set the connection string
