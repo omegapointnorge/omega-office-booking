@@ -7,15 +7,15 @@ import { isSameDate } from "@/shared/utils";
 import { SeatInfoComponent } from "./SeatInfoComponent";
 import toast from "react-hot-toast";
 
-interface OverviewSeatInfoProps {
+interface SeatInfoProps {
   onClose: () => void;
   selectedSeatId: number;
 }
 
 const RECAPTCHA_SITE_KEY = "6Lc1tV8pAAAAABKV5g3LrYZNzUx1KGQkYHR-hSzo";
 
-export const OverviewSeatInfo = observer(
-  ({ onClose, selectedSeatId }: OverviewSeatInfoProps) => {
+export const SeatInfo = observer(
+  ({ onClose, selectedSeatId }: SeatInfoProps) => {
     const { user } = useAuthContext() ?? {};
     const isEventAdmin = user.claims.role === "EventAdmin";
 

@@ -3,7 +3,7 @@ import { Heading } from "@common-components/Heading";
 import { useAuthContext } from "@auth/useAuthContext";
 import { observer } from "mobx-react-lite";
 import OverviewMap from "@components/OverviewPage/Map";
-import SeatInfo from "@components/OverviewPage/SeatInfo";
+import { SeatInfo } from "@components/OverviewPage/SeatInfo";
 import { DateSwitchButton } from "@components/OverviewPage/DateSwitchButton";
 import bookingStore from "@stores/BookingStore";
 import { EventModeButton } from "./EventModeButton";
