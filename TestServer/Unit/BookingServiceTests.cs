@@ -72,8 +72,7 @@ public class BookingServiceTests : TestServiceBase<BookingService>
 
         var bookingRequest = new CreateBookingRequest { BookingDateTime = bookingDateTime, SeatId = 1 };
         var userClaims = GetUserClaims();
-        _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking> { new Booking { SeatId = bookingRequest.SeatId, BookingDateTime = bookingRequest.BookingDateTime } });
-
+        _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking> { new Booking(userClaims.Objectidentifier, userClaims.UserName, bookingRequest.SeatId, bookingRequest.BookingDateTime) });
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => Sut.CreateBookingAsync(bookingRequest, userClaims));
     }
@@ -92,7 +91,7 @@ public class BookingServiceTests : TestServiceBase<BookingService>
 
         var bookingRequest = new CreateBookingRequest { BookingDateTime = bookingDateTime, SeatId = 1 };
         var userClaims = GetUserClaims();
-        _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking> { new Booking { UserId = userClaims.Objectidentifier, BookingDateTime = bookingRequest.BookingDateTime.Date } });
+        _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking> {  new Booking(userClaims.Objectidentifier, userClaims.UserName, bookingRequest.SeatId, bookingRequest.BookingDateTime) });
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => Sut.CreateBookingAsync(bookingRequest, userClaims));
@@ -130,7 +129,7 @@ public class BookingServiceTests : TestServiceBase<BookingService>
         var bookingRequest = new CreateBookingRequest { BookingDateTime = bookingDateTime, SeatId = 1 };
         var existingBookingRequest = new CreateBookingRequest { BookingDateTime = DateTime.Now, SeatId = 2 }; // Using DateTime.Now as placeholder for existing booking time
         var adminClaims = GetEventAdminClaims();
-        _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking> { new Booking { UserId = adminClaims.Objectidentifier, BookingDateTime = existingBookingRequest.BookingDateTime, SeatId = existingBookingRequest.SeatId } });
+        _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking> { new Booking(adminClaims.Objectidentifier, adminClaims.UserName, existingBookingRequest.SeatId, existingBookingRequest.BookingDateTime) });
 
         var dateTimeProvider = new TestDateTimeProvider(testDateTime);
         BookingTimeUtils.SetDateTimeProvider(dateTimeProvider);
