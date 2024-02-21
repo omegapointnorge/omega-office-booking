@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Context;
 
@@ -11,9 +12,11 @@ using server.Context;
 namespace server.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    partial class OfficeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240220212633_AddEventEntity")]
+    partial class AddEventEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,13 +38,9 @@ namespace server.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<DateTime>("BookingDateTime_DayOnly")
+                    b.Property<DateTime?>("BookingDateTime_DayOnly")
+                        .IsRequired()
                         .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<int?>("EventId")
                         .HasColumnType("int");
@@ -70,8 +69,8 @@ namespace server.Migrations
                         new
                         {
                             Id = 1,
-                            BookingDateTime = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local),
-                            BookingDateTime_DayOnly = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local),
+                            BookingDateTime = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580),
+                            BookingDateTime_DayOnly = new DateTime(2023, 12, 7, 0, 0, 0, 0, DateTimeKind.Local),
                             SeatId = 1,
                             UserId = "860849a4-f4b8-4566-8ed1-918cf3d41a92",
                             UserName = "SampleUser1"
@@ -79,8 +78,8 @@ namespace server.Migrations
                         new
                         {
                             Id = 2,
-                            BookingDateTime = new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local),
-                            BookingDateTime_DayOnly = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local),
+                            BookingDateTime = new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580),
+                            BookingDateTime_DayOnly = new DateTime(2023, 12, 5, 0, 0, 0, 0, DateTimeKind.Local),
                             SeatId = 2,
                             UserId = "639d660b-4724-407b-b05c-12b5f619f833",
                             UserName = "SampleUser2"
