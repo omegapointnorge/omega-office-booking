@@ -12,24 +12,29 @@ namespace server.Models.Domain
 
         //associated model
         public Seat Seat { get; set; } = null!;
-        public Event? Event { get; set; }
+        public Event Event { get; set; }
 
-        public Booking(int id, String userId, String userName, int seatId, int eventID, DateTime bookingDateTime, DateTime bookingDateTimeDayOnly)
+        public Booking(int id, String userId, String userName, int seatId,  DateTime bookingDateTime, DateTime bookingDateTimeDayOnly, int? eventID)
         {
             Id = id;
             UserId = userId;
             UserName = userName;
             SeatId = seatId;
-            EventId = eventID;
             BookingDateTime = bookingDateTime;
-            BookingDateTime_DayOnly = bookingDateTimeDayOnly;     
+            BookingDateTime_DayOnly = bookingDateTimeDayOnly;
+            EventId = eventID;
         }
-        public Booking(String userId, String userName, int seatId,int eventId, DateTime bookingDateTime, DateTime bookingDateTimeDayOnly)
-            : this(0, userId, userName, seatId, eventId, bookingDateTime, bookingDateTimeDayOnly)
+        public Booking(String userId, String userName, int seatId, DateTime bookingDateTime, DateTime bookingDateTimeDayOnly, int? eventID)
+            : this(0, userId, userName, seatId, bookingDateTime, bookingDateTimeDayOnly, eventID)
         {
         }
-        public Booking(String userId, String userName, int seatId,int eventId, DateTime bookingDateTime)
-            : this(0, userId, userName, seatId, eventId, bookingDateTime, bookingDateTime.Date)
+        // booking with Bookingdatetime not for event
+        public Booking(String userId, String userName, int seatId, DateTime bookingDateTime, DateTime bookingDateTimeDayOnly )
+       : this(0, userId, userName, seatId, bookingDateTime, bookingDateTimeDayOnly, null)
+        { 
+        }
+            public Booking(String userId, String userName, int seatId, DateTime bookingDateTime)
+            : this(0, userId, userName, seatId, bookingDateTime, bookingDateTime.Date,null)
         {
         }
     }
