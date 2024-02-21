@@ -45,7 +45,7 @@ const OverviewPage = observer(() => {
   return (
     <>
       <div className="flex flex-col justify-center items-center h-full">
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-2">
           <Heading title={welcomeTitle} subTitle={subTitle} />
           {isEventAdmin ? <EventModeButton /> : <DateSwitchButton />}
           <div className="flex justify-center">
