@@ -12,7 +12,6 @@ namespace server.Models.Domain
             Id = id;
             RoomId = roomId;
             IsAvailable = isAvailable;
-            Bookings = new List<Booking>();
         }
     }
 }
