@@ -28,12 +28,6 @@ export interface Seat {
   bookings: Booking[];
 }
 
-export interface Room {
-  id: number | null;
-  name: string | null;
-  seats: Seat[];
-}
-
 export interface BookingRequest {
   seatId: number;
   bookingDateTime: string;

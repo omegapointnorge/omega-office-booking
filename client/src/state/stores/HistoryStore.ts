@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import ApiService from "@services/ApiService";
 import bookingStore from "@stores/BookingStore";
-import { Room, HistoryBooking } from "@/shared/types/entities";
+import { HistoryBooking } from "@/shared/types/entities";
 import { ApiStatus } from "@/shared/types/enums";
 
 const ITEMS_PER_PAGE = 5;
@@ -18,7 +18,6 @@ class HistoryStore {
   lastPage = 1;
   isFirstPage = true;
   isLastPage = false;
-  rooms: Room[] = [];
   apiStatus: ApiStatus = ApiStatus.Idle;
 
   constructor() {
@@ -34,17 +33,7 @@ class HistoryStore {
     }
   }
 
-  async fetchRoomsAndSeatsForRoomLookup() {
-    try {
-      const url = "/api/room/rooms";
-      await ApiService.fetchData<Room[]>(url, "Get", null).then((response) => {
-        this.setRooms(response);
-      });
-    } catch (error) {
-      console.error("Error fetching bookings:", error);
-    }
-  }
-
+  
   async fetchMyBookings() {
     if (this.apiStatus === ApiStatus.Pending) return;
     try {
@@ -64,7 +53,6 @@ class HistoryStore {
       this.lastPage = Math.ceil(
         this.myPreviousBookings.length / ITEMS_PER_PAGE
       );
-      await this.fetchRoomsAndSeatsForRoomLookup();
       this.initPreviousBookings();
     } catch (error) {
       console.error("Error fetching bookings:", error);
@@ -195,23 +183,10 @@ class HistoryStore {
     return sortedBookings;
   }
 
-  getRoomIdBySeatId(seatId: number) {
-    for (const room of this.rooms) {
-      const foundSeat = room.seats.find((seat) => seat.id === seatId);
-      if (foundSeat) {
-        return room.id;
-      }
-    }
-    console.error(`Seat with ID ${seatId} not found in any room.`);
-    return null;
-  }
+
 
   setApiStatus(status: ApiStatus) {
     this.apiStatus = status;
-  }
-
-  setRooms(rooms: Room[]) {
-    this.rooms = rooms;
   }
 
   setMyActiveBookings(bookings: HistoryBooking[]) {
