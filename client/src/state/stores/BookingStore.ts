@@ -85,7 +85,6 @@ class BookingStore {
 
         // Update the store's state with the new booking
         this.activeBookings.push(newBooking);
-        historyStore.myActiveBookings.unshift(newBooking);
       }
     } catch (error) {
       this.setApiStatus(ApiStatus.Error);

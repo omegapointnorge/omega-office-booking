@@ -5,18 +5,18 @@ import { BookingSvg } from "../BookingItem/BookingSvg";
 
 interface BookingItemProps {
   bookingDateTime: Date;
-  seatId: number;
+  seatIds: number[];
   showDeleteButton: boolean;
-  roomId: number | null;
+  roomIds: number[];
   onClick?: () => void;
 }
 
 export const BookingItem = ({
   onClick,
   bookingDateTime,
-  seatId,
+  seatIds,
   showDeleteButton,
-  roomId,
+  roomIds,
 }: BookingItemProps) => {
   const date = new Date(bookingDateTime);
   const dateString = date.toLocaleDateString();
@@ -24,16 +24,16 @@ export const BookingItem = ({
   return (
     <ul className="divide-y divide-gray-100 p-4 rounded-[24px] bg-white w-48">
       <li className="flex flex-col">
-        {roomId && (
+        {(
           <div className="flex items-center content-center justify-center">
-            <BookingSvg highlightedId={roomId} />
+            <BookingSvg highlightedIds={roomIds} />
           </div>
         )}
         <div className="flex flex-row justify-between">
           <div>
             <p className="text-sm leading-6 text-gray-900">{dateString}</p>
             <p className="truncate text-xs leading-5 text-gray-900">
-              Sete {seatId}
+              Sete {seatIds.join(', ')}
             </p>
           </div>
           <div className="flex items-center">

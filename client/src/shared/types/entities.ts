@@ -9,6 +9,18 @@ export interface Booking {
   bookingDateTime: Date;
 }
 
+export interface HistoryBooking {
+  id: number;
+  userId: string;
+  userName: string;
+  seatIds: number[]; 
+  roomIds: number[]; 
+  eventName?: string; 
+  eventId?: number; 
+  bookingDateTime: Date;
+}
+
+
 export interface Seat {
   id: number | null;
   roomId: string | null;

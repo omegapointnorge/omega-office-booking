@@ -1,15 +1,15 @@
 import { makeAutoObservable } from "mobx";
 import ApiService from "@services/ApiService";
 import bookingStore from "@stores/BookingStore";
-import { Room, Booking } from "@/shared/types/entities";
+import { Room, HistoryBooking } from "@/shared/types/entities";
 import { ApiStatus } from "@/shared/types/enums";
 
 const ITEMS_PER_PAGE = 5;
 
 class HistoryStore {
-  myActiveBookings: Booking[] = [];
-  myPreviousBookings: Booking[] = [];
-  myPreviousBookingsCurrentPage: Booking[] = [];
+  myActiveBookings: HistoryBooking[] = [];
+  myPreviousBookings: HistoryBooking[] = [];
+  myPreviousBookingsCurrentPage: HistoryBooking[] = [];
 
   openDialog = false;
   bookingIdToDelete!: number;
@@ -51,7 +51,7 @@ class HistoryStore {
       this.setApiStatus(ApiStatus.Pending);
 
       const url = "/api/Booking/Bookings/MyBookings";
-      const bookings = await ApiService.fetchData<Booking[]>(
+      const bookings = await ApiService.fetchData<HistoryBooking[]>(
         url,
         "Get",
         null
@@ -172,7 +172,7 @@ class HistoryStore {
     }
   }
 
-  filterAndSortBookings(bookings: Booking[], isActive: boolean) {
+  filterAndSortBookings(bookings: HistoryBooking[], isActive: boolean) {
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 00:00:00.000
 
@@ -214,11 +214,11 @@ class HistoryStore {
     this.rooms = rooms;
   }
 
-  setMyActiveBookings(bookings: Booking[]) {
+  setMyActiveBookings(bookings: HistoryBooking[]) {
     this.myActiveBookings = this.filterAndSortBookings(bookings, true);
   }
 
-  setMyPreviousBookings(bookings: Booking[]) {
+  setMyPreviousBookings(bookings: HistoryBooking[]) {
     this.myPreviousBookings = this.filterAndSortBookings(bookings, false);
     this.lastPage = Math.ceil(this.myPreviousBookings.length / ITEMS_PER_PAGE);
   }
