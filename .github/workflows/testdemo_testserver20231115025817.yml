@@ -4,9 +4,11 @@
 name: Build and deploy ASP.Net Core app to Azure Web App - testserver20231115025817
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
-      - testdemo                                      
+      - testdemo                                 
 
 jobs:
   build:
@@ -66,7 +68,8 @@ jobs:
 
   delete-branch:
     runs-on: windows-latest
-    if: github.event.pull_request.merged == true && github.event.action == 'closed'
+    needs: deploy
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
   
     steps:
         - name: Checkout code
