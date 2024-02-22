@@ -10,12 +10,11 @@ namespace server.Services.Internal
 
         Task<IEnumerable<BookingDto>> GetAllActiveBookings();
 
-        Task<IEnumerable<BookingDto>> GetAllBookingsForUser(string userid);
+        Task<IEnumerable<HistoryBookingDto>> GetAllBookingsForUserAsync(string userid);
 
         Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user);
 
         Task<IEnumerable<BookingDto>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, UserClaims user);
-
 
     }
 }

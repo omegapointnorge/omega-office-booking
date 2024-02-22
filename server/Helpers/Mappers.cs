@@ -22,6 +22,22 @@ namespace server.Helpers
             return bookingDtoList;
         }
 
+        public static List<HistoryBookingDto> MapHistoryBookingDtos(IEnumerable<Booking> bookings)
+        {
+            var historyBookingDtoList = new List<HistoryBookingDto>();
+            try
+            {
+                historyBookingDtoList = bookings.Select(booking =>
+                    new HistoryBookingDto(booking)
+                ).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine($"Error mapping BookingDtos: {e.Message}");
+            }
+            return historyBookingDtoList;
+        }
+
         public static List<RoomDto> MapRoomDtos(IEnumerable<Room> rooms)
         {
             var roomDtos = new List<RoomDto>();

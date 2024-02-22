@@ -89,7 +89,7 @@ namespace server.Services.Internal
                         bookingListDto.Add(new BookingDto(booking));
                     }
 
-                 
+
                     // only save repository once
                     await _bookingRepository.SaveAsync();
 
@@ -109,7 +109,7 @@ namespace server.Services.Internal
             var seat_Id = seatId ?? bookingRequest.SeatId;
             var bookingDateTime = bookingRequest.BookingDateTime;
             var bookingDateTime_DayOnly = bookingRequest.BookingDateTime.Date;
-            return new Booking(userId, user_Name, seat_Id, bookingDateTime,bookingDateTime_DayOnly);
+            return new Booking(userId, user_Name, seat_Id, bookingDateTime, bookingDateTime_DayOnly);
         }
 
         public async Task<IEnumerable<BookingDto>> GetAllActiveBookings()
@@ -126,20 +126,52 @@ namespace server.Services.Internal
             }
         }
 
-
-        public async Task<IEnumerable<BookingDto>> GetAllBookingsForUser(string userId)
+        public async Task<IEnumerable<HistoryBookingDto>> GetAllBookingsForUserAsync(string userId)
         {
             try
             {
                 var bookings = await _bookingRepository.GetBookingsWithSeatForUserAsync(userId);
-                return Mappers.MapBookingDtos(bookings);
+                var historyBookingDtos = Mappers.MapHistoryBookingDtos(bookings);
+
+                var returnList = new List<HistoryBookingDto>();
+
+                // Add bookings with null EventId directly to the return list
+                returnList.AddRange(historyBookingDtos.Where(bookingDto => bookingDto.EventId == null));
+
+                var groupedBookings = GetGroupedEvents(historyBookingDtos);
+
+                // Add the grouped bookings as a single event to the return list
+                returnList.AddRange(groupedBookings);
+
+                return returnList.OrderBy(bookingDto => bookingDto.BookingDateTime).ToList();
+
             }
-            catch (Exception)
+            catch
             {
                 throw;
             }
         }
 
+        private IEnumerable<HistoryBookingDto> GetGroupedEvents(IEnumerable<HistoryBookingDto> bookingDtos)
+        {
+            var groupedBookings = bookingDtos.Where(bookingDto => bookingDto.EventId != null)
+                                              .GroupBy(b => b.EventId);
+
+            var combinedBookings = new List<HistoryBookingDto>();
+
+            foreach (var group in groupedBookings)
+            {
+                var combinedSeatIds = group.SelectMany(bookingDto => bookingDto.SeatIds).ToList();
+                var combinedRoomIds = group.SelectMany(bookingDto => bookingDto.RoomIds).Distinct().ToList();
+
+                // Take any booking from the group as representative
+                var representativeBookingDto = group.First();
+                representativeBookingDto.SeatIds = combinedSeatIds.ToArray();
+                representativeBookingDto.RoomIds = combinedRoomIds.ToArray();
+                combinedBookings.Add(representativeBookingDto);
+            }
+            return combinedBookings;
+        }
 
         public async Task DeleteBookingAsync(int bookingId, UserClaims user)
         {

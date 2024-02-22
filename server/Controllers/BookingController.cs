@@ -97,12 +97,12 @@ namespace server.Controllers
 
 
         [HttpGet("Bookings/MyBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser()
+        public async Task<ActionResult<IEnumerable<HistoryBookingDto>>> GetAllBookingsForUser()
         {
             try
             {
                 var user = GetUser();
-                var result = await _bookingService.GetAllBookingsForUser(user.Objectidentifier);
+                var result = await _bookingService.GetAllBookingsForUserAsync(user.Objectidentifier);
 
                 return new OkObjectResult(result);
             }
