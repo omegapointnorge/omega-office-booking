@@ -38,24 +38,6 @@ namespace server.Helpers
             return historyBookingDtoList;
         }
 
-        public static List<RoomDto> MapRoomDtos(IEnumerable<Room> rooms)
-        {
-            var roomDtos = new List<RoomDto>();
-            try
-            {
-                roomDtos = rooms.Select(room =>
-                    new RoomDto(room.Id, room.Name, room.Seats)
-                ).ToList();
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine($"Error mapping BookingDtos: {e.Message}");
-            }
-            return roomDtos;
-        }
-
-
-
         public static List<SeatDto> MapSeatDtos(IEnumerable<Seat>? seats)
         {
             var seatDtoList = new List<SeatDto>();
