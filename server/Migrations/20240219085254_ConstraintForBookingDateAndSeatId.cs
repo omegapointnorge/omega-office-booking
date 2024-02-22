@@ -36,6 +36,7 @@ namespace server.Migrations
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
                 oldNullable: true);
+            migrationBuilder.Sql("UPDATE Bookings SET BookingDateTime_DayOnly = Convert(date,BookingDateTime);");
 
             migrationBuilder.AddUniqueConstraint(
                 name: "unique_seat_time_constraint",

@@ -10,7 +10,6 @@ namespace server.Models.Domain
         {
             Id = id;
             Name = name;
-            Seats = new List<Seat>();
         }
     }
 }

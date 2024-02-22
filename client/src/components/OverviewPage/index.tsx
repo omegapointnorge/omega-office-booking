@@ -3,7 +3,7 @@ import { Heading } from "@common-components/Heading";
 import { useAuthContext } from "@auth/useAuthContext";
 import { observer } from "mobx-react-lite";
 import OverviewMap from "@components/OverviewPage/Map";
-import SeatInfo from "@components/OverviewPage/SeatInfo";
+import { SeatInfo } from "@components/OverviewPage/SeatInfo";
 import { DateSwitchButton } from "@components/OverviewPage/DateSwitchButton";
 import bookingStore from "@stores/BookingStore";
 import { EventModeButton } from "./EventModeButton";
@@ -45,7 +45,7 @@ const OverviewPage = observer(() => {
   return (
     <>
       <div className="flex flex-col justify-center items-center h-full">
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-2">
           <Heading title={welcomeTitle} subTitle={subTitle} />
           {isEventAdmin ? <EventModeButton /> : <DateSwitchButton />}
           <div className="flex justify-center">
