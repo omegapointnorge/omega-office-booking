@@ -11,18 +11,17 @@ When deploying the application, we use Azure Key Vault to provide the various se
 Get the secrets from the keyvault and store them with:
 
 ```bash
-dotnet user-secrets set "AzureAd__ClientId" "XXXXXX.."
-dotnet user-secrets set "AzureAd__ClientSecret" "XXXXXX.."
-dotnet user-secrets set "AzureAd__TentanId" "XXXXXX.."
+dotnet user-secrets set "AzureAd:ClientId" "XXXXXX.."
+dotnet user-secrets set "AzureAd:ClientSecret" "XXXXXX.."
+dotnet user-secrets set "AzureAd:TenantId" "XXXXXX.."
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Initial Catalog=OfficeBookingDB; Data Source=localhost,<Port_Number>; Persist Security Info=True;User ID=SA;Password= <Your_Password>; TrustServerCertificate=True"
 
 dotnet user-secrets set "GOOGLE-CLOUD-PROJECT" "office-booking-1706538315753"
 dotnet user-secrets set "GOOGLE-APPLICATION-CREDENTIALS" "XXXXXX.."
 
 ```
+The content of secrets can be obtained by contacting [Contributing](#contributing)
 
-
-For macbook user, the image addressen need to be the address for Mac. change mcr.microsoft.com/mssql/server:2019-latest in the following commands
 The prerequisite for establishing a local database connection is having Docker Desktop installed on your PC.
 Run the database by issuing the command 'docker compose up -d' in your terminal.
 
@@ -53,5 +52,6 @@ Get the permissions right away to avoid bottlenecks!
 Figma design: https://www.figma.com/file/NC9ZwuocdWNaLCxDIrJkfY/Office-Booking?type=design&node-id=0%3A1&mode=design&t=My2Yu9A58c5mDaE5-1
 
 ## Contributing
+<!-- Anchor for Contributing section -->
 
-This project was originally started by Håkon Bøckman, Mostafa Aziz, Vicky Huang & Synne Kjærvik. You can contact them for additional information if needed.
+This project was originally started by Håkon Bøckman, Mostafa Aziz, Vicky Huang & Synne Kjærvik,  have been lately contributed by Nils Olav Kvelvane Johansen and Hiruth Marie Stautland. You can contact them for additional information if needed.
