@@ -25,7 +25,6 @@ public class UserController : ControllerBase
                 .Select(c => new KeyValuePair<string, string>(c.Type, c.Value))
                 .Where(c => claimsToExpose.Contains(c.Key))
                 .ToList());
-
         return Ok(user);
     }
 }
