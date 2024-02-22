@@ -75,8 +75,6 @@ jobs:
         - name: Checkout code
           uses: actions/checkout@v2
   
-        - name: Merge Pull Request
-          run: git fetch origin --prune && git checkout ${{ github.event.pull_request.base.ref }} && git merge --ff-only ${{ github.event.pull_request.head.ref }}
-  
+
         - name: Delete Branch
           run: git push origin --delete ${{ github.event.pull_request.head.ref }}
