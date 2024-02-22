@@ -104,3 +104,17 @@ jobs:
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A3049A8BA9BD439C8126A354B10CA669 }}
           package: .
+         
+  delete-branch:
+              runs-on: ubuntu-latest
+              if: github.event.pull_request.merged == true
+          
+              steps:
+                - name: Checkout code
+                  uses: actions/checkout@v2
+          
+                - name: Merge Pull Request
+                  run: git fetch origin --prune && git checkout ${{ github.event.pull_request.base.ref }} && git merge --ff-only ${{ github.event.pull_request.head.ref }}
+          
+                - name: Delete Branch
+                  run: git push origin --delete ${{ github.event.pull_request.head.ref }}
