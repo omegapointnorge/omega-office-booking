@@ -38,6 +38,11 @@ After the image is pulled and database is connected, you can run the .Net cli "d
 # Normal user role
 # Event admin user role
 
+### Google Cloud Setup (reCAPTCHA)
+This application relies on Google reCAPTCHA Enterprise. To use this service, a Google Cloud account has been created. Please note that the account had to be set up with a Gmail account under the domain "omegapoint.no". Thus, the account utilized for this purpose is Nils.Olav.johansen@omegapoint.no. For any changes or adjustments to the Google Cloud settings, please contact Nils Olav Johansen.
+
+### Permissions and Setup Prerequisites in Azure
+
 ## Additional information
 
 Azure setup prerequisites:
