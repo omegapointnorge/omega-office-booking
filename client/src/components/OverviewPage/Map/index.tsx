@@ -30,14 +30,15 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const location = useLocation();
 
   const zoomedOutViewBoxParameters = "0 0 3725 2712";
-  const zoomedToLargeRoomViewBoxParameters = "1575 1600 1100 1050";
-  const zoomedToSmallRoomViewBoxParameters = "2600 400 900 900";
+  const zoomedToLargeRoomViewBoxParameters = "1750 1400 1200 1500";
+  const zoomedToSmallRoomViewBoxParameters = "2700 400 900 900";
   const zoomedToSalesBoxParameters = "0 900 800 800";
 
   const [currentViewBox, setCurrentViewBox] = useState(
     zoomedOutViewBoxParameters
   );
   const [zoomStatus, setZoomStatus] = useState("ZoomedOut");
+
   const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
   const getSeatClassName = (seatId: number): string => {

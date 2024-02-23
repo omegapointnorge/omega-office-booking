@@ -1,7 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { PrimaryDialog } from "../PrimaryDialog";
-
 describe("PrimaryDialog", () => {
   const defaultProps = {
     title: "Test Dialog",

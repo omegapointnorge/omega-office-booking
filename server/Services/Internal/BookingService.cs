@@ -10,13 +10,15 @@ namespace server.Services.Internal
 {
     public class BookingService : IBookingService
     {
-        readonly IBookingRepository _bookingRepository;
+        private readonly IBookingRepository _bookingRepository;
+        private readonly IEventRepository _eventRepository;
         private const string EventUserName = "Event";
 
 
-        public BookingService(IBookingRepository bookingRepository)
+        public BookingService(IBookingRepository bookingRepository, IEventRepository eventRepository)
         {
             _bookingRepository = bookingRepository;
+            _eventRepository = eventRepository;
         }
 
         public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user)
@@ -60,6 +62,10 @@ namespace server.Services.Internal
                     throw new BadHttpRequestException(errorMessages);
                 }
 
+                // Create Event entity
+                var eventData = new Event { Name = EventUserName };
+                await _eventRepository.AddAsync(eventData);
+
                 if (bookingRequest.IsEvent.HasValue && bookingRequest.IsEvent.Value && bookingRequest.SeatList.Any())
                 {
                     foreach (var seatId in bookingRequest.SeatList)
@@ -74,11 +80,16 @@ namespace server.Services.Internal
                             bookingsToDeleteList.ForEach(async bookingToDelete => await _bookingRepository.Delete(bookingToDelete));
                         }
 
-                        var booking = CreateBookingFromRequest(bookingRequest, user, EventUserName, seatId);
+
+                        //Create booking entity
+                        var booking = CreateBookingFromRequest(bookingRequest, user, user.UserName, seatId);
+                        booking.Event = eventData;
 
                         await _bookingRepository.AddAsync(booking);
                         bookingListDto.Add(new BookingDto(booking));
                     }
+
+                 
                     // only save repository once
                     await _bookingRepository.SaveAsync();
 

@@ -4,20 +4,21 @@ import bookingStore from "../../../state/stores/BookingStore";
 import { useAuthContext } from "../../../core/auth/useAuthContext";
 import { Booking } from "@/shared/types/entities";
 import { isSameDate } from "@utils/utils";
-import toast from "react-hot-toast";
 import { SeatInfoComponent } from "./SeatInfoComponent";
+import toast from "react-hot-toast";
 
-interface OverviewSeatInfoProps {
+interface SeatInfoProps {
   onClose: () => void;
   selectedSeatId: number;
 }
 
 const RECAPTCHA_SITE_KEY = "6Lc1tV8pAAAAABKV5g3LrYZNzUx1KGQkYHR-hSzo";
 
-const OverviewSeatInfo = observer(
-  ({ onClose, selectedSeatId }: OverviewSeatInfoProps) => {
+export const SeatInfo = observer(
+  ({ onClose, selectedSeatId }: SeatInfoProps) => {
     const { user } = useAuthContext() ?? {};
     const isEventAdmin = user.claims.role === "EventAdmin";
+
     const userGuid = user.claims.objectidentifier;
 
     const { activeBookings, displayDate } = bookingStore;
@@ -102,5 +103,3 @@ const OverviewSeatInfo = observer(
     );
   }
 );
-
-export default OverviewSeatInfo;
