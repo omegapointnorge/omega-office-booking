@@ -1,5 +1,3 @@
-
-using Microsoft.EntityFrameworkCore;
 using server.Context;
 using server.Models.Domain;
 
@@ -12,6 +10,5 @@ namespace server.Repository
         {
             _dbContext = context;
         }
-
     }
 }

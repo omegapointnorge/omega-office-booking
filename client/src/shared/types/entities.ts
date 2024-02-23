@@ -10,13 +10,12 @@ export interface Booking {
 }
 
 export interface HistoryBooking {
-  ids: number[];
+  id: number;
   userId: string;
   userName: string;
   seatIds: number[]; 
   roomIds: number[]; 
   eventName?: string; 
-  eventId?: number; 
   bookingDateTime: Date;
 }
 

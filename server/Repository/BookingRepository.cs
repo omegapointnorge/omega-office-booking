@@ -28,5 +28,13 @@ namespace server.Repository
                 .ToListAsync();
         }
 
+        public Task DeleteBookingsWithEventId(int eventId)
+        {
+            var bookings = _dbContext.Bookings
+                .Where(booking => booking.EventId == eventId);
+            _dbContext.Bookings.RemoveRange(bookings);
+            return _dbContext.SaveChangesAsync();
+        }
+
     }
 }

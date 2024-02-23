@@ -12,7 +12,8 @@ class HistoryStore {
   myPreviousBookingsCurrentPage: HistoryBooking[] = [];
 
   openDialog = false;
-  bookingIdToDelete!: number;
+  historyBookingIdToDelete!: number;
+  eventIdToDelete!: number;
 
   pageNumber = 1;
   lastPage = 1;
@@ -60,36 +61,41 @@ class HistoryStore {
     }
   }
 
-  async deleteBooking(bookingId: number) {
+async deleteResource(resourceType: string, resourceId: number) {
     if (this.apiStatus === ApiStatus.Pending) return;
     try {
-      this.setApiStatus(ApiStatus.Pending);
-      const url = `/api/Booking/${bookingId}`;
+        this.setApiStatus(ApiStatus.Pending);
+        const url = `/api/${resourceType}/${resourceId}`;
 
-      await ApiService.fetchData<{ ok: boolean }>(url, "DELETE").then(
-        (response) => {
-          if (!response.ok) {
-            console.error(`Failed to delete booking with ID ${bookingId}`);
+        const response = await ApiService.fetchData<{ ok: boolean }>(url, "DELETE");
+
+        if (!response.ok) {
+            console.error(`Failed to delete ${resourceType} with ID ${resourceId}`);
             return;
-          }
-          this.setApiStatus(ApiStatus.Success);
-          return response;
         }
-      );
 
-      this.updateBookings(bookingId);
+        this.setApiStatus(ApiStatus.Success);
+        this.updateBookings(resourceId);
     } catch (error) {
-      console.error(
-        `An error occurred while deleting booking with ID ${bookingId}:`,
-        error
-      );
-      this.setApiStatus(ApiStatus.Error);
+        console.error(
+            `An error occurred while deleting ${resourceType} with ID ${resourceId}:`,
+            error
+        );
+        this.setApiStatus(ApiStatus.Error);
     }
-  }
+}
+
+async deleteBooking(bookingId: number) {
+    await this.deleteResource('Booking', bookingId);
+}
+
+async deleteEvent(eventId: number) {
+    await this.deleteResource('Event', eventId);
+}
 
   async updateBookings(bookingId: number) {
     this.removeBookingById(bookingId);
-    bookingStore.removeBookingById(bookingId);
+    bookingStore.fetchAllActiveBookings()
   }
 
   setIsFirstPage(data: boolean) {
@@ -100,9 +106,9 @@ class HistoryStore {
     this.isLastPage = data;
   }
 
-  removeBookingById(bookingId: number) {
+  removeBookingById(historyBookingId: number) {
     this.myActiveBookings = this.myActiveBookings.filter(
-      (booking) => booking.ids.includes(bookingId)
+      (booking) => booking.id !== historyBookingId
     );
   }
 
@@ -138,9 +144,9 @@ class HistoryStore {
   }
 
   /* Utils */
-  handleOpenDialog(bookingId: number) {
+  handleOpenDialog(historyBookingId: number) {
     this.openDialog = !this.openDialog;
-    this.bookingIdToDelete = bookingId;
+    this.historyBookingIdToDelete = historyBookingId;
   }
 
   handleCloseDialog = (): void => {

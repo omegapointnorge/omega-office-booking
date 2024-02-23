@@ -166,7 +166,7 @@ namespace server.Services.Internal
                 var bookingDateTime = group.First().BookingDateTime;
                 int eventId = (int)group.Key;
                 //var eventName = group.First().EventName;
-                var eventName = "Event";
+                var eventName = "Arrangement";
 
                 combinedBookings.Add(new HistoryBookingDto(eventId, combinedSeatIds, combinedRoomIds, eventName, bookingDateTime));
             }
