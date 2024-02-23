@@ -106,8 +106,7 @@ namespace server.Services.Internal
                 var combinedRoomIds = group.SelectMany(HistoryBookingDto => HistoryBookingDto.RoomIds).Distinct().ToList().ToArray();
                 var bookingDateTime = group.First().BookingDateTime;
                 int eventId = (int)group.Key;
-                //var eventName = group.First().EventName;
-                var eventName = "Arrangement";
+                var eventName = group.First().EventName;
 
                 combinedBookings.Add(new HistoryBookingDto(eventId, combinedSeatIds, combinedRoomIds, eventName, bookingDateTime));
             }

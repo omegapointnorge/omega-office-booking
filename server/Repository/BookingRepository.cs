@@ -24,6 +24,7 @@ namespace server.Repository
         {
             return _dbContext.Bookings
                 .Include(booking => booking.Seat)
+                .Include(booking => booking.Event)
                 .Where(booking => booking.UserId == userId)
                 .ToListAsync();
         }
