@@ -102,7 +102,7 @@ class HistoryStore {
 
   removeBookingById(bookingId: number) {
     this.myActiveBookings = this.myActiveBookings.filter(
-      (booking) => booking.id !== bookingId
+      (booking) => booking.ids.includes(bookingId)
     );
   }
 

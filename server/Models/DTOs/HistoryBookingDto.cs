@@ -21,5 +21,13 @@ namespace server.Models.DTOs
             EventId = booking.EventId;
             BookingDateTime = booking.BookingDateTime;
         }
+        public HistoryBookingDto(int EventId, int[] seatIds, int[] roomIds, string eventName, DateTime bookingDateTime)
+        {
+            Id = EventId;
+            SeatIds = seatIds;
+            RoomIds = roomIds;
+            EventName = eventName;
+            BookingDateTime = bookingDateTime;
+        }
     }
 }

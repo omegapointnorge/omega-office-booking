@@ -138,7 +138,8 @@ namespace server.Services.Internal
                 // Add bookings with null EventId directly to the return list
                 returnList.AddRange(historyBookingDtos.Where(bookingDto => bookingDto.EventId == null));
 
-                var groupedBookings = GetGroupedEvents(historyBookingDtos);
+
+                var groupedBookings = groupAndFilterEventBookings(historyBookingDtos);
 
                 // Add the grouped bookings as a single event to the return list
                 returnList.AddRange(groupedBookings);
@@ -152,23 +153,22 @@ namespace server.Services.Internal
             }
         }
 
-        private IEnumerable<HistoryBookingDto> GetGroupedEvents(IEnumerable<HistoryBookingDto> bookingDtos)
+        private IEnumerable<HistoryBookingDto> groupAndFilterEventBookings(IEnumerable<HistoryBookingDto> bookingDtos)
         {
             var groupedBookings = bookingDtos.Where(bookingDto => bookingDto.EventId != null)
                                               .GroupBy(b => b.EventId);
-
             var combinedBookings = new List<HistoryBookingDto>();
 
             foreach (var group in groupedBookings)
             {
-                var combinedSeatIds = group.SelectMany(bookingDto => bookingDto.SeatIds).ToList();
-                var combinedRoomIds = group.SelectMany(bookingDto => bookingDto.RoomIds).Distinct().ToList();
+                var combinedSeatIds = group.SelectMany(HistoryBookingDto => HistoryBookingDto.SeatIds).ToList().ToArray();
+                var combinedRoomIds = group.SelectMany(HistoryBookingDto => HistoryBookingDto.RoomIds).Distinct().ToList().ToArray();
+                var bookingDateTime = group.First().BookingDateTime;
+                int eventId = (int)group.Key;
+                //var eventName = group.First().EventName;
+                var eventName = "Event";
 
-                // Take any booking from the group as representative
-                var representativeBookingDto = group.First();
-                representativeBookingDto.SeatIds = combinedSeatIds.ToArray();
-                representativeBookingDto.RoomIds = combinedRoomIds.ToArray();
-                combinedBookings.Add(representativeBookingDto);
+                combinedBookings.Add(new HistoryBookingDto(eventId, combinedSeatIds, combinedRoomIds, eventName, bookingDateTime));
             }
             return combinedBookings;
         }

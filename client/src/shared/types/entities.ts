@@ -10,7 +10,7 @@ export interface Booking {
 }
 
 export interface HistoryBooking {
-  id: number;
+  ids: number[];
   userId: string;
   userName: string;
   seatIds: number[]; 
