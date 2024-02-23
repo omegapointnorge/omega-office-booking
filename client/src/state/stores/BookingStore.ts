@@ -92,15 +92,16 @@ class BookingStore {
     }
   }
 
-  async createBookingForEvent(selectedSeatIds: number[]) {
+    async createBookingForEvent(selectedSeatIds: number[]) {
     const bookingRequest = createEventBookingRequest({
       seatIds: selectedSeatIds,
       bookingDateTime: this.displayDate,
       isEvent: true,
+      eventName : "Arrangement"
     });
 
     try {
-      const response = await fetch("/api/Booking/CreateEventBookingsForSeats", {
+      const response = await fetch("/api/Event", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -4,21 +4,17 @@ using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Repository;
-using System.ComponentModel.DataAnnotations;
 
 namespace server.Services.Internal
 {
     public class BookingService : IBookingService
     {
         private readonly IBookingRepository _bookingRepository;
-        private readonly IEventRepository _eventRepository;
-        private const string EventUserName = "Event";
 
 
         public BookingService(IBookingRepository bookingRepository, IEventRepository eventRepository)
         {
             _bookingRepository = bookingRepository;
-            _eventRepository = eventRepository;
         }
 
         public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user)
@@ -46,62 +42,7 @@ namespace server.Services.Internal
             }
         }
 
-        public async Task<IEnumerable<BookingDto>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, UserClaims user)
-        {
-            try
-            {
-                IEnumerable<Booking> existedBookingList = await _bookingRepository.GetAsync();
-                List<BookingDto> bookingListDto = new();
-                // Perform model validation
-                var validationContext = new ValidationContext(bookingRequest, serviceProvider: null, items: null);
-                var validationResults = new List<ValidationResult>();
-                bool isValid = Validator.TryValidateObject(bookingRequest, validationContext, validationResults, validateAllProperties: true);
-                if (!isValid)
-                {
-                    var errorMessages = string.Join("; ", validationResults.Select(v => v.ErrorMessage));
-                    throw new BadHttpRequestException(errorMessages);
-                }
 
-                // Create Event entity
-                var eventData = new Event { Name = EventUserName };
-                await _eventRepository.AddAsync(eventData);
-
-                if (bookingRequest.IsEvent.HasValue && bookingRequest.IsEvent.Value && bookingRequest.SeatList.Any())
-                {
-                    foreach (var seatId in bookingRequest.SeatList)
-                    {
-                        if (IsSeatAlreadyBooked(existedBookingList, bookingRequest.BookingDateTime, seatId))
-                        {
-                            //In case of double booked or deleting issues
-                            var bookingsToDeleteList = existedBookingList
-                            .Where(booking => booking.BookingDateTime.Date == bookingRequest.BookingDateTime.Date && booking.SeatId == seatId)
-                            .ToList();
-
-                            bookingsToDeleteList.ForEach(async bookingToDelete => await _bookingRepository.Delete(bookingToDelete));
-                        }
-
-
-                        //Create booking entity
-                        var booking = CreateBookingFromRequest(bookingRequest, user, user.UserName, seatId);
-                        booking.Event = eventData;
-
-                        await _bookingRepository.AddAsync(booking);
-                        bookingListDto.Add(new BookingDto(booking));
-                    }
-
-
-                    // only save repository once
-                    await _bookingRepository.SaveAsync();
-
-                }
-                else throw new Exception("Not a Event booking Req");
-                return bookingListDto;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
         private Booking CreateBookingFromRequest(CreateBookingRequest bookingRequest, UserClaims user, string userName, int? seatId = null)
         {
             var userId = user.Objectidentifier;
@@ -253,7 +194,7 @@ namespace server.Services.Internal
             return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.UserId == userId);
         }
 
-        private bool IsSeatAlreadyBooked(IEnumerable<Booking> bookingList, DateTime bookingDate, int seatId)
+        public static bool IsSeatAlreadyBooked(IEnumerable<Booking> bookingList, DateTime bookingDate, int seatId)
         {
             var dateOfBookingDate = bookingDate.Date;
             return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.SeatId == seatId);

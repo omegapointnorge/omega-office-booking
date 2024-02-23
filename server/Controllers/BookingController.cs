@@ -1,5 +1,4 @@
 using Microsoft.ApplicationInsights;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using server.Helpers;
 using server.Models.DTOs;
@@ -76,25 +75,6 @@ namespace server.Controllers
                 return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
-        [Authorize(Roles = "EventAdmin")]
-        [HttpPost("CreateEventBookingsForSeats")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest)
-        {
-            try
-            {
-                var user = GetUser();
-                var bookingDtoList = await _bookingService.CreateEventBookingsForSeatsAsync(bookingRequest, user);
-
-                return CreatedAtRoute(null, bookingDtoList);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception, handle the error appropriately
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-
 
         [HttpGet("Bookings/MyBookings")]
         public async Task<ActionResult<IEnumerable<HistoryBookingDto>>> GetAllBookingsForUser()

@@ -37,6 +37,7 @@ export interface EventBookingRequest {
   seatIds: number[];
   bookingDateTime: Date;
   isEvent: boolean;
+  eventName : string
 }
 
 export interface SeatPath {
