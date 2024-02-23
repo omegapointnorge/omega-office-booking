@@ -20,7 +20,7 @@ class BookingStore {
   seatIdSelectedForNewEvent: number[] = [];
   isEventDateChosen: boolean = false;
   apiStatus: ApiStatus = ApiStatus.Idle;
-  openintTime: string | undefined;
+  openingTime: string | undefined;
 
   constructor() {
     makeAutoObservable(this);
@@ -28,7 +28,7 @@ class BookingStore {
 
   async initialize() {
     await this.fetchAllActiveBookings();
-    this.openintTime = await fetchOpeningTimeOfDay();
+    this.openingTime = await fetchOpeningTimeOfDay();
   }
 
   async fetchAllActiveBookings() {
@@ -181,13 +181,13 @@ class BookingStore {
   }
 
   hasBookingOpened = (displayDate: Date): boolean => {
-    if (!this.openintTime) {
+    if (!this.openingTime) {
       return false;
     }
 
     let bookingOpeningTime = getEarliestAllowedBookingDate(displayDate);
 
-    const [hour, minutes, seconds] = this.openintTime.split(":").map(Number);
+    const [hour, minutes, seconds] = this.openingTime.split(":").map(Number);
 
     bookingOpeningTime.setHours(hour, minutes, seconds);
 

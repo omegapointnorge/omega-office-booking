@@ -8,10 +8,8 @@ interface HeadingProps {
 export const Heading = ({ title, subTitle }: HeadingProps) => {
   return (
     <div className="text-center">
-      <div className="text-2xl font-bold heading">{title}</div>
-      <div className="font-light mt-2">{subTitle}</div>
+      <h1 className="text-2xl font-bold heading">{title}</h1>
+      {subTitle && <div className="font-light mt-2">{subTitle}</div>}
     </div>
   );
 };
-
- 

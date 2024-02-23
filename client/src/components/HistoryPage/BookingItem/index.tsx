@@ -1,7 +1,7 @@
 import React from "react";
 
 import { MdDelete } from "react-icons/md";
-import { BookingSvg } from "@components/HistoryPage/BookingItem/BookingSvg";
+import { BookingSvg } from "../BookingItem/BookingSvg";
 
 interface BookingItemProps {
   bookingDateTime: Date;
