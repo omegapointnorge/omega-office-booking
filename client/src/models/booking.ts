@@ -17,7 +17,7 @@ export const createBooking = ({
   };
 };
 
-export const createEventBookingRequest = ({
+export const createEventBooking = ({
   seatIds,
   bookingDateTime,
   eventName,
@@ -25,7 +25,7 @@ export const createEventBookingRequest = ({
   const isEvent = true;
   return {
     SeatList: seatIds,
-    bookingDateTime: bookingDateTime.toISOString(),
+    bookingDateTime: bookingDateTime,
     isEvent: isEvent,
     eventName : eventName
   };

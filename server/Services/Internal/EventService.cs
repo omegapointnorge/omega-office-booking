@@ -31,13 +31,11 @@ namespace server.Services.Internal
                 foreach (var seatId in eventRequest.SeatList)
                 {
                     var booking = CreateBookingFromEventRequest(eventRequest, user, seatId, eventData);
-                    await _bookingRepository.AddAsync(booking);
                     eventData.Bookings.Add(booking);
                 }
 
                 await _eventRepository.AddAsync(eventData);
                 await _eventRepository.SaveAsync();
-                await _bookingRepository.SaveAsync();
 
                 return new EventDto(eventData);
             }
@@ -74,7 +72,7 @@ namespace server.Services.Internal
                 throw new Exception("Seat list is null or empty");
             }
 
-            IEnumerable<Booking> existedBookings = await _bookingRepository.GetAsync();
+            List<Booking> existedBookings = (await _bookingRepository.GetAllAsync(b => b.BookingDateTime == eventRequest.BookingDateTime)).ToList();
 
             foreach (var seatId in eventRequest.SeatList)
             {

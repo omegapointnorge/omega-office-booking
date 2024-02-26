@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import ApiService from "@services/ApiService";
 import historyStore from "@stores/HistoryStore";
 import { Booking, BookingRequest } from "@/shared/types/entities";
-import { createEventBookingRequest } from "../../models/booking";
+import { createEventBooking } from "../../models/booking";
 import { ApiStatus } from "@/shared/types/enums";
 import {
   fetchOpeningTimeOfDay,
@@ -93,10 +93,11 @@ class BookingStore {
   }
 
     async createBookingForEvent(selectedSeatIds: number[]) {
-    const bookingRequest = createEventBookingRequest({
+    const bookingRequest = createEventBooking({
       seatIds: selectedSeatIds,
-      bookingDateTime: this.displayDate,
+      bookingDateTime: this.displayDate.toISOString(),
       isEvent: true,
+      //Hard code should input by admin
       eventName : "Arrangement"
     });
 
