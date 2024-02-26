@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import bookingStore from "../../../state/stores/BookingStore";
 import { useAuthContext } from "../../../core/auth/useAuthContext";
 import { Booking } from "@/shared/types/entities";
-import { isSameDate } from "@/shared/utils";
+import { isSameDate } from "@utils/utils";
 import { SeatInfoComponent } from "./SeatInfoComponent";
 import toast from "react-hot-toast";
 

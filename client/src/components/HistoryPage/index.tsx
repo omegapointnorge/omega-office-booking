@@ -4,7 +4,7 @@ import { Heading } from "@common-components/Heading";
 import { observer } from "mobx-react-lite";
 import { BookingItem } from "./BookingItem";
 import historyStore from "@stores/HistoryStore";
-import { PrimaryDialog } from "@common-components/Dialog";
+import { PrimaryDialog } from "@common-components/PrimaryDialog";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { Loading } from "@common-components/Loading";
 import { ApiStatus } from "@/shared/types/enums";

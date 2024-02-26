@@ -6,8 +6,10 @@ import historyStore from "@stores/HistoryStore";
 import { Booking, BookingRequest } from "@/shared/types/entities";
 import { createEventBookingRequest } from "../../models/booking";
 import { ApiStatus } from "@/shared/types/enums";
-import { fetchOpeningTimeOfDay, getEarliestAllowedBookingDate } from "@/shared/utils";
-
+import {
+  fetchOpeningTimeOfDay,
+  getEarliestAllowedBookingDate,
+} from "@utils/utils";
 
 class BookingStore {
   activeBookings: Booking[] = [];
@@ -18,8 +20,7 @@ class BookingStore {
   seatIdSelectedForNewEvent: number[] = [];
   isEventDateChosen: boolean = false;
   apiStatus: ApiStatus = ApiStatus.Idle;
-  openintTime : string | undefined;
-
+  openingTime: string | undefined;
 
   constructor() {
     makeAutoObservable(this);
@@ -27,7 +28,7 @@ class BookingStore {
 
   async initialize() {
     await this.fetchAllActiveBookings();
-    this.openintTime = await fetchOpeningTimeOfDay();
+    this.openingTime = await fetchOpeningTimeOfDay();
   }
 
   async fetchAllActiveBookings() {
@@ -180,21 +181,19 @@ class BookingStore {
   }
 
   hasBookingOpened = (displayDate: Date): boolean => {
-  if (!this.openintTime) {
-    return false;
-  }
+    if (!this.openingTime) {
+      return false;
+    }
 
-  let bookingOpeningTime = getEarliestAllowedBookingDate(displayDate);
+    let bookingOpeningTime = getEarliestAllowedBookingDate(displayDate);
 
+    const [hour, minutes, seconds] = this.openingTime.split(":").map(Number);
 
-  const [hour, minutes, seconds] = this.openintTime.split(':').map(Number);
+    bookingOpeningTime.setHours(hour, minutes, seconds);
 
-  bookingOpeningTime.setHours(hour, minutes, seconds);
-  
-
-  let currentDateTime = new Date();
-  return currentDateTime > bookingOpeningTime;
-};
+    let currentDateTime = new Date();
+    return currentDateTime > bookingOpeningTime;
+  };
 }
 
 const bookingStore = new BookingStore();

@@ -10,7 +10,8 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "lib": ["es2015", "es2017", "DOM.Iterable", "DOM"],
-    "typeRoots": ["src/shared/types/*"],
+    "types": ["jest", "node"],
+    "typeRoots": ["src/shared/types/*", "node_modules/@types"],
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
