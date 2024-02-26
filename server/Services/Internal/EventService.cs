@@ -1,9 +1,9 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using server.Models.Domain;
+using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Repository;
-using Server.Models.DTOs.Request;
 using System.ComponentModel.DataAnnotations;
 
 namespace server.Services.Internal
@@ -58,8 +58,8 @@ namespace server.Services.Internal
                     throw new Exception("Event not found");
                 }
 
-                await _bookingRepository.DeleteBookingsWithEventId(id);
                 await _eventRepository.Delete(eventToDelete);
+                await _eventRepository.SaveAsync();
             }
             catch (Exception ex)
             {

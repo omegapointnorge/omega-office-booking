@@ -1,6 +1,6 @@
-﻿using server.Models.DTOs.Internal;
+﻿using server.Models.DTOs;
+using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
-using Server.Models.DTOs.Request;
 
 namespace server.Services.Internal
 {
