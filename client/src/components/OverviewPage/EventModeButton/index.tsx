@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 import bookingStore from "@stores/BookingStore";
 
 export const EventModeButton = observer(() => {
   const handleBook = async () => {
     await bookingStore.createBookingForEvent(
-      bookingStore.seatIdSelectedForNewEvent
+        bookingStore.seatIdSelectedForNewEvent, inputValue 
     );
   };
+  const [inputValue, setInputValue] = useState("");
+
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString("no-NO", {
@@ -45,6 +47,15 @@ export const EventModeButton = observer(() => {
             Opprett arrangement
           </button>
         )}
+        {seatCount !== 0 &&  (
+          <input
+            className="basis-1/2 px-2 py-1 mx-1 mt-1 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value.toString())}
+            placeholder="Arrangement..."
+          />
+        )}
         {seatCount !== 0 && (
           <button
             className="basis-1/2 px-2 py-1 mx-1 mt-1 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
@@ -53,6 +64,7 @@ export const EventModeButton = observer(() => {
             Reserver {seatCount} plass{pluralSuffix}
           </button>
         )}
+            
       </div>
     </div>
   );

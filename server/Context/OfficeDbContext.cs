@@ -106,7 +106,8 @@ namespace server.Context
             modelBuilder.Entity<Event>()
                 .HasMany(e => e.Bookings)
                 .WithOne(booking => booking.Event)
-                .HasPrincipalKey(e => e.Id);
+                .HasPrincipalKey(e => e.Id)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // End of Seat setup
 

@@ -20,11 +20,13 @@ export const createBooking = ({
 export const createEventBookingRequest = ({
   seatIds,
   bookingDateTime,
+  eventName
 }: EventBookingRequest) => {
   const isEvent = true;
   return {
     SeatList: seatIds,
     bookingDateTime: bookingDateTime.toISOString(),
     isEvent: isEvent,
+    eventName :eventName,
   };
 };
