@@ -13,10 +13,9 @@ namespace server.Services.Internal
         private readonly IEventRepository _eventRepository;
         private readonly IBookingRepository _bookingRepository;
 
-        public EventService(IEventRepository eventRepository, IBookingRepository bookingRepository)
+        public EventService(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
-            _bookingRepository = bookingRepository;
         }
 
         public async Task<EventDto> CreateEventAsync(CreateEventRequest eventRequest, UserClaims user)
@@ -70,16 +69,6 @@ namespace server.Services.Internal
             if (eventRequest.SeatList.IsNullOrEmpty())
             {
                 throw new Exception("Seat list is null or empty");
-            }
-
-            List<Booking> existedBookings = (await _bookingRepository.GetAllAsync(b => b.BookingDateTime == eventRequest.BookingDateTime)).ToList();
-
-            foreach (var seatId in eventRequest.SeatList)
-            {
-                if (BookingService.IsSeatAlreadyBooked(existedBookings, eventRequest.BookingDateTime, seatId))
-                {
-                    throw new Exception("Seat is already booked. Delete booking before creating event.");
-                }
             }
 
             var validationContext = new ValidationContext(eventRequest, serviceProvider: null, items: null);
