@@ -92,13 +92,12 @@ class BookingStore {
     }
   }
 
-    async createBookingForEvent(selectedSeatIds: number[]) {
+    async createBookingForEvent(selectedSeatIds: number[], eventName: string ) {
     const bookingRequest = createEventBooking({
       seatIds: selectedSeatIds,
       bookingDateTime: this.displayDate.toISOString(),
       isEvent: true,
-      //Hard code should input by admin
-      eventName : "Arrangement"
+      eventName: eventName || "Arrangement",
     });
 
     try {
