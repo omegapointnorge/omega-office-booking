@@ -12,6 +12,7 @@ module.exports = {
       "@assets": path.resolve(__dirname, "src/shared/assets"),
       "@hooks": path.resolve(__dirname, "src/shared/hooks"),
       "@utils": path.resolve(__dirname, "src/shared/utils"),
+      "@test-utils": path.resolve(__dirname, "src/shared/utils/test-utils"),
       "@context": path.resolve(__dirname, "src/state/context"),
       "@stores": path.resolve(__dirname, "src/state/stores"),
       "@": path.resolve(__dirname, "src"),

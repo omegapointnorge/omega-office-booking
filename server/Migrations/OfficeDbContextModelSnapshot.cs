@@ -17,7 +17,7 @@ namespace server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
+                .HasAnnotation("ProductVersion", "8.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -35,6 +35,17 @@ namespace server.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<DateTime>("BookingDateTime_DayOnly")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SeatId")
                         .HasColumnType("int");
 
@@ -48,7 +59,10 @@ namespace server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SeatId");
+                    b.HasAlternateKey("SeatId", "BookingDateTime_DayOnly")
+                        .HasName("unique_seat_time_constraint");
+
+                    b.HasIndex("EventId");
 
                     b.ToTable("Bookings");
 
@@ -56,7 +70,8 @@ namespace server.Migrations
                         new
                         {
                             Id = 1,
-                            BookingDateTime = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580),
+                            BookingDateTime = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local),
+                            BookingDateTime_DayOnly = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local),
                             SeatId = 1,
                             UserId = "860849a4-f4b8-4566-8ed1-918cf3d41a92",
                             UserName = "SampleUser1"
@@ -64,11 +79,28 @@ namespace server.Migrations
                         new
                         {
                             Id = 2,
-                            BookingDateTime = new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local).AddTicks(9580),
+                            BookingDateTime = new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local),
+                            BookingDateTime_DayOnly = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local),
                             SeatId = 2,
                             UserId = "639d660b-4724-407b-b05c-12b5f619f833",
                             UserName = "SampleUser2"
                         });
+                });
+
+            modelBuilder.Entity("server.Models.Domain.Event", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Event");
                 });
 
             modelBuilder.Entity("server.Models.Domain.Room", b =>
@@ -215,11 +247,17 @@ namespace server.Migrations
 
             modelBuilder.Entity("server.Models.Domain.Booking", b =>
                 {
+                    b.HasOne("server.Models.Domain.Event", "Event")
+                        .WithMany("Bookings")
+                        .HasForeignKey("EventId");
+
                     b.HasOne("server.Models.Domain.Seat", "Seat")
                         .WithMany("Bookings")
                         .HasForeignKey("SeatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Event");
 
                     b.Navigation("Seat");
                 });
@@ -231,6 +269,11 @@ namespace server.Migrations
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("server.Models.Domain.Event", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("server.Models.Domain.Room", b =>

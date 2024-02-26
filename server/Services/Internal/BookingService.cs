@@ -10,13 +10,15 @@ namespace server.Services.Internal
 {
     public class BookingService : IBookingService
     {
-        readonly IBookingRepository _bookingRepository;
+        private readonly IBookingRepository _bookingRepository;
+        private readonly IEventRepository _eventRepository;
         private const string EventUserName = "Event";
 
 
-        public BookingService(IBookingRepository bookingRepository)
+        public BookingService(IBookingRepository bookingRepository, IEventRepository eventRepository)
         {
             _bookingRepository = bookingRepository;
+            _eventRepository = eventRepository;
         }
 
         public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user)
@@ -31,13 +33,7 @@ namespace server.Services.Internal
                     var errorMessages = string.Join(Environment.NewLine, validationErrors.Select(v => $"- {v}"));
                     throw new Exception(errorMessages);
                 }
-                var booking = new Booking
-                {
-                    UserId = user.Objectidentifier,
-                    UserName = user.UserName,
-                    SeatId = bookingRequest.SeatId,
-                    BookingDateTime = bookingRequest.BookingDateTime
-                };
+                var booking = CreateBookingFromRequest(bookingRequest, user, user.UserName);
 
                 await _bookingRepository.AddAsync(booking);
                 await _bookingRepository.SaveAsync();
@@ -54,7 +50,7 @@ namespace server.Services.Internal
         {
             try
             {
-                IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
+                IEnumerable<Booking> existedBookingList = await _bookingRepository.GetAsync();
                 List<BookingDto> bookingListDto = new();
                 // Perform model validation
                 var validationContext = new ValidationContext(bookingRequest, serviceProvider: null, items: null);
@@ -66,27 +62,34 @@ namespace server.Services.Internal
                     throw new BadHttpRequestException(errorMessages);
                 }
 
+                // Create Event entity
+                var eventData = new Event { Name = EventUserName };
+                await _eventRepository.AddAsync(eventData);
+
                 if (bookingRequest.IsEvent.HasValue && bookingRequest.IsEvent.Value && bookingRequest.SeatList.Any())
                 {
                     foreach (var seatId in bookingRequest.SeatList)
                     {
-                        if (IsSeatAlreadyBooked(bookingList, bookingRequest.BookingDateTime, seatId))
+                        if (IsSeatAlreadyBooked(existedBookingList, bookingRequest.BookingDateTime, seatId))
                         {
-                            var bookingToDelete = bookingList.First(booking => booking.BookingDateTime.Date == bookingRequest.BookingDateTime.Date && booking.SeatId == seatId);
-                            await _bookingRepository.DeleteAndCommit(bookingToDelete);
+                            //In case of double booked or deleting issues
+                            var bookingsToDeleteList = existedBookingList
+                            .Where(booking => booking.BookingDateTime.Date == bookingRequest.BookingDateTime.Date && booking.SeatId == seatId)
+                            .ToList();
+
+                            bookingsToDeleteList.ForEach(async bookingToDelete => await _bookingRepository.Delete(bookingToDelete));
                         }
 
-                        var booking = new Booking
-                        {
-                            UserId = user.Objectidentifier,
-                            UserName = EventUserName,
-                            SeatId = seatId,
-                            BookingDateTime = bookingRequest.BookingDateTime
-                        };
+
+                        //Create booking entity
+                        var booking = CreateBookingFromRequest(bookingRequest, user, user.UserName, seatId);
+                        booking.Event = eventData;
 
                         await _bookingRepository.AddAsync(booking);
                         bookingListDto.Add(new BookingDto(booking));
                     }
+
+                 
                     // only save repository once
                     await _bookingRepository.SaveAsync();
 
@@ -99,7 +102,15 @@ namespace server.Services.Internal
                 throw;
             }
         }
-
+        private Booking CreateBookingFromRequest(CreateBookingRequest bookingRequest, UserClaims user, string userName, int? seatId = null)
+        {
+            var userId = user.Objectidentifier;
+            var user_Name = userName;
+            var seat_Id = seatId ?? bookingRequest.SeatId;
+            var bookingDateTime = bookingRequest.BookingDateTime;
+            var bookingDateTime_DayOnly = bookingRequest.BookingDateTime.Date;
+            return new Booking(userId, user_Name, seat_Id, bookingDateTime,bookingDateTime_DayOnly);
+        }
 
         public async Task<IEnumerable<BookingDto>> GetAllActiveBookings()
         {
@@ -143,7 +154,8 @@ namespace server.Services.Internal
                     throw new Exception(errorMessages);
                 }
 
-                await _bookingRepository.DeleteAndCommit(booking);
+                await _bookingRepository.Delete(booking);
+                await _bookingRepository.SaveAsync();
             }
             catch (Exception ex)
             {

@@ -29,24 +29,5 @@ namespace server.Controllers
                 return StatusCode(500, "Internal Server Error: " + ex.Message);
             }
         }
-
-        [HttpGet("{roomId}/Seats")]
-        public async Task<ActionResult<IEnumerable<SeatDto>>> GetAllSeatsForRoom(int roomId)
-        {
-            try
-            {
-                var response = await _roomService.GetAllSeatsForRoom(roomId);
-                if (response == null)
-                {
-                    return NotFound();
-                }
-                return new OkObjectResult(response);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception, handle the error appropriately
-                return StatusCode(500, "Internal Server Error: " + ex.Message);
-            }
-        }
     }
 }

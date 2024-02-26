@@ -2,10 +2,10 @@ import React from "react";
 
 import { Routes, Route } from "react-router-dom";
 import { IsAuthenticated } from "@auth/IsAuthenticated";
-import LoginPage from "@components/LoginPage/LoginPage";
-import OverviewPage from "@components/OverviewPage/OverviewPage";
+import { LoginPage } from "@components/LoginPage";
+import OverviewPage from "@components/OverviewPage";
 import { ProtectedRoute } from "@routes/ProtectedRoute";
-import HistoryPage from "@components/HistoryPage/HistoryPage";
+import { HistoryPage } from "@components/HistoryPage";
 
 const Routers = () => {
   return (
