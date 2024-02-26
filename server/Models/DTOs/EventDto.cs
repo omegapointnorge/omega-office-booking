@@ -1,7 +1,6 @@
 ﻿using server.Models.Domain;
-using server.Models.DTOs;
 
-namespace Server.Models.DTOs.Request
+namespace server.Models.DTOs
 {
     public class EventDto
     {
