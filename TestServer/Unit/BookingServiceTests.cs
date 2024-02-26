@@ -91,7 +91,7 @@ public class BookingServiceTests : TestServiceBase<BookingService>
 
         var bookingRequest = new CreateBookingRequest { BookingDateTime = bookingDateTime, SeatId = 1 };
         var userClaims = GetUserClaims();
-        _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking> {  new Booking(userClaims.Objectidentifier, userClaims.UserName, bookingRequest.SeatId, bookingRequest.BookingDateTime) });
+        _bookingRepositoryMock.Setup(repo => repo.GetAsync()).ReturnsAsync(new List<Booking> { new Booking(userClaims.Objectidentifier, userClaims.UserName, bookingRequest.SeatId, bookingRequest.BookingDateTime) });
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => Sut.CreateBookingAsync(bookingRequest, userClaims));
@@ -171,16 +171,103 @@ public class BookingServiceTests : TestServiceBase<BookingService>
         Assert.Equal(bookingRequest.BookingDateTime.ToUniversalTime().ToString("o"), result.BookingDateTime);
     }
 
-}
-
-public class TestDateTimeProvider : IDateTimeProvider
-{
-    private readonly DateTime _currentDateTime;
-
-    public TestDateTimeProvider(DateTime currentDateTime)
+    [Theory]
+    [InlineData("2024-02-13T12:00")]
+    public async Task GetAllBookingsForUserAsync_NoEvent(string testDateTimeString)
     {
-        _currentDateTime = currentDateTime;
+        // Arrange
+        DateTime testDateTime = DateTime.Parse(testDateTimeString);
+        var userClaims = GetUserClaims();
+        int[] seatIds = { 1, 2 };
+        var bookings = GenerateBookings(userClaims, testDateTime, seatIds);
+
+        _bookingRepositoryMock.Setup(repo => repo.GetBookingsWithSeatForUserAsync(It.IsAny<string>())).ReturnsAsync(bookings);
+
+        // Act
+        var result = await Sut.GetAllBookingsForUserAsync(userClaims.Objectidentifier);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(seatIds.Length, result.Count());
     }
-    public DateTime GetCurrentDateTime() => _currentDateTime;
+
+    [Theory]
+    [InlineData("2024-02-13T12:00")]
+    public async Task GetAllBookingsForUserAsync_SingleEvent(string testDateTimeString)
+    {
+        // Arrange
+        DateTime testDateTime = DateTime.Parse(testDateTimeString);
+        var userClaims = GetUserClaims();
+        const int EventId = 1;
+        int[] seatIds = { 1, 2 };
+        var bookings = GenerateBookings(userClaims, testDateTime, seatIds, EventId);
+
+        _bookingRepositoryMock.Setup(repo => repo.GetBookingsWithSeatForUserAsync(It.IsAny<string>())).ReturnsAsync(bookings);
+
+        // Act
+        var result = await Sut.GetAllBookingsForUserAsync(userClaims.Objectidentifier);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Single(result);
+        Assert.Equal(EventId, result.First().Id);
+    }
+
+    [Theory]
+    [InlineData("2024-02-13T12:00")]
+    public async Task RetrieveAllBookingsForUserAsync_DualEvent(string testDateTimeString)
+    {
+        // Arrange
+        DateTime testDateTime = DateTime.Parse(testDateTimeString);
+        var userClaims = GetUserClaims();
+        const int FirstEventId = 1;
+        const int SecondEventId = 2;
+        int[] firstEventSeatIds = { 1, 2 };
+        int[] secondEventSeatIds = { 3, 4 };
+
+        var bookings = GenerateBookings(userClaims, testDateTime, firstEventSeatIds, FirstEventId);
+        bookings.AddRange(GenerateBookings(userClaims, testDateTime, secondEventSeatIds, SecondEventId));
+
+        _bookingRepositoryMock.Setup(repo => repo.GetBookingsWithSeatForUserAsync(It.IsAny<string>())).ReturnsAsync(bookings);
+
+        // Act
+        var result = await Sut.GetAllBookingsForUserAsync(userClaims.Objectidentifier);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count());
+    }
+
+
+    private List<Booking> GenerateBookings(UserClaims userClaims, DateTime testDateTime, int[] seatIds, int? eventId = null)
+    {
+        const int RoomId = 1;
+        var bookings = new List<Booking>();
+
+        foreach (var seatId in seatIds)
+        {
+            var booking = new Booking(userClaims.Objectidentifier, userClaims.UserName, seatId, testDateTime, testDateTime.Date, eventId);
+            booking.Seat = new Seat(seatId, RoomId, false);
+            bookings.Add(booking);
+        }
+
+        return bookings;
+    }
+
+
+
+
+
+    public class TestDateTimeProvider : IDateTimeProvider
+    {
+        private readonly DateTime _currentDateTime;
+
+        public TestDateTimeProvider(DateTime currentDateTime)
+        {
+            _currentDateTime = currentDateTime;
+        }
+        public DateTime GetCurrentDateTime() => _currentDateTime;
+    }
+
 }
 
