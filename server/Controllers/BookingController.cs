@@ -2,7 +2,6 @@ using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using server.Helpers;
 using server.Models.DTOs;
-using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Services.Internal;
 
@@ -65,8 +64,8 @@ namespace server.Controllers
 
                 }
 
-                var user = GetUser();
-                var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
+                var userClaim = UserUtils.GetCurrentUserClaims(User);
+                var booking = await _bookingService.CreateBookingAsync(bookingRequest, userClaim);
 
                 return CreatedAtRoute(null, booking);
             }
@@ -81,8 +80,8 @@ namespace server.Controllers
         {
             try
             {
-                var user = GetUser();
-                var result = await _bookingService.GetAllBookingsForUserAsync(user.Objectidentifier);
+                var userClaim = UserUtils.GetCurrentUserClaims(User);
+                var result = await _bookingService.GetAllBookingsForUserAsync(userClaim.Objectidentifier);
 
                 return new OkObjectResult(result);
             }
@@ -104,7 +103,7 @@ namespace server.Controllers
         {
             try
             {
-                var userClaim = GetUser();
+                var userClaim = UserUtils.GetCurrentUserClaims(User);
                 await _bookingService.DeleteBookingAsync(bookingId, userClaim);
 
                 return NoContent();
@@ -129,16 +128,7 @@ namespace server.Controllers
                 return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
-        private UserClaims GetUser()
-        {
-            var id = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
-            var name = User.FindFirst("name")?.Value ?? String.Empty;
-            var role = User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value ?? String.Empty;
 
-            UserClaims user = new(name, id, role);
-            return user;
-
-        }
         // Helper method to track the event
         private void TrackReCAPTCHATokenError(string errorMessage)
         {

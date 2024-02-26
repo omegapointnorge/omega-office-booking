@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using server.Models.DTOs.Internal;
+using server.Helpers;
+using server.Models.DTOs;
 using server.Models.DTOs.Request;
 using server.Services.Internal;
-using Server.Models.DTOs.Request;
 
 namespace server.Controllers;
 
@@ -24,8 +24,8 @@ public class EventController : ControllerBase
     {
         try
         {
-            var user = GetUser();
-            var eventDto = await _eventService.CreateEventAsync(eventRequest, user);
+            var userClaim = UserUtils.GetCurrentUserClaims(User);
+            var eventDto = await _eventService.CreateEventAsync(eventRequest, userClaim);
             return CreatedAtRoute(null, eventDto);
         }
         catch (Exception ex)
@@ -48,16 +48,5 @@ public class EventController : ControllerBase
         {
             return StatusCode(500, "An error occurred processing your request." + ex.Message);
         }
-    }
-
-    private UserClaims GetUser()
-    {
-        var id = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
-        var name = User.FindFirst("name")?.Value ?? String.Empty;
-        var role = User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value ?? String.Empty;
-
-        UserClaims user = new(name, id, role);
-        return user;
-
     }
 }
