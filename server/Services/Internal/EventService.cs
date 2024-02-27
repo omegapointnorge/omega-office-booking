@@ -11,7 +11,6 @@ namespace server.Services.Internal
     public class EventService : IEventService
     {
         private readonly IEventRepository _eventRepository;
-        private readonly IBookingRepository _bookingRepository;
 
         public EventService(IEventRepository eventRepository)
         {
