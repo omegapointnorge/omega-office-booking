@@ -50,11 +50,11 @@ export const EventModeButton = observer(() => {
 
         {seatCount !== 0 && (
           <input
-            className="basis-1/2 px-2 py-1 mx-1 mt-1 bg-green-150 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            className="basis-1/2 px-2 py-1 mx-1 mt-1 bg-green-150 text-black text-sm font-medium rounded-md shadow-sm"
             type="text"
             value={inputValue}
             onChange={(e) => {
-              const newValue = e.target.value.toString().trim();
+              const newValue = e.target.value.toString();
               setInputValue(newValue);
             }}
             placeholder="Navn på Arrangement"
