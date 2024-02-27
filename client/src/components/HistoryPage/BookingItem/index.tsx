@@ -28,7 +28,7 @@ export const BookingItem = ({
       <li className="flex flex-col">
         {
           <div>
-            {<h2 className="text-center">{eventName || "\u00A0"}</h2>}
+              {eventName && <h2 className="text-center">{eventName}</h2>}
             <div className="flex items-center justify-center">
               <BookingSvg highlightedIds={roomIds} />
             </div>

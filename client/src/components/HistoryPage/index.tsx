@@ -11,9 +11,6 @@ import { ApiStatus } from "@/shared/types/enums";
 
 const ActiveBookings = observer(() => {
   const handleDelete = () => {
-    //TODO: sjekk om det er event admin som sletter reservasjon gjort av noen andre
-    // kanskje event admin skal få se navn under sete nummer på Reservasjoner/History page
-
     const bookingToDelete = historyStore.myActiveBookings.find(historyBooking => historyBooking.id === historyStore.historyBookingIdToDelete);
     const isEvent = !!bookingToDelete?.eventName
 

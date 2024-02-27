@@ -90,11 +90,11 @@ export const SeatInfoComponent = ({
                 </span>
               </p>
               
-              {selectedBooking?.eventName !== null && (
+              {!!selectedBooking?.eventName && (
                 <p className="text-sm text-gray-600">
                   Arrangement:{" "}
                   <span className="text-gray-700 font-medium">
-                    {selectedBooking?.eventName}
+                    {selectedBooking.eventName}
                   </span>
                 </p>
               )}
