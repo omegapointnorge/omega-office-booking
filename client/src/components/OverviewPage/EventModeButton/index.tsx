@@ -37,7 +37,7 @@ export const EventModeButton = observer(() => {
             className="px-4 py-2 mx-1 mt-1 bg-blue-500 text-white text-sm font-medium rounded-md shaddow-sm hover:bg-blue-600"
             onClick={() => bookingStore.toggleEventMode()}
           >
-            Avbryt oppretting av nytt arrangement
+            Avbryt oppretting av arrangement
           </button>
         ) : (
           <button
@@ -50,7 +50,7 @@ export const EventModeButton = observer(() => {
 
         {seatCount !== 0 && (
           <input
-            className="basis-1/2 px-2 py-1 mx-1 mt-1 bg-green-150 text-black text-sm font-medium rounded-md shadow-sm"
+            className="basis-1/2 px-2 py-1 mx-1 mt-1 bg-sky-500/25 text-black text-sm font-medium rounded-md shadow-sm"
             type="text"
             value={inputValue}
             onChange={(e) => {
