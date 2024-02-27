@@ -6,16 +6,14 @@ import { BookingSvg } from "../BookingItem/BookingSvg";
 interface BookingItemProps {
   bookingDateTime: Date;
   seatId: number;
-  showDeleteButton: boolean;
   roomId: number | null;
-  onClick?: () => void;
+  onDelete?: () => void;
 }
 
 export const BookingItem = ({
-  onClick,
+  onDelete,
   bookingDateTime,
   seatId,
-  showDeleteButton,
   roomId,
 }: BookingItemProps) => {
   const date = new Date(bookingDateTime);
@@ -36,17 +34,14 @@ export const BookingItem = ({
               Sete {seatId}
             </p>
           </div>
-          <div className="flex items-center">
-            {" "}
-            <button disabled={!showDeleteButton}>
+          {onDelete && (
+            <button data-testid="delete-btn">
               <MdDelete
-                onClick={onClick}
-                className={`h-8 w-8 flex-none text-black hover:text-red-500 transition cursor-pointer ${
-                  !showDeleteButton ? "opacity-0" : "opacity-100"
-                }`}
+                onClick={onDelete}
+                className={`h-8 w-8 flex-none text-black hover:text-red-500 transition cursor-pointer`}
               />
             </button>
-          </div>
+          )}
         </div>
       </li>
     </ul>
