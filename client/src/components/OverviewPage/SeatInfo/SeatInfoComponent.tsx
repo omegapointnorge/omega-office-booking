@@ -89,6 +89,16 @@ export const SeatInfoComponent = ({
                   {selectedBooking?.userName || "Ikke reservert"}
                 </span>
               </p>
+              
+              {selectedBooking?.eventName !== null && (
+                <p className="text-sm text-gray-600">
+                  Arrangement:{" "}
+                  <span className="text-gray-700 font-medium">
+                    {selectedBooking?.eventName}
+                  </span>
+                </p>
+              )}
+
               <p className="text-sm text-gray-600">
                 Dato:{" "}
                 <span className="text-gray-700 font-medium">

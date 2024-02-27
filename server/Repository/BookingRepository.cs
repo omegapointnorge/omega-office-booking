@@ -17,6 +17,7 @@ namespace server.Repository
         {
             return _dbContext.Bookings
                 .Where(booking => booking.BookingDateTime.Date >= DateTime.Today)
+                .Include(booking => booking.Event)
                 .ToListAsync();
         }
 

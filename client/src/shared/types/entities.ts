@@ -7,9 +7,10 @@ export interface Booking {
   userName: string;
   seatId: number;
   bookingDateTime: Date;
+  eventName : string | null
 }
 
-export interface HistoryBooking {
+export interface HistoryBooking  {
   id: number;
   userId: string;
   userName: string;

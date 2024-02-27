@@ -7,6 +7,7 @@ export const createBooking = ({
   userName,
   seatId,
   bookingDateTime,
+  eventName 
 }: Booking) => {
   return {
     id,
@@ -14,6 +15,7 @@ export const createBooking = ({
     userName,
     seatId,
     bookingDateTime: new Date(bookingDateTime),
+    eventName
   };
 };
 
