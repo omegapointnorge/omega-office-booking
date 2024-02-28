@@ -21,10 +21,7 @@ namespace server.Services.Internal
         {
             try
             {
-                await ValidateEventRequestAsync(eventRequest);
-
                 var eventData = new Event { Name = eventRequest.EventName };
-                eventData.Bookings = new List<Booking>();
 
                 foreach (var seatId in eventRequest.SeatList)
                 {
@@ -63,23 +60,6 @@ namespace server.Services.Internal
             }
         }
 
-        private async Task ValidateEventRequestAsync(CreateEventRequest eventRequest)
-        {
-            if (eventRequest.SeatList.IsNullOrEmpty())
-            {
-                throw new Exception("Seat list is null or empty");
-            }
-
-            var validationContext = new ValidationContext(eventRequest, serviceProvider: null, items: null);
-            var validationResults = new List<ValidationResult>();
-            bool isValid = Validator.TryValidateObject(eventRequest, validationContext, validationResults, validateAllProperties: true);
-
-            if (!isValid)
-            {
-                var errorMessages = string.Join("; ", validationResults.Select(v => v.ErrorMessage));
-                throw new Exception(errorMessages);
-            }
-        }
 
         private Booking CreateBookingFromEventRequest(CreateEventRequest eventRequest, UserClaims user, int seatId, Event eventData)
         {
