@@ -22,23 +22,21 @@ namespace server.Helpers
             return bookingDtoList;
         }
 
-        public static List<RoomDto> MapRoomDtos(IEnumerable<Room> rooms)
+        public static List<HistoryBookingDto> MapHistoryBookingDtos(IEnumerable<Booking> bookings)
         {
-            var roomDtos = new List<RoomDto>();
+            var historyBookingDtoList = new List<HistoryBookingDto>();
             try
             {
-                roomDtos = rooms.Select(room =>
-                    new RoomDto(room.Id, room.Name, room.Seats)
+                historyBookingDtoList = bookings.Select(booking =>
+                    new HistoryBookingDto(booking)
                 ).ToList();
             }
             catch (Exception e)
             {
                 Console.Error.WriteLine($"Error mapping BookingDtos: {e.Message}");
             }
-            return roomDtos;
+            return historyBookingDtoList;
         }
-
-
 
         public static List<SeatDto> MapSeatDtos(IEnumerable<Seat>? seats)
         {

@@ -7,9 +7,9 @@ namespace server.Models.DTOs
         public int Id { get; set; }
         public String UserId { get; set; }
         public String UserName { get; set; }
-
         public int SeatId { get; set; }
         public String BookingDateTime { get; set; }
+        public String? EventName { get; set; }
 
         public BookingDto(Booking booking)
         {
@@ -18,6 +18,11 @@ namespace server.Models.DTOs
             UserName = booking.UserName;
             SeatId = booking.SeatId;
             BookingDateTime = booking.BookingDateTime.ToUniversalTime().ToString("o");
+
+            if (booking.Event != null)
+            {
+                EventName = booking.Event.Name;
+            }
         }
     }
 }

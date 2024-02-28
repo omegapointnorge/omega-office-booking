@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import ApiService from "@services/ApiService";
 import historyStore from "@stores/HistoryStore";
 import { Booking, BookingRequest } from "@/shared/types/entities";
-import { createEventBookingRequest } from "../../models/booking";
+import { createEventBooking } from "../../models/booking";
 import { ApiStatus } from "@/shared/types/enums";
 import {
   fetchOpeningTimeOfDay,
@@ -85,7 +85,6 @@ class BookingStore {
 
         // Update the store's state with the new booking
         this.activeBookings.push(newBooking);
-        historyStore.myActiveBookings.unshift(newBooking);
       }
     } catch (error) {
       this.setApiStatus(ApiStatus.Error);
@@ -93,15 +92,16 @@ class BookingStore {
     }
   }
 
-  async createBookingForEvent(selectedSeatIds: number[]) {
-    const bookingRequest = createEventBookingRequest({
+    async createBookingForEvent(selectedSeatIds: number[], eventName: string ) {
+    const bookingRequest = createEventBooking({
       seatIds: selectedSeatIds,
-      bookingDateTime: this.displayDate,
+      bookingDateTime: this.displayDate.toISOString(),
       isEvent: true,
+      eventName: eventName || "Arrangement",
     });
 
     try {
-      const response = await fetch("/api/Booking/CreateEventBookingsForSeats", {
+      const response = await fetch("/api/Event", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

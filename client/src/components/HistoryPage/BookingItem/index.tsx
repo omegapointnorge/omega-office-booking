@@ -5,18 +5,20 @@ import { BookingSvg } from "../BookingItem/BookingSvg";
 
 interface BookingItemProps {
   bookingDateTime: Date;
-  seatId: number;
+  seatIds: number[];
   showDeleteButton: boolean;
-  roomId: number | null;
+  roomIds: number[];
+  eventName: string | undefined;
   onClick?: () => void;
 }
 
 export const BookingItem = ({
   onClick,
   bookingDateTime,
-  seatId,
+  seatIds,
   showDeleteButton,
-  roomId,
+  roomIds,
+  eventName,
 }: BookingItemProps) => {
   const date = new Date(bookingDateTime);
   const dateString = date.toLocaleDateString();
@@ -24,20 +26,26 @@ export const BookingItem = ({
   return (
     <ul className="divide-y divide-gray-100 p-4 rounded-[24px] bg-white w-48">
       <li className="flex flex-col">
-        {roomId && (
-          <div className="flex items-center content-center justify-center">
-            <BookingSvg highlightedId={roomId} />
+        {
+          <div>
+              {eventName && <h2 className="text-center">{eventName}</h2>}
+            <div className="flex items-center justify-center">
+              <BookingSvg highlightedIds={roomIds} />
+            </div>
           </div>
-        )}
+        }
         <div className="flex flex-row justify-between">
           <div>
-            <p className="text-sm leading-6 text-gray-900">{dateString}</p>
-            <p className="truncate text-xs leading-5 text-gray-900">
-              Sete {seatId}
-            </p>
+            <div className="text-sm leading-6 text-gray-900">{dateString}</div>
+            <div className="truncate text-xs leading-5 text-gray-900">
+              {seatIds.length > 1 ? (
+                <p>Antall seter: {seatIds.length}</p>
+              ) : (
+                <p>Sete: {seatIds[0]}</p>
+              )}
+            </div>
           </div>
           <div className="flex items-center">
-            {" "}
             <button disabled={!showDeleteButton}>
               <MdDelete
                 onClick={onClick}
