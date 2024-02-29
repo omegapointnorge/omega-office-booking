@@ -1,3 +1,5 @@
+import { ZoomStatus } from "@/shared/types/enums";
+
 /**
  * Former models
  */
@@ -49,4 +51,20 @@ export interface SeatInRoom extends SeatPath {
   seatClicked: (e: React.MouseEvent<SVGPathElement>) => void;
   getSeatClassName: (seatId: number) => string;
   class?: string;
+}
+
+export interface Coordinates {
+  x: number;
+  y: number;
+}
+
+export interface RoomConfig {
+  roomShapePath: string;
+  roomMonitorPath: string;
+  availabilityTextCoordinates?: Coordinates;
+  seatMinId: number;
+  seatMaxId: number;
+  seatCount: number;
+  fontSize: number;
+  zoomedInStatus: ZoomStatus;
 }
