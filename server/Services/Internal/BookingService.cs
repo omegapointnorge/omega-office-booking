@@ -4,17 +4,15 @@ using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Repository;
-using System.ComponentModel.DataAnnotations;
 
 namespace server.Services.Internal
 {
     public class BookingService : IBookingService
     {
-        readonly IBookingRepository _bookingRepository;
-        private const string EventUserName = "Event";
+        private readonly IBookingRepository _bookingRepository;
 
 
-        public BookingService(IBookingRepository bookingRepository)
+        public BookingService(IBookingRepository bookingRepository, IEventRepository eventRepository)
         {
             _bookingRepository = bookingRepository;
         }
@@ -31,13 +29,7 @@ namespace server.Services.Internal
                     var errorMessages = string.Join(Environment.NewLine, validationErrors.Select(v => $"- {v}"));
                     throw new Exception(errorMessages);
                 }
-                var booking = new Booking
-                {
-                    UserId = user.Objectidentifier,
-                    UserName = user.UserName,
-                    SeatId = bookingRequest.SeatId,
-                    BookingDateTime = bookingRequest.BookingDateTime
-                };
+                var booking = CreateBookingFromRequest(bookingRequest, user, user.UserName);
 
                 await _bookingRepository.AddAsync(booking);
                 await _bookingRepository.SaveAsync();
@@ -50,56 +42,16 @@ namespace server.Services.Internal
             }
         }
 
-        public async Task<IEnumerable<BookingDto>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest, UserClaims user)
+
+        private Booking CreateBookingFromRequest(CreateBookingRequest bookingRequest, UserClaims user, string userName, int? seatId = null)
         {
-            try
-            {
-                IEnumerable<Booking> bookingList = await _bookingRepository.GetAsync();
-                List<BookingDto> bookingListDto = new();
-                // Perform model validation
-                var validationContext = new ValidationContext(bookingRequest, serviceProvider: null, items: null);
-                var validationResults = new List<ValidationResult>();
-                bool isValid = Validator.TryValidateObject(bookingRequest, validationContext, validationResults, validateAllProperties: true);
-                if (!isValid)
-                {
-                    var errorMessages = string.Join("; ", validationResults.Select(v => v.ErrorMessage));
-                    throw new BadHttpRequestException(errorMessages);
-                }
-
-                if (bookingRequest.IsEvent.HasValue && bookingRequest.IsEvent.Value && bookingRequest.SeatList.Any())
-                {
-                    foreach (var seatId in bookingRequest.SeatList)
-                    {
-                        if (IsSeatAlreadyBooked(bookingList, bookingRequest.BookingDateTime, seatId))
-                        {
-                            var bookingToDelete = bookingList.First(booking => booking.BookingDateTime.Date == bookingRequest.BookingDateTime.Date && booking.SeatId == seatId);
-                            await _bookingRepository.DeleteAndCommit(bookingToDelete);
-                        }
-
-                        var booking = new Booking
-                        {
-                            UserId = user.Objectidentifier,
-                            UserName = EventUserName,
-                            SeatId = seatId,
-                            BookingDateTime = bookingRequest.BookingDateTime
-                        };
-
-                        await _bookingRepository.AddAsync(booking);
-                        bookingListDto.Add(new BookingDto(booking));
-                    }
-                    // only save repository once
-                    await _bookingRepository.SaveAsync();
-
-                }
-                else throw new Exception("Not a Event booking Req");
-                return bookingListDto;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            var userId = user.Objectidentifier;
+            var user_Name = userName;
+            var seat_Id = seatId ?? bookingRequest.SeatId;
+            var bookingDateTime = bookingRequest.BookingDateTime;
+            var bookingDateTime_DayOnly = bookingRequest.BookingDateTime.Date;
+            return new Booking(userId, user_Name, seat_Id, bookingDateTime, bookingDateTime_DayOnly);
         }
-
 
         public async Task<IEnumerable<BookingDto>> GetAllActiveBookings()
         {
@@ -115,20 +67,51 @@ namespace server.Services.Internal
             }
         }
 
-
-        public async Task<IEnumerable<BookingDto>> GetAllBookingsForUser(string userId)
+        public async Task<IEnumerable<HistoryBookingDto>> GetAllBookingsForUserAsync(string userId)
         {
             try
             {
                 var bookings = await _bookingRepository.GetBookingsWithSeatForUserAsync(userId);
-                return Mappers.MapBookingDtos(bookings);
+                var historyBookingDtos = Mappers.MapHistoryBookingDtos(bookings);
+
+                var returnList = new List<HistoryBookingDto>();
+
+                // Add bookings with null EventId directly to the return list
+                returnList.AddRange(historyBookingDtos.Where(bookingDto => bookingDto.EventId == null));
+
+
+                var groupedBookings = groupAndFilterEventBookings(historyBookingDtos);
+
+                // Add the grouped bookings as a single event to the return list
+                returnList.AddRange(groupedBookings);
+
+                return returnList.OrderBy(bookingDto => bookingDto.BookingDateTime).ToList();
+
             }
-            catch (Exception)
+            catch
             {
                 throw;
             }
         }
 
+        private IEnumerable<HistoryBookingDto> groupAndFilterEventBookings(IEnumerable<HistoryBookingDto> bookingDtos)
+        {
+            var groupedBookings = bookingDtos.Where(bookingDto => bookingDto.EventId != null)
+                                              .GroupBy(b => b.EventId);
+            var combinedBookings = new List<HistoryBookingDto>();
+
+            foreach (var group in groupedBookings)
+            {
+                var combinedSeatIds = group.SelectMany(HistoryBookingDto => HistoryBookingDto.SeatIds).ToList().ToArray();
+                var combinedRoomIds = group.SelectMany(HistoryBookingDto => HistoryBookingDto.RoomIds).Distinct().ToList().ToArray();
+                var bookingDateTime = group.First().BookingDateTime;
+                int eventId = (int)group.Key;
+                var eventName = group.First().EventName;
+
+                combinedBookings.Add(new HistoryBookingDto(eventId, combinedSeatIds, combinedRoomIds, eventName, bookingDateTime));
+            }
+            return combinedBookings;
+        }
 
         public async Task DeleteBookingAsync(int bookingId, UserClaims user)
         {
@@ -143,7 +126,8 @@ namespace server.Services.Internal
                     throw new Exception(errorMessages);
                 }
 
-                await _bookingRepository.DeleteAndCommit(booking);
+                await _bookingRepository.Delete(booking);
+                await _bookingRepository.SaveAsync();
             }
             catch (Exception ex)
             {
@@ -152,7 +136,7 @@ namespace server.Services.Internal
             }
         }
 
-        public static List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, UserClaims user)
+        private List<string> ValidateUserBookingRequest(CreateBookingRequest bookingRequest, IEnumerable<Booking> bookingList, UserClaims user)
         {
             List<string> validationResultsList = new();
             if (isEventAdmin(user))
@@ -180,7 +164,7 @@ namespace server.Services.Internal
         }
 
 
-        private static List<string> ValidateUserDeleteBookingRequest(Booking? booking, UserClaims user)
+        private List<string> ValidateUserDeleteBookingRequest(Booking? booking, UserClaims user)
         {
             List<string> validationResultsList = new();
 
@@ -203,21 +187,22 @@ namespace server.Services.Internal
         }
 
 
-        private static bool HasUserAlreadyBookedForDay(IEnumerable<Booking> bookingList, DateTime bookingDate, string userId)
+        private bool HasUserAlreadyBookedForDay(IEnumerable<Booking> bookingList, DateTime bookingDate, string userId)
         {
             var dateOfBookingDate = bookingDate.Date;
             return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.UserId == userId);
         }
 
-        private static bool IsSeatAlreadyBooked(IEnumerable<Booking> bookingList, DateTime bookingDate, int seatId)
+        public static bool IsSeatAlreadyBooked(IEnumerable<Booking> bookingList, DateTime bookingDate, int seatId)
         {
             var dateOfBookingDate = bookingDate.Date;
             return bookingList.Any(booking => booking.BookingDateTime.Date == dateOfBookingDate && booking.SeatId == seatId);
         }
 
-        private static bool isEventAdmin(UserClaims user)
+        private bool isEventAdmin(UserClaims user)
         {
             return user.Role == "EventAdmin";
         }
     }
+
 }

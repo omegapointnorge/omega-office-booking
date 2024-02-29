@@ -31,10 +31,25 @@ namespace server.Context
                 .IsRequired();
 
             modelBuilder.Entity<Booking>()
+                .HasOne(booking => booking.Event)
+                .WithMany(e => e.Bookings)
+                .HasForeignKey(booking => booking.EventId);
+
+            modelBuilder.Entity<Booking>()
                 .Property(booking => booking.BookingDateTime)
                 .HasDefaultValueSql("GETDATE()")
                 .IsRequired();
 
+            modelBuilder.Entity<Booking>()
+                .Property(booking => booking.BookingDateTime_DayOnly);
+
+            modelBuilder.Entity<Booking>()
+                .HasAlternateKey(booking => new { booking.SeatId, booking.BookingDateTime_DayOnly })
+                .HasName("unique_seat_time_constraint");
+
+            modelBuilder.Entity<Booking>()
+                .Property<DateTime>("CreatedAt")
+                .HasDefaultValueSql("GETDATE()");
             // End of Booking setup
 
 
@@ -77,6 +92,24 @@ namespace server.Context
                 .HasForeignKey(seat => seat.RoomId);
 
             // End of Room setup
+            // Event setup
+            modelBuilder.Entity<Event>()
+                .HasKey(e => e.Id);
+
+            modelBuilder.Entity<Event>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Event>()
+                 .Property(e => e.Name);
+
+            modelBuilder.Entity<Event>()
+                .HasMany(e => e.Bookings)
+                .WithOne(booking => booking.Event)
+                .HasPrincipalKey(e => e.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // End of Seat setup
 
             SampleData.CreateSampleData(modelBuilder);
         }

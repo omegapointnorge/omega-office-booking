@@ -4,53 +4,73 @@ import toast from "react-hot-toast";
 import ApiService from "@services/ApiService";
 import historyStore from "@stores/HistoryStore";
 import { Booking, BookingRequest } from "@/shared/types/entities";
-import { createEventBookingRequest } from "../../models/booking";
+import { createEventBooking } from "../../models/booking";
+import { ApiStatus } from "@/shared/types/enums";
+import {
+  fetchOpeningTimeOfDay,
+  getEarliestAllowedBookingDate,
+} from "@utils/utils";
 
 class BookingStore {
   activeBookings: Booking[] = [];
-  userBookings = [];
+  //TODO: brukes denne? om ikke slett
+  // userBookings = [];
   displayDate = new Date();
   bookEventMode = false;
   seatIdSelectedForNewEvent: number[] = [];
   isEventDateChosen: boolean = false;
+  apiStatus: ApiStatus = ApiStatus.Idle;
+  openingTime: string | undefined;
 
   constructor() {
-    this.initialize();
     makeAutoObservable(this);
   }
 
   async initialize() {
     await this.fetchAllActiveBookings();
+    this.openingTime = await fetchOpeningTimeOfDay();
   }
 
   async fetchAllActiveBookings() {
+    if (this.apiStatus === ApiStatus.Pending) return;
     try {
+      this.setApiStatus(ApiStatus.Pending);
+
       const data = await ApiService.fetchData<Booking[]>(
         "/api/booking/activeBookings",
         "Get"
-      );
+      ).then((response) => {
+        this.setApiStatus(ApiStatus.Success);
+        return response;
+      });
 
       const bookings = data.map((booking) => createBooking(booking));
       this.setActiveBookings(bookings);
     } catch (error) {
       console.error("Error fetching active bookings:", error);
+      this.setApiStatus(ApiStatus.Error);
     }
   }
 
   async createBookingRequest(seatId: number, reCAPTCHAToken: string) {
+    if (this.apiStatus === ApiStatus.Pending) return;
     try {
+      this.setApiStatus(ApiStatus.Pending);
+
       const url = "/api/Booking/create";
       const bookingRequest: BookingRequest = {
         seatId,
         bookingDateTime: this.displayDate.toISOString(),
         reCAPTCHAToken,
       };
-
       const response = await ApiService.fetchData<Booking>(
         url,
         "POST",
         bookingRequest
-      );
+      ).then((response) => {
+        this.setApiStatus(ApiStatus.Success);
+        return response;
+      });
 
       if (!response) {
         const errorText = `Failed to create booking`;
@@ -65,22 +85,23 @@ class BookingStore {
 
         // Update the store's state with the new booking
         this.activeBookings.push(newBooking);
-        historyStore.myActiveBookings.unshift(newBooking);
       }
     } catch (error) {
+      this.setApiStatus(ApiStatus.Error);
       console.error("Error:", error);
     }
   }
 
-  async createBookingForEvent(selectedSeatIds: number[]) {
-    const bookingRequest = createEventBookingRequest({
+    async createBookingForEvent(selectedSeatIds: number[], eventName: string ) {
+    const bookingRequest = createEventBooking({
       seatIds: selectedSeatIds,
-      bookingDateTime: this.displayDate,
+      bookingDateTime: this.displayDate.toISOString(),
       isEvent: true,
+      eventName: eventName || "Arrangement",
     });
 
     try {
-      const response = await fetch("/api/Booking/CreateEventBookingsForSeats", {
+      const response = await fetch("/api/Event", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -110,6 +131,7 @@ class BookingStore {
       historyStore.removeBookingById(bookingId);
     });
   }
+
   removeBookingById(bookingId: number) {
     this.activeBookings = this.activeBookings.filter(
       (booking) => booking.id !== bookingId
@@ -153,6 +175,25 @@ class BookingStore {
     this.bookEventMode = false;
     this.isEventDateChosen = false;
   }
+
+  setApiStatus(status: ApiStatus) {
+    this.apiStatus = status;
+  }
+
+  hasBookingOpened = (displayDate: Date): boolean => {
+    if (!this.openingTime) {
+      return false;
+    }
+
+    let bookingOpeningTime = getEarliestAllowedBookingDate(displayDate);
+
+    const [hour, minutes, seconds] = this.openingTime.split(":").map(Number);
+
+    bookingOpeningTime.setHours(hour, minutes, seconds);
+
+    let currentDateTime = new Date();
+    return currentDateTime > bookingOpeningTime;
+  };
 }
 
 const bookingStore = new BookingStore();

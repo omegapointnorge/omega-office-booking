@@ -1,94 +1,103 @@
 import { makeAutoObservable } from "mobx";
 import ApiService from "@services/ApiService";
 import bookingStore from "@stores/BookingStore";
-import { Room, Booking } from "@/shared/types/entities";
+import { HistoryBooking } from "@/shared/types/entities";
+import { ApiStatus } from "@/shared/types/enums";
 
 const ITEMS_PER_PAGE = 5;
 
 class HistoryStore {
-  myActiveBookings: Booking[] = [];
-  myPreviousBookings: Booking[] = [];
-  myPreviousBookingsCurrentPage: Booking[] = [];
+  myActiveBookings: HistoryBooking[] = [];
+  myPreviousBookings: HistoryBooking[] = [];
+  myPreviousBookingsCurrentPage: HistoryBooking[] = [];
 
   openDialog = false;
-  bookingIdToDelete?: number;
+  historyBookingIdToDelete!: number;
+  eventIdToDelete!: number;
 
   pageNumber = 1;
   lastPage = 1;
   isFirstPage = true;
   isLastPage = false;
-  isLoading = false;
-  rooms: Room[] = [];
+  apiStatus: ApiStatus = ApiStatus.Idle;
 
   constructor() {
-    this.initBookings();
     makeAutoObservable(this);
   }
 
-  async initBookings() {
+  async initialize() {
     try {
-      this.isLoading = true;
       await this.fetchMyBookings();
-      await this.fetchRoomsAndSeatsForRoomLookup();
-      this.initPreviousBookings();
     } catch (error) {
       console.error(error);
     } finally {
-      this.isLoading = false;
     }
   }
 
-  async fetchRoomsAndSeatsForRoomLookup() {
-    try {
-      const url = "/api/room/rooms";
-      const data = await ApiService.fetchData<Room[]>(url, "Get", null);
-      this.rooms = data;
-    } catch (error) {
-      console.error("Error fetching bookings:", error);
-    }
-  }
-
+  
   async fetchMyBookings() {
+    if (this.apiStatus === ApiStatus.Pending) return;
     try {
-      const url = "/api/Booking/Bookings/MyBookings";
-      const data = await ApiService.fetchData<Booking[]>(url, "Get", null);
+      this.setApiStatus(ApiStatus.Pending);
 
-      this.myActiveBookings = this.filterAndSortBookings(data, true);
-      this.myPreviousBookings = this.filterAndSortBookings(data, false);
+      const url = "/api/Booking/Bookings/MyBookings";
+      const bookings = await ApiService.fetchData<HistoryBooking[]>(
+        url,
+        "Get",
+        null
+      ).then((response) => {
+        this.setApiStatus(ApiStatus.Success);
+        return response;
+      });
+      this.setMyActiveBookings(bookings);
+      this.setMyPreviousBookings(bookings);
       this.lastPage = Math.ceil(
         this.myPreviousBookings.length / ITEMS_PER_PAGE
       );
+      this.initPreviousBookings();
     } catch (error) {
       console.error("Error fetching bookings:", error);
+      this.setApiStatus(ApiStatus.Error);
     }
   }
 
-  async deleteBooking(bookingId: number) {
+async deleteResource(resourceType: string, resourceId: number) {
+    if (this.apiStatus === ApiStatus.Pending) return;
     try {
-      const url = `/api/Booking/${bookingId}`;
+        this.setApiStatus(ApiStatus.Pending);
+        const url = `/api/${resourceType}/${resourceId}`;
 
-      const response = await ApiService.fetchData<{ ok: boolean }>(
-        url,
-        "DELETE"
-      );
+        const response = await ApiService.fetchData<{ ok: boolean }>(url, "DELETE");
 
-      if (!response.ok) {
-        console.error(`Failed to delete booking with ID ${bookingId}`);
-        return;
-      }
-      this.updateBookings(bookingId);
+        if (!response.ok) {
+            console.error(`Failed to delete ${resourceType} with ID ${resourceId}`);
+            return;
+        }
+
+        this.setApiStatus(ApiStatus.Success);
+        this.updateBookings(resourceId);
     } catch (error) {
-      console.error(
-        `An error occurred while deleting booking with ID ${bookingId}:`,
-        error
-      );
+        console.error(
+            `An error occurred while deleting ${resourceType} with ID ${resourceId}:`,
+            error
+        );
+        this.setApiStatus(ApiStatus.Error);
     }
-  }
+}
+
+async deleteBooking(bookingId: number) {
+    await this.deleteResource('Booking', bookingId);
+}
+
+async deleteEvent(eventId: number) {
+    await this.deleteResource('Event', eventId);
+}
 
   async updateBookings(bookingId: number) {
     this.removeBookingById(bookingId);
-    bookingStore.removeBookingById(bookingId);
+    bookingStore.fetchAllActiveBookings()
   }
+
   setIsFirstPage(data: boolean) {
     this.isFirstPage = data;
   }
@@ -97,9 +106,9 @@ class HistoryStore {
     this.isLastPage = data;
   }
 
-  removeBookingById(bookingId: number) {
+  removeBookingById(historyBookingId: number) {
     this.myActiveBookings = this.myActiveBookings.filter(
-      (booking) => booking.id !== bookingId
+      (booking) => booking.id !== historyBookingId
     );
   }
 
@@ -135,9 +144,9 @@ class HistoryStore {
   }
 
   /* Utils */
-  handleOpenDialog(bookingId: number) {
+  handleOpenDialog(historyBookingId: number) {
     this.openDialog = !this.openDialog;
-    this.bookingIdToDelete = bookingId;
+    this.historyBookingIdToDelete = historyBookingId;
   }
 
   handleCloseDialog = (): void => {
@@ -157,7 +166,7 @@ class HistoryStore {
     }
   }
 
-  filterAndSortBookings(bookings: Booking[], isActive: boolean) {
+  filterAndSortBookings(bookings: HistoryBooking[], isActive: boolean) {
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 00:00:00.000
 
@@ -180,15 +189,19 @@ class HistoryStore {
     return sortedBookings;
   }
 
-  getRoomIdBySeatId(seatId: number) {
-    for (const room of this.rooms) {
-      const foundSeat = room.seats.find((seat) => seat.id === seatId);
-      if (foundSeat) {
-        return room.id;
-      }
-    }
-    console.error(`Seat with ID ${seatId} not found in any room.`);
-    return null;
+
+
+  setApiStatus(status: ApiStatus) {
+    this.apiStatus = status;
+  }
+
+  setMyActiveBookings(bookings: HistoryBooking[]) {
+    this.myActiveBookings = this.filterAndSortBookings(bookings, true);
+  }
+
+  setMyPreviousBookings(bookings: HistoryBooking[]) {
+    this.myPreviousBookings = this.filterAndSortBookings(bookings, false);
+    this.lastPage = Math.ceil(this.myPreviousBookings.length / ITEMS_PER_PAGE);
   }
 }
 

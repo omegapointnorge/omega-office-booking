@@ -12,6 +12,7 @@
       "@hooks/*": ["./src/shared/hooks/*"],
       "@utils/*": ["./src/shared/utils/*"],
       "@types/*": ["./src/shared/types/*"],
+      "@enums": ["./src/shared/types/enums.ts"],
       "@context/*": ["./src/state/context/*"],
       "@stores/*": ["./src/state/stores/*"],
       "@/*": ["./src/*"]

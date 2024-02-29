@@ -1,8 +1,8 @@
 import React from "react";
 
 import { useAuthContext } from "@auth/useAuthContext";
-import Heading from "@common-components/Heading";
-import Loading from "@common-components/Loading";
+import { Heading } from "@common-components/Heading";
+import { Loading } from "@common-components/Loading";
 
 export const ProtectedRoute = ({ outlet }: { outlet: React.JSX.Element }) => {
   const context = useAuthContext();
