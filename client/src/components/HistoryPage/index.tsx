@@ -11,9 +11,18 @@ import { ApiStatus } from "@/shared/types/enums";
 
 const ActiveBookings = observer(() => {
   const handleDelete = () => {
-    //TODO: sjekk om det er event admin som sletter reservasjon gjort av noen andre
-    // kanskje event admin skal få se navn under sete nummer på Reservasjoner/History page
-    historyStore.deleteBooking(historyStore.bookingIdToDelete);
+    const bookingToDelete = historyStore.myActiveBookings.find(
+      (historyBooking) =>
+        historyBooking.id === historyStore.historyBookingIdToDelete
+    );
+    const isEvent = !!bookingToDelete?.eventName;
+
+    if (isEvent) {
+      historyStore.deleteEvent(historyStore.historyBookingIdToDelete);
+    } else {
+      historyStore.deleteBooking(historyStore.historyBookingIdToDelete);
+    }
+
     historyStore.handleCloseDialog();
   };
 
@@ -29,14 +38,14 @@ const ActiveBookings = observer(() => {
       {historyStore.myActiveBookings.map((booking) => (
         <BookingItem
           key={booking.id}
-          seatId={booking.seatId}
+          seatIds={booking.seatIds}
           bookingDateTime={booking.bookingDateTime}
-          showDeleteButton={true}
-          roomId={historyStore.getRoomIdBySeatId(booking.seatId)}
-          onClick={() => {
+          roomIds={booking.roomIds}
+          eventName={booking.eventName}
+          onDelete={() => {
             historyStore.handleOpenDialog(booking.id);
           }}
-        ></BookingItem>
+        />
       ))}
       <button
         onClick={() => historyStore.navigateNext()}
@@ -68,11 +77,11 @@ const PreviousBookings = observer(() => (
     {historyStore.myPreviousBookingsCurrentPage.map((booking) => (
       <BookingItem
         key={booking.id}
-        seatId={booking.seatId}
+        seatIds={booking.seatIds}
         bookingDateTime={booking.bookingDateTime}
-        showDeleteButton={false}
-        roomId={historyStore.getRoomIdBySeatId(booking.seatId)}
-      ></BookingItem>
+        roomIds={booking.roomIds}
+        eventName={booking.eventName}
+      />
     ))}
     <button
       onClick={() => historyStore.navigateNext()}

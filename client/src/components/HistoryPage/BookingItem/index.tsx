@@ -5,18 +5,18 @@ import { BookingSvg } from "../BookingItem/BookingSvg";
 
 interface BookingItemProps {
   bookingDateTime: Date;
-  seatId: number;
-  showDeleteButton: boolean;
-  roomId: number | null;
-  onClick?: () => void;
+  seatIds: number[];
+  roomIds: number[];
+  eventName: string | undefined;
+  onDelete?: () => void;
 }
 
 export const BookingItem = ({
-  onClick,
+  onDelete,
   bookingDateTime,
-  seatId,
-  showDeleteButton,
-  roomId,
+  seatIds,
+  roomIds,
+  eventName,
 }: BookingItemProps) => {
   const date = new Date(bookingDateTime);
   const dateString = date.toLocaleDateString();
@@ -24,29 +24,33 @@ export const BookingItem = ({
   return (
     <ul className="divide-y divide-gray-100 p-4 rounded-[24px] bg-white w-48">
       <li className="flex flex-col">
-        {roomId && (
-          <div className="flex items-center content-center justify-center">
-            <BookingSvg highlightedId={roomId} />
+        {
+          <div>
+            {eventName && <h2 className="text-center">{eventName}</h2>}
+            <div className="flex items-center justify-center">
+              <BookingSvg highlightedIds={roomIds} />
+            </div>
           </div>
-        )}
+        }
         <div className="flex flex-row justify-between">
           <div>
-            <p className="text-sm leading-6 text-gray-900">{dateString}</p>
-            <p className="truncate text-xs leading-5 text-gray-900">
-              Sete {seatId}
-            </p>
+            <div className="text-sm leading-6 text-gray-900">{dateString}</div>
+            <div className="truncate text-xs leading-5 text-gray-900">
+              {seatIds.length > 1 ? (
+                <p>Antall seter: {seatIds.length}</p>
+              ) : (
+                <p>Sete: {seatIds[0]}</p>
+              )}
+            </div>
           </div>
-          <div className="flex items-center">
-            {" "}
-            <button disabled={!showDeleteButton}>
+          {onDelete && (
+            <button data-testid="delete-btn">
               <MdDelete
-                onClick={onClick}
-                className={`h-8 w-8 flex-none text-black hover:text-red-500 transition cursor-pointer ${
-                  !showDeleteButton ? "opacity-0" : "opacity-100"
-                }`}
+                onClick={onDelete}
+                className={`h-8 w-8 flex-none text-black hover:text-red-500 transition cursor-pointer`}
               />
             </button>
-          </div>
+          )}
         </div>
       </li>
     </ul>

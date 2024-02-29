@@ -7,6 +7,7 @@ export const createBooking = ({
   userName,
   seatId,
   bookingDateTime,
+  eventName 
 }: Booking) => {
   return {
     id,
@@ -14,17 +15,20 @@ export const createBooking = ({
     userName,
     seatId,
     bookingDateTime: new Date(bookingDateTime),
+    eventName
   };
 };
 
-export const createEventBookingRequest = ({
+export const createEventBooking = ({
   seatIds,
   bookingDateTime,
+  eventName,
 }: EventBookingRequest) => {
   const isEvent = true;
   return {
     SeatList: seatIds,
-    bookingDateTime: bookingDateTime.toISOString(),
+    bookingDateTime: bookingDateTime,
     isEvent: isEvent,
+    eventName : eventName
   };
 };

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Context;
 
@@ -11,9 +12,11 @@ using server.Context;
 namespace server.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    partial class OfficeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240226113354_cascade event delete")]
+    partial class cascadeeventdelete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,26 +132,6 @@ namespace server.Migrations
                         {
                             Id = 2,
                             Name = "Lille Rommet"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Salg"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Rekruttering"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Okonomi"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Oystein"
                         });
                 });
 
@@ -262,78 +245,6 @@ namespace server.Migrations
                             Id = 15,
                             IsAvailable = true,
                             RoomId = 2
-                        },
-                        new
-                        {
-                            Id = 16,
-                            IsAvailable = true,
-                            RoomId = 3
-                        },
-                        new
-                        {
-                            Id = 17,
-                            IsAvailable = true,
-                            RoomId = 3
-                        },
-                        new
-                        {
-                            Id = 18,
-                            IsAvailable = true,
-                            RoomId = 3
-                        },
-                        new
-                        {
-                            Id = 19,
-                            IsAvailable = true,
-                            RoomId = 3
-                        },
-                        new
-                        {
-                            Id = 20,
-                            IsAvailable = true,
-                            RoomId = 3
-                        },
-                        new
-                        {
-                            Id = 21,
-                            IsAvailable = true,
-                            RoomId = 3
-                        },
-                        new
-                        {
-                            Id = 22,
-                            IsAvailable = true,
-                            RoomId = 3
-                        },
-                        new
-                        {
-                            Id = 23,
-                            IsAvailable = true,
-                            RoomId = 4
-                        },
-                        new
-                        {
-                            Id = 24,
-                            IsAvailable = true,
-                            RoomId = 4
-                        },
-                        new
-                        {
-                            Id = 25,
-                            IsAvailable = true,
-                            RoomId = 4
-                        },
-                        new
-                        {
-                            Id = 26,
-                            IsAvailable = true,
-                            RoomId = 5
-                        },
-                        new
-                        {
-                            Id = 27,
-                            IsAvailable = true,
-                            RoomId = 6
                         });
                 });
 
