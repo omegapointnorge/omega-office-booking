@@ -70,6 +70,11 @@ public static class BookingTimeUtils
     {
         _openingTime = openingTime;
     }
+
+    public static DateOnly GetCurrentDate()
+    {
+        return DateOnly.FromDateTime(_dateTimeProvider.GetCurrentDateTime());
+    }
 }
 
 public interface IDateTimeProvider

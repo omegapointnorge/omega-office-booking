@@ -7,19 +7,25 @@ export interface Booking {
   userName: string;
   seatId: number;
   bookingDateTime: Date;
+  eventName : string | null
 }
+
+export interface HistoryBooking  {
+  id: number;
+  userId: string;
+  userName: string;
+  seatIds: number[]; 
+  roomIds: number[]; 
+  eventName?: string; 
+  bookingDateTime: Date;
+}
+
 
 export interface Seat {
   id: number | null;
   roomId: string | null;
   isAvailable: boolean;
   bookings: Booking[];
-}
-
-export interface Room {
-  id: number | null;
-  name: string | null;
-  seats: Seat[];
 }
 
 export interface BookingRequest {
@@ -30,8 +36,9 @@ export interface BookingRequest {
 
 export interface EventBookingRequest {
   seatIds: number[];
-  bookingDateTime: Date;
+  bookingDateTime: string;
   isEvent: boolean;
+  eventName : string;
 }
 
 export interface SeatPath {

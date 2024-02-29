@@ -42,6 +42,19 @@ namespace server.Repository
             return await dbSet.ToListAsync();
         }
 
+        /// <summary>
+        /// Get collection of filtered entities
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns>collection of entities</returns>
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter)
+        {
+            return await dbSet.Where(filter).ToListAsync();
+        }
+
+
+
+
 
         public async Task Delete(T entity)
         {

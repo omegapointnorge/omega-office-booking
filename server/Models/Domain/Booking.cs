@@ -14,7 +14,7 @@ namespace server.Models.Domain
         public Seat Seat { get; set; } = null!;
         public Event Event { get; set; }
 
-        public Booking(int id, String userId, String userName, int seatId,  DateTime bookingDateTime, DateTime bookingDateTimeDayOnly, int? eventID)
+        public Booking(int id, String userId, String userName, int seatId, DateTime bookingDateTime, DateTime bookingDateTimeDayOnly, int? eventID)
         {
             Id = id;
             UserId = userId;
@@ -29,12 +29,12 @@ namespace server.Models.Domain
         {
         }
         // booking with Bookingdatetime not for event
-        public Booking(String userId, String userName, int seatId, DateTime bookingDateTime, DateTime bookingDateTimeDayOnly )
+        public Booking(String userId, String userName, int seatId, DateTime bookingDateTime, DateTime bookingDateTimeDayOnly)
        : this(0, userId, userName, seatId, bookingDateTime, bookingDateTimeDayOnly, null)
-        { 
+        {
         }
-            public Booking(String userId, String userName, int seatId, DateTime bookingDateTime)
-            : this(0, userId, userName, seatId, bookingDateTime, bookingDateTime.Date,null)
+        public Booking(String userId, String userName, int seatId, DateTime bookingDateTime)
+        : this(0, userId, userName, seatId, bookingDateTime, bookingDateTime.Date, null)
         {
         }
     }

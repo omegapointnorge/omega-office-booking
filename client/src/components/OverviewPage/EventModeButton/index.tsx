@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 import bookingStore from "@stores/BookingStore";
 
 export const EventModeButton = observer(() => {
   const handleBook = async () => {
     await bookingStore.createBookingForEvent(
-      bookingStore.seatIdSelectedForNewEvent
+        bookingStore.seatIdSelectedForNewEvent, inputValue 
     );
   };
+  const [inputValue, setInputValue] = useState("");
+
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString("no-NO", {
@@ -35,7 +37,7 @@ export const EventModeButton = observer(() => {
             className="px-4 py-2 mx-1 mt-1 bg-blue-500 text-white text-sm font-medium rounded-md shaddow-sm hover:bg-blue-600"
             onClick={() => bookingStore.toggleEventMode()}
           >
-            Avbryt oppretting av nytt arrangement
+            Avbryt oppretting av arrangement
           </button>
         ) : (
           <button
@@ -45,6 +47,20 @@ export const EventModeButton = observer(() => {
             Opprett arrangement
           </button>
         )}
+
+        {seatCount !== 0 && (
+          <input
+            className="basis-1/2 px-2 py-1 mx-1 mt-1 bg-sky-500/25 text-black text-sm font-medium rounded-md shadow-sm"
+            type="text"
+            value={inputValue}
+            onChange={(e) => {
+              const newValue = e.target.value.toString();
+              setInputValue(newValue);
+            }}
+            placeholder="Navn på Arrangement"
+          />
+        )}
+
         {seatCount !== 0 && (
           <button
             className="basis-1/2 px-2 py-1 mx-1 mt-1 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
