@@ -36,11 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
-<<<<<<< HEAD
     <!-- TODO: update links; delete and add missing  -->
-=======
-    <!-- TODO: update imports to ts -->
->>>>>>> develop
     <Content Remove="$(SpaRoot)**" />
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
