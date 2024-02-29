@@ -38,7 +38,7 @@ export const LoginPage = () => {
                   to={LoginUrl}
                   reloadDocument
                 >
-                  Login inn
+                  Logg inn
                 </Link>
               </div>
             </div>
