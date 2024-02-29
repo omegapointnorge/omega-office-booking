@@ -117,7 +117,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
       case Rooms.Sales:
         newViewBox = zoomedToSalesViewBoxParameters;
         break;
-      case Rooms.Hr:
+      case Rooms.Marie:
         newViewBox = zoomedToHrViewBoxParameters;
         break;
       case Rooms.Econ: 

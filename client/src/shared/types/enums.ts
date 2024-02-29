@@ -3,7 +3,7 @@ export enum Rooms {
   Large = "LARGE",
   Sales = "SALES",
   Econ = "ECON",
-  Hr = "HR",
+  Marie = "MARIE",
   Oystein = "OYSTEIN",
 }
 

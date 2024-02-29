@@ -88,7 +88,7 @@ export const MapComponent = ({
         <g className={zoomStatus === ZoomStatus.ZoomedOut ? `zoomed-out-room origin-[64%_35%]` : 'zoomed-in' } onClick={() => zoomToRoom(Rooms.Oystein)}>
           <ClickableRoom zoomStatus={zoomStatus} countAvailableSeats={countAvailableSeats} roomConfig={oysteinRoomConfig}/>
         </g>
-        <g className={zoomStatus === ZoomStatus.ZoomedOut ? `zoomed-out-room origin-[60%_35%]` : 'zoomed-in' } onClick={() => zoomToRoom(Rooms.Hr)}>
+        <g className={zoomStatus === ZoomStatus.ZoomedOut ? `zoomed-out-room origin-[60%_35%]` : 'zoomed-in' } onClick={() => zoomToRoom(Rooms.Marie)}>
           <ClickableRoom zoomStatus={zoomStatus} countAvailableSeats={countAvailableSeats} roomConfig={hrRoomConfig}/>
         </g>
         <g className={zoomStatus === ZoomStatus.ZoomedOut ? `zoomed-out-room origin-[62%_35%]` : 'zoomed-in' } onClick={() => zoomToRoom(Rooms.Econ)}>
