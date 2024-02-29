@@ -6,7 +6,7 @@ import { observer } from "mobx-react-lite";
 import bookingStore from "@stores/BookingStore";
 import { MapComponent } from "./MapComponent";
 import { isSameDate } from "@utils/utils";
-import { Rooms } from "@/shared/types/enums";
+import { Rooms, ZoomStatus } from "@/shared/types/enums";
 
 import "./OverviewMap.css";
 
@@ -32,12 +32,14 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const zoomedOutViewBoxParameters = "0 0 3725 2712";
   const zoomedToLargeRoomViewBoxParameters = "1750 1400 1200 1500";
   const zoomedToSmallRoomViewBoxParameters = "2700 400 900 900";
-  const zoomedToSalesBoxParameters = "0 900 800 800";
+  const zoomedToSalesViewBoxParameters = "0 900 800 800";
+  const zoomedToHrViewBoxParameters = "1600 650 800 700"
+  const zoomedToEconOysteinViewBoxParameters = "2050 650 800 700"
 
   const [currentViewBox, setCurrentViewBox] = useState(
     zoomedOutViewBoxParameters
   );
-  const [zoomStatus, setZoomStatus] = useState("ZoomedOut");
+  const [zoomStatus, setZoomStatus] = useState(ZoomStatus.ZoomedOut);
 
   const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
@@ -113,13 +115,26 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         newViewBox = zoomedToSmallRoomViewBoxParameters;
         break;
       case Rooms.Sales:
-        newViewBox = zoomedToSalesBoxParameters;
+        newViewBox = zoomedToSalesViewBoxParameters;
+        break;
+      case Rooms.Hr:
+        newViewBox = zoomedToHrViewBoxParameters;
+        break;
+      case Rooms.Econ: 
+        newViewBox = zoomedToEconOysteinViewBoxParameters;
+        break;
+      case Rooms.Oystein: 
+        newViewBox = zoomedToEconOysteinViewBoxParameters;
         break;
       default:
         newViewBox = zoomedOutViewBoxParameters; // Default view
     }
 
-    setZoomStatus("Zooming");
+    if (newViewBox === currentViewBox) {
+      return;
+    }
+
+    setZoomStatus(ZoomStatus.Transition);
     animateViewBox(newViewBox, 500);
 
     // setCurrentViewBox(newViewBox);
@@ -127,10 +142,25 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
 
   const updateZoomStatus = useCallback(
     (newViewBox: string) => {
-      if (newViewBox === zoomedOutViewBoxParameters) {
-        setZoomStatus("ZoomedOut");
-      } else {
-        setZoomStatus("ZoomedIn");
+      switch (newViewBox) {
+        case (zoomedToLargeRoomViewBoxParameters):
+          setZoomStatus(ZoomStatus.Large)
+          break;
+        case (zoomedToSmallRoomViewBoxParameters):
+          setZoomStatus(ZoomStatus.Small)
+          break;
+        case (zoomedToSalesViewBoxParameters):
+          setZoomStatus(ZoomStatus.Sales)
+          break;
+        case (zoomedToHrViewBoxParameters):
+          setZoomStatus(ZoomStatus.Hr)
+          break;
+        case (zoomedToEconOysteinViewBoxParameters):
+          setZoomStatus(ZoomStatus.EconOystein)
+          break;
+        default:
+          setZoomStatus(ZoomStatus.ZoomedOut)
+          break;
       }
     },
     [zoomedOutViewBoxParameters]
@@ -176,7 +206,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   }, [currentViewBox]);
 
   const zoomOut = useCallback(() => {
-    setZoomStatus("Zooming");
+    setZoomStatus(ZoomStatus.Transition);
     animateViewBox(zoomedOutViewBoxParameters, 500);
   }, [animateViewBox, zoomedOutViewBoxParameters]);
 
