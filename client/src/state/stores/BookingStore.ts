@@ -58,9 +58,10 @@ class BookingStore {
       this.setApiStatus(ApiStatus.Pending);
 
       const url = "/api/Booking/create";
+      const bookingDateTimeStandard = this.convertToStandardBookingDateTime(this.displayDate);
       const bookingRequest: BookingRequest = {
         seatId,
-        bookingDateTime: this.displayDate.toISOString(),
+        bookingDateTime: bookingDateTimeStandard.toISOString(),
         reCAPTCHAToken,
       };
       const response = await ApiService.fetchData<Booking>(
@@ -148,10 +149,14 @@ class BookingStore {
   }
 
   handleEventDate(date: Date) {
-    const newDate = new Date(date);
-    newDate.setHours(newDate.getHours() + 12);
-    this.setDisplayDate(newDate);
+    this.setDisplayDate(this.convertToStandardBookingDateTime(date));
     this.isEventDateChosen = true;
+  }
+
+  convertToStandardBookingDateTime(date: Date) {
+    const newDate = new Date(date);
+    newDate.setHours(12, 0, 0, 0);
+    return newDate;
   }
 
   setDisplayDate(date: Date) {
