@@ -6,17 +6,15 @@ import { BookingSvg } from "../BookingItem/BookingSvg";
 interface BookingItemProps {
   bookingDateTime: Date;
   seatIds: number[];
-  showDeleteButton: boolean;
   roomIds: number[];
   eventName: string | undefined;
-  onClick?: () => void;
+  onDelete?: () => void;
 }
 
 export const BookingItem = ({
-  onClick,
+  onDelete,
   bookingDateTime,
   seatIds,
-  showDeleteButton,
   roomIds,
   eventName,
 }: BookingItemProps) => {
@@ -28,7 +26,7 @@ export const BookingItem = ({
       <li className="flex flex-col">
         {
           <div>
-              {eventName && <h2 className="text-center">{eventName}</h2>}
+            {eventName && <h2 className="text-center">{eventName}</h2>}
             <div className="flex items-center justify-center">
               <BookingSvg highlightedIds={roomIds} />
             </div>
@@ -45,16 +43,14 @@ export const BookingItem = ({
               )}
             </div>
           </div>
-          <div className="flex items-center">
-            <button disabled={!showDeleteButton}>
+          {onDelete && (
+            <button data-testid="delete-btn">
               <MdDelete
-                onClick={onClick}
-                className={`h-8 w-8 flex-none text-black hover:text-red-500 transition cursor-pointer ${
-                  !showDeleteButton ? "opacity-0" : "opacity-100"
-                }`}
+                onClick={onDelete}
+                className={`h-8 w-8 flex-none text-black hover:text-red-500 transition cursor-pointer`}
               />
             </button>
-          </div>
+          )}
         </div>
       </li>
     </ul>

@@ -11,14 +11,16 @@ import { ApiStatus } from "@/shared/types/enums";
 
 const ActiveBookings = observer(() => {
   const handleDelete = () => {
-    const bookingToDelete = historyStore.myActiveBookings.find(historyBooking => historyBooking.id === historyStore.historyBookingIdToDelete);
-    const isEvent = !!bookingToDelete?.eventName
+    const bookingToDelete = historyStore.myActiveBookings.find(
+      (historyBooking) =>
+        historyBooking.id === historyStore.historyBookingIdToDelete
+    );
+    const isEvent = !!bookingToDelete?.eventName;
 
-    if(isEvent){
-      historyStore.deleteEvent(historyStore.historyBookingIdToDelete)
-    }
-    else{
-    historyStore.deleteBooking(historyStore.historyBookingIdToDelete);
+    if (isEvent) {
+      historyStore.deleteEvent(historyStore.historyBookingIdToDelete);
+    } else {
+      historyStore.deleteBooking(historyStore.historyBookingIdToDelete);
     }
 
     historyStore.handleCloseDialog();
@@ -34,18 +36,17 @@ const ActiveBookings = observer(() => {
         <IoIosArrowBack />
       </button>
       {historyStore.myActiveBookings.map((booking) => (
-      <BookingItem
-        key={booking.id}
-        seatIds={booking.seatIds}
-        bookingDateTime={booking.bookingDateTime}
-        showDeleteButton={true}
-        roomIds={booking.roomIds}
-        eventName={booking.eventName}
-        onClick={() => {
+        <BookingItem
+          key={booking.id}
+          seatIds={booking.seatIds}
+          bookingDateTime={booking.bookingDateTime}
+          roomIds={booking.roomIds}
+          eventName={booking.eventName}
+          onDelete={() => {
             historyStore.handleOpenDialog(booking.id);
           }}
-      />
-))}
+        />
+      ))}
       <button
         onClick={() => historyStore.navigateNext()}
         className="opacity-0"
@@ -78,11 +79,10 @@ const PreviousBookings = observer(() => (
         key={booking.id}
         seatIds={booking.seatIds}
         bookingDateTime={booking.bookingDateTime}
-        showDeleteButton={false}
         roomIds={booking.roomIds}
         eventName={booking.eventName}
       />
-))}
+    ))}
     <button
       onClick={() => historyStore.navigateNext()}
       className={`${historyStore.isLastPage ? "opacity-0" : "opacity-100"}`}
