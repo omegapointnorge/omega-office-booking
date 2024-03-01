@@ -13,14 +13,14 @@ import {
 
 class BookingStore {
   activeBookings: Booking[] = [];
-  //TODO: brukes denne? om ikke slett
-  // userBookings = [];
   displayDate = new Date();
   bookEventMode = false;
   seatIdSelectedForNewEvent: number[] = [];
   isEventDateChosen: boolean = false;
   apiStatus: ApiStatus = ApiStatus.Idle;
   openingTime: string | undefined;
+  unavailableSeatsIds: number[] = [16, 19, 20, 21, 22];
+
 
   constructor() {
     makeAutoObservable(this);
