@@ -22,13 +22,13 @@ namespace server.Migrations
                 columns: new[] { "Id", "IsAvailable", "RoomId" },
                 values: new object[,]
                 {
-                    { 16, true, 3 },
+                    { 16, false, 3 },
                     { 17, true, 3 },
-                    { 18, true, 3 },
-                    { 19, true, 3 },
-                    { 20, true, 3 },
-                    { 21, true, 3 },
-                    { 22, true, 3 }
+                    { 18, false, 3 },
+                    { 19, false, 3 },
+                    { 20, false, 3 },
+                    { 21, false, 3 },
+                    { 22, false, 3 }
                 });
         }
 
