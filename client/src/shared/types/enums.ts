@@ -12,7 +12,7 @@ export enum ZoomStatus {
   Large = "LARGE",
   Sales = "SALES",
   EconOystein = "ECONOYSTEIN",
-  Hr = "HR",
+  Marie = "Marie",
   ZoomedOut = "ZOOMEDOUT",
   Transition = "TRANSITION"
 }
