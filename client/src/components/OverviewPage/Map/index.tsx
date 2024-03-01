@@ -33,7 +33,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const zoomedToLargeRoomViewBoxParameters = "1750 1400 1200 1500";
   const zoomedToSmallRoomViewBoxParameters = "2700 400 900 900";
   const zoomedToSalesViewBoxParameters = "0 900 800 800";
-  const zoomedToHrViewBoxParameters = "1600 650 800 700"
+  const zoomedToMarieViewBoxParameters = "1600 650 800 700"
   const zoomedToEconOysteinViewBoxParameters = "2050 650 800 700"
 
   const [currentViewBox, setCurrentViewBox] = useState(
@@ -118,7 +118,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         newViewBox = zoomedToSalesViewBoxParameters;
         break;
       case Rooms.Marie:
-        newViewBox = zoomedToHrViewBoxParameters;
+        newViewBox = zoomedToMarieViewBoxParameters;
         break;
       case Rooms.Econ: 
         newViewBox = zoomedToEconOysteinViewBoxParameters;
@@ -152,8 +152,8 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         case (zoomedToSalesViewBoxParameters):
           setZoomStatus(ZoomStatus.Sales)
           break;
-        case (zoomedToHrViewBoxParameters):
-          setZoomStatus(ZoomStatus.Hr)
+        case (zoomedToMarieViewBoxParameters):
+          setZoomStatus(ZoomStatus.Marie)
           break;
         case (zoomedToEconOysteinViewBoxParameters):
           setZoomStatus(ZoomStatus.EconOystein)

@@ -48,7 +48,7 @@ export const smallRoomConfig: RoomConfig =
     zoomedInStatus: ZoomStatus.EconOystein
   }
   
-  export const hrRoomConfig: RoomConfig = 
+  export const marieRoomConfig: RoomConfig = 
   {
     roomShapePath: "m2187.9 846.18-1.0823 317.12-476.47 2.7725-1.2347-318.35z",
     roomMonitorPath: "m1812.5 1048.9v8.8108a26.249 26.249 0 0 1-7.6907 18.566l-5.4333 5.4334h78.745l-5.4336-5.4334a26.249 26.249 0 0 1-7.691-18.566v-8.8108m52.497-104.99v85.308a19.686 19.686 0 0 1-19.686 19.686h-118.12a19.686 19.686 0 0 1-19.686-19.686v-85.308m157.49 0a19.686 19.686 0 0 0-19.686-19.686h-118.12a19.686 19.686 0 0 0-19.686 19.686m157.49 0v59.059a19.686 19.686 0 0 1-19.686 19.686h-118.12a19.686 19.686 0 0 1-19.686-19.686v-59.059",
@@ -57,7 +57,7 @@ export const smallRoomConfig: RoomConfig =
     seatMaxId: 24,
     seatCount: 3,
     fontSize: 95,
-    zoomedInStatus: ZoomStatus.Hr
+    zoomedInStatus: ZoomStatus.Marie
   }
 
   export const economyRoomConfig: RoomConfig = 
