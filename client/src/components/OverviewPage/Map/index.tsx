@@ -50,6 +50,11 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         isSameDate(displayDate, booking.bookingDateTime)
     );
 
+    const canNotBeBooked = bookingStore.unavailableSeatsIds.includes(seatId);
+    if(canNotBeBooked){
+      return "seat-unavailable"
+    }
+
     if (bookEventMode) {
       if (seatIdSelectedForNewEvent.includes(seatId)) {
         return "seat-selected-for-event";

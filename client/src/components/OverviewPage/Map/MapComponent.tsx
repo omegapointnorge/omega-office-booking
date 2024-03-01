@@ -8,6 +8,7 @@ import { Booking } from "@/shared/types/entities";
 import { isSameDate } from "@utils/utils";
 import { ClickableRoom } from "@components/OverviewPage/Map/ClickableRoom";
 import { smallRoomConfig, largeRoomConfig, salesRoomConfig, economyRoomConfig, oysteinRoomConfig, marieRoomConfig } from "@components/OverviewPage/Map/RoomConfig";
+import bookingStore from "@stores/BookingStore";
 
 interface MapProps {
   currentViewBox: string;
@@ -36,26 +37,29 @@ export const MapComponent = ({
   ): number => {
     let availableSeats = 0;
 
-    for (let seatId = minSeatId; seatId <= maxSeatId; seatId++) {
-      let isSeatAvailable = true;
+  for (let seatId = minSeatId; seatId <= maxSeatId; seatId++) {
+    let isSeatAvailable = !bookingStore.unavailableSeatsIds.includes(seatId);
+    if (!isSeatAvailable) {
+      continue;
+    }
 
-      for (const booking of activeBookings) {
-        if (
-          booking.seatId === seatId &&
-          isSameDate(booking.bookingDateTime, displayDate)
-        ) {
-          isSeatAvailable = false;
-          break;
-        }
-      }
-
-      if (isSeatAvailable) {
-        availableSeats++;
+    for (const booking of activeBookings) {
+      if (
+        booking.seatId === seatId &&
+        isSameDate(booking.bookingDateTime, displayDate)
+      ) {
+        isSeatAvailable = false;
+        break;
       }
     }
 
-    return availableSeats;
-  };
+    if (isSeatAvailable) {
+      availableSeats++;
+    }
+  }
+
+  return availableSeats;
+}
 
   return (
     <div className="relative">

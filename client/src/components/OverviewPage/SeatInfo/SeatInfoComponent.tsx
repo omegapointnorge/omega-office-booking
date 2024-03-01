@@ -25,6 +25,7 @@ export const SeatInfoComponent = ({
   handleBooking,
 }: Props) => {
   const getButtonGroup = () => {
+
     const isBooked = !!selectedBooking?.userId;
     const isYourBooking = userGuid === selectedBooking?.userId;
 
