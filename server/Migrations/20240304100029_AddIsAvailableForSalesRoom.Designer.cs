@@ -12,8 +12,8 @@ using server.Context;
 namespace server.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    [Migration("20240226113354_cascade event delete")]
-    partial class cascadeeventdelete
+    [Migration("20240304100029_AddIsAvailableForSalesRoom")]
+    partial class AddIsAvailableForSalesRoom
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -132,6 +132,26 @@ namespace server.Migrations
                         {
                             Id = 2,
                             Name = "Lille Rommet"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Salg"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Rekruttering"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Okonomi"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Oystein"
                         });
                 });
 
@@ -245,6 +265,78 @@ namespace server.Migrations
                             Id = 15,
                             IsAvailable = true,
                             RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 16,
+                            IsAvailable = false,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 17,
+                            IsAvailable = true,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 18,
+                            IsAvailable = false,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 19,
+                            IsAvailable = false,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 20,
+                            IsAvailable = false,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 21,
+                            IsAvailable = false,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 22,
+                            IsAvailable = false,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 23,
+                            IsAvailable = true,
+                            RoomId = 4
+                        },
+                        new
+                        {
+                            Id = 24,
+                            IsAvailable = true,
+                            RoomId = 4
+                        },
+                        new
+                        {
+                            Id = 25,
+                            IsAvailable = true,
+                            RoomId = 4
+                        },
+                        new
+                        {
+                            Id = 26,
+                            IsAvailable = true,
+                            RoomId = 5
+                        },
+                        new
+                        {
+                            Id = 27,
+                            IsAvailable = true,
+                            RoomId = 6
                         });
                 });
 

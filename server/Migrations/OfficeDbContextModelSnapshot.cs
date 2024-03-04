@@ -266,7 +266,7 @@ namespace server.Migrations
                         new
                         {
                             Id = 16,
-                            IsAvailable = true,
+                            IsAvailable = false,
                             RoomId = 3
                         },
                         new
@@ -278,31 +278,31 @@ namespace server.Migrations
                         new
                         {
                             Id = 18,
-                            IsAvailable = true,
+                            IsAvailable = false,
                             RoomId = 3
                         },
                         new
                         {
                             Id = 19,
-                            IsAvailable = true,
+                            IsAvailable = false,
                             RoomId = 3
                         },
                         new
                         {
                             Id = 20,
-                            IsAvailable = true,
+                            IsAvailable = false,
                             RoomId = 3
                         },
                         new
                         {
                             Id = 21,
-                            IsAvailable = true,
+                            IsAvailable = false,
                             RoomId = 3
                         },
                         new
                         {
                             Id = 22,
-                            IsAvailable = true,
+                            IsAvailable = false,
                             RoomId = 3
                         },
                         new
