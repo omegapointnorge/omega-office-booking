@@ -2,6 +2,19 @@ export enum Rooms {
   Small = "SMALL",
   Large = "LARGE",
   Sales = "SALES",
+  Econ = "ECON",
+  Marie = "MARIE",
+  Oystein = "OYSTEIN",
+}
+
+export enum ZoomStatus {
+  Small = "SMALL",
+  Large = "LARGE",
+  Sales = "SALES",
+  EconOystein = "ECONOYSTEIN",
+  Marie = "Marie",
+  ZoomedOut = "ZOOMEDOUT",
+  Transition = "TRANSITION"
 }
 
 //TODO: CHECK IF ID small-room, large-room, sales-room needs to be changed

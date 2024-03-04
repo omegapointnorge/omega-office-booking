@@ -12,8 +12,8 @@ using server.Context;
 namespace server.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    [Migration("20240226113354_cascade event delete")]
-    partial class cascadeeventdelete
+    [Migration("20240228120505_AddSalesRoomAndSeats")]
+    partial class AddSalesRoomAndSeats
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -132,6 +132,11 @@ namespace server.Migrations
                         {
                             Id = 2,
                             Name = "Lille Rommet"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Salg"
                         });
                 });
 
@@ -245,6 +250,48 @@ namespace server.Migrations
                             Id = 15,
                             IsAvailable = true,
                             RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 16,
+                            IsAvailable = true,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 17,
+                            IsAvailable = true,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 18,
+                            IsAvailable = true,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 19,
+                            IsAvailable = true,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 20,
+                            IsAvailable = true,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 21,
+                            IsAvailable = true,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 22,
+                            IsAvailable = true,
+                            RoomId = 3
                         });
                 });
 
@@ -252,8 +299,7 @@ namespace server.Migrations
                 {
                     b.HasOne("server.Models.Domain.Event", "Event")
                         .WithMany("Bookings")
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("EventId");
 
                     b.HasOne("server.Models.Domain.Seat", "Seat")
                         .WithMany("Bookings")

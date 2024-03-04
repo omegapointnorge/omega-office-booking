@@ -5,18 +5,11 @@ using server.Models.Domain;
 
 namespace server.Repository
 {
-    public class BookingRepository : Repository<Booking>, IBookingRepository
+    public class BookingRepository(OfficeDbContext context) : Repository<Booking>(context), IBookingRepository
     {
-        private readonly OfficeDbContext _dbContext;
-
-        public BookingRepository(OfficeDbContext context) : base(context)
-        {
-            _dbContext = context;
-        }
-
         public Task<List<Booking>> GetAllActiveBookings()
         {
-            return _dbContext.Bookings
+            return context.Bookings
                 .Where(booking => DateOnly.FromDateTime(booking.BookingDateTime) >= BookingTimeUtils.GetCurrentDate())
                 .Include(booking => booking.Event)
                 .ToListAsync();
@@ -24,7 +17,7 @@ namespace server.Repository
 
         public Task<List<Booking>> GetBookingsWithSeatForUserAsync(String userId)
         {
-            return _dbContext.Bookings
+            return context.Bookings
                 .Include(booking => booking.Seat)
                 .Include(booking => booking.Event)
                 .Where(booking => booking.UserId == userId)
@@ -33,10 +26,10 @@ namespace server.Repository
 
         public Task DeleteBookingsWithEventId(int eventId)
         {
-            var bookings = _dbContext.Bookings
+            var bookings = context.Bookings
                 .Where(booking => booking.EventId == eventId);
-            _dbContext.Bookings.RemoveRange(bookings);
-            return _dbContext.SaveChangesAsync();
+            context.Bookings.RemoveRange(bookings);
+            return context.SaveChangesAsync();
         }
 
     }

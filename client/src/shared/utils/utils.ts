@@ -41,3 +41,22 @@ export const fetchOpeningTimeOfDay = async () => {
     return "Error fetching opening time";
   }
 };
+
+export const fetchUnavailableSeatsIds = async () => {
+   try {
+    const response = await ApiService.fetchData<string>(
+      "/api/Seat/GetUnavailableSeatIds",
+      "GET"
+    );
+    
+    if (!response) {
+      throw new Error("Failed to fetch unavailable seats");
+    }
+    return response;
+
+  } catch (error) {
+    console.error("Failed to fetch unavailable seats", error);
+    return "Failed to fetch unavailable seats";
+  }
+};
+

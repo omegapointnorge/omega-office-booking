@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Context;
 
@@ -11,9 +12,11 @@ using server.Context;
 namespace server.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    partial class OfficeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240229104952_AddRestOfRoomsWithSeats")]
+    partial class AddRestOfRoomsWithSeats
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,6 +68,26 @@ namespace server.Migrations
                     b.HasIndex("EventId");
 
                     b.ToTable("Bookings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BookingDateTime = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local),
+                            BookingDateTime_DayOnly = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local),
+                            SeatId = 1,
+                            UserId = "860849a4-f4b8-4566-8ed1-918cf3d41a92",
+                            UserName = "SampleUser1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BookingDateTime = new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local),
+                            BookingDateTime_DayOnly = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local),
+                            SeatId = 2,
+                            UserId = "639d660b-4724-407b-b05c-12b5f619f833",
+                            UserName = "SampleUser2"
+                        });
                 });
 
             modelBuilder.Entity("server.Models.Domain.Event", b =>
@@ -118,7 +141,7 @@ namespace server.Migrations
                         new
                         {
                             Id = 4,
-                            Name = "Marie"
+                            Name = "Rekruttering"
                         },
                         new
                         {
@@ -246,7 +269,7 @@ namespace server.Migrations
                         new
                         {
                             Id = 16,
-                            IsAvailable = false,
+                            IsAvailable = true,
                             RoomId = 3
                         },
                         new
@@ -258,31 +281,31 @@ namespace server.Migrations
                         new
                         {
                             Id = 18,
-                            IsAvailable = false,
+                            IsAvailable = true,
                             RoomId = 3
                         },
                         new
                         {
                             Id = 19,
-                            IsAvailable = false,
+                            IsAvailable = true,
                             RoomId = 3
                         },
                         new
                         {
                             Id = 20,
-                            IsAvailable = false,
+                            IsAvailable = true,
                             RoomId = 3
                         },
                         new
                         {
                             Id = 21,
-                            IsAvailable = false,
+                            IsAvailable = true,
                             RoomId = 3
                         },
                         new
                         {
                             Id = 22,
-                            IsAvailable = false,
+                            IsAvailable = true,
                             RoomId = 3
                         },
                         new
@@ -321,8 +344,7 @@ namespace server.Migrations
                 {
                     b.HasOne("server.Models.Domain.Event", "Event")
                         .WithMany("Bookings")
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("EventId");
 
                     b.HasOne("server.Models.Domain.Seat", "Seat")
                         .WithMany("Bookings")

@@ -44,13 +44,7 @@ namespace server.Services.Internal
         {
             try
             {
-                var eventToDelete = await _eventRepository.GetAsync(e => e.Id == id);
-
-                if (eventToDelete == null)
-                {
-                    throw new Exception("Event not found");
-                }
-
+                var eventToDelete = await _eventRepository.GetAsync(e => e.Id == id) ?? throw new Exception("Event not found");
                 await _eventRepository.Delete(eventToDelete);
                 await _eventRepository.SaveAsync();
             }
