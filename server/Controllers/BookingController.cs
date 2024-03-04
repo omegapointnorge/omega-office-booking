@@ -43,6 +43,7 @@ namespace server.Controllers
         {
             try
             {
+                var userClaim = UserUtils.GetCurrentUserClaims(User);
                 if (string.IsNullOrWhiteSpace(bookingRequest.reCAPTCHAToken))
                 {
                     TrackReCAPTCHATokenError("reCAPTCHA token is missing or empty.");
@@ -54,17 +55,17 @@ namespace server.Controllers
                         var score = _recaptchaEnterprise.CreateAssessment(bookingRequest);
                         if (score < RecaptchaEnterprise.ReCaptchaThreshold)
                         {
-                            TrackReCAPTCHATokenError($"The reCAPTCHA score is {score}. This is below the threshold of {RecaptchaEnterprise.ReCaptchaThreshold}");
+                            TrackReCAPTCHATokenError($"The reCAPTCHA score is {score} for {userClaim.UserName}. This is below the threshold of {RecaptchaEnterprise.ReCaptchaThreshold}");
+                            throw new InvalidOperationException("The reCAPTCHA score is below the threshold. Please log out and log in again to verify your identity.");
                         }
                     }
                     catch (Exception error)
                     {
-                        TrackReCAPTCHATokenError(error.ToString());
+                        TrackReCAPTCHATokenError($"{userClaim.UserName}: {error.ToString()}");
                     }
 
                 }
 
-                var userClaim = UserUtils.GetCurrentUserClaims(User);
                 var booking = await _bookingService.CreateBookingAsync(bookingRequest, userClaim);
 
                 return CreatedAtRoute(null, booking);
