@@ -34,6 +34,7 @@ const ActiveBookings = observer(() => {
       >
         <IoIosArrowBack className="invisible" />
       </button>
+      <ul className="flex space-x-4 w-f-100">
       {historyStore.myActiveBookings.map((booking) => (
         <BookingItem
           key={booking.id}
@@ -46,6 +47,7 @@ const ActiveBookings = observer(() => {
           }}
         />
       ))}
+      </ul>
       <button
         onClick={() => historyStore.navigateNext()}
         className="opacity-0"
@@ -73,6 +75,8 @@ const PreviousBookings = observer(() => (
     >
       <IoIosArrowBack />
     </button>
+    <ul className="flex space-x-4 w-f-100">
+      
     {historyStore.myPreviousBookingsCurrentPage.map((booking) => (
       <BookingItem
         key={booking.id}
@@ -84,6 +88,7 @@ const PreviousBookings = observer(() => (
 
       />
     ))}
+    </ul>
     <button
       onClick={() => historyStore.navigateNext()}
       className={`${historyStore.isLastPage ? "invisible" : ""} hover:scale-150 transition-transform`}
