@@ -30,10 +30,9 @@ const ActiveBookings = observer(() => {
     <div className="flex flex-row gap-5">
       <button
         onClick={() => historyStore.navigatePrevious()}
-        className="opacity-0"
         disabled={true}
       >
-        <IoIosArrowBack />
+        <IoIosArrowBack className="invisible" />
       </button>
       {historyStore.myActiveBookings.map((booking) => (
         <BookingItem
@@ -50,9 +49,8 @@ const ActiveBookings = observer(() => {
       <button
         onClick={() => historyStore.navigateNext()}
         className="opacity-0"
-        disabled={true}
       >
-        <IoIosArrowForward />
+      <IoIosArrowForward className="invisible"/>
       </button>
       {/* //TODO: Ta i bruk samme dialog! */}
       <PrimaryDialog
@@ -69,7 +67,7 @@ const PreviousBookings = observer(() => (
   <div className="flex flex-row gap-5">
     <button
       onClick={() => historyStore.navigatePrevious()}
-      className={`${historyStore.isFirstPage ? "opacity-0" : "opacity-100"}`}
+      className={`${historyStore.isFirstPage ? "invisible" : ""}`}
       disabled={historyStore.isFirstPage}
     >
       <IoIosArrowBack />
@@ -81,12 +79,15 @@ const PreviousBookings = observer(() => (
         bookingDateTime={booking.bookingDateTime}
         roomIds={booking.roomIds}
         eventName={booking.eventName}
+              aria-label="Forrige"
+
       />
     ))}
     <button
       onClick={() => historyStore.navigateNext()}
-      className={`${historyStore.isLastPage ? "opacity-0" : "opacity-100"}`}
+      className={`${historyStore.isLastPage ? "invisible" : ""}`}
       disabled={historyStore.isLastPage}
+      aria-label="Neste"
     >
       <IoIosArrowForward />
     </button>
