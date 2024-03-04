@@ -67,7 +67,8 @@ const PreviousBookings = observer(() => (
   <div className="flex flex-row gap-5">
     <button
       onClick={() => historyStore.navigatePrevious()}
-      className={`${historyStore.isFirstPage ? "invisible" : ""}`}
+      className={`${historyStore.isFirstPage ? "invisible" : ""} hover:scale-150 transition-transform`}
+
       disabled={historyStore.isFirstPage}
     >
       <IoIosArrowBack />
@@ -79,13 +80,13 @@ const PreviousBookings = observer(() => (
         bookingDateTime={booking.bookingDateTime}
         roomIds={booking.roomIds}
         eventName={booking.eventName}
-              aria-label="Forrige"
+        aria-label="Forrige"
 
       />
     ))}
     <button
       onClick={() => historyStore.navigateNext()}
-      className={`${historyStore.isLastPage ? "invisible" : ""}`}
+      className={`${historyStore.isLastPage ? "invisible" : ""} hover:scale-150 transition-transform`}
       disabled={historyStore.isLastPage}
       aria-label="Neste"
     >
