@@ -3,7 +3,7 @@ import React from "react";
 import { Rooms, ZoomStatus } from "@/shared/types/enums";
 import { ZoomOutIcon } from "../../../shared/assets/icons/zoom-out_outline";
 import { WorkRoom } from "./WorkRoom";
-import { seatsEcon, seatsHr as seatsMarie, seatsLargeRoom, seatsOystein, seatsSales, seatsSmallRoom } from "./SeatPaths";
+import { seatsEcon, seatsMarie, seatsLargeRoom, seatsOystein, seatsSales, seatsSmallRoom } from "./SeatPaths";
 import { Booking } from "@/shared/types/entities";
 import { isSameDate } from "@utils/utils";
 import { ClickableRoom } from "@components/OverviewPage/Map/ClickableRoom";
