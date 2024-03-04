@@ -28,7 +28,9 @@ namespace server.Context
             // Generatings Seats for room 3
             for (int i = 16; i <= 22; i++)
             {
-                modelBuilder.Entity<Seat>().HasData(new Seat(i, 3, true));
+                //manual setting of unavailable for now, it can be remove in later step
+                bool isAvailable = i == 17;
+                modelBuilder.Entity<Seat>().HasData(new Seat(i, 3, isAvailable));
             }
             // Generatings Seats for room 4
             for (int i = 23; i <= 25; i++)
