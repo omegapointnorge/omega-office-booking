@@ -61,7 +61,7 @@ namespace server.Controllers
                     }
                     catch (Exception error)
                     {
-                        TrackReCAPTCHATokenError(error.ToString());
+                        TrackReCAPTCHATokenError($"{userClaim.UserName}: {error.ToString()}");
                     }
 
                 }
