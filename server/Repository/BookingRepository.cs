@@ -9,7 +9,7 @@ namespace server.Repository
     {
         public Task<List<Booking>> GetAllActiveBookings()
         {
-            return context.Bookings
+            return context.Booking
                 .Where(booking => DateOnly.FromDateTime(booking.BookingDateTime) >= BookingTimeUtils.GetCurrentDate())
                 .Include(booking => booking.Event)
                 .ToListAsync();
@@ -17,7 +17,7 @@ namespace server.Repository
 
         public Task<List<Booking>> GetBookingsWithSeatForUserAsync(String userId)
         {
-            return context.Bookings
+            return context.Booking
                 .Include(booking => booking.Seat)
                 .Include(booking => booking.Event)
                 .Where(booking => booking.UserId == userId)
@@ -26,9 +26,9 @@ namespace server.Repository
 
         public Task DeleteBookingsWithEventId(int eventId)
         {
-            var bookings = context.Bookings
+            var bookings = context.Booking
                 .Where(booking => booking.EventId == eventId);
-            context.Bookings.RemoveRange(bookings);
+            context.Booking.RemoveRange(bookings);
             return context.SaveChangesAsync();
         }
 
