@@ -41,7 +41,7 @@ namespace server.Context
             modelBuilder.Entity<Seat>().HasData(new Seat(26, 5, true));
             modelBuilder.Entity<Seat>().HasData(new Seat(27, 6, true));
 
-            modelBuilder.Entity<SeatAllocation>().HasData(new SeatAllocation(1, "Salg test Johansen", 1));
+            modelBuilder.Entity<SeatAllocation>().HasData(new SeatAllocation(1, "7534c00c-79ee-4230-b721-8cd781c2212d", 1, "Fornavn Etternavn"));
 
         }
     }

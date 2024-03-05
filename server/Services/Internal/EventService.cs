@@ -1,10 +1,8 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using server.Models.Domain;
+﻿using server.Models.Domain;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Repository;
-using System.ComponentModel.DataAnnotations;
 
 namespace server.Services.Internal
 {
