@@ -9,10 +9,10 @@ namespace server.Models.Domain
         public SeatAllocation()
         {
         }
-        public SeatAllocation(int id, string name, int seatId)
+        public SeatAllocation(int id, string userId, int seatId)
         {
             Id = id;
-            UserId = name;
+            UserId = userId;
             SeatId = seatId;
         }
     }
