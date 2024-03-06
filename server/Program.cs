@@ -11,6 +11,7 @@ using server.Context;
 using server.Helpers;
 using server.Repository;
 using server.Services.Internal;
+using server.Services.Internal.Background;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,25 +96,23 @@ builder.Services.AddScoped<ISeatService, SeatService>();
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
 builder.Services.AddScoped<RecaptchaEnterprise>();
 
+builder.Services.AddHostedService<SeatAssignmentBackgroundService>();
+
 builder.Services.AddSingleton(provider =>
 {
-    var scopes = new[] { "User.Read.All" };
-    var tenantId = builder.Configuration.GetValue<string>("AzureAd:TenantId");
-    var clientId = builder.Configuration.GetValue<string>("AzureAd:ClientId");
-    var options = new DeviceCodeCredentialOptions
+    var scopes = new[] { "User.Read" };
+
+    var options = new DefaultAzureCredentialOptions
     {
         AuthorityHost = AzureAuthorityHosts.AzurePublicCloud,
-        ClientId = clientId,
-        TenantId = tenantId,
-        DeviceCodeCallback = (code, cancellation) =>
-        {
-            Console.WriteLine(code.Message);
-            return Task.FromResult(0);
-        },
     };
-    var deviceCodeCredential = new DeviceCodeCredential(options);
-    return new GraphServiceClient(deviceCodeCredential, scopes);
+
+    var credential = new DefaultAzureCredential(options);
+    var tokenCredential = new ChainedTokenCredential(new ManagedIdentityCredential(), credential);
+
+    return new GraphServiceClient(tokenCredential);
 });
+
 
 builder.Services.AddApplicationInsightsTelemetry(options =>
 {
