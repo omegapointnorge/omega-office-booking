@@ -24,13 +24,6 @@ public class SeatAllocationService : ISeatAllocationService
     {
         foreach (var seatAssignment in seatAssignments)
         {
-            var existingBooking = await _bookingRepository.GetBookingDetailsBySeatIdAndDate(seatAssignment.SeatId, todayPlusOneMonth.Date);
-
-            if (existingBooking != null)
-            {
-                continue;
-            }
-
             var booking = new Booking(seatAssignment.UserId, seatAssignment.DisplayName, seatAssignment.SeatId, todayPlusOneMonth, todayPlusOneMonth.Date);
             await _bookingRepository.AddAsync(booking);
         }
@@ -38,5 +31,16 @@ public class SeatAllocationService : ISeatAllocationService
         await _bookingRepository.SaveAsync();
     }
 
-
+    public async Task DeleteBookings(IEnumerable<SeatAllocation> seatAssignments, DateTime yesterday)
+    {
+        foreach (var seatAssignment in seatAssignments)
+        {
+            var booking = await _bookingRepository.GetBookingDetailsBySeatIdAndDateAndUserId(seatAssignment.UserId, seatAssignment.SeatId, yesterday);
+            if (booking != null)
+            {
+                await _bookingRepository.Delete(booking);
+            }
+        }
+        await _bookingRepository.SaveAsync();
+    }
 }

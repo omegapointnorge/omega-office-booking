@@ -10,8 +10,9 @@
             _serviceScopeFactory = serviceScopeFactory;
         }
 
-        private async void DoWork(object state)
+        private async void HandleSeatAllocation(object state)
         {
+
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var serviceProvider = scope.ServiceProvider;
@@ -20,6 +21,10 @@
 
                 var seatAssignments = await seatAllocationService.GetAllSeatAssignments();
                 await seatAllocationService.GenerateSeatAssignmentBookings(seatAssignments, todayPlusOneMonth);
+
+                var yesterday = DateTime.Today.AddDays(-1);
+                await seatAllocationService.DeleteBookings(seatAssignments, yesterday);
+
             }
         }
 
@@ -27,13 +32,14 @@
         {
             // Calculate time until next 16:00
             var now = DateTime.Now;
-            var nextRunTime = new DateTime(now.Year, now.Month, now.Day, 14, 38, 0);
+            var nextRunTime = new DateTime(now.Year, now.Month, now.Day, 08, 54, 0);
             if (now > nextRunTime)
-                nextRunTime = nextRunTime.AddDays(1); // If it's already past 16:00, set it for the next day
+                nextRunTime = nextRunTime.AddDays(1);
 
             var dueTime = nextRunTime - now;
 
-            _timer = new Timer(DoWork, null, dueTime, TimeSpan.FromDays(1)); // Run every day after the first run
+            _timer = new Timer(HandleSeatAllocation, null, dueTime, TimeSpan.FromDays(1));
+
             return Task.CompletedTask;
         }
 

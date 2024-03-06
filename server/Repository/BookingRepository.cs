@@ -40,5 +40,8 @@ public class BookingRepository(OfficeDbContext context) : Repository<Booking>(co
         return Task.FromResult(booking);
     }
 
-
+    public async Task<Booking?> GetBookingDetailsBySeatIdAndDateAndUserId(string userId, int seatId, DateTime date)
+    {
+        return await context.Booking.FirstOrDefaultAsync(b => b.UserId == userId && b.SeatId == seatId && b.BookingDateTime.Date == date.Date);
+    }
 }
