@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using server.Context;
@@ -93,6 +94,26 @@ builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ISeatService, SeatService>();
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
 builder.Services.AddScoped<RecaptchaEnterprise>();
+
+builder.Services.AddSingleton(provider =>
+{
+    var scopes = new[] { "User.Read.All" };
+    var tenantId = builder.Configuration.GetValue<string>("AzureAd:TenantId");
+    var clientId = builder.Configuration.GetValue<string>("AzureAd:ClientId");
+    var options = new DeviceCodeCredentialOptions
+    {
+        AuthorityHost = AzureAuthorityHosts.AzurePublicCloud,
+        ClientId = clientId,
+        TenantId = tenantId,
+        DeviceCodeCallback = (code, cancellation) =>
+        {
+            Console.WriteLine(code.Message);
+            return Task.FromResult(0);
+        },
+    };
+    var deviceCodeCredential = new DeviceCodeCredential(options);
+    return new GraphServiceClient(deviceCodeCredential, scopes);
+});
 
 builder.Services.AddApplicationInsightsTelemetry(options =>
 {
