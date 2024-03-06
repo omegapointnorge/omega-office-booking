@@ -76,6 +76,7 @@ namespace server.Controllers
             }
         }
 
+
         [HttpGet("Bookings/MyBookings")]
         public async Task<ActionResult<IEnumerable<HistoryBookingDto>>> GetAllBookingsForUser()
         {

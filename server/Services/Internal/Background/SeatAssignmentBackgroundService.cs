@@ -20,6 +20,7 @@
                 var todayPlusOneMonth = DateTime.Today.AddMonths(1);
 
                 var seatAssignments = await seatAllocationService.GetAllSeatAssignments();
+
                 await seatAllocationService.GenerateSeatAssignmentBookings(seatAssignments, todayPlusOneMonth);
 
                 var yesterday = DateTime.Today.AddDays(-1);
@@ -32,7 +33,7 @@
         {
             // Calculate time until next 16:00
             var now = DateTime.Now;
-            var nextRunTime = new DateTime(now.Year, now.Month, now.Day, 08, 54, 0);
+            var nextRunTime = new DateTime(now.Year, now.Month, now.Day, 12, 20, 0);
             if (now > nextRunTime)
                 nextRunTime = nextRunTime.AddDays(1);
 
