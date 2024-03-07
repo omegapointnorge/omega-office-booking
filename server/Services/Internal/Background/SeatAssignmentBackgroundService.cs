@@ -1,4 +1,6 @@
-﻿namespace server.Services.Internal.Background;
+﻿using Microsoft.Graph;
+
+namespace server.Services.Internal.Background;
 
 public class SeatAssignmentBackgroundService : BackgroundService
 {
@@ -12,6 +14,30 @@ public class SeatAssignmentBackgroundService : BackgroundService
 
     private async void HandleSeatAllocation(object state)
     {
+        using (var scope = _serviceScopeFactory.CreateScope())
+        {
+            var serviceProvider = scope.ServiceProvider;
+            var graphServiceClient = serviceProvider.GetRequiredService<GraphServiceClient>();
+
+            try
+            {
+                var result = await graphServiceClient.Users.GetAsync(rc =>
+                {
+                    rc.QueryParameters.Filter = "mail eq 'fredrik.tornvall@omegapoint.no'";
+                });
+
+                var tmo = result;
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error accessing Microsoft Graph API: {ex.Message}");
+            }
+
+
+
+        }
 
 
     }
@@ -20,11 +46,12 @@ public class SeatAssignmentBackgroundService : BackgroundService
     {
         // Calculate time until next 16:00
         var now = DateTime.Now;
-        var nextRunTime = new DateTime(now.Year, now.Month, now.Day, 16, 0, 0);
+        var nextRunTime = new DateTime(now.Year, now.Month, now.Day, 13, 29, 0);
         if (now > nextRunTime)
             nextRunTime = nextRunTime.AddDays(1);
 
         var dueTime = nextRunTime - now;
+        dueTime = TimeSpan.FromSeconds(0);
 
         _timer = new Timer(HandleSeatAllocation, null, dueTime, TimeSpan.FromDays(1));
 
