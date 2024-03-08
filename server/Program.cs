@@ -1,9 +1,12 @@
 using Azure.Identity;
+using AzureFunctionsD365.Service;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -94,22 +97,28 @@ builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ISeatService, SeatService>();
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
 builder.Services.AddScoped<RecaptchaEnterprise>();
-
+var tenantId = builder.Configuration["AzureAd:TenantId"] ;
+var clientId = builder.Configuration["AzureAd:ClientId"] ;
+var clientSecret = builder.Configuration["AzureAd:ClientSecret"] ;
+//builder.Services.AddScoped<MsalLoginService>();
 
 builder.Services.AddSingleton(provider =>
 {
-    var scopes = new[] { "User.Read" };
-
     var options = new DefaultAzureCredentialOptions
     {
         AuthorityHost = AzureAuthorityHosts.AzurePublicCloud,
     };
-
     var credential = new DefaultAzureCredential(options);
     var tokenCredential = new ChainedTokenCredential(new ManagedIdentityCredential(), credential);
-
     return new GraphServiceClient(tokenCredential);
 });
+
+builder.Services.AddSingleton(provider =>
+{
+   
+    return new MsalLoginService(tenantId, clientId, clientSecret);
+});
+
 
 builder.Services.AddApplicationInsightsTelemetry(options =>
 {

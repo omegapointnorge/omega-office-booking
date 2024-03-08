@@ -1,8 +1,11 @@
+using AzureFunctionsD365.Service;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
 using server.Helpers;
 using server.Models.DTOs;
+using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Services.Internal;
 
@@ -16,13 +19,15 @@ namespace server.Controllers
         private readonly TelemetryClient _telemetryClient;
         private readonly RecaptchaEnterprise _recaptchaEnterprise;
         private readonly GraphServiceClient _graphServiceClient;
+        private readonly MsalLoginService _msalLoginService;
 
-        public BookingController(IBookingService bookingService, TelemetryClient telemetryClient, RecaptchaEnterprise recaptchaEnterprise, GraphServiceClient graphServiceClient)
+        public BookingController(IBookingService bookingService, TelemetryClient telemetryClient, RecaptchaEnterprise recaptchaEnterprise, GraphServiceClient graphServiceClient, MsalLoginService msalLoginService)
         {
             _bookingService = bookingService;
             _recaptchaEnterprise = recaptchaEnterprise;
             _graphServiceClient = graphServiceClient;
             _telemetryClient = telemetryClient;
+            _msalLoginService = msalLoginService;
         }
 
         [HttpGet("activeBookings")]
@@ -69,10 +74,34 @@ namespace server.Controllers
                 }
 
                 var booking = await _bookingService.CreateBookingAsync(bookingRequest, userClaim);
+                string resourceUri = $"https://graph.microsoft.com";
 
-
-
+                WebApiConfiguration allConfig = new WebApiConfiguration(_msalLoginService.ClientId, _msalLoginService.ClientSecret, _msalLoginService.TenantId, resourceUri, "https://graph.microsoft.com/v1.0/users");
                 string email = "nils.olav.johansen@omegapoint.no";
+
+                var response = MsalLoginService.RetrieveUsers(email, allConfig).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    //log.LogInformation("The request IsSuccessStatusCode");
+                    // Read the content as a string
+                    string jsonContent = await response.Content.ReadAsStringAsync();
+
+                    //dynamic jsonObject = JObject.Parse(jsonContent);
+
+                    // Access the 'id' property of the first item in the 'value' array
+                    //string userId = jsonObject.value[0].id;
+                    return new OkObjectResult(jsonContent);
+                }
+                else
+                {
+                    //log.LogInformation("The request failed ",
+                        //response.ReasonPhrase);
+
+                    throw new Exception();
+                }
+
+
+               
                 var result = await _graphServiceClient.Users.GetAsync(rc =>
                 {
                     rc.QueryParameters.Filter = $"mail eq '{email}'";
