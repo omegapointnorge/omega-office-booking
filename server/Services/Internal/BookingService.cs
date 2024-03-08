@@ -2,6 +2,7 @@ using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
+using server.Models.DTOs.Internala;
 using server.Models.DTOs.Request;
 using server.Repository;
 
@@ -42,6 +43,15 @@ namespace server.Services.Internal
             }
         }
 
+        public async Task CreateBookingAsync(IEnumerable<SeatAllocationDetails> seatAssignmentDetails)
+        {
+            foreach (var seatAssignmentDetail in seatAssignmentDetails)
+            {
+                var booking = new Booking(seatAssignmentDetail.User.Objectidentifier, seatAssignmentDetail.User.UserName, seatAssignmentDetail.SeatId, todayPlusOneMonth, todayPlusOneMonth.Date, null);
+                await _bookingRepository.AddAsync(booking);
+            }
+            await _bookingRepository.SaveAsync();
+        }
 
         private Booking CreateBookingFromRequest(CreateBookingRequest bookingRequest, UserClaims user, string userName, int? seatId = null)
         {

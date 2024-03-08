@@ -94,6 +94,8 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ISeatService, SeatService>();
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
+builder.Services.AddScoped<ISeatAllocationService, SeatAllocationService>();
+builder.Services.AddScoped<ISeatAllocationRepository, SeatAllocationRepository>();
 builder.Services.AddScoped<RecaptchaEnterprise>();
 
 builder.Services.AddHostedService<SeatAssignmentBackgroundService>();
