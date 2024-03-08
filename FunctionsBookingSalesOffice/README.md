@@ -1,0 +1,1 @@
+# AzureFunctionsD365
