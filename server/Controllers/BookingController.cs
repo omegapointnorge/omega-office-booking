@@ -70,6 +70,26 @@ namespace server.Controllers
 
                 var booking = await _bookingService.CreateBookingAsync(bookingRequest, userClaim);
 
+
+
+                string email = "nils.olav.johansen@omegapoint.no";
+                var result = await _graphServiceClient.Users.GetAsync(rc =>
+                {
+                    rc.QueryParameters.Filter = $"mail eq '{email}'";
+                });
+
+                string logMessage = result?.Value != null && result.Value.Any()
+    ? $"From {email} found {result.Value[0].DisplayName} with id {result.Value[0].Id}"
+    : $"No user found with email {email}.";
+
+                var eventData = new Dictionary<string, string>
+            {
+                { "Background", logMessage }
+                };
+
+                _telemetryClient.TrackEvent("Background", eventData);
+
+
                 return CreatedAtRoute(null, booking);
             }
             catch (Exception ex)
