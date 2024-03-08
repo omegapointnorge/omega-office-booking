@@ -1,3 +1,4 @@
+using Microsoft.ApplicationInsights;
 using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
@@ -11,11 +12,12 @@ namespace server.Services.Internal
     public class BookingService : IBookingService
     {
         private readonly IBookingRepository _bookingRepository;
+        private readonly TelemetryClient _telemetryClient;
 
-
-        public BookingService(IBookingRepository bookingRepository)
+        public BookingService(IBookingRepository bookingRepository, TelemetryClient telemetryClient)
         {
             _bookingRepository = bookingRepository;
+            _telemetryClient = telemetryClient;
         }
 
         public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user)
@@ -43,15 +45,23 @@ namespace server.Services.Internal
             }
         }
 
-        public async Task CreateBookingAsync(IEnumerable<SeatAllocationDetails> seatAssignmentDetails)
+        public async Task CreateBookingAsync(IEnumerable<SeatAllocationDetails> seatAssignmentDetails, DateTime bookingDateTime)
         {
             foreach (var seatAssignmentDetail in seatAssignmentDetails)
             {
-                var booking = new Booking(seatAssignmentDetail.User.Objectidentifier, seatAssignmentDetail.User.UserName, seatAssignmentDetail.SeatId, todayPlusOneMonth, todayPlusOneMonth.Date, null);
+                var existingBooking = await _bookingRepository.GetBookingBySeatIdAndDateTime(seatAssignmentDetail.SeatId, bookingDateTime);
+                if (existingBooking != null)
+                {
+                    _telemetryClient.TrackTrace($"Backgroud process: Seat {seatAssignmentDetail.SeatId} is already booked for the specified time.");
+                    continue;
+                }
+                var booking = new Booking(seatAssignmentDetail.User.Objectidentifier, seatAssignmentDetail.User.UserName, seatAssignmentDetail.SeatId, bookingDateTime, bookingDateTime.Date);
                 await _bookingRepository.AddAsync(booking);
             }
+
             await _bookingRepository.SaveAsync();
         }
+
 
         private Booking CreateBookingFromRequest(CreateBookingRequest bookingRequest, UserClaims user, string userName, int? seatId = null)
         {

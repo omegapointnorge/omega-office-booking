@@ -1,5 +1,6 @@
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
+using server.Models.DTOs.Internala;
 using server.Models.DTOs.Request;
 
 namespace server.Services.Internal
@@ -13,5 +14,7 @@ namespace server.Services.Internal
         Task<IEnumerable<HistoryBookingDto>> GetAllBookingsForUserAsync(string userid);
 
         Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user);
+
+        Task CreateBookingAsync(IEnumerable<SeatAllocationDetails> seatAssignmentDetails, DateTime bookingDateTime);
     }
 }

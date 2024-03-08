@@ -24,6 +24,14 @@ namespace server.Repository
                 .ToListAsync();
         }
 
+        public async Task<Booking?> GetBookingBySeatIdAndDateTime(int SeatId, DateTime bookingDateTime)
+        {
+            return await context.Booking
+                .Where(booking => booking.SeatId == SeatId && booking.BookingDateTime == bookingDateTime)
+                .FirstOrDefaultAsync();
+        }
+
+
         public Task DeleteBookingsWithEventId(int eventId)
         {
             var bookings = context.Booking
