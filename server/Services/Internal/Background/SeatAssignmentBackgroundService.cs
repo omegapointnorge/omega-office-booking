@@ -1,4 +1,6 @@
-﻿namespace server.Services.Internal.Background;
+﻿using server.Models.Domain;
+
+namespace server.Services.Internal.Background;
 
 public class SeatAssignmentBackgroundService : BackgroundService
 {
@@ -15,13 +17,21 @@ public class SeatAssignmentBackgroundService : BackgroundService
 
         using (var scope = _serviceScopeFactory.CreateScope())
         {
+            var todayPlusOneMonth = DateTime.Today.AddMonths(1);
             var serviceProvider = scope.ServiceProvider;
 
             try
             {
                 var seatAllocationService = serviceProvider.GetRequiredService<ISeatAllocationService>();
-                var seatAssignments = await seatAllocationService.GetAllSeatAssignmentDetails();
-                var todayPlusOneMonth = DateTime.Today.AddMonths(1);
+                var bookingService = serviceProvider.GetRequiredService<IBookingService>();
+
+                var seatAssignmentDetails = await seatAllocationService.GetAllSeatAssignmentDetails();
+                foreach (var seatAssignmentDetail in seatAssignmentDetails)
+                {
+                    var booking = new Booking(seatAssignmentDetail.User.Objectidentifier, seatAssignmentDetail.User.UserName, seatAssignmentDetail.SeatId, todayPlusOneMonth, todayPlusOneMonth.Date, null);
+                }
+
+
             }
             catch (Exception ex)
             {
