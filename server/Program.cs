@@ -97,9 +97,9 @@ builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ISeatService, SeatService>();
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
 builder.Services.AddScoped<RecaptchaEnterprise>();
-var tenantId = builder.Configuration["AzureAd:TenantId"] ;
-var clientId = builder.Configuration["AzureAd:ClientId"] ;
-var clientSecret = builder.Configuration["AzureAd:ClientSecret"] ;
+//var tenantId = builder.Configuration["AzureAd:TenantId"] ;
+//var clientId = builder.Configuration["AzureAd:ClientId"] ;
+//var clientSecret = builder.Configuration["AzureAd:ClientSecret"] ;
 //builder.Services.AddScoped<MsalLoginService>();
 
 builder.Services.AddSingleton(provider =>
@@ -116,7 +116,8 @@ builder.Services.AddSingleton(provider =>
 builder.Services.AddSingleton(provider =>
 {
    
-    return new MsalLoginService(tenantId, clientId, clientSecret);
+    return new MsalLoginService(builder.Configuration.GetValue<string>("AzureAd:TenantId")
+, builder.Configuration.GetValue<string>("AzureAd:ClientId"), builder.Configuration.GetValue<string>("AzureAd:ClientSecret"));
 });
 
 
