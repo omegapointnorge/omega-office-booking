@@ -1,5 +1,6 @@
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph;
 using server.Helpers;
 using server.Models.DTOs;
 using server.Models.DTOs.Request;
@@ -14,12 +15,13 @@ namespace server.Controllers
         private readonly IBookingService _bookingService;
         private readonly TelemetryClient _telemetryClient;
         private readonly RecaptchaEnterprise _recaptchaEnterprise;
+        private readonly GraphServiceClient _graphServiceClient;
 
-
-        public BookingController(IBookingService bookingService, TelemetryClient telemetryClient, RecaptchaEnterprise recaptchaEnterprise)
+        public BookingController(IBookingService bookingService, TelemetryClient telemetryClient, RecaptchaEnterprise recaptchaEnterprise, GraphServiceClient graphServiceClient)
         {
             _bookingService = bookingService;
             _recaptchaEnterprise = recaptchaEnterprise;
+            _graphServiceClient = graphServiceClient;
             _telemetryClient = telemetryClient;
         }
 

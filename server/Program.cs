@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using server.Context;
@@ -93,6 +94,22 @@ builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ISeatService, SeatService>();
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
 builder.Services.AddScoped<RecaptchaEnterprise>();
+
+
+builder.Services.AddSingleton(provider =>
+{
+    var scopes = new[] { "User.Read" };
+
+    var options = new DefaultAzureCredentialOptions
+    {
+        AuthorityHost = AzureAuthorityHosts.AzurePublicCloud,
+    };
+
+    var credential = new DefaultAzureCredential(options);
+    var tokenCredential = new ChainedTokenCredential(new ManagedIdentityCredential(), credential);
+
+    return new GraphServiceClient(tokenCredential);
+});
 
 builder.Services.AddApplicationInsightsTelemetry(options =>
 {
