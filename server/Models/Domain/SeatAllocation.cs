@@ -1,15 +1,19 @@
-namespace server.Models.Domain;
-
-public class SeatAllocation
+namespace server.Models.Domain
 {
-    public int Id { get; set; }
-    public string Email { get; set; }
-    public int SeatId { get; set; }
-
-    public SeatAllocation(int id, string email, int seatId)
+    public class SeatAllocation
     {
-        Id = id;
-        Email = email;
-        SeatId = seatId;
+        public int Id { get; set; }
+        public string Email { get; set; }
+        public int SeatId { get; set; }
+
+        public SeatAllocation()
+        {
+        }
+        public SeatAllocation(int id, int seatId, string email)
+        {
+            Id = id;
+            SeatId = seatId;
+            Email = email;
+        }
     }
 }
