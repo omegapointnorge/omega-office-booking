@@ -1,6 +1,4 @@
-﻿using server.Models.Domain;
-
-namespace server.Services.Internal.Background;
+﻿namespace server.Services.Internal.Background;
 
 public class SeatAssignmentBackgroundService : BackgroundService
 {
@@ -25,11 +23,12 @@ public class SeatAssignmentBackgroundService : BackgroundService
                 var seatAllocationService = serviceProvider.GetRequiredService<ISeatAllocationService>();
                 var bookingService = serviceProvider.GetRequiredService<IBookingService>();
 
-                var seatAssignmentDetails = await seatAllocationService.GetAllSeatAssignmentDetails();
-                foreach (var seatAssignmentDetail in seatAssignmentDetails)
-                {
-                    var booking = new Booking(seatAssignmentDetail.User.Objectidentifier, seatAssignmentDetail.User.UserName, seatAssignmentDetail.SeatId, todayPlusOneMonth, todayPlusOneMonth.Date, null);
-                }
+
+                var seatAllocationDetails = await seatAllocationService.GetAllSeatAssignmentDetails();
+                await bookingService.CreateBookingAsync(seatAllocationDetails, todayPlusOneMonth);
+
+
+
 
 
             }

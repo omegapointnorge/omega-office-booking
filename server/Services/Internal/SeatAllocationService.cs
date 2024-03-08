@@ -7,13 +7,11 @@ namespace server.Services.Internal;
 public class SeatAllocationService : ISeatAllocationService
 {
     private readonly ISeatAllocationRepository _seatAllocationRepository;
-    private readonly IBookingRepository _bookingRepository;
     private readonly GraphServiceClient _graphServiceClient;
 
     public SeatAllocationService(ISeatAllocationRepository seatAllocationRepository, IBookingRepository bookingRepository, GraphServiceClient graphServiceClient)
     {
         _seatAllocationRepository = seatAllocationRepository;
-        _bookingRepository = bookingRepository;
         _graphServiceClient = graphServiceClient;
     }
 
