@@ -98,17 +98,19 @@ builder.Services.AddScoped<RecaptchaEnterprise>();
 
 builder.Services.AddSingleton(provider =>
 {
-    var scopes = new[] { "User.Read" };
+    var scopes = new[] { ".default" };
 
     var options = new DefaultAzureCredentialOptions
     {
         AuthorityHost = AzureAuthorityHosts.AzurePublicCloud,
     };
 
-    var credential = new DefaultAzureCredential(options);
-    var tokenCredential = new ChainedTokenCredential(new ManagedIdentityCredential(), credential);
+    //var credential = new DefaultAzureCredential(options);
+    var credential = new ClientSecretCredential(builder.Configuration.GetValue<string>("AzureAd:TenantId")
+    , builder.Configuration.GetValue<string>("AzureAd:ClientId"), builder.Configuration.GetValue<string>("AzureAd:ClientSecret"));
 
-    return new GraphServiceClient(tokenCredential);
+
+    return new GraphServiceClient(credential, scopes);
 });
 
 builder.Services.AddApplicationInsightsTelemetry(options =>
@@ -119,7 +121,7 @@ builder.Services.AddApplicationInsightsTelemetry(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
+builder.Services.AddApplicationInsightsTelemetry();
 //swagger
 
 string? openingtime = builder.Configuration["OpeningTime"];
