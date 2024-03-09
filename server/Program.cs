@@ -98,7 +98,7 @@ builder.Services.AddScoped<RecaptchaEnterprise>();
 
 builder.Services.AddSingleton(provider =>
 {
-    var scopes = new[] { "User.Read" };
+    var scopes = new[] { ".default" };
 
     var options = new DefaultAzureCredentialOptions
     {
@@ -107,10 +107,10 @@ builder.Services.AddSingleton(provider =>
 
     //var credential = new DefaultAzureCredential(options);
     var credential = new ClientSecretCredential(builder.Configuration.GetValue<string>("AzureAd:TenantId")
-, builder.Configuration.GetValue<string>("AzureAd:ClientId"), builder.Configuration.GetValue<string>("AzureAd:ClientSecret"));
-    var tokenCredential = new ChainedTokenCredential(new ManagedIdentityCredential(), credential);
+    , builder.Configuration.GetValue<string>("AzureAd:ClientId"), builder.Configuration.GetValue<string>("AzureAd:ClientSecret"));
 
-    return new GraphServiceClient(tokenCredential);
+
+    return new GraphServiceClient(credential, scopes);
 });
 
 builder.Services.AddApplicationInsightsTelemetry(options =>
