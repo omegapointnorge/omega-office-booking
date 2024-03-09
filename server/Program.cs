@@ -119,7 +119,7 @@ builder.Services.AddApplicationInsightsTelemetry(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddApplicationInsightsTelemetry();
+
 //swagger
 
 string? openingtime = builder.Configuration["OpeningTime"];
