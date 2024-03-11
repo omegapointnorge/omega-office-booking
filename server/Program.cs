@@ -105,9 +105,9 @@ builder.Services.AddSingleton(provider =>
         AuthorityHost = AzureAuthorityHosts.AzurePublicCloud,
     };
 
-    //var credential = new DefaultAzureCredential(options);
-    var credential = new ClientSecretCredential(builder.Configuration.GetValue<string>("AzureAd:TenantId")
-, builder.Configuration.GetValue<string>("AzureAd:ClientId"), builder.Configuration.GetValue<string>("AzureAd:ClientSecret"));
+    var credential = new DefaultAzureCredential(options);
+//    var credential = new ClientSecretCredential(builder.Configuration.GetValue<string>("AzureAd:TenantId")
+//, builder.Configuration.GetValue<string>("AzureAd:ClientId"), builder.Configuration.GetValue<string>("AzureAd:ClientSecret"));
     var tokenCredential = new ChainedTokenCredential(new ManagedIdentityCredential(), credential);
 
     return new GraphServiceClient(tokenCredential);
