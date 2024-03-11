@@ -13,7 +13,9 @@ interface Props {
   handleDelete: () => void;
   selectedBooking?: Booking;
 }
-export const SeatInfoComponent = ({
+export const SeatInfoComponent = (
+
+  {
   loading,
   displayDate,
   onClose,
@@ -24,49 +26,68 @@ export const SeatInfoComponent = ({
   selectedSeatId,
   handleBooking,
 }: Props) => {
-  const getButtonGroup = () => {
 
+  const getButtonGroup = () => {
     const isBooked = !!selectedBooking?.userId;
     const isYourBooking = userGuid === selectedBooking?.userId;
+    const seatIsAssignedToYou = true;
 
-    if (isBooked && !isYourBooking && !isEventAdmin) {
-      return (
-        <button
-          onClick={onClose}
-          className="mt-5 px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          Lukk
-        </button>
-      );
-    } else {
-      return (
+    return (
         <div className="flex justify-between">
-          <button
-            onClick={onClose}
-            className="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Lukk
-          </button>
-          {(isYourBooking || (isBooked && isEventAdmin)) && (
-            <button
-              onClick={handleDelete}
-              className="px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-            >
-              Slett reservasjon
-            </button>
-          )}
-          {!isBooked && (
-            <button
-              onClick={handleBooking}
-              className="px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-            >
-              Reserver sete
-            </button>
-          )}
+            {(() => {
+                let lukkButton = (
+                    <button
+                        onClick={onClose}
+                        className="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    >
+                        Lukk
+                    </button>
+                );
+
+                switch (true) {
+                    case seatIsAssignedToYou:
+                        return (
+                            <>
+                                {lukkButton}
+                                <button
+                                    onClick={() => console.log("not implemented")}
+                                    className="px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                                >
+                                    Slett valgte reservasjoner
+                                </button>
+                            </>
+                        );
+                    case isYourBooking || (isBooked && isEventAdmin):
+                        return (
+                            <>
+                                {lukkButton}
+                                <button
+                                    onClick={handleDelete}
+                                    className="px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                                >
+                                    Slett reservasjon
+                                </button>
+                            </>
+                        );
+                    case !isBooked:
+                        return (
+                            <>
+                                {lukkButton}
+                                <button
+                                    onClick={handleBooking}
+                                    className="px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                                >
+                                    Reserver sete
+                                </button>
+                            </>
+                        );
+                    default:
+                        return lukkButton;
+                }
+            })()}
         </div>
-      );
-    }
-  };
+    );
+};
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
