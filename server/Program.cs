@@ -98,12 +98,8 @@ builder.Services.AddScoped<RecaptchaEnterprise>();
 
 builder.Services.AddSingleton(provider =>
 {
-    var scopes = new[] { ".default" };
+    string[] scopes = { "https://graph.microsoft.com/.default" };
 
-    var options = new DefaultAzureCredentialOptions
-    {
-        AuthorityHost = AzureAuthorityHosts.AzurePublicCloud,
-    };
 
     //var credential = new DefaultAzureCredential(options);
     var credential = new ClientSecretCredential(builder.Configuration.GetValue<string>("AzureAd:TenantId")
