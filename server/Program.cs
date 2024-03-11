@@ -102,17 +102,11 @@ builder.Services.AddHostedService<SeatAssignmentBackgroundService>();
 
 builder.Services.AddSingleton(provider =>
 {
-    var scopes = new[] { "User.Read" };
+    string[] scopes = { "https://graph.microsoft.com/.default" };
 
-    var options = new DefaultAzureCredentialOptions
-    {
-        AuthorityHost = AzureAuthorityHosts.AzurePublicCloud,
-    };
+    var credential = new ClientSecretCredential(builder.Configuration.GetValue<string>("AzureAd:TenantId"), builder.Configuration.GetValue<string>("AzureAd:ClientId"), builder.Configuration.GetValue<string>("AzureAd:ClientSecret"));
 
-    var credential = new DefaultAzureCredential(options);
-    var tokenCredential = new ChainedTokenCredential(new ManagedIdentityCredential(), credential);
-
-    return new GraphServiceClient(tokenCredential);
+    return new GraphServiceClient(credential);
 });
 
 
