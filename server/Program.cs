@@ -112,7 +112,7 @@ builder.Services.AddSingleton(provider =>
 
     var credential2 = new DefaultAzureCredential(options);
     var tokenCredential = new ChainedTokenCredential(credential2, credential);
-    return new GraphServiceClient(credential, scopes);
+    return new GraphServiceClient(tokenCredential, scopes);
 });
 
 builder.Services.AddApplicationInsightsTelemetry(options =>
