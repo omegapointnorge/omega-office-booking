@@ -98,7 +98,6 @@ builder.Services.AddScoped<RecaptchaEnterprise>();
 
 builder.Services.AddSingleton(provider =>
 {
-    var scopes = new[] { "User.Read" };
 
     var options = new DefaultAzureCredentialOptions
     {
