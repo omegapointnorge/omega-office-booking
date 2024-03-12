@@ -1,6 +1,11 @@
 import { CircularProgress } from "@mui/material";
 import { Booking } from "@/shared/types/entities";
 import React from "react";
+import { Calendar, DateObject } from "react-multi-date-picker";
+import DatePanel from "react-multi-date-picker/plugins/date_panel";
+
+import bookingStore from "@stores/BookingStore";
+import { isBookedByOtherUser, isBookedByUser } from "@utils/utils";
 
 interface Props {
   userGuid: string;
@@ -13,9 +18,7 @@ interface Props {
   handleDelete: () => void;
   selectedBooking?: Booking;
 }
-export const SeatInfoComponent = (
-
-  {
+export const SeatInfoComponent = ({
   loading,
   displayDate,
   onClose,
@@ -26,68 +29,67 @@ export const SeatInfoComponent = (
   selectedSeatId,
   handleBooking,
 }: Props) => {
-
   const getButtonGroup = () => {
     const isBooked = !!selectedBooking?.userId;
     const isYourBooking = userGuid === selectedBooking?.userId;
-    const seatIsAssignedToYou = true;
+    const seatIsAssignedToYou = !isEventAdmin;
 
     return (
-        <div className="flex justify-between">
-            {(() => {
-                let lukkButton = (
-                    <button
-                        onClick={onClose}
-                        className="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    >
-                        Lukk
-                    </button>
-                );
+      <div className="flex justify-between">
+        {(() => {
+          let lukkButton = (
+            <button
+              onClick={onClose}
+              className="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Lukk
+            </button>
+          );
 
-                switch (true) {
-                    case seatIsAssignedToYou:
-                        return (
-                            <>
-                                {lukkButton}
-                                <button
-                                    onClick={() => console.log("not implemented")}
-                                    className="px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                                >
-                                    Slett valgte reservasjoner
-                                </button>
-                            </>
-                        );
-                    case isYourBooking || (isBooked && isEventAdmin):
-                        return (
-                            <>
-                                {lukkButton}
-                                <button
-                                    onClick={handleDelete}
-                                    className="px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                                >
-                                    Slett reservasjon
-                                </button>
-                            </>
-                        );
-                    case !isBooked:
-                        return (
-                            <>
-                                {lukkButton}
-                                <button
-                                    onClick={handleBooking}
-                                    className="px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                                >
-                                    Reserver sete
-                                </button>
-                            </>
-                        );
-                    default:
-                        return lukkButton;
-                }
-            })()}
-        </div>
+          switch (true) {
+            case seatIsAssignedToYou:
+              return (
+                <>
+                  {lukkButton}
+                  <button
+                    onClick={() => console.log("not implemented")}
+                    className="px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                  >
+                    Slett valgte reservasjoner
+                  </button>
+                </>
+              );
+            case isYourBooking || (isBooked && isEventAdmin):
+              return (
+                <>
+                  {lukkButton}
+                  <button
+                    onClick={handleDelete}
+                    className="px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                  >
+                    Slett reservasjon
+                  </button>
+                </>
+              );
+            case !isBooked:
+              return (
+                <>
+                  {lukkButton}
+                  <button
+                    onClick={handleBooking}
+                    className="px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                  >
+                    Reserver sete
+                  </button>
+                </>
+              );
+            default:
+              return lukkButton;
+          }
+        })()}
+      </div>
     );
-};
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
@@ -96,6 +98,42 @@ export const SeatInfoComponent = (
           <h3 className="text-xl font-semibold text-gray-900 mb-4">
             Seteinformasjon
           </h3>
+
+          <Calendar
+            onChange={(newDates: DateObject[]) =>
+              bookingStore.setPreAssignedBookingsToDelete(newDates)
+            }
+            minDate={new Date()}
+            maxDate={new Date(new Date().setMonth(new Date().getMonth() + 1))}
+            multiple={true}
+            range={true}
+            plugins={[<DatePanel sort="date" />]}
+            mapDays={({ date }) => {
+              let color;
+
+              if (
+                isBookedByUser(
+                  bookingStore.activeBookings,
+                  userGuid,
+                  selectedSeatId,
+                  date.toDate()
+                )
+              ) {
+                color = "green";
+              } else if (
+                isBookedByOtherUser(
+                  bookingStore.activeBookings,
+                  userGuid,
+                  selectedSeatId,
+                  date.toDate()
+                )
+              ) {
+                color = "red";
+              }
+
+              return { className: "highlight highlight-" + color };
+            }}
+          />
 
           <div className="flex flex-row space-y-3">
             <div className="basis-2/3 text-left">
@@ -111,7 +149,7 @@ export const SeatInfoComponent = (
                   {selectedBooking?.userName || "Ikke reservert"}
                 </span>
               </p>
-              
+
               {!!selectedBooking?.eventName && (
                 <p className="text-sm text-gray-600">
                   Arrangement:{" "}

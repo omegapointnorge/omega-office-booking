@@ -10,15 +10,24 @@ import {
   fetchOpeningTimeOfDay,
   getEarliestAllowedBookingDate,
 } from "@utils/utils";
+import { DateObject} from "react-multi-date-picker";
 
 class BookingStore {
   activeBookings: Booking[] = [];
+  
+  assignedSeatBookingDates: Date[] = [];
   displayDate = new Date();
   bookEventMode = false;
   seatIdSelectedForNewEvent: number[] = [];
   isEventDateChosen: boolean = false;
   apiStatus: ApiStatus = ApiStatus.Idle;
   openingTime: string | undefined;
+  unavailableSeatsIds: number[] = [];
+  
+  //Only used by users with preassigned seats
+  preAssignedBookingsToDelete : DateObject[] =  []
+  preAssignedBookings : DateObject[] =  []
+
 
   constructor() {
     makeAutoObservable(this);
@@ -181,6 +190,10 @@ class BookingStore {
 
   setApiStatus(status: ApiStatus) {
     this.apiStatus = status;
+  }
+
+  setPreAssignedBookingsToDelete(value : DateObject[]){
+    this.preAssignedBookingsToDelete = value
   }
 
   hasBookingOpened = (displayDate: Date): boolean => {
