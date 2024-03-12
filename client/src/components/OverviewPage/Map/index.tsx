@@ -9,6 +9,7 @@ import { isSameDate } from "@utils/utils";
 import { Rooms, ZoomStatus } from "@/shared/types/enums";
 
 import "./OverviewMap.css";
+import { ToggleSwitch } from "../ToggleButton/Toggle";
 
 interface OverviewMapProps {
   showSeatInfo: (seatId: string) => void;
@@ -40,6 +41,49 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
     zoomedOutViewBoxParameters
   );
   const [zoomStatus, setZoomStatus] = useState(ZoomStatus.ZoomedOut);
+  const [selectAllSeats, setSelectAllSeats] = useState(false);
+
+  const handleAllSeatsSelected = () => {
+    switch (zoomStatus) {
+      case ZoomStatus.Large:
+        upddateSeatSelectionForEvent("1", selectAllSeats);
+        break;
+      case ZoomStatus.Small:
+        upddateSeatSelectionForEvent("2", selectAllSeats);
+        break;
+      case ZoomStatus.Sales:
+        upddateSeatSelectionForEvent("3", selectAllSeats);
+        break;
+      case ZoomStatus.Marie:
+        upddateSeatSelectionForEvent("1", selectAllSeats);
+        break;
+      case ZoomStatus.EconOystein: 
+        upddateSeatSelectionForEvent("5", selectAllSeats);
+        upddateSeatSelectionForEvent("6", selectAllSeats);
+        break;
+      default:
+        break;// Default view
+    }
+    setSelectAllSeats(!selectAllSeats);
+    
+  }
+
+  const upddateSeatSelectionForEvent = (roomId: string, isSelect: boolean): void => {
+    console.log("Room number: ", roomId);
+    const seatsIdsInRoom = bookingStore.allSeats.filter(seat => seat.roomId === roomId).map(seat => seat.id as number);
+
+    if(isSelect){
+      seatsIdsInRoom.forEach(seatId => bookingStore.addSeatToEventSelection(seatId));
+    }
+    else{
+      // bookingStore.seatIdSelectedForNewEvent = bookingStore.seatIdSelectedForNewEvent.filter(seatId => !seatsIdsInRoom.includes(seatId));
+      bookingStore.removeSeatsFromEventSelection(seatsIdsInRoom);
+    }
+    
+    const kopiList = bookingStore.seatIdSelectedForNewEvent;
+    console.log("Seats in event: ", kopiList);
+  }
+
 
   const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
@@ -224,16 +268,22 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   //--------------- End of zoom functionality -----------------
 
   return (
-    <MapComponent
-      zoomStatus={zoomStatus}
-      currentViewBox={currentViewBox}
-      zoomToRoom={zoomToRoom}
-      activeBookings={activeBookings}
-      getSeatClassName={getSeatClassName}
-      displayDate={displayDate}
-      seatClicked={seatClicked}
-      zoomOut={zoomOut}
-    />
+    <div>
+      <MapComponent
+        zoomStatus={zoomStatus}
+        currentViewBox={currentViewBox}
+        zoomToRoom={zoomToRoom}
+        activeBookings={activeBookings}
+        getSeatClassName={getSeatClassName}
+        displayDate={displayDate}
+        seatClicked={seatClicked}
+        zoomOut={zoomOut}
+      />
+      {bookingStore.bookEventMode && zoomStatus === (ZoomStatus.Small || ZoomStatus.Large) && 
+        <ToggleSwitch isToggled={selectAllSeats} handleToggleChange={handleAllSeatsSelected}/>
+      }
+    </div>
+
   );
 });
 
