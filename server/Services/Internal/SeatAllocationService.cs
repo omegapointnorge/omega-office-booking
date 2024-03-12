@@ -34,5 +34,4 @@ public class SeatAllocationService : ISeatAllocationService
         }
         return seatAllocationDetails;
     }
-
 }

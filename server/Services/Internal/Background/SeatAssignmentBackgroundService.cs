@@ -1,4 +1,6 @@
-﻿namespace server.Services.Internal.Background;
+﻿using Microsoft.ApplicationInsights;
+
+namespace server.Services.Internal.Background;
 
 public class SeatAssignmentBackgroundService : BackgroundService
 {
@@ -17,23 +19,20 @@ public class SeatAssignmentBackgroundService : BackgroundService
         {
             var todayPlusOneMonth = DateTime.Today.AddMonths(1);
             var serviceProvider = scope.ServiceProvider;
+            var telemetryClient = serviceProvider.GetRequiredService<TelemetryClient>();
 
             try
             {
                 var seatAllocationService = serviceProvider.GetRequiredService<ISeatAllocationService>();
                 var bookingService = serviceProvider.GetRequiredService<IBookingService>();
 
-
                 var seatAllocationDetails = await seatAllocationService.GetAllSeatAssignmentDetails();
                 await bookingService.CreateBookingAsync(seatAllocationDetails, todayPlusOneMonth);
-
-
-
-
 
             }
             catch (Exception ex)
             {
+                telemetryClient.TrackException(ex);
             }
         }
     }
@@ -48,8 +47,6 @@ public class SeatAssignmentBackgroundService : BackgroundService
             nextRunTime = nextRunTime.AddDays(1); // If it's already past 16:00, set it for the next day
 
         var dueTime = nextRunTime - now;
-
-        dueTime = TimeSpan.FromSeconds(0);
 
 
         _timer = new Timer(HandleSeatAllocation, null, dueTime, TimeSpan.FromDays(1));
