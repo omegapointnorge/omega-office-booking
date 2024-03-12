@@ -26,7 +26,6 @@ class BookingStore {
   
   //Only used by users with preassigned seats
   preAssignedBookingsToDelete : DateObject[] =  []
-  preAssignedBookings : DateObject[] =  []
 
 
   constructor() {

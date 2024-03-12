@@ -100,40 +100,45 @@ export const SeatInfoComponent = ({
           </h3>
 
           <Calendar
-            onChange={(newDates: DateObject[]) =>
-              bookingStore.setPreAssignedBookingsToDelete(newDates)
-            }
-            minDate={new Date()}
-            maxDate={new Date(new Date().setMonth(new Date().getMonth() + 1))}
-            multiple={true}
-            range={true}
-            plugins={[<DatePanel sort="date" />]}
-            mapDays={({ date }) => {
-              let color;
+    onChange={(newDates: DateObject[]) =>
+        bookingStore.setPreAssignedBookingsToDelete(newDates)
+    }
+    minDate={new Date()}
+    maxDate={new Date(new Date().setMonth(new Date().getMonth() + 1))}
+    multiple={true}
+    range={true}
+    plugins={[<DatePanel sort="date" />]}
+    mapDays={({ date }) => {
+        let color;
+        let disabled = true;
 
-              if (
-                isBookedByUser(
-                  bookingStore.activeBookings,
-                  userGuid,
-                  selectedSeatId,
-                  date.toDate()
-                )
-              ) {
-                color = "green";
-              } else if (
-                isBookedByOtherUser(
-                  bookingStore.activeBookings,
-                  userGuid,
-                  selectedSeatId,
-                  date.toDate()
-                )
-              ) {
-                color = "red";
-              }
+        if (
+            isBookedByUser(
+                bookingStore.activeBookings,
+                userGuid,
+                selectedSeatId,
+                date.toDate()
+            )
+        ) {
+            color = "green";
+            disabled = false
+        } else if (
+            isBookedByOtherUser(
+                bookingStore.activeBookings,
+                userGuid,
+                selectedSeatId,
+                date.toDate()
+            )
+        ) {
+            color = "red";
+        } 
 
-              return { className: "highlight highlight-" + color };
-            }}
-          />
+        return {
+            className: "highlight highlight-" + color,
+            disabled: disabled
+        };
+    }}
+/>
 
           <div className="flex flex-row space-y-3">
             <div className="basis-2/3 text-left">
