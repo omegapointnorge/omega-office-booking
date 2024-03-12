@@ -22,11 +22,10 @@ export const BookingItem = ({
   const dateString = date.toLocaleDateString();
 
   return (
-    <ul className="divide-y divide-gray-100 p-4 rounded-[24px] bg-white w-48">
-      <li className="flex flex-col">
+      <li className="flex flex-col mb-2 p-6 rounded-[24px] bg-white w-48">
         {
           <div>
-            {eventName && <h2 className="text-center">{eventName}</h2>}
+            <div className={`text-center ${!eventName ? "pt-6" : ""}`}>{eventName}</div>
             <div className="flex items-center justify-center">
               <BookingSvg highlightedIds={roomIds} />
             </div>
@@ -44,7 +43,7 @@ export const BookingItem = ({
             </div>
           </div>
           {onDelete && (
-            <button data-testid="delete-btn">
+            <button data-testid="delete-btn" title = "delete-btn">
               <MdDelete
                 onClick={onDelete}
                 className={`h-8 w-8 flex-none text-black hover:text-red-500 transition cursor-pointer`}
@@ -53,6 +52,5 @@ export const BookingItem = ({
           )}
         </div>
       </li>
-    </ul>
   );
 };

@@ -10,7 +10,7 @@ public class SeatAllocationDetails
 
     public SeatAllocationDetails(string userId, string displayName, string email, int seatId)
     {
-        User = new UserClaims(displayName, userId, email, null);
+        User = new UserClaims(displayName, userId, email, role: null);
         SeatId = seatId;
     }
 }
