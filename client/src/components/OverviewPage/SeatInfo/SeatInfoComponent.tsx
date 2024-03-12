@@ -1,11 +1,7 @@
 import { CircularProgress } from "@mui/material";
 import { Booking } from "@/shared/types/entities";
 import React from "react";
-import { Calendar, DateObject } from "react-multi-date-picker";
-import DatePanel from "react-multi-date-picker/plugins/date_panel";
-
-import bookingStore from "@stores/BookingStore";
-import { isBookedByOtherUser, isBookedByUser } from "@utils/utils";
+import SeatAssignedToUserCalendar from "./SeatAssignedToUserCalendar";
 
 interface Props {
   userGuid: string;
@@ -99,46 +95,11 @@ export const SeatInfoComponent = ({
             Seteinformasjon
           </h3>
 
-          <Calendar
-    onChange={(newDates: DateObject[]) =>
-        bookingStore.setPreAssignedBookingsToDelete(newDates)
-    }
-    minDate={new Date()}
-    maxDate={new Date(new Date().setMonth(new Date().getMonth() + 1))}
-    multiple={true}
-    range={true}
-    plugins={[<DatePanel sort="date" />]}
-    mapDays={({ date }) => {
-        let color;
-        let disabled = true;
+          {/* {bookingstore.seats[selectedSeatId].assignedToUserId === userGuid && ( */}
+  <SeatAssignedToUserCalendar userGuid={userGuid} selectedSeatId={selectedSeatId} />
+// )}
+          
 
-        if (
-            isBookedByUser(
-                bookingStore.activeBookings,
-                userGuid,
-                selectedSeatId,
-                date.toDate()
-            )
-        ) {
-            color = "green";
-            disabled = false
-        } else if (
-            isBookedByOtherUser(
-                bookingStore.activeBookings,
-                userGuid,
-                selectedSeatId,
-                date.toDate()
-            )
-        ) {
-            color = "red";
-        } 
-
-        return {
-            className: "highlight highlight-" + color,
-            disabled: disabled
-        };
-    }}
-/>
 
           <div className="flex flex-row space-y-3">
             <div className="basis-2/3 text-left">
