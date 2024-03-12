@@ -59,7 +59,10 @@ const OverviewPage = observer(() => {
                 multiple={false}
               />
             ) : (
-              <OverviewMap showSeatInfo={showSeatInfo} />
+              <div>
+                {/* {bookingStore.bookEventMode && <ToggleSwitch></ToggleSwitch>} */}
+                <OverviewMap showSeatInfo={showSeatInfo} />
+              </div>
             )}
           </div>
         </div>

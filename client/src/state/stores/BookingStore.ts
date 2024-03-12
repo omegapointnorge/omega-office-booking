@@ -148,6 +148,14 @@ class BookingStore {
     }
   }
 
+  removeSeatsFromEventSelection(seatIds: number[]): void {
+    this.seatIdSelectedForNewEvent = this.seatIdSelectedForNewEvent.filter(seatId => !seatIds.includes(seatId));
+  }
+
+  addSeatToEventSelection(seatId: number): void {
+    this.seatIdSelectedForNewEvent.push(seatId);
+  }
+
   handleEventDate(date: Date) {
     this.setDisplayDate(this.convertToStandardBookingDateTime(date));
     this.isEventDateChosen = true;
@@ -165,6 +173,10 @@ class BookingStore {
   // Update active bookings
   setActiveBookings(bookings: Booking[]) {
     this.activeBookings = bookings;
+  }
+
+  setSeats(seats: Seat[]) {
+    this.allSeats = seats;
   }
 
   toggleEventMode() {
@@ -202,7 +214,6 @@ class BookingStore {
 
   setAllSeats(data : Seat[]){
     this.allSeats = data;
-    
   }
 
    fetchAllSeats = async () => {
@@ -227,8 +238,6 @@ class BookingStore {
     }
   };
 }
-
-
 
 const bookingStore = new BookingStore();
 export default bookingStore;
