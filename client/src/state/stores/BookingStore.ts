@@ -3,7 +3,7 @@ import { createBooking } from "@models/booking";
 import toast from "react-hot-toast";
 import ApiService from "@services/ApiService";
 import historyStore from "@stores/HistoryStore";
-import { Booking, BookingRequest } from "@/shared/types/entities";
+import { Booking, BookingRequest, Seat } from "@/shared/types/entities";
 import { createEventBooking } from "../../models/booking";
 import { ApiStatus } from "@/shared/types/enums";
 import {
@@ -19,6 +19,7 @@ class BookingStore {
   isEventDateChosen: boolean = false;
   apiStatus: ApiStatus = ApiStatus.Idle;
   openingTime: string | undefined;
+  allSeats: Seat[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -27,6 +28,8 @@ class BookingStore {
   async initialize() {
     await this.fetchAllActiveBookings();
     this.openingTime = await fetchOpeningTimeOfDay();
+    console.log("Fetching seats..")
+    await this.fetchAllSeats();
   }
 
   async fetchAllActiveBookings() {
@@ -146,6 +149,14 @@ class BookingStore {
     }
   }
 
+  removeSeatsFromEventSelection(seatIds: number[]): void {
+    this.seatIdSelectedForNewEvent = this.seatIdSelectedForNewEvent.filter(seatId => !seatIds.includes(seatId));
+  }
+
+  addSeatToEventSelection(seatId: number): void {
+    this.seatIdSelectedForNewEvent.push(seatId);
+  }
+
   handleEventDate(date: Date) {
     this.setDisplayDate(this.convertToStandardBookingDateTime(date));
     this.isEventDateChosen = true;
@@ -163,6 +174,10 @@ class BookingStore {
   // Update active bookings
   setActiveBookings(bookings: Booking[]) {
     this.activeBookings = bookings;
+  }
+
+  setSeats(seats: Seat[]) {
+    this.allSeats = seats;
   }
 
   toggleEventMode() {
@@ -196,6 +211,28 @@ class BookingStore {
 
     let currentDateTime = new Date();
     return currentDateTime > bookingOpeningTime;
+  };
+
+  fetchAllSeats = async () => {
+    if (this.apiStatus === ApiStatus.Pending) return;
+    try {
+      this.setApiStatus(ApiStatus.Pending);
+
+      const data = await ApiService.fetchData<Seat[]>(
+        "/api/Seat/GetAllSeats",
+        "Get"
+      ).then((response) => {
+        this.setApiStatus(ApiStatus.Success);
+        console.log("API Response:");
+        console.log(response);
+        return response;
+      });
+
+      this.setSeats(data);
+    } catch (error) {
+      console.error("Error fetching seats:", error);
+      this.setApiStatus(ApiStatus.Error);
+    }
   };
 }
 
