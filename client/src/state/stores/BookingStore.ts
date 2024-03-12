@@ -29,7 +29,6 @@ class BookingStore {
   
   //Only used by users with preassigned seats
   preAssignedBookingsToDelete : DateObject[] =  []
-  preAssignedBookings : DateObject[] =  []
 
 >>>>>>> 0c555db (Added calendar with color coded days)
 
