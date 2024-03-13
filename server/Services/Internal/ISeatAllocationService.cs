@@ -1,4 +1,4 @@
-﻿using server.Models.DTOs.Internala;
+﻿using server.Models.DTOs.Internal;
 
 namespace server.Services.Internal;
 
