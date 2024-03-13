@@ -1,4 +1,5 @@
 using Azure.Identity;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using server.Context;
 using server.Helpers;
 using server.Repository;
+using server.Services.External;
 using server.Services.Internal;
 using server.Services.Internal.Background;
 
@@ -97,6 +99,8 @@ builder.Services.AddScoped<ISeatRepository, SeatRepository>();
 builder.Services.AddScoped<ISeatAllocationService, SeatAllocationService>();
 builder.Services.AddScoped<ISeatAllocationRepository, SeatAllocationRepository>();
 builder.Services.AddScoped<RecaptchaEnterprise>();
+builder.Services.AddScoped<TelemetryClient>();
+builder.Services.AddScoped<ITelemetryService, TelemetryService>();
 
 builder.Services.AddHostedService<SeatAssignmentBackgroundService>();
 

@@ -24,7 +24,7 @@ public class SeatController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { error = "An error occurred processing your request." });
+            return StatusCode(500, new { error = "An error occurred processing your request.", ex });
         }
     }
 }
