@@ -163,7 +163,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
           break;
       }
     },
-    [zoomedOutViewBoxParameters]
+    []
   );
 
   const animateViewBox = useCallback(

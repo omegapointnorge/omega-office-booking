@@ -27,7 +27,7 @@ public class SeatAssignmentBackgroundService : BackgroundService
                 var bookingService = serviceProvider.GetRequiredService<IBookingService>();
 
                 var seatAllocationDetails = await seatAllocationService.GetAllSeatAssignmentDetails();
-                await bookingService.CreateBookingAsync(seatAllocationDetails, todayPlusOneMonth);
+                await bookingService.CreateReaquringBookingAsync(seatAllocationDetails, todayPlusOneMonth);
 
             }
             catch (Exception ex)
