@@ -1,30 +1,35 @@
 using Microsoft.EntityFrameworkCore;
 using server.Context;
+using server.Helpers;
 using server.Models.Domain;
 
 namespace server.Repository
 {
-    public class BookingRepository : Repository<Booking>, IBookingRepository
+    public class BookingRepository(OfficeDbContext context) : Repository<Booking>(context), IBookingRepository
     {
-        private readonly OfficeDbContext _dbContext;
-
-        public BookingRepository(OfficeDbContext context) : base(context)
-        {
-            _dbContext = context;
-        }
-
         public Task<List<Booking>> GetAllActiveBookings()
         {
-            return _dbContext.Bookings
-                .Where(booking => booking.BookingDateTime.Date >= DateTime.Today)
+            return context.Booking
+                .Where(booking => DateOnly.FromDateTime(booking.BookingDateTime) >= BookingTimeUtils.GetCurrentDate())
+                .Include(booking => booking.Event)
                 .ToListAsync();
         }
 
         public Task<List<Booking>> GetBookingsWithSeatForUserAsync(String userId)
         {
-            return _dbContext.Bookings
+            return context.Booking
+                .Include(booking => booking.Seat)
+                .Include(booking => booking.Event)
                 .Where(booking => booking.UserId == userId)
                 .ToListAsync();
+        }
+
+        public Task DeleteBookingsWithEventId(int eventId)
+        {
+            var bookings = context.Booking
+                .Where(booking => booking.EventId == eventId);
+            context.Booking.RemoveRange(bookings);
+            return context.SaveChangesAsync();
         }
 
     }

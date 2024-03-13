@@ -5,9 +5,8 @@ namespace server.Context
 {
     public class OfficeDbContext : DbContext
     {
-        public DbSet<Seat> Seats { get; set; }
-        public DbSet<Room> Rooms { get; set; }
-        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Booking> Booking { get; set; }
+
 
         public OfficeDbContext(DbContextOptions options) : base(options)
         {
@@ -106,9 +105,31 @@ namespace server.Context
             modelBuilder.Entity<Event>()
                 .HasMany(e => e.Bookings)
                 .WithOne(booking => booking.Event)
-                .HasPrincipalKey(e => e.Id);
+                .HasPrincipalKey(e => e.Id)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // End of Seat setup
+            // End of Event setup
+
+            // SeatAllocation setup
+            modelBuilder.Entity<SeatAllocation>()
+                .HasKey(seatAllocation => seatAllocation.Id);
+
+            modelBuilder.Entity<SeatAllocation>()
+                .Property(seatAllocation => seatAllocation.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<SeatAllocation>()
+                .Property(seatAllocation => seatAllocation.UserId)
+                .IsRequired();
+
+            modelBuilder.Entity<SeatAllocation>()
+                .Property(seatAllocation => seatAllocation.SeatId)
+                .IsRequired();
+            modelBuilder.Entity<SeatAllocation>()
+                .HasAlternateKey(seatAllocation => new { seatAllocation.SeatId })
+                .HasName("unique_seat_constraint");
+
+            // End of SeatAllocation setup
 
             SampleData.CreateSampleData(modelBuilder);
         }

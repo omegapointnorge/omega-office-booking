@@ -11,9 +11,18 @@ import { ApiStatus } from "@/shared/types/enums";
 
 const ActiveBookings = observer(() => {
   const handleDelete = () => {
-    //TODO: sjekk om det er event admin som sletter reservasjon gjort av noen andre
-    // kanskje event admin skal få se navn under sete nummer på Reservasjoner/History page
-    historyStore.deleteBooking(historyStore.bookingIdToDelete);
+    const bookingToDelete = historyStore.myActiveBookings.find(
+      (historyBooking) =>
+        historyBooking.id === historyStore.historyBookingIdToDelete
+    );
+    const isEvent = !!bookingToDelete?.eventName;
+
+    if (isEvent) {
+      historyStore.deleteEvent(historyStore.historyBookingIdToDelete);
+    } else {
+      historyStore.deleteBooking(historyStore.historyBookingIdToDelete);
+    }
+
     historyStore.handleCloseDialog();
   };
 
@@ -21,29 +30,29 @@ const ActiveBookings = observer(() => {
     <div className="flex flex-row gap-5">
       <button
         onClick={() => historyStore.navigatePrevious()}
-        className="opacity-0"
         disabled={true}
       >
-        <IoIosArrowBack />
+        <IoIosArrowBack className="invisible" />
       </button>
+      <ul className="flex space-x-4 w-f-100">
       {historyStore.myActiveBookings.map((booking) => (
         <BookingItem
           key={booking.id}
-          seatId={booking.seatId}
+          seatIds={booking.seatIds}
           bookingDateTime={booking.bookingDateTime}
-          showDeleteButton={true}
-          roomId={historyStore.getRoomIdBySeatId(booking.seatId)}
-          onClick={() => {
+          roomIds={booking.roomIds}
+          eventName={booking.eventName}
+          onDelete={() => {
             historyStore.handleOpenDialog(booking.id);
           }}
-        ></BookingItem>
+        />
       ))}
+      </ul>
       <button
         onClick={() => historyStore.navigateNext()}
         className="opacity-0"
-        disabled={true}
       >
-        <IoIosArrowForward />
+      <IoIosArrowForward className="invisible"/>
       </button>
       {/* //TODO: Ta i bruk samme dialog! */}
       <PrimaryDialog
@@ -60,24 +69,31 @@ const PreviousBookings = observer(() => (
   <div className="flex flex-row gap-5">
     <button
       onClick={() => historyStore.navigatePrevious()}
-      className={`${historyStore.isFirstPage ? "opacity-0" : "opacity-100"}`}
+      className={`${historyStore.isFirstPage ? "invisible" : ""} hover:scale-150 transition-transform`}
+
       disabled={historyStore.isFirstPage}
     >
       <IoIosArrowBack />
     </button>
+    <ul className="flex space-x-4 w-f-100">
+      
     {historyStore.myPreviousBookingsCurrentPage.map((booking) => (
       <BookingItem
         key={booking.id}
-        seatId={booking.seatId}
+        seatIds={booking.seatIds}
         bookingDateTime={booking.bookingDateTime}
-        showDeleteButton={false}
-        roomId={historyStore.getRoomIdBySeatId(booking.seatId)}
-      ></BookingItem>
+        roomIds={booking.roomIds}
+        eventName={booking.eventName}
+        aria-label="Forrige"
+
+      />
     ))}
+    </ul>
     <button
       onClick={() => historyStore.navigateNext()}
-      className={`${historyStore.isLastPage ? "opacity-0" : "opacity-100"}`}
+      className={`${historyStore.isLastPage ? "invisible" : ""} hover:scale-150 transition-transform`}
       disabled={historyStore.isLastPage}
+      aria-label="Neste"
     >
       <IoIosArrowForward />
     </button>

@@ -9,9 +9,8 @@ namespace server.Models.Domain
         public Event()
         {
         }
-        public Event(int id, string name)
+        public Event(string name)
         {
-            Id = id;
             Name = name;
         }
     }

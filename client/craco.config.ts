@@ -1,4 +1,4 @@
-const path = require("path");
+import path from "path";
 
 module.exports = {
   webpack: {
@@ -11,7 +11,9 @@ module.exports = {
       "@services": path.resolve(__dirname, "src/services"),
       "@assets": path.resolve(__dirname, "src/shared/assets"),
       "@hooks": path.resolve(__dirname, "src/shared/hooks"),
+      "@enums": path.resolve(__dirname, "src/shared/types/enums.ts"),
       "@utils": path.resolve(__dirname, "src/shared/utils"),
+      "@types": path.resolve(__dirname, "src/shared/types"),
       "@test-utils": path.resolve(__dirname, "src/shared/utils/test-utils"),
       "@context": path.resolve(__dirname, "src/state/context"),
       "@stores": path.resolve(__dirname, "src/state/stores"),

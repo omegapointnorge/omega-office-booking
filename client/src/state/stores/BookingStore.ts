@@ -4,23 +4,23 @@ import toast from "react-hot-toast";
 import ApiService from "@services/ApiService";
 import historyStore from "@stores/HistoryStore";
 import { Booking, BookingRequest } from "@/shared/types/entities";
-import { createEventBookingRequest } from "../../models/booking";
+import { createEventBooking } from "../../models/booking";
 import { ApiStatus } from "@/shared/types/enums";
 import {
   fetchOpeningTimeOfDay,
   getEarliestAllowedBookingDate,
+  fetchUnavailableSeatsIds
 } from "@utils/utils";
 
 class BookingStore {
   activeBookings: Booking[] = [];
-  //TODO: brukes denne? om ikke slett
-  // userBookings = [];
   displayDate = new Date();
   bookEventMode = false;
   seatIdSelectedForNewEvent: number[] = [];
   isEventDateChosen: boolean = false;
   apiStatus: ApiStatus = ApiStatus.Idle;
   openingTime: string | undefined;
+  unavailableSeatsIds: number[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -29,6 +29,13 @@ class BookingStore {
   async initialize() {
     await this.fetchAllActiveBookings();
     this.openingTime = await fetchOpeningTimeOfDay();
+
+    const unavailableSeats = await fetchUnavailableSeatsIds();
+    if (Array.isArray(unavailableSeats)) {
+      this.unavailableSeatsIds = unavailableSeats;
+    } else {
+      console.error("Error fetching unavailable seat IDs:", unavailableSeats);
+    }
   }
 
   async fetchAllActiveBookings() {
@@ -58,9 +65,10 @@ class BookingStore {
       this.setApiStatus(ApiStatus.Pending);
 
       const url = "/api/Booking/create";
+      const bookingDateTimeStandard = this.convertToStandardBookingDateTime(this.displayDate);
       const bookingRequest: BookingRequest = {
         seatId,
-        bookingDateTime: this.displayDate.toISOString(),
+        bookingDateTime: bookingDateTimeStandard.toISOString(),
         reCAPTCHAToken,
       };
       const response = await ApiService.fetchData<Booking>(
@@ -85,7 +93,6 @@ class BookingStore {
 
         // Update the store's state with the new booking
         this.activeBookings.push(newBooking);
-        historyStore.myActiveBookings.unshift(newBooking);
       }
     } catch (error) {
       this.setApiStatus(ApiStatus.Error);
@@ -93,15 +100,16 @@ class BookingStore {
     }
   }
 
-  async createBookingForEvent(selectedSeatIds: number[]) {
-    const bookingRequest = createEventBookingRequest({
+  async createBookingForEvent(selectedSeatIds: number[], eventName: string) {
+    const bookingRequest = createEventBooking({
       seatIds: selectedSeatIds,
-      bookingDateTime: this.displayDate,
+      bookingDateTime: this.displayDate.toISOString(),
       isEvent: true,
+      eventName: eventName || "Arrangement",
     });
 
     try {
-      const response = await fetch("/api/Booking/CreateEventBookingsForSeats", {
+      const response = await fetch("/api/Event", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -148,10 +156,14 @@ class BookingStore {
   }
 
   handleEventDate(date: Date) {
-    const newDate = new Date(date);
-    newDate.setHours(newDate.getHours() + 12);
-    this.setDisplayDate(newDate);
+    this.setDisplayDate(this.convertToStandardBookingDateTime(date));
     this.isEventDateChosen = true;
+  }
+
+  convertToStandardBookingDateTime(date: Date) {
+    const newDate = new Date(date);
+    newDate.setHours(12, 0, 0, 0);
+    return newDate;
   }
 
   setDisplayDate(date: Date) {
@@ -198,3 +210,5 @@ class BookingStore {
 
 const bookingStore = new BookingStore();
 export default bookingStore;
+
+

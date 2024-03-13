@@ -1,9 +1,7 @@
 using Microsoft.ApplicationInsights;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using server.Helpers;
 using server.Models.DTOs;
-using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Services.Internal;
 
@@ -45,6 +43,7 @@ namespace server.Controllers
         {
             try
             {
+                var userClaim = UserUtils.GetCurrentUserClaims(User);
                 if (string.IsNullOrWhiteSpace(bookingRequest.reCAPTCHAToken))
                 {
                     TrackReCAPTCHATokenError("reCAPTCHA token is missing or empty.");
@@ -56,18 +55,18 @@ namespace server.Controllers
                         var score = _recaptchaEnterprise.CreateAssessment(bookingRequest);
                         if (score < RecaptchaEnterprise.ReCaptchaThreshold)
                         {
-                            TrackReCAPTCHATokenError($"The reCAPTCHA score is {score}. This is below the threshold of {RecaptchaEnterprise.ReCaptchaThreshold}");
+                            TrackReCAPTCHATokenError($"The reCAPTCHA score is {score} for {userClaim.UserName}. This is below the threshold of {RecaptchaEnterprise.ReCaptchaThreshold}");
+                            throw new InvalidOperationException("The reCAPTCHA score is below the threshold. Please log out and log in again to verify your identity.");
                         }
                     }
                     catch (Exception error)
                     {
-                        TrackReCAPTCHATokenError(error.ToString());
+                        TrackReCAPTCHATokenError($"{userClaim.UserName}: {error.ToString()}");
                     }
 
                 }
 
-                var user = GetUser();
-                var booking = await _bookingService.CreateBookingAsync(bookingRequest, user);
+                var booking = await _bookingService.CreateBookingAsync(bookingRequest, userClaim);
 
                 return CreatedAtRoute(null, booking);
             }
@@ -76,33 +75,14 @@ namespace server.Controllers
                 return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
-        [Authorize(Roles = "EventAdmin")]
-        [HttpPost("CreateEventBookingsForSeats")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> CreateEventBookingsForSeatsAsync(CreateBookingRequest bookingRequest)
-        {
-            try
-            {
-                var user = GetUser();
-                var bookingDtoList = await _bookingService.CreateEventBookingsForSeatsAsync(bookingRequest, user);
-
-                return CreatedAtRoute(null, bookingDtoList);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception, handle the error appropriately
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-
 
         [HttpGet("Bookings/MyBookings")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAllBookingsForUser()
+        public async Task<ActionResult<IEnumerable<HistoryBookingDto>>> GetAllBookingsForUser()
         {
             try
             {
-                var user = GetUser();
-                var result = await _bookingService.GetAllBookingsForUser(user.Objectidentifier);
+                var userClaim = UserUtils.GetCurrentUserClaims(User);
+                var result = await _bookingService.GetAllBookingsForUserAsync(userClaim.Objectidentifier);
 
                 return new OkObjectResult(result);
             }
@@ -124,7 +104,7 @@ namespace server.Controllers
         {
             try
             {
-                var userClaim = GetUser();
+                var userClaim = UserUtils.GetCurrentUserClaims(User);
                 await _bookingService.DeleteBookingAsync(bookingId, userClaim);
 
                 return NoContent();
@@ -149,16 +129,7 @@ namespace server.Controllers
                 return StatusCode(500, "An error occurred processing your request." + ex.Message);
             }
         }
-        private UserClaims GetUser()
-        {
-            var id = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? String.Empty;
-            var name = User.FindFirst("name")?.Value ?? String.Empty;
-            var role = User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value ?? String.Empty;
 
-            UserClaims user = new(name, id, role);
-            return user;
-
-        }
         // Helper method to track the event
         private void TrackReCAPTCHATokenError(string errorMessage)
         {

@@ -64,27 +64,7 @@ namespace server.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("Bookings");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BookingDateTime = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local),
-                            BookingDateTime_DayOnly = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local),
-                            SeatId = 1,
-                            UserId = "860849a4-f4b8-4566-8ed1-918cf3d41a92",
-                            UserName = "SampleUser1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BookingDateTime = new DateTime(2023, 12, 5, 14, 44, 11, 768, DateTimeKind.Local),
-                            BookingDateTime_DayOnly = new DateTime(2023, 12, 7, 14, 44, 11, 768, DateTimeKind.Local),
-                            SeatId = 2,
-                            UserId = "639d660b-4724-407b-b05c-12b5f619f833",
-                            UserName = "SampleUser2"
-                        });
+                    b.ToTable("Booking");
                 });
 
             modelBuilder.Entity("server.Models.Domain.Event", b =>
@@ -117,7 +97,7 @@ namespace server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Room");
 
                     b.HasData(
                         new
@@ -129,6 +109,26 @@ namespace server.Migrations
                         {
                             Id = 2,
                             Name = "Lille Rommet"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Salg"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Marie"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Okonomi"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Oystein"
                         });
                 });
 
@@ -150,7 +150,7 @@ namespace server.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("Seats");
+                    b.ToTable("Seat");
 
                     b.HasData(
                         new
@@ -242,6 +242,109 @@ namespace server.Migrations
                             Id = 15,
                             IsAvailable = true,
                             RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 16,
+                            IsAvailable = false,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 17,
+                            IsAvailable = true,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 18,
+                            IsAvailable = false,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 19,
+                            IsAvailable = false,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 20,
+                            IsAvailable = false,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 21,
+                            IsAvailable = false,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 22,
+                            IsAvailable = false,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 23,
+                            IsAvailable = true,
+                            RoomId = 4
+                        },
+                        new
+                        {
+                            Id = 24,
+                            IsAvailable = true,
+                            RoomId = 4
+                        },
+                        new
+                        {
+                            Id = 25,
+                            IsAvailable = true,
+                            RoomId = 4
+                        },
+                        new
+                        {
+                            Id = 26,
+                            IsAvailable = true,
+                            RoomId = 5
+                        },
+                        new
+                        {
+                            Id = 27,
+                            IsAvailable = true,
+                            RoomId = 6
+                        });
+                });
+
+            modelBuilder.Entity("server.Models.Domain.SeatAllocation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("SeatId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("SeatId")
+                        .HasName("unique_seat_constraint");
+
+                    b.ToTable("SeatAllocation");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            SeatId = 1,
+                            UserId = "Salg test Johansen"
                         });
                 });
 
@@ -249,7 +352,8 @@ namespace server.Migrations
                 {
                     b.HasOne("server.Models.Domain.Event", "Event")
                         .WithMany("Bookings")
-                        .HasForeignKey("EventId");
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("server.Models.Domain.Seat", "Seat")
                         .WithMany("Bookings")
