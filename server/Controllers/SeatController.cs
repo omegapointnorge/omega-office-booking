@@ -13,18 +13,4 @@ public class SeatController : ControllerBase
     {
         _seatService = seatService;
     }
-
-    [HttpGet("GetUnavailableSeatIds")]
-    public async Task<ActionResult<IEnumerable<int>>> GetUnavailableSeatIds()
-    {
-        try
-        {
-            var result = await _seatService.GetUnavailableSeatIds();
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = "An error occurred processing your request.", ex });
-        }
-    }
 }

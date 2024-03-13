@@ -1,5 +1,5 @@
 ﻿using Microsoft.Graph;
-using server.Models.DTOs.Internala;
+using server.Models.DTOs.Internal;
 using server.Repository;
 
 namespace server.Services.Internal;

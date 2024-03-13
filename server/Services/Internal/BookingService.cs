@@ -1,9 +1,7 @@
-using Microsoft.ApplicationInsights;
 using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
 using server.Models.DTOs.Internal;
-using server.Models.DTOs.Internala;
 using server.Models.DTOs.Request;
 using server.Repository;
 using server.Services.External;
@@ -13,6 +11,7 @@ namespace server.Services.Internal
     public class BookingService : IBookingService
     {
         private readonly IBookingRepository _bookingRepository;
+
         private readonly ITelemetryService _telemetryClient;
 
         public BookingService(IBookingRepository bookingRepository, ITelemetryService telemetryClient)
@@ -53,7 +52,6 @@ namespace server.Services.Internal
                 var existingBooking = await _bookingRepository.GetBookingBySeatIdAndDateTime(seatAssignmentDetail.SeatId, bookingDateTime);
                 if (existingBooking != null)
                 {
-                    _telemetryClient.TrackTrace($"Backgroud process: Seat {seatAssignmentDetail.SeatId} is already booked for the specified time.");
                     continue;
                 }
                 var booking = new Booking(seatAssignmentDetail.User.Objectidentifier, seatAssignmentDetail.User.UserName, seatAssignmentDetail.SeatId, bookingDateTime, bookingDateTime.Date);
