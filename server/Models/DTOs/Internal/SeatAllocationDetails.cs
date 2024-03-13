@@ -1,6 +1,4 @@
-﻿using server.Models.DTOs.Internal;
-
-namespace server.Models.DTOs.Internala;
+﻿namespace server.Models.DTOs.Internal;
 
 public class SeatAllocationDetails
 {
