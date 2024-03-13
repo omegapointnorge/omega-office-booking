@@ -1,7 +1,7 @@
 import { CircularProgress } from "@mui/material";
 import { Booking } from "@/shared/types/entities";
 import React from "react";
-import SeatAssignedToUserCalendar from "./SeatAssignedToUserCalendar";
+import SeatAssignedToUserCalendar from './SeatAssignedToUserCalendar/index';
 
 interface Props {
   userGuid: string;
@@ -95,10 +95,8 @@ export const SeatInfoComponent = ({
             Seteinformasjon
           </h3>
 
-          {/* {bookingstore.seats[selectedSeatId].assignedToUserId === userGuid && ( */}
-  <SeatAssignedToUserCalendar userGuid={userGuid} selectedSeatId={selectedSeatId} />
-// )}
-          
+          {/*intended use IF(bookingstore.seats[selectedSeatId].assignedToUserId === userGuid) */}
+          <SeatAssignedToUserCalendar userGuid={userGuid} selectedSeatId={selectedSeatId} />
 
 
           <div className="flex flex-row space-y-3">
