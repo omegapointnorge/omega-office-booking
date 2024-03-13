@@ -119,7 +119,7 @@ namespace server.Context
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<SeatAllocation>()
-                .Property(seatAllocation => seatAllocation.UserId)
+                .Property(seatAllocation => seatAllocation.Email)
                 .IsRequired();
 
             modelBuilder.Entity<SeatAllocation>()

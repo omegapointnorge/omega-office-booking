@@ -4,6 +4,7 @@ using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Repository;
+using server.Services.External;
 
 namespace server.Services.Internal
 {
@@ -11,10 +12,12 @@ namespace server.Services.Internal
     {
         private readonly IBookingRepository _bookingRepository;
 
+        private readonly ITelemetryService _telemetryClient;
 
-        public BookingService(IBookingRepository bookingRepository)
+        public BookingService(IBookingRepository bookingRepository, ITelemetryService telemetryClient)
         {
             _bookingRepository = bookingRepository;
+            _telemetryClient = telemetryClient;
         }
 
         public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user)
@@ -40,6 +43,23 @@ namespace server.Services.Internal
             {
                 throw;
             }
+        }
+
+        public async Task CreateRecurringBookingAsync(IEnumerable<SeatAllocationDetails> seatAssignmentDetails, DateTime bookingDateTime)
+        {
+            foreach (var seatAssignmentDetail in seatAssignmentDetails)
+            {
+                var existingBooking = await _bookingRepository.GetBookingBySeatIdAndDateTime(seatAssignmentDetail.SeatId, bookingDateTime);
+                if (existingBooking != null)
+                {
+                    _telemetryClient.TrackTrace($"Backgroud process: Seat {seatAssignmentDetail.SeatId} is already booked for the specified time {existingBooking.BookingDateTime_DayOnly}.");
+                    continue;
+                }
+                var booking = new Booking(seatAssignmentDetail.User.Objectidentifier, seatAssignmentDetail.User.UserName, seatAssignmentDetail.SeatId, bookingDateTime, bookingDateTime.Date);
+                await _bookingRepository.AddAsync(booking);
+            }
+
+            await _bookingRepository.SaveAsync();
         }
 
 

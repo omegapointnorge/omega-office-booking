@@ -13,5 +13,3 @@ public class CreateEventRequest
     [MinLength(1, ErrorMessage = "SeatList must contain at least one item")]
     public List<int>? SeatList { get; set; }
 }
-
-

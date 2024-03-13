@@ -1,15 +1,19 @@
 using Azure.Identity;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using server.Context;
 using server.Helpers;
 using server.Repository;
+using server.Services.External;
 using server.Services.Internal;
+using server.Services.Internal.Background;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,7 +96,23 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ISeatService, SeatService>();
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
+builder.Services.AddScoped<ISeatAllocationService, SeatAllocationService>();
+builder.Services.AddScoped<ISeatAllocationRepository, SeatAllocationRepository>();
 builder.Services.AddScoped<RecaptchaEnterprise>();
+builder.Services.AddScoped<TelemetryClient>();
+builder.Services.AddScoped<ITelemetryService, TelemetryService>();
+
+builder.Services.AddHostedService<SeatAssignmentBackgroundService>();
+
+builder.Services.AddSingleton(provider =>
+{
+    string[] scopes = { "https://graph.microsoft.com/.default" };
+
+    var credential = new ClientSecretCredential(builder.Configuration.GetValue<string>("AzureAd:TenantId"), builder.Configuration.GetValue<string>("AzureAd:ClientId"), builder.Configuration.GetValue<string>("AzureAd:ClientSecret"));
+
+    return new GraphServiceClient(credential);
+});
+
 
 builder.Services.AddApplicationInsightsTelemetry(options =>
 {

@@ -9,7 +9,6 @@ import { ApiStatus } from "@/shared/types/enums";
 import {
   fetchOpeningTimeOfDay,
   getEarliestAllowedBookingDate,
-  fetchUnavailableSeatsIds
 } from "@utils/utils";
 
 class BookingStore {
@@ -20,7 +19,6 @@ class BookingStore {
   isEventDateChosen: boolean = false;
   apiStatus: ApiStatus = ApiStatus.Idle;
   openingTime: string | undefined;
-  unavailableSeatsIds: number[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -29,13 +27,6 @@ class BookingStore {
   async initialize() {
     await this.fetchAllActiveBookings();
     this.openingTime = await fetchOpeningTimeOfDay();
-
-    const unavailableSeats = await fetchUnavailableSeatsIds();
-    if (Array.isArray(unavailableSeats)) {
-      this.unavailableSeatsIds = unavailableSeats;
-    } else {
-      console.error("Error fetching unavailable seat IDs:", unavailableSeats);
-    }
   }
 
   async fetchAllActiveBookings() {
