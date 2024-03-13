@@ -45,7 +45,7 @@ namespace server.Services.Internal
             }
         }
 
-        public async Task CreateReaquringBookingAsync(IEnumerable<SeatAllocationDetails> seatAssignmentDetails, DateTime bookingDateTime)
+        public async Task CreateRecurringBookingAsync(IEnumerable<SeatAllocationDetails> seatAssignmentDetails, DateTime bookingDateTime)
         {
             foreach (var seatAssignmentDetail in seatAssignmentDetails)
             {
