@@ -22,15 +22,13 @@ class BookingStore {
   isEventDateChosen: boolean = false;
   apiStatus: ApiStatus = ApiStatus.Idle;
   openingTime: string | undefined;
-<<<<<<< HEAD
   allSeats : Seat[] = []
-=======
   unavailableSeatsIds: number[] = [];
   
   //Only used by users with preassigned seats
   preAssignedBookingsToDelete : DateObject[] =  []
+  preAssignedBookings : DateObject[] =  []
 
->>>>>>> 0c555db (Added calendar with color coded days)
 
   constructor() {
     makeAutoObservable(this);
