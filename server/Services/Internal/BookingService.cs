@@ -4,6 +4,7 @@ using server.Models.DTOs;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Repository;
+using server.Services.External;
 
 namespace server.Services.Internal
 {
@@ -11,9 +12,12 @@ namespace server.Services.Internal
     {
         private readonly IBookingRepository _bookingRepository;
 
-        public BookingService(IBookingRepository bookingRepository)
+        private readonly ITelemetryService _telemetryClient;
+
+        public BookingService(IBookingRepository bookingRepository, ITelemetryService telemetryClient)
         {
             _bookingRepository = bookingRepository;
+            _telemetryClient = telemetryClient;
         }
 
         public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user)
