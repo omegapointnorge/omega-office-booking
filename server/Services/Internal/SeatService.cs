@@ -16,7 +16,7 @@ namespace server.Services.Internal
         public async Task<IEnumerable<SeatDto>> GetAllSeats()
         {
             IEnumerable<Seat> allSeats = await _seatRepository.GetAsync();
-            return allSeats.Select(seat => new SeatDto(seat.Id, seat.RoomId, null));
+            return allSeats.Select(seat => new SeatDto(seat.Id, seat.RoomId));
         }
     }
 }
