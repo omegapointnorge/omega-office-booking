@@ -4,11 +4,13 @@ namespace server.Models.DTOs
     {
         public int Id { get; set; }
         public int RoomId { get; set; }
+        public string? SeatOwnerUserId { get; set; }
 
-        public SeatDto(int id, int roomId)
+        public SeatDto(int id, int roomId, string seatOwnerUserId)
         {
             Id = id;
             RoomId = roomId;
+            SeatOwnerUserId = seatOwnerUserId;
         }
     }
 }

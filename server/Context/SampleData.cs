@@ -18,30 +18,29 @@ namespace server.Context
             // Generating Seats for room 1
             for (int i = 1; i <= 10; i++)
             {
-                modelBuilder.Entity<Seat>().HasData(new Seat(i, 1, true));
+                modelBuilder.Entity<Seat>().HasData(new Seat(i, 1, null));
             }
             // Generatings Seats for room 2
             for (int i = 11; i <= 15; i++)
             {
-                modelBuilder.Entity<Seat>().HasData(new Seat(i, 2, true));
+                modelBuilder.Entity<Seat>().HasData(new Seat(i, 2, null));
             }
             // Generatings Seats for room 3
             for (int i = 16; i <= 22; i++)
             {
                 //manual setting of unavailable for now, it can be remove in later step
                 bool isAvailable = i == 17;
-                modelBuilder.Entity<Seat>().HasData(new Seat(i, 3, isAvailable));
+                modelBuilder.Entity<Seat>().HasData(new Seat(i, 3, null));
             }
             // Generatings Seats for room 4
             for (int i = 23; i <= 25; i++)
             {
-                modelBuilder.Entity<Seat>().HasData(new Seat(i, 4, true));
+                modelBuilder.Entity<Seat>().HasData(new Seat(i, 4, null));
             }
 
-            modelBuilder.Entity<Seat>().HasData(new Seat(26, 5, true));
-            modelBuilder.Entity<Seat>().HasData(new Seat(27, 6, true));
+            modelBuilder.Entity<Seat>().HasData(new Seat(26, 5, null));
+            modelBuilder.Entity<Seat>().HasData(new Seat(27, 6, null));
 
-            modelBuilder.Entity<SeatAllocation>().HasData(new SeatAllocation(1, 2, "eric.bondoux@omegapoint.no"));
 
         }
     }

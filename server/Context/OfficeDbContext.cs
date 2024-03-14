@@ -61,6 +61,9 @@ namespace server.Context
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Seat>()
+                .Property(seat => seat.SeatOwnerEmail);
+
+            modelBuilder.Entity<Seat>()
                 .HasOne<Room>()
                 .WithMany()
                 .HasForeignKey(seat => seat.RoomId)
@@ -110,26 +113,6 @@ namespace server.Context
 
             // End of Event setup
 
-            // SeatAllocation setup
-            modelBuilder.Entity<SeatAllocation>()
-                .HasKey(seatAllocation => seatAllocation.Id);
-
-            modelBuilder.Entity<SeatAllocation>()
-                .Property(seatAllocation => seatAllocation.Id)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<SeatAllocation>()
-                .Property(seatAllocation => seatAllocation.Email)
-                .IsRequired();
-
-            modelBuilder.Entity<SeatAllocation>()
-                .Property(seatAllocation => seatAllocation.SeatId)
-                .IsRequired();
-            modelBuilder.Entity<SeatAllocation>()
-                .HasAlternateKey(seatAllocation => new { seatAllocation.SeatId })
-                .HasName("unique_seat_constraint");
-
-            // End of SeatAllocation setup
 
             SampleData.CreateSampleData(modelBuilder);
         }
