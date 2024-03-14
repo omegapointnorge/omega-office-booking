@@ -17,7 +17,7 @@ public class SeatAssignmentBackgroundService : BackgroundService
 
         using (var scope = _serviceScopeFactory.CreateScope())
         {
-            var todayPlusOneMonth = DateTime.Today.AddMonths(1);
+            var todayPlusOneMonth = DateTime.Today.AddMonths(1).Date;
             var serviceProvider = scope.ServiceProvider;
             var telemetryClient = serviceProvider.GetRequiredService<TelemetryClient>();
 

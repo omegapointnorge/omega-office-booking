@@ -21,8 +21,6 @@ public class SeatAllocationService : ISeatAllocationService
         var seatAllocations = await _seatAllocationRepository.GetAsync();
         var seatAllocationDetails = new List<SeatAllocationDetails>();
 
-        var UserClaimsList = new List<SeatAllocationDetails>();
-
         foreach (var seatAllocation in seatAllocations)
         {
             var users = await _graphServiceClient.Users.GetAsync(rc =>
