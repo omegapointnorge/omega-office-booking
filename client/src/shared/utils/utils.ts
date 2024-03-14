@@ -1,4 +1,6 @@
 import ApiService from "@services/ApiService";
+import { Booking } from "@/shared/types/entities";
+
 
 export const isSameDate = (date1: Date, date2: Date) => {
   if (!(date1 instanceof Date) || !(date2 instanceof Date)) {
@@ -41,6 +43,46 @@ export const fetchOpeningTimeOfDay = async () => {
     return "Error fetching opening time";
   }
 };
+
+
+
+const isBookingForUser = (
+  booking: Booking,
+  userId: string,
+  seatId: number,
+  date: Date,
+  includeCurrentUser: boolean
+): boolean => {
+  const providedDate = new Date(date);
+  providedDate.setHours(0, 0, 0, 0);
+  const bookingDate = new Date(booking.bookingDateTime);
+  bookingDate.setHours(0, 0, 0, 0);
+  
+
+  return (
+    (includeCurrentUser ? booking.userId === userId : booking.userId !== userId) &&
+    booking.seatId === seatId &&
+    bookingDate.getTime() === providedDate.getTime()
+  );
+};
+
+export const isBookedByUser = (
+  bookingsList: Booking[],
+  userId: string,
+  seatId: number,
+  date: Date
+): boolean =>
+  bookingsList.some(booking => isBookingForUser(booking, userId, seatId, date, true));
+
+export const isBookedByOtherUser = (
+  bookingsList: Booking[],
+  userId: string,
+  seatId: number,
+  date: Date
+): boolean =>
+  bookingsList.some(booking => isBookingForUser(booking, userId, seatId, date, false));
+
+
 
 
 
