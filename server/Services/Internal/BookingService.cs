@@ -49,7 +49,7 @@ namespace server.Services.Internal
         {
             foreach (var seatAssignmentDetail in seatAssignmentDetails)
             {
-                var existingBooking = await _bookingRepository.GetBookingBySeatIdAndDateTime(seatAssignmentDetail.SeatId, bookingDateTime);
+                var existingBooking = await _bookingRepository.GetBookingBySeatIdAndDateTime(seatAssignmentDetail.SeatId, bookingDateTime.Date);
                 if (existingBooking != null)
                 {
                     _telemetryClient.TrackTrace($"Backgroud process: Seat {seatAssignmentDetail.SeatId} is already booked for the specified time {existingBooking.BookingDateTime_DayOnly}.");
