@@ -247,7 +247,7 @@ public class BookingServiceTests : TestServiceBase<BookingService>
         foreach (var seatId in seatIds)
         {
             var booking = new Booking(userClaims.Objectidentifier, userClaims.UserName, seatId, testDateTime, testDateTime.Date, eventId);
-            booking.Seat = new Seat(seatId, RoomId, false);
+            booking.Seat = new Seat(seatId, RoomId, null);
             bookings.Add(booking);
         }
 

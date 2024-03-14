@@ -4,14 +4,14 @@ namespace server.Models.Domain
     {
         public int Id { get; set; }
         public int RoomId { get; set; }
-        public Boolean IsAvailable { get; set; }
         public List<Booking> Bookings { get; set; } = new List<Booking>();
+        public string? SeatOwnerEmail { get; set; }
 
-        public Seat(int id, int roomId, Boolean isAvailable)
+        public Seat(int id, int roomId, string? seatOwnerEmail)
         {
             Id = id;
             RoomId = roomId;
-            IsAvailable = isAvailable;
+            SeatOwnerEmail = seatOwnerEmail;
         }
     }
 }
