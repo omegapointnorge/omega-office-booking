@@ -22,12 +22,9 @@ export interface HistoryBooking  {
   bookingDateTime: Date;
 }
 
-
 export interface Seat {
   id: number | null;
-  roomId: string | null;
-  isAvailable: boolean;
-  bookings: Booking[];
+  roomId: number | null;
 }
 
 export interface BookingRequest {
