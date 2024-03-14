@@ -175,8 +175,8 @@ class BookingStore {
     this.activeBookings = bookings;
   }
 
-  setSeats(seats: Seat[]) {
-    this.allSeats = seats;
+  setSeats(data: Seat[]) {
+    this.allSeats = data;
   }
 
   toggleEventMode() {

@@ -22,6 +22,14 @@ export interface HistoryBooking  {
   bookingDateTime: Date;
 }
 
+<<<<<<< HEAD
+=======
+export interface SeatDto {
+  id: number | null;
+  roomId: number | null;
+}
+
+>>>>>>> 5ea8cf5 (New type for seats)
 export interface Seat {
   id: number | null;
   roomId: number | null;
