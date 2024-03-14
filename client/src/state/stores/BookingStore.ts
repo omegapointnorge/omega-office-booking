@@ -3,7 +3,7 @@ import { createBooking } from "@models/booking";
 import toast from "react-hot-toast";
 import ApiService from "@services/ApiService";
 import historyStore from "@stores/HistoryStore";
-import { Booking, BookingRequest, Seat } from "@/shared/types/entities";
+import { Booking, BookingRequest, SeatDto } from "@/shared/types/entities";
 import { createEventBooking } from "../../models/booking";
 import { ApiStatus } from "@/shared/types/enums";
 import {
@@ -21,7 +21,7 @@ class BookingStore {
   apiStatus: ApiStatus = ApiStatus.Idle;
   openingTime: string | undefined;
   unavailableSeatsIds: number[] = [];
-  allSeats: Seat[] = [];
+  allSeats: SeatDto[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -185,7 +185,7 @@ class BookingStore {
     this.activeBookings = bookings;
   }
 
-  setSeats(seats: Seat[]) {
+  setSeats(seats: SeatDto[]) {
     this.allSeats = seats;
   }
 
@@ -227,7 +227,7 @@ class BookingStore {
     try {
       this.setApiStatus(ApiStatus.Pending);
 
-      const data = await ApiService.fetchData<Seat[]>(
+      const data = await ApiService.fetchData<SeatDto[]>(
         "/api/Seat/GetAllSeats",
         "Get"
       ).then((response) => {

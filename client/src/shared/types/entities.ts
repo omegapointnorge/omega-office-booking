@@ -22,6 +22,10 @@ export interface HistoryBooking  {
   bookingDateTime: Date;
 }
 
+export interface SeatDto {
+  id: number | null;
+  roomId: number | null;
+}
 
 export interface Seat {
   id: number | null;

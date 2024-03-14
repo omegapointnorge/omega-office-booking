@@ -44,44 +44,50 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const [selectAllSeats, setSelectAllSeats] = useState(false);
 
   const handleAllSeatsSelected = () => {
+    
     switch (zoomStatus) {
       case ZoomStatus.Large:
-        upddateSeatSelectionForEvent("1", selectAllSeats);
+        upddateSeatSelectionForEvent(1, selectAllSeats);
         break;
       case ZoomStatus.Small:
-        upddateSeatSelectionForEvent("2", selectAllSeats);
+        upddateSeatSelectionForEvent(2, selectAllSeats);
         break;
       case ZoomStatus.Sales:
-        upddateSeatSelectionForEvent("3", selectAllSeats);
+        upddateSeatSelectionForEvent(3, selectAllSeats);
         break;
       case ZoomStatus.Marie:
-        upddateSeatSelectionForEvent("1", selectAllSeats);
+        upddateSeatSelectionForEvent(1, selectAllSeats);
         break;
       case ZoomStatus.EconOystein: 
-        upddateSeatSelectionForEvent("5", selectAllSeats);
-        upddateSeatSelectionForEvent("6", selectAllSeats);
+        upddateSeatSelectionForEvent(5, selectAllSeats);
+        upddateSeatSelectionForEvent(6, selectAllSeats);
         break;
       default:
         break;// Default view
     }
     setSelectAllSeats(!selectAllSeats);
-    
   }
 
-  const upddateSeatSelectionForEvent = (roomId: string, isSelect: boolean): void => {
+  const upddateSeatSelectionForEvent = (roomId: number, isSelect: boolean): void => {
     console.log("Room number: ", roomId);
-    const seatsIdsInRoom = bookingStore.allSeats.filter(seat => seat.roomId === roomId).map(seat => seat.id as number);
+    const seatsIdsInRoom = bookingStore.allSeats.filter(seat => {
+      // console.log("RoomId: ", seat.roomId, roomId);
+      // const variable = seat.roomId === roomId;
+      // console.log("Result: ", variable);
+      // console.log("TypeOf: ", typeof(seat.roomId), typeof(roomId));
+      
+      return seat.roomId === roomId
+    }).map(seat => seat.id as number);
+    console.log("SeatsInRoom: ", seatsIdsInRoom);
 
     if(isSelect){
       seatsIdsInRoom.forEach(seatId => bookingStore.addSeatToEventSelection(seatId));
     }
     else{
-      // bookingStore.seatIdSelectedForNewEvent = bookingStore.seatIdSelectedForNewEvent.filter(seatId => !seatsIdsInRoom.includes(seatId));
       bookingStore.removeSeatsFromEventSelection(seatsIdsInRoom);
     }
     
-    const kopiList = bookingStore.seatIdSelectedForNewEvent;
-    console.log("Seats in event: ", kopiList);
+    bookingStore.seatIdSelectedForNewEvent.forEach(id => console.log("ID: ", id));
   }
 
 
@@ -279,7 +285,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         seatClicked={seatClicked}
         zoomOut={zoomOut}
       />
-      {bookingStore.bookEventMode && zoomStatus === (ZoomStatus.Small || ZoomStatus.Large) && 
+      {bookingStore.bookEventMode && (zoomStatus === ZoomStatus.Large || zoomStatus === ZoomStatus.Small) && 
         <ToggleSwitch isToggled={selectAllSeats} handleToggleChange={handleAllSeatsSelected}/>
       }
     </div>
