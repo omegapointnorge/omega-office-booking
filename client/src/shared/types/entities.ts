@@ -25,6 +25,7 @@ export interface HistoryBooking  {
 export interface Seat {
   id: number | null;
   roomId: number | null;
+  seatOwnerUserId: string | null;
 }
 
 export interface BookingRequest {

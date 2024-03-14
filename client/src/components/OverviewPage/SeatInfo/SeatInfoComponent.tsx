@@ -2,6 +2,7 @@ import { CircularProgress } from "@mui/material";
 import { Booking } from "@/shared/types/entities";
 import React from "react";
 import SeatAssignedToUserCalendar from './SeatAssignedToUserCalendar/index';
+import bookingStore from '../../../state/stores/BookingStore';
 
 interface Props {
   userGuid: string;
@@ -28,7 +29,7 @@ export const SeatInfoComponent = ({
   const getButtonGroup = () => {
     const isBooked = !!selectedBooking?.userId;
     const isYourBooking = userGuid === selectedBooking?.userId;
-    const seatIsAssignedToYou = !isEventAdmin;
+    const loggedInUserisSeatOwner = bookingStore.allSeats.some(seat => seat.id === selectedSeatId && seat.seatOwnerUserId === userGuid);
 
     return (
       <div className="flex justify-between">
@@ -43,7 +44,7 @@ export const SeatInfoComponent = ({
           );
 
           switch (true) {
-            case seatIsAssignedToYou:
+            case loggedInUserisSeatOwner:
               return (
                 <>
                   {lukkButton}
@@ -95,9 +96,14 @@ export const SeatInfoComponent = ({
             Seteinformasjon
           </h3>
 
-          {/*intended use IF(bookingstore.seats[selectedSeatId].assignedToUserId === userGuid) */}
-          <SeatAssignedToUserCalendar userGuid={userGuid} selectedSeatId={selectedSeatId} />
-
+          {/* Checks if the logged-in user is the owner of the selected seat */}
+          {bookingStore.allSeats.some(seat => seat.id === selectedSeatId && seat.seatOwnerUserId === userGuid) &&
+            <SeatAssignedToUserCalendar
+                key={selectedSeatId} 
+                userGuid={userGuid}
+                selectedSeatId={selectedSeatId}
+            />
+          }
 
           <div className="flex flex-row space-y-3">
             <div className="basis-2/3 text-left">
