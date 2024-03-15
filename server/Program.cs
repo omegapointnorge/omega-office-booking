@@ -107,8 +107,10 @@ builder.Services.AddHostedService<SeatAssignmentBackgroundService>();
 builder.Services.AddSingleton(provider =>
 {
     string[] scopes = { "https://graph.microsoft.com/.default" };
-
-    var credential = new ClientSecretCredential(builder.Configuration.GetValue<string>("AzureAd:TenantId"), builder.Configuration.GetValue<string>("AzureAd:ClientId"), builder.Configuration.GetValue<string>("AzureAd:ClientSecret"));
+    var credential = new ClientSecretCredential(
+        builder.Configuration.GetValue<string>("AzureAd:TenantId"),
+        builder.Configuration.GetValue<string>("AzureAd:ClientId"),
+        builder.Configuration.GetValue<string>("AzureAd:ClientSecret"));
 
     return new GraphServiceClient(credential);
 });
@@ -122,7 +124,6 @@ builder.Services.AddApplicationInsightsTelemetry(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddApplicationInsightsTelemetry();
 //swagger
 
 string? openingtime = builder.Configuration["OpeningTime"];
