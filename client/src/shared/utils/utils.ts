@@ -45,6 +45,26 @@ export const fetchOpeningTimeOfDay = async () => {
 };
 
 
+export const batchDeleteBookings = async (bookingIdsToDelete: number[]) => {
+  
+  try {
+    const response = await ApiService.fetchData<string>(
+      "/api/Booking/BatchDelete",
+      "POST",
+      bookingIdsToDelete
+    );
+
+    return response; // Assuming you want to return the response object
+  } catch (error) {
+    console.error("Error deleting bookings:", error);
+    throw error;
+  }
+};
+
+
+ 
+
+
 
 const isBookingForUser = (
   booking: Booking,

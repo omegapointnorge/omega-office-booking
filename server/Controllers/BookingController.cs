@@ -1,4 +1,3 @@
-using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using server.Helpers;
 using server.Models.DTOs;
@@ -114,6 +113,21 @@ namespace server.Controllers
             {
                 // Log the exception
                 return StatusCode(500, "An error occurred processing your request." + ex.Message);
+            }
+        }
+
+        [HttpPost("BatchDelete")]
+        public async Task<IActionResult> BatchDeleteBookings(int[] bookingsIds)
+        {
+            try
+            {
+                var userClaim = UserUtils.GetCurrentUserClaims(User);
+                await _bookingService.BatchDeleteBookings(bookingsIds, userClaim);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
 

@@ -7,14 +7,16 @@ import { Booking, BookingRequest, Seat } from "@/shared/types/entities";
 import { createEventBooking } from "../../models/booking";
 import { ApiStatus } from "@/shared/types/enums";
 import {
+  batchDeleteBookings,
   fetchOpeningTimeOfDay,
   getEarliestAllowedBookingDate,
+  isSameDate,
 } from "@utils/utils";
-import { DateObject} from "react-multi-date-picker";
+import { DateObject } from "react-multi-date-picker";
 
 class BookingStore {
   activeBookings: Booking[] = [];
-  
+
   assignedSeatBookingDates: Date[] = [];
   displayDate = new Date();
   bookEventMode = false;
@@ -22,13 +24,9 @@ class BookingStore {
   isEventDateChosen: boolean = false;
   apiStatus: ApiStatus = ApiStatus.Idle;
   openingTime: string | undefined;
-  allSeats : Seat[] = []
+  allSeats: Seat[] = [];
   unavailableSeatsIds: number[] = [];
-  
-  //Only used by users with preassigned seats
-  preAssignedBookingsToDelete : DateObject[] =  []
-  preAssignedBookings : DateObject[] =  []
-
+  preAssignedBookingsToDelete: DateObject[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -67,7 +65,9 @@ class BookingStore {
       this.setApiStatus(ApiStatus.Pending);
 
       const url = "/api/Booking/create";
-      const bookingDateTimeStandard = this.convertToStandardBookingDateTime(this.displayDate);
+      const bookingDateTimeStandard = this.convertToStandardBookingDateTime(
+        this.displayDate
+      );
       const bookingRequest: BookingRequest = {
         seatId,
         bookingDateTime: bookingDateTimeStandard.toISOString(),
@@ -194,10 +194,6 @@ class BookingStore {
     this.apiStatus = status;
   }
 
-  setPreAssignedBookingsToDelete(value : DateObject[]){
-    this.preAssignedBookingsToDelete = value
-  }
-
   hasBookingOpened = (displayDate: Date): boolean => {
     if (!this.openingTime) {
       return false;
@@ -213,12 +209,11 @@ class BookingStore {
     return currentDateTime > bookingOpeningTime;
   };
 
-  setAllSeats(data : Seat[]){
+  setAllSeats(data: Seat[]) {
     this.allSeats = data;
-    
   }
 
-   fetchAllSeats = async () => {
+  fetchAllSeats = async () => {
     if (this.apiStatus === ApiStatus.Pending) return;
     try {
       this.setApiStatus(ApiStatus.Pending);
@@ -228,8 +223,6 @@ class BookingStore {
         "Get"
       ).then((response) => {
         this.setApiStatus(ApiStatus.Success);
-        console.log("API Response:");
-        console.log(response);
         return response;
       });
 
@@ -239,11 +232,30 @@ class BookingStore {
       this.setApiStatus(ApiStatus.Error);
     }
   };
+
+  setPreAssignedBookingsToDelete(data: DateObject[]) {
+    this.preAssignedBookingsToDelete = data;
+  }
+
+  async deletePreAssignedBookings(seatId: number) {
+    let toDelete: Booking[] = this.activeBookings.filter(
+      (booking) => booking.seatId === seatId
+    );
+
+    let bookingIds: number[] = toDelete
+      .filter((booking) =>
+        this.preAssignedBookingsToDelete.some((preAssignedBooking) =>
+          isSameDate(preAssignedBooking.toDate(), booking.bookingDateTime)
+        )
+      )
+      .map((booking) => booking.id);
+
+    await batchDeleteBookings(bookingIds);
+    this.setPreAssignedBookingsToDelete([])
+
+  }
+
 }
-
-
 
 const bookingStore = new BookingStore();
 export default bookingStore;
-
-
