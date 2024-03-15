@@ -55,7 +55,7 @@ namespace server.Services.Internal
                     _telemetryClient.TrackTrace($"Backgroud process: Seat {seatAssignmentDetail.SeatId} is already booked for the specified time {existingBooking.BookingDateTime_DayOnly}.");
                     continue;
                 }
-                var booking = new Booking(seatAssignmentDetail.User.Objectidentifier, seatAssignmentDetail.User.UserName, seatAssignmentDetail.SeatId, bookingDateTime, bookingDateTime.Date);
+                var booking = new Booking(seatAssignmentDetail.User.Objectidentifier, seatAssignmentDetail.User.UserName, seatAssignmentDetail.SeatId, bookingDateTime);
                 await _bookingRepository.AddAsync(booking);
             }
 

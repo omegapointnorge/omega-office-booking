@@ -6,6 +6,7 @@ namespace server.Context
     public class OfficeDbContext : DbContext
     {
         public DbSet<Booking> Booking { get; set; }
+        public DbSet<JobExecutionLog> JobExecutionLog { get; set; }
 
 
         public OfficeDbContext(DbContextOptions options) : base(options)
@@ -15,6 +16,16 @@ namespace server.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+        
+            modelBuilder.Entity<JobExecutionLog>()
+                .HasKey(j => j.ID);
+
+            modelBuilder.Entity<JobExecutionLog>()
+                .Property(j => j.ID)
+                .ValueGeneratedOnAdd();
+
+            // End of JobExecutionLog setup
             // Booking setup
             modelBuilder.Entity<Booking>()
                 .HasKey(booking => booking.Id);
@@ -130,6 +141,8 @@ namespace server.Context
                 .HasName("unique_seat_constraint");
 
             // End of SeatAllocation setup
+
+
 
             SampleData.CreateSampleData(modelBuilder);
         }
