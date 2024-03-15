@@ -26,10 +26,14 @@ export const SeatInfoComponent = ({
   selectedSeatId,
   handleBooking,
 }: Props) => {
+
+  const loggedInUserisSeatOwner = bookingStore.allSeats.some(seat => seat.id === selectedSeatId && seat.seatOwnerUserId === userGuid);
+
   const getButtonGroup = () => {
     const isBooked = !!selectedBooking?.userId;
     const isYourBooking = userGuid === selectedBooking?.userId;
-    const loggedInUserisSeatOwner = bookingStore.allSeats.some(seat => seat.id === selectedSeatId && seat.seatOwnerUserId === userGuid);
+
+    
 
     return (
       <div className="flex justify-between">
@@ -98,8 +102,7 @@ export const SeatInfoComponent = ({
             Seteinformasjon
           </h3>
 
-          {/* Checks if the logged-in user is the owner of the selected seat */}
-          {bookingStore.allSeats.some(seat => seat.id === selectedSeatId && seat.seatOwnerUserId === userGuid) &&
+          {loggedInUserisSeatOwner &&
             <SeatAssignedToUserCalendar
                 key={selectedSeatId} 
                 userGuid={userGuid}
