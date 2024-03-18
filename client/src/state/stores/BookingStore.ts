@@ -3,13 +3,12 @@ import { createBooking } from "@models/booking";
 import toast from "react-hot-toast";
 import ApiService from "@services/ApiService";
 import historyStore from "@stores/HistoryStore";
-import { Booking, BookingRequest } from "@/shared/types/entities";
+import { Booking, BookingRequest, Seat } from "@/shared/types/entities";
 import { createEventBooking } from "../../models/booking";
 import { ApiStatus } from "@/shared/types/enums";
 import {
   fetchOpeningTimeOfDay,
   getEarliestAllowedBookingDate,
-  fetchUnavailableSeatsIds
 } from "@utils/utils";
 
 class BookingStore {
@@ -20,7 +19,7 @@ class BookingStore {
   isEventDateChosen: boolean = false;
   apiStatus: ApiStatus = ApiStatus.Idle;
   openingTime: string | undefined;
-  unavailableSeatsIds: number[] = [];
+  allSeats : Seat[] = []
 
   constructor() {
     makeAutoObservable(this);
@@ -29,13 +28,7 @@ class BookingStore {
   async initialize() {
     await this.fetchAllActiveBookings();
     this.openingTime = await fetchOpeningTimeOfDay();
-
-    const unavailableSeats = await fetchUnavailableSeatsIds();
-    if (Array.isArray(unavailableSeats)) {
-      this.unavailableSeatsIds = unavailableSeats;
-    } else {
-      console.error("Error fetching unavailable seat IDs:", unavailableSeats);
-    }
+    await this.fetchAllSeats();
   }
 
   async fetchAllActiveBookings() {
@@ -206,7 +199,36 @@ class BookingStore {
     let currentDateTime = new Date();
     return currentDateTime > bookingOpeningTime;
   };
+
+  setAllSeats(data : Seat[]){
+    this.allSeats = data;
+    
+  }
+
+   fetchAllSeats = async () => {
+    if (this.apiStatus === ApiStatus.Pending) return;
+    try {
+      this.setApiStatus(ApiStatus.Pending);
+
+      const data = await ApiService.fetchData<Seat[]>(
+        "/api/Seat/GetAllSeats",
+        "Get"
+      ).then((response) => {
+        this.setApiStatus(ApiStatus.Success);
+        console.log("API Response:");
+        console.log(response);
+        return response;
+      });
+
+      this.setAllSeats(data);
+    } catch (error) {
+      console.error("Error fetching seats:", error);
+      this.setApiStatus(ApiStatus.Error);
+    }
+  };
 }
+
+
 
 const bookingStore = new BookingStore();
 export default bookingStore;

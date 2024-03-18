@@ -13,5 +13,7 @@ namespace server.Services.Internal
         Task<IEnumerable<HistoryBookingDto>> GetAllBookingsForUserAsync(string userid);
 
         Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user);
+
+        Task CreateRecurringBookingAsync(IEnumerable<SeatAllocationDetails> seatAssignmentDetails, DateTime bookingDateTime);
     }
 }

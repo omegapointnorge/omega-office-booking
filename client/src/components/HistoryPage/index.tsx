@@ -30,11 +30,11 @@ const ActiveBookings = observer(() => {
     <div className="flex flex-row gap-5">
       <button
         onClick={() => historyStore.navigatePrevious()}
-        className="opacity-0"
         disabled={true}
       >
-        <IoIosArrowBack />
+        <IoIosArrowBack className="invisible" />
       </button>
+      <ul className="flex space-x-4 w-f-100">
       {historyStore.myActiveBookings.map((booking) => (
         <BookingItem
           key={booking.id}
@@ -47,12 +47,12 @@ const ActiveBookings = observer(() => {
           }}
         />
       ))}
+      </ul>
       <button
         onClick={() => historyStore.navigateNext()}
         className="opacity-0"
-        disabled={true}
       >
-        <IoIosArrowForward />
+      <IoIosArrowForward className="invisible"/>
       </button>
       {/* //TODO: Ta i bruk samme dialog! */}
       <PrimaryDialog
@@ -69,11 +69,14 @@ const PreviousBookings = observer(() => (
   <div className="flex flex-row gap-5">
     <button
       onClick={() => historyStore.navigatePrevious()}
-      className={`${historyStore.isFirstPage ? "opacity-0" : "opacity-100"}`}
+      className={`${historyStore.isFirstPage ? "invisible" : ""} hover:scale-150 transition-transform`}
+
       disabled={historyStore.isFirstPage}
     >
       <IoIosArrowBack />
     </button>
+    <ul className="flex space-x-4 w-f-100">
+      
     {historyStore.myPreviousBookingsCurrentPage.map((booking) => (
       <BookingItem
         key={booking.id}
@@ -81,12 +84,16 @@ const PreviousBookings = observer(() => (
         bookingDateTime={booking.bookingDateTime}
         roomIds={booking.roomIds}
         eventName={booking.eventName}
+        aria-label="Forrige"
+
       />
     ))}
+    </ul>
     <button
       onClick={() => historyStore.navigateNext()}
-      className={`${historyStore.isLastPage ? "opacity-0" : "opacity-100"}`}
+      className={`${historyStore.isLastPage ? "invisible" : ""} hover:scale-150 transition-transform`}
       disabled={historyStore.isLastPage}
+      aria-label="Neste"
     >
       <IoIosArrowForward />
     </button>

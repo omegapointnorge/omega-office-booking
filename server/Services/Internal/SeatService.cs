@@ -1,5 +1,6 @@
 ﻿
 using server.Models.Domain;
+using server.Models.DTOs;
 using server.Repository;
 
 namespace server.Services.Internal
@@ -12,11 +13,10 @@ namespace server.Services.Internal
         {
             _seatRepository = seatRepository;
         }
-
-        public async Task<IEnumerable<int>> GetUnavailableSeatIds()
+        public async Task<IEnumerable<SeatDto>> GetAllSeats()
         {
-            IEnumerable<Seat> unavailableSeats = await _seatRepository.GetAllAsync(seat => seat.IsAvailable == false);
-            return unavailableSeats.Select(seat => seat.Id);
+            IEnumerable<Seat> allSeats = await _seatRepository.GetAsync();
+            return allSeats.Select(seat => new SeatDto(seat.Id, seat.RoomId));
         }
     }
 }

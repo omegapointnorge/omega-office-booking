@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using server.Models.DTOs;
 using server.Services.Internal;
 
 namespace server.Controllers;
@@ -14,12 +15,12 @@ public class SeatController : ControllerBase
         _seatService = seatService;
     }
 
-    [HttpGet("GetUnavailableSeatIds")]
-    public async Task<ActionResult<IEnumerable<int>>> GetUnavailableSeatIds()
+    [HttpGet("GetAllSeats")]
+    public async Task<ActionResult<IEnumerable<SeatDto>>> GetAllSeats()
     {
         try
         {
-            var result = await _seatService.GetUnavailableSeatIds();
+            var result = await _seatService.GetAllSeats();
             return Ok(result);
         }
         catch (Exception ex)

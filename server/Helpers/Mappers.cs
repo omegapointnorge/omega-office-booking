@@ -37,24 +37,5 @@ namespace server.Helpers
             }
             return historyBookingDtoList;
         }
-
-        public static List<SeatDto> MapSeatDtos(IEnumerable<Seat>? seats)
-        {
-            var seatDtoList = new List<SeatDto>();
-            try
-            {
-                if (seats != null)
-                {
-                    seatDtoList = seats.Select(seat =>
-                        new SeatDto(seat.Id, seat.RoomId, seat.Bookings)
-                    ).ToList();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine($"Error mapping SeatDtos: {e.Message}");
-            }
-            return seatDtoList;
-        }
     }
 }

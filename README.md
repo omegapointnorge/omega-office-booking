@@ -53,8 +53,7 @@ Get the permissions right away to avoid bottlenecks!
 ## Updates on release information and changes to requirements
 
 Original UI design: https://www.figma.com/file/NC9ZwuocdWNaLCxDIrJkfY/Office-Booking?type=design&node-id=0%3A1&mode=design&t=My2Yu9A58c5mDaE5-1
-Original Domain design:
-https://www.figma.com/file/CjwlmVQ44uPcXj7ZvyAnWX/OfficeBookingFigJam?type=whiteboard&node-id=1-1464&t=ooToRV3XWPj3qH8A-0
+
 
 - **Summary**: Restructured the booking module and add event module to improve scalability and maintainability.
 - **Objectives**: To simplify event deleting processes. And allow user with different roles can have different access control.

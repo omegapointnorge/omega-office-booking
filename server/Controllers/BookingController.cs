@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using server.Helpers;
 using server.Models.DTOs;
 using server.Models.DTOs.Request;
+using server.Services.External;
 using server.Services.Internal;
 
 namespace server.Controllers
@@ -12,11 +13,11 @@ namespace server.Controllers
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
-        private readonly TelemetryClient _telemetryClient;
+        private readonly ITelemetryService _telemetryClient;
         private readonly RecaptchaEnterprise _recaptchaEnterprise;
 
 
-        public BookingController(IBookingService bookingService, TelemetryClient telemetryClient, RecaptchaEnterprise recaptchaEnterprise)
+        public BookingController(IBookingService bookingService, ITelemetryService telemetryClient, RecaptchaEnterprise recaptchaEnterprise)
         {
             _bookingService = bookingService;
             _recaptchaEnterprise = recaptchaEnterprise;
@@ -135,9 +136,9 @@ namespace server.Controllers
         {
             var eventData = new Dictionary<string, string>
             {
-                { "ReCAPTCHATokenError", errorMessage }
+                { "ReCAPTCHAToken-Error", errorMessage }
             };
-            _telemetryClient.TrackEvent("ReCAPTCHATokenError", eventData);
+            _telemetryClient.TrackEvent("ReCAPTCHAToken-Error", eventData);
         }
     }
 }
