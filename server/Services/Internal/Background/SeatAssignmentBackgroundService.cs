@@ -9,15 +9,15 @@ public class SeatAssignmentBackgroundService : BackgroundService
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private Timer _timer1;
     private Timer _timer2;
-    private IBookingService _bookingService;
+    private readonly IBookingService _bookingService;
     private readonly ITelemetryService _telemetryClient;
 
-    public SeatAssignmentBackgroundService(IServiceScopeFactory serviceScopeFactory, IBookingService bookingService, ITelemetryService telemetryClient)
+    public SeatAssignmentBackgroundService(IServiceScopeFactory serviceScopeFactory)
     {
         _serviceScopeFactory = serviceScopeFactory;
-        _bookingService = bookingService;
-       _telemetryClient = telemetryClient;
-}
+        _bookingService = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IBookingService>(); 
+        _telemetryClient = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<ITelemetryService>(); 
+    }
 
     // check if he/she has never any booking for the next month
     private async void InitiateSeatAllocation(object state)

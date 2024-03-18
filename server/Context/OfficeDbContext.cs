@@ -17,7 +17,7 @@ namespace server.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-        
+            // JobExecutionLog setup
             modelBuilder.Entity<JobExecutionLog>()
                 .HasKey(j => j.ID);
 
