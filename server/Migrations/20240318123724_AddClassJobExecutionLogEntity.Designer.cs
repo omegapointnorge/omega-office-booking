@@ -12,8 +12,8 @@ using server.Context;
 namespace server.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    [Migration("20240318114928_AddClassJobExecutionLog")]
-    partial class AddClassJobExecutionLog
+    [Migration("20240318123724_AddClassJobExecutionLogEntity")]
+    partial class AddClassJobExecutionLogEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,7 +95,6 @@ namespace server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("ErrorMessage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ExecutionTime")

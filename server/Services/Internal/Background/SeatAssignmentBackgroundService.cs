@@ -7,8 +7,8 @@ namespace server.Services.Internal.Background;
 public class SeatAssignmentBackgroundService : BackgroundService
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private Timer _timer1;
-    private Timer _timer2;
+    private Timer _timerHandleSeatAllocation;
+    private Timer _timerInitiateSeatAllocation;
     private readonly IBookingService _bookingService;
     private readonly ITelemetryService _telemetryClient;
 
@@ -24,7 +24,7 @@ public class SeatAssignmentBackgroundService : BackgroundService
     {
         using (var scope = _serviceScopeFactory.CreateScope())
         {
-            var todayPlusOneMonth = DateTime.Today.AddDays(60).AddHours(12);
+            var todayPlusOneMonth = DateTime.Today.AddDays(30).AddHours(12);
             var serviceProvider = scope.ServiceProvider;
 
             try
@@ -34,7 +34,8 @@ public class SeatAssignmentBackgroundService : BackgroundService
 
                 var seatAllocationDetails = await seatAllocationService.GetAllSeatAssignmentDetails();
                 //TODO: here should implemente RecurringBooking for the next 29 days
-                await _bookingService.CreateRecurringBookingAsync(seatAllocationDetails, todayPlusOneMonth);
+                await _bookingService.InitiateSeatAllocationAsync(seatAllocationDetails, todayPlusOneMonth);
+                //InitiateSeatAllocationAsync(seatAllocationDetails, todayPlusOneMonth);
 
             }
             catch (Exception ex)
@@ -80,9 +81,10 @@ public class SeatAssignmentBackgroundService : BackgroundService
 
         var dueTime = nextRunTime - now;
 
-
-        _timer1 = new Timer(HandleSeatAllocation, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
-        _timer2 = new Timer(InitiateSeatAllocation, null, TimeSpan.Zero, Timeout.InfiniteTimeSpan);
+        //runs Every day
+        _timerHandleSeatAllocation = new Timer(HandleSeatAllocation, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+        //only run on deployment
+        _timerInitiateSeatAllocation = new Timer(InitiateSeatAllocation, null, TimeSpan.Zero, Timeout.InfiniteTimeSpan);
 
         return Task.CompletedTask;
     }
@@ -90,8 +92,8 @@ public class SeatAssignmentBackgroundService : BackgroundService
 
     public override void Dispose()
     {
-        _timer1?.Dispose();
-        _timer2?.Dispose();
+        _timerHandleSeatAllocation?.Dispose();
+        _timerInitiateSeatAllocation?.Dispose();
         base.Dispose();
     }
 }

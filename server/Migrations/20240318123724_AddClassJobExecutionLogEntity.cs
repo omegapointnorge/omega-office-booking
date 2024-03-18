@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace server.Migrations
 {
     /// <inheritdoc />
-    public partial class AddClassJobExecutionLog : Migration
+    public partial class AddClassJobExecutionLogEntity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +20,7 @@ namespace server.Migrations
                     JobName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ExecutionTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ErrorMessage = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ErrorMessage = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

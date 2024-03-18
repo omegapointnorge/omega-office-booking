@@ -1,3 +1,4 @@
+using Microsoft.IdentityModel.Tokens;
 using server.Helpers;
 using server.Models.Domain;
 using server.Models.DTOs;
@@ -11,13 +12,15 @@ namespace server.Services.Internal
     public class BookingService : IBookingService
     {
         private readonly IBookingRepository _bookingRepository;
+        private readonly IRepository<JobExecutionLog> _jobExecutionRepository;
 
         private readonly ITelemetryService _telemetryClient;
 
-        public BookingService(IBookingRepository bookingRepository, ITelemetryService telemetryClient)
+        public BookingService(IBookingRepository bookingRepository, ITelemetryService telemetryClient, IRepository<JobExecutionLog> jobExecutionLogRepository)
         {
             _bookingRepository = bookingRepository;
             _telemetryClient = telemetryClient;
+            _jobExecutionRepository = jobExecutionLogRepository;
         }
 
         public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest bookingRequest, UserClaims user)
@@ -45,22 +48,84 @@ namespace server.Services.Internal
             }
         }
 
+        // in this step if any error, we also creat a _jobExecutionLogRepository item
         public async Task CreateRecurringBookingAsync(IEnumerable<SeatAllocationDetails> seatAssignmentDetails, DateTime bookingDateTime)
         {
+            var errorMessage = String.Empty;
+            JobExecutionLog job;
             foreach (var seatAssignmentDetail in seatAssignmentDetails)
             {
                 var existingBooking = await _bookingRepository.GetBookingBySeatIdAndDateTime(seatAssignmentDetail.SeatId, bookingDateTime.Date);
                 if (existingBooking != null)
                 {
-                    _telemetryClient.TrackTrace($"Backgroud process: Seat {seatAssignmentDetail.SeatId} is already booked for the specified time {existingBooking.BookingDateTime_DayOnly}.");
+                    errorMessage += $"Backgroud process: Seat {seatAssignmentDetail.SeatId} is already booked for the specified time {existingBooking.BookingDateTime_DayOnly}.";
                     continue;
                 }
                 var booking = new Booking(seatAssignmentDetail.User.Objectidentifier, seatAssignmentDetail.User.UserName, seatAssignmentDetail.SeatId, bookingDateTime);
                 await _bookingRepository.AddAsync(booking);
             }
-
+            if (errorMessage != String.Empty)
+            {
+                job = new JobExecutionLog(nameof(CreateRecurringBookingAsync), DateTime.Now, JobExecutionStatus.Failed.ToString(), errorMessage);
+            }
+            else
+            {
+                job = new JobExecutionLog(nameof(CreateRecurringBookingAsync), DateTime.Now, JobExecutionStatus.Succeeded.ToString(), null);
+            }
+            await _jobExecutionRepository.AddAsync(job);
             await _bookingRepository.SaveAsync();
         }
+
+        public async Task InitiateSeatAllocationAsync(IEnumerable<SeatAllocationDetails> seatAssignmentDetails, DateTime bookingDateTime)
+        {
+            var errorMessage = String.Empty;
+            JobExecutionLog job;
+            try
+            {
+                var existedJob = await _jobExecutionRepository.GetAllAsync(j => j.JobName == nameof(InitiateSeatAllocationAsync) && j.Status == JobExecutionStatus.Succeeded.ToString());
+                if (existedJob.IsNullOrEmpty())
+                {
+                    DateTime today = DateTime.Today;
+
+                    List<DateTime> daysBetween = BookingTimeUtils.GetDaysBetween(today, bookingDateTime);
+
+                    foreach (DateTime day in daysBetween)
+                    {
+                        foreach (var seatAssignmentDetail in seatAssignmentDetails)
+                        {
+                            var existingBooking = await _bookingRepository.GetBookingBySeatIdAndDateTime(seatAssignmentDetail.SeatId, day.Date);
+                            if (existingBooking != null)
+                            {
+                                errorMessage += $"Backgroud process: Seat {seatAssignmentDetail.SeatId} is already booked for the specified time {day.Date}.";
+                                continue;
+                            }
+                            var booking = new Booking(seatAssignmentDetail.User.Objectidentifier, seatAssignmentDetail.User.UserName, seatAssignmentDetail.SeatId, day);
+                            await _bookingRepository.AddAsync(booking);
+                        }
+                    }
+
+                    job = new JobExecutionLog(nameof(InitiateSeatAllocationAsync), DateTime.Now, JobExecutionStatus.Succeeded.ToString(), null);
+                    await _jobExecutionRepository.AddAsync(job);
+                    await _bookingRepository.SaveAsync();
+
+                }
+       
+            }
+            catch (Exception ex)
+            {
+                if (errorMessage != String.Empty)
+                {
+                    job = new JobExecutionLog(nameof(InitiateSeatAllocationAsync), DateTime.Now, JobExecutionStatus.Failed.ToString(), errorMessage += ex.ToString());
+                }
+                else
+                {
+                    job = new JobExecutionLog(nameof(InitiateSeatAllocationAsync), DateTime.Now, JobExecutionStatus.Failed.ToString(), ex.Message);
+                }
+                await _jobExecutionRepository.AddAsync(job);
+                await _bookingRepository.SaveAsync();
+            }
+        }
+
 
 
         private Booking CreateBookingFromRequest(CreateBookingRequest bookingRequest, UserClaims user, string userName, int? seatId = null)

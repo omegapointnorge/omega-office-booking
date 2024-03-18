@@ -75,7 +75,19 @@ public static class BookingTimeUtils
     {
         return DateOnly.FromDateTime(_dateTimeProvider.GetCurrentDateTime());
     }
-}
+    public static List<DateTime> GetDaysBetween(DateTime startDate, DateTime endDate)
+        {
+            List<DateTime> daysBetween = new List<DateTime>();
+
+            // Iterate from startDate to endDate, adding each day to the list
+            for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                daysBetween.Add(date);
+            }
+
+            return daysBetween;
+        }
+    }
 
 public interface IDateTimeProvider
 {
