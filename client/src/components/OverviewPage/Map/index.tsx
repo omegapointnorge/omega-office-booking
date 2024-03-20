@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 
 import { useLocation } from "react-router-dom";
-import { useAuthContext } from "@auth/useAuthContext";
 import { observer } from "mobx-react-lite";
 import bookingStore from "@stores/BookingStore";
 import { MapComponent } from "./MapComponent";
@@ -9,23 +8,16 @@ import { isSameDate } from "@utils/utils";
 import { Rooms, ZoomStatus } from "@/shared/types/enums";
 
 import "./OverviewMap.css";
-import { ToggleSwitch } from "../ToggleButton/Toggle";
 
 interface OverviewMapProps {
   showSeatInfo: (seatId: string) => void;
 }
 
 const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
-  const { user } = useAuthContext() ?? {};
-
-  const isEventAdmin = user.claims.role === "EventAdmin";
-  const userId = user.claims.objectidentifier;
-
   const {
     activeBookings,
     displayDate,
     bookEventMode,
-    seatIdSelectedForNewEvent,
   } = bookingStore;
 
   const location = useLocation();
@@ -41,34 +33,32 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
     zoomedOutViewBoxParameters
   );
   const [zoomStatus, setZoomStatus] = useState(ZoomStatus.ZoomedOut);
-  const [selectAllSeats, setSelectAllSeats] = useState(false);
 
-  const handleAllSeatsSelected = () => {
+  // const handleAllSeatsSelected = () => {
     
-    switch (zoomStatus) {
-      case ZoomStatus.Large:
-        upddateSeatSelectionForEvent(1, selectAllSeats);
-        break;
-      case ZoomStatus.Small:
-        upddateSeatSelectionForEvent(2, selectAllSeats);
-        break;
-      case ZoomStatus.Sales:
-        upddateSeatSelectionForEvent(3, selectAllSeats);
-        break;
-      case ZoomStatus.Marie:
-        upddateSeatSelectionForEvent(1, selectAllSeats);
-        break;
-      case ZoomStatus.EconOystein: 
-        upddateSeatSelectionForEvent(5, selectAllSeats);
-        upddateSeatSelectionForEvent(6, selectAllSeats);
-        break;
-      default:
-        break;// Default view
-    }
-    setSelectAllSeats(!selectAllSeats);
-  }
+  //   switch (zoomStatus) {
+  //     case ZoomStatus.Large:
+  //       upddateSeatSelectionForEvent(1);
+  //       break;
+  //     case ZoomStatus.Small:
+  //       upddateSeatSelectionForEvent(2);
+  //       break;
+  //     case ZoomStatus.Sales:
+  //       upddateSeatSelectionForEvent(3);
+  //       break;
+  //     case ZoomStatus.Marie:
+  //       upddateSeatSelectionForEvent(1);
+  //       break;
+  //     case ZoomStatus.EconOystein: 
+  //       upddateSeatSelectionForEvent(5);
+  //       upddateSeatSelectionForEvent(6);
+  //       break;
+  //     default:
+  //       break;// Default view
+  //   }
+  // }
 
-  const upddateSeatSelectionForEvent = (roomId: number, isSelect: boolean): void => {
+  const upddateSeatSelectionForEvent = (roomId: number): void => {
     console.log("Room number: ", roomId);
     const seatsIdsInRoom = bookingStore.allSeats.filter(seat => {
       // console.log("RoomId: ", seat.roomId, roomId);
@@ -80,54 +70,62 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
     }).map(seat => seat.id as number);
     console.log("SeatsInRoom: ", seatsIdsInRoom);
 
-    if(isSelect){
-      seatsIdsInRoom.forEach(seatId => bookingStore.addSeatToEventSelection(seatId));
-    }
-    else{
-      bookingStore.removeSeatsFromEventSelection(seatsIdsInRoom);
-    }
+    seatsIdsInRoom.forEach(seatId => bookingStore.addSeatToEventSelection(seatId));
     
     bookingStore.seatIdSelectedForNewEvent.forEach(id => console.log("ID: ", id));
+  }
+
+  const handleSelectAllSeats = () => {
+    switch (zoomStatus) {
+      case ZoomStatus.Large:
+        upddateSeatSelectionForEvent(1);
+        break;
+      case ZoomStatus.Small:
+        upddateSeatSelectionForEvent(2);
+        break;
+      default:
+        break;
+    }
   }
 
 
   const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
 
-  const getSeatClassName = (seatId: number): string => {
-    const bookingForSeat = activeBookings.find(
-      (booking) =>
-        booking.seatId === seatId &&
-        isSameDate(displayDate, booking.bookingDateTime)
-    );
+  // const getSeatClassName = (seatId: number): string => {
+  //   const bookingForSeat = activeBookings.find(
+  //     (booking) =>
+  //       booking.seatId === seatId &&
+  //       isSameDate(displayDate, booking.bookingDateTime)
+  //   );
 
-    if (bookEventMode) {
-      if (seatIdSelectedForNewEvent.includes(seatId)) {
-        return "seat-selected-for-event";
-      }
-    }
+  //   if (bookEventMode) {
+  //     if (seatIdSelectedForNewEvent.includes(seatId)) {
+  //       return "seat-selected-for-event";
+  //     }
+  //   }
 
-    if (bookingForSeat) {
-      return bookingForSeat.userId === userId
-        ? "seat-booked-by-user"
-        : "seat-booked";
-    }
+  //   if (bookingForSeat) {
+  //     return bookingForSeat.userId === userId
+  //       ? "seat-booked-by-user"
+  //       : "seat-booked";
+  //   }
 
-    const isAnySeatBookedByUser = activeBookings.some(
-      (booking) =>
-        booking.userId === userId &&
-        isSameDate(displayDate, booking.bookingDateTime)
-    );
+  //   const isAnySeatBookedByUser = activeBookings.some(
+  //     (booking) =>
+  //       booking.userId === userId &&
+  //       isSameDate(displayDate, booking.bookingDateTime)
+  //   );
 
-    if (isAnySeatBookedByUser && !isEventAdmin) {
-      return "seat-unavailable";
-    }
+  //   if (isAnySeatBookedByUser && !isEventAdmin) {
+  //     return "seat-unavailable";
+  //   }
 
-    if (!bookingStore.hasBookingOpened(displayDate) && !isEventAdmin) {
-      return "seat-available-later";
-    }
+  //   if (!bookingStore.hasBookingOpened(displayDate) && !isEventAdmin) {
+  //     return "seat-available-later";
+  //   }
 
-    return "seat-available";
-  };
+  //   return "seat-available";
+  // };
 
   const seatClicked = (e: React.MouseEvent<SVGPathElement>): void => {
     const seatId = e.currentTarget.id;
@@ -275,14 +273,17 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         currentViewBox={currentViewBox}
         zoomToRoom={zoomToRoom}
         activeBookings={activeBookings}
-        getSeatClassName={getSeatClassName}
         displayDate={displayDate}
         seatClicked={seatClicked}
         zoomOut={zoomOut}
       />
-      {bookingStore.bookEventMode && (zoomStatus === ZoomStatus.Large || zoomStatus === ZoomStatus.Small) && 
-        <ToggleSwitch isToggled={selectAllSeats} handleToggleChange={handleAllSeatsSelected}/>
-      }
+      {bookingStore.bookEventMode && (zoomStatus === ZoomStatus.Large || zoomStatus === ZoomStatus.Small) &&
+        <button
+          className="px-4 py-2 mt-1 text-sm font-medium rounded-md bg-blue-500 text-white hover:bg-blue-600"
+          onClick={handleSelectAllSeats}>
+          Velg alle seter
+        </button>
+        }
     </div>
 
   );

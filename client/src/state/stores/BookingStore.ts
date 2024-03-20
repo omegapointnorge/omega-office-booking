@@ -148,10 +148,6 @@ class BookingStore {
     }
   }
 
-  removeSeatsFromEventSelection(seatIds: number[]): void {
-    this.seatIdSelectedForNewEvent = this.seatIdSelectedForNewEvent.filter(seatId => !seatIds.includes(seatId));
-  }
-
   addSeatToEventSelection(seatId: number): void {
     this.seatIdSelectedForNewEvent.push(seatId);
   }
@@ -214,6 +210,10 @@ class BookingStore {
 
   setAllSeats(data : Seat[]){
     this.allSeats = data;
+  }
+
+  isSeatSelectedForEvent = (seatId: number): boolean => {
+    return this.seatIdSelectedForNewEvent.some(id => id === seatId);
   }
 
    fetchAllSeats = async () => {
