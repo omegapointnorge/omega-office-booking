@@ -10,9 +10,9 @@ namespace server.Services.Internal
 {
     public class EventService : IEventService
     {
-        private readonly IEventRepository _eventRepository;
+        private readonly IRepository<Event> _eventRepository;
 
-        public EventService(IEventRepository eventRepository)
+        public EventService(IRepository<Event> eventRepository)
         {
             _eventRepository = eventRepository;
         }

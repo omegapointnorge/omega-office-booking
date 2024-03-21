@@ -27,7 +27,7 @@ namespace server.Repository
         public async Task<Booking?> GetBookingBySeatIdAndDateTime(int SeatId, DateTime bookingDateTime)
         {
             return await context.Booking
-                .Where(booking => booking.SeatId == SeatId && booking.BookingDateTime_DayOnly == bookingDateTime)
+                .Where(booking => booking.SeatId == SeatId && booking.BookingDateTime_DayOnly == bookingDateTime.Date)
                 .FirstOrDefaultAsync();
         }
 

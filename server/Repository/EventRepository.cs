@@ -3,7 +3,7 @@ using server.Models.Domain;
 
 namespace server.Repository
 {
-    public class EventRepository(OfficeDbContext context) : Repository<Event>(context), IEventRepository
+    public class EventRepository(OfficeDbContext context) : Repository<Event>(context), IRepository<Event>
     {
     }
 }
