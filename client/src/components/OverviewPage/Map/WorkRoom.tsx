@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState, useCallback } from "react";
 import { SeatPath } from "@/shared/types/entities";
 import { SeatInRoom } from "@/shared/types/entities";
 import bookingStore from "@stores/BookingStore";
@@ -10,8 +10,11 @@ interface WorkRoomProps {
   seats: SeatPath[];
   seatClicked: (e: React.MouseEvent<SVGPathElement>) => void;
 }
+
 const Seat = ({ id, d, seatClicked }: SeatInRoom) => {
   const [isSeatClicked, setIsSeatClicked] = useState(false);
+
+  const { seatIdSelectedForNewEvent } = bookingStore;
 
   const { user } = useAuthContext() ?? {};
 
@@ -19,7 +22,7 @@ const Seat = ({ id, d, seatClicked }: SeatInRoom) => {
   const userId = user.claims.objectidentifier;
 
 
-  console.log("selected seats", bookingStore.seatIdSelectedForNewEvent);
+  console.log("selected seats", seatIdSelectedForNewEvent);
   
 
   const handleSeatClicked = (

@@ -18,6 +18,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
     activeBookings,
     displayDate,
     bookEventMode,
+
   } = bookingStore;
 
   const location = useLocation();
@@ -33,6 +34,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
     zoomedOutViewBoxParameters
   );
   const [zoomStatus, setZoomStatus] = useState(ZoomStatus.ZoomedOut);
+  const [isSeletedAllSeats, setIsSelectedAllSeats] = useState(false);
 
   // const handleAllSeatsSelected = () => {
     
@@ -65,15 +67,23 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
       // const variable = seat.roomId === roomId;
       // console.log("Result: ", variable);
       // console.log("TypeOf: ", typeof(seat.roomId), typeof(roomId));
-      
       return seat.roomId === roomId
     }).map(seat => seat.id as number);
     console.log("SeatsInRoom: ", seatsIdsInRoom);
 
+    // seatsIdsInRoom.forEach(seatId => {
+    //   // Find the path element with the matching ID
+    //   const path = document.querySelector(`svg path#path${seatId}`);
+      
+    //   if (path) { 
+    //     path.classList.add('seat-selected-for-event') }
+    // });
     seatsIdsInRoom.forEach(seatId => bookingStore.addSeatToEventSelection(seatId));
     
     bookingStore.seatIdSelectedForNewEvent.forEach(id => console.log("ID: ", id));
   }
+
+
 
   const handleSelectAllSeats = () => {
     switch (zoomStatus) {
@@ -86,6 +96,8 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
       default:
         break;
     }
+    setIsSelectedAllSeats(!isSeletedAllSeats);
+    console.log("seletedAllSeats: ", isSeletedAllSeats);
   }
 
 
@@ -281,7 +293,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         <button
           className="px-4 py-2 mt-1 text-sm font-medium rounded-md bg-blue-500 text-white hover:bg-blue-600"
           onClick={handleSelectAllSeats}>
-          Velg alle seter
+            {isSeletedAllSeats ? 'Fjerne Seter' : 'Velg alle seter'}
         </button>
         }
     </div>
