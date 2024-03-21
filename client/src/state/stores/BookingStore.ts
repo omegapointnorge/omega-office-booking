@@ -149,7 +149,10 @@ class BookingStore {
   }
 
   addSeatToEventSelection(seatId: number): void {
-    this.seatIdSelectedForNewEvent.push(seatId);
+    if (!this.seatIdSelectedForNewEvent.includes(seatId)) {
+      // If not present, push the seatId into the array
+      this.seatIdSelectedForNewEvent.push(seatId);
+    }
   }
 
   handleEventDate(date: Date) {
