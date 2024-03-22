@@ -148,6 +148,13 @@ class BookingStore {
     }
   }
 
+  addSeatToEventSelection(seatId: number): void {
+    if (!this.seatIdSelectedForNewEvent.includes(seatId)) {
+      // If not present, push the seatId into the array
+      this.seatIdSelectedForNewEvent.push(seatId);
+    }
+  }
+
   handleEventDate(date: Date) {
     this.setDisplayDate(this.convertToStandardBookingDateTime(date));
     this.isEventDateChosen = true;
@@ -165,6 +172,10 @@ class BookingStore {
   // Update active bookings
   setActiveBookings(bookings: Booking[]) {
     this.activeBookings = bookings;
+  }
+
+  setSeats(data: Seat[]) {
+    this.allSeats = data;
   }
 
   toggleEventMode() {
@@ -202,7 +213,10 @@ class BookingStore {
 
   setAllSeats(data : Seat[]){
     this.allSeats = data;
-    
+  }
+
+  isSeatSelectedForEvent = (seatId: number): boolean => {
+    return this.seatIdSelectedForNewEvent.some(id => id === seatId);
   }
 
    fetchAllSeats = async () => {
@@ -227,8 +241,6 @@ class BookingStore {
     }
   };
 }
-
-
 
 const bookingStore = new BookingStore();
 export default bookingStore;

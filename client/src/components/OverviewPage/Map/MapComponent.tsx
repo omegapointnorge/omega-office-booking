@@ -13,7 +13,6 @@ interface MapProps {
   currentViewBox: string;
   zoomStatus: ZoomStatus;
   zoomToRoom: (value: Rooms) => void;
-  getSeatClassName: (value: number) => string;
   displayDate: Date;
   seatClicked: (e: React.MouseEvent<SVGPathElement>) => void;
   activeBookings: Booking[];
@@ -24,7 +23,6 @@ export const MapComponent = ({
   currentViewBox,
   zoomStatus,
   zoomToRoom,
-  getSeatClassName,
   displayDate,
   activeBookings,
   seatClicked,
@@ -101,7 +99,6 @@ export const MapComponent = ({
           className={zoomStatus === ZoomStatus.Sales ? undefined : "hidden"}
           seats={seatsSales}
           seatClicked={seatClicked}
-          getSeatClassName={getSeatClassName}
         />
 
         {/* SMALL WORK ROOM */}
@@ -109,32 +106,27 @@ export const MapComponent = ({
           className={zoomStatus === ZoomStatus.Small ? undefined : "hidden"}
           seats={seatsSmallRoom}
           seatClicked={seatClicked}
-          getSeatClassName={getSeatClassName}
         />
         {/* LARGE WORK ROOM */}
         <WorkRoom
           className={zoomStatus === ZoomStatus.Large ? undefined : "hidden"}
           seats={seatsLargeRoom}
           seatClicked={seatClicked}
-          getSeatClassName={getSeatClassName}
         />
         <WorkRoom
           className={zoomStatus === ZoomStatus.Marie ? undefined : "hidden"}
           seats={seatsMarie}
           seatClicked={seatClicked}
-          getSeatClassName={getSeatClassName}
         />
         <WorkRoom
           className={zoomStatus === ZoomStatus.EconOystein ? undefined : "hidden"}
           seats={seatsEcon}
           seatClicked={seatClicked}
-          getSeatClassName={getSeatClassName}
         />
         <WorkRoom
           className={zoomStatus === ZoomStatus.EconOystein ? undefined : "hidden"}
           seats={seatsOystein}
           seatClicked={seatClicked}
-          getSeatClassName={getSeatClassName}
         />
       </svg>
 
