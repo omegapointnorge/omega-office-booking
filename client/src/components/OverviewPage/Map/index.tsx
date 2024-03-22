@@ -36,54 +36,10 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const [zoomStatus, setZoomStatus] = useState(ZoomStatus.ZoomedOut);
   const [isSeletedAllSeats, setIsSelectedAllSeats] = useState(false);
 
-  // const handleAllSeatsSelected = () => {
-    
-  //   switch (zoomStatus) {
-  //     case ZoomStatus.Large:
-  //       upddateSeatSelectionForEvent(1);
-  //       break;
-  //     case ZoomStatus.Small:
-  //       upddateSeatSelectionForEvent(2);
-  //       break;
-  //     case ZoomStatus.Sales:
-  //       upddateSeatSelectionForEvent(3);
-  //       break;
-  //     case ZoomStatus.Marie:
-  //       upddateSeatSelectionForEvent(1);
-  //       break;
-  //     case ZoomStatus.EconOystein: 
-  //       upddateSeatSelectionForEvent(5);
-  //       upddateSeatSelectionForEvent(6);
-  //       break;
-  //     default:
-  //       break;// Default view
-  //   }
-  // }
-
   const upddateSeatSelectionForEvent = (roomId: number): void => {
-    console.log("Room number: ", roomId);
-    const seatsIdsInRoom = bookingStore.allSeats.filter(seat => {
-      // console.log("RoomId: ", seat.roomId, roomId);
-      // const variable = seat.roomId === roomId;
-      // console.log("Result: ", variable);
-      // console.log("TypeOf: ", typeof(seat.roomId), typeof(roomId));
-      return seat.roomId === roomId
-    }).map(seat => seat.id as number);
-    console.log("SeatsInRoom: ", seatsIdsInRoom);
-
-    // seatsIdsInRoom.forEach(seatId => {
-    //   // Find the path element with the matching ID
-    //   const path = document.querySelector(`svg path#path${seatId}`);
-      
-    //   if (path) { 
-    //     path.classList.add('seat-selected-for-event') }
-    // });
+    const seatsIdsInRoom = bookingStore.allSeats.filter(seat => seat.roomId === roomId).map(seat => seat.id as number);
     seatsIdsInRoom.forEach(seatId => bookingStore.addSeatToEventSelection(seatId));
-    
-    bookingStore.seatIdSelectedForNewEvent.forEach(id => console.log("ID: ", id));
   }
-
-
 
   const handleSelectAllSeats = () => {
     switch (zoomStatus) {
@@ -97,47 +53,10 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         break;
     }
     setIsSelectedAllSeats(!isSeletedAllSeats);
-    console.log("seletedAllSeats: ", isSeletedAllSeats);
   }
 
 
   const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
-
-  // const getSeatClassName = (seatId: number): string => {
-  //   const bookingForSeat = activeBookings.find(
-  //     (booking) =>
-  //       booking.seatId === seatId &&
-  //       isSameDate(displayDate, booking.bookingDateTime)
-  //   );
-
-  //   if (bookEventMode) {
-  //     if (seatIdSelectedForNewEvent.includes(seatId)) {
-  //       return "seat-selected-for-event";
-  //     }
-  //   }
-
-  //   if (bookingForSeat) {
-  //     return bookingForSeat.userId === userId
-  //       ? "seat-booked-by-user"
-  //       : "seat-booked";
-  //   }
-
-  //   const isAnySeatBookedByUser = activeBookings.some(
-  //     (booking) =>
-  //       booking.userId === userId &&
-  //       isSameDate(displayDate, booking.bookingDateTime)
-  //   );
-
-  //   if (isAnySeatBookedByUser && !isEventAdmin) {
-  //     return "seat-unavailable";
-  //   }
-
-  //   if (!bookingStore.hasBookingOpened(displayDate) && !isEventAdmin) {
-  //     return "seat-available-later";
-  //   }
-
-  //   return "seat-available";
-  // };
 
   const seatClicked = (e: React.MouseEvent<SVGPathElement>): void => {
     const seatId = e.currentTarget.id;
@@ -293,7 +212,7 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
         <button
           className="px-4 py-2 mt-1 text-sm font-medium rounded-md bg-blue-500 text-white hover:bg-blue-600"
           onClick={handleSelectAllSeats}>
-            {isSeletedAllSeats ? 'Fjerne Seter' : 'Velg alle seter'}
+            {isSeletedAllSeats ? 'Velg alle seter' : 'Velg alle seter'}
         </button>
         }
     </div>

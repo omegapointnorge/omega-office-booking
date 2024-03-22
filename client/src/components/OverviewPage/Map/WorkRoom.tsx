@@ -14,15 +14,9 @@ interface WorkRoomProps {
 const Seat = ({ id, d, seatClicked }: SeatInRoom) => {
   const [isSeatClicked, setIsSeatClicked] = useState(false);
 
-  const { seatIdSelectedForNewEvent } = bookingStore;
-
   const { user } = useAuthContext() ?? {};
-
   const isEventAdmin = user.claims.role === "EventAdmin";
   const userId = user.claims.objectidentifier;
-
-
-  console.log("selected seats", seatIdSelectedForNewEvent);
   
 
   const handleSeatClicked = (
@@ -33,26 +27,16 @@ const Seat = ({ id, d, seatClicked }: SeatInRoom) => {
   };
 
   const getSeatClassName = useCallback((seatId: number): string => {
-    console.log("INSIDE CALLBACK", bookingStore.seatIdSelectedForNewEvent);
-    // setIsSeatClicked(true);
-    
     const bookingForSeat = bookingStore.activeBookings.find(
       (booking) =>
         booking.seatId === seatId &&
         isSameDate(bookingStore.displayDate, booking.bookingDateTime)
     );
-
-    console.log(bookingStore.bookEventMode);
     
     if (bookingStore.bookEventMode) {
-      console.log(bookingStore.seatIdSelectedForNewEvent);
-      console.log(typeof seatId);
       bookingStore.seatIdSelectedForNewEvent.forEach(e => {console.log(typeof e)});
       
-      
       if (bookingStore.isSeatSelectedForEvent(seatId)) {
-        console.log("here");
-        
         return "seat-selected-for-event";
       }
     }
@@ -78,17 +62,13 @@ const Seat = ({ id, d, seatClicked }: SeatInRoom) => {
     }
     
     return "seat-available";
-  }, [isEventAdmin, userId, bookingStore])
-
-  const seatclassname = getSeatClassName(Number(id))
-  console.log(seatclassname);
-  
+  }, [isEventAdmin, userId])
 
   return (
     <path
       key={id}
       id={id}
-      className={seatclassname}
+      className={getSeatClassName(Number(id))}
       onClick={handleSeatClicked}
       d={d}
     />

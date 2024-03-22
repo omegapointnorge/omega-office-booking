@@ -60,7 +60,6 @@ const OverviewPage = observer(() => {
               />
             ) : (
               <div>
-                {/* {bookingStore.bookEventMode && <ToggleSwitch></ToggleSwitch>} */}
                 <OverviewMap showSeatInfo={showSeatInfo} />
               </div>
             )}
