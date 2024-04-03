@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { SeatPath } from "@/shared/types/entities";
 import { SeatInRoom } from "@/shared/types/entities";
 import bookingStore from "@stores/BookingStore";
@@ -26,7 +26,7 @@ const Seat = ({ id, d, seatClicked }: SeatInRoom) => {
     seatClicked(e);
   };
 
-  const getSeatClassName = useCallback((seatId: number): string => {
+  const getSeatClassName = (seatId: number): string => {
     const bookingForSeat = bookingStore.activeBookings.find(
       (booking) =>
         booking.seatId === seatId &&
@@ -62,7 +62,7 @@ const Seat = ({ id, d, seatClicked }: SeatInRoom) => {
     }
     
     return "seat-available";
-  }, [isEventAdmin, userId])
+  }
 
   return (
     <path
