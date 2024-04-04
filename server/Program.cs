@@ -1,4 +1,5 @@
 using Azure.Identity;
+using Google.Api;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -10,6 +11,7 @@ using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using server.Context;
 using server.Helpers;
+using server.Models.Domain;
 using server.Repository;
 using server.Services.External;
 using server.Services.Internal;
@@ -93,11 +95,12 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IEventService, EventService>();
-builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IRepository<Event>, EventRepository>();
 builder.Services.AddScoped<ISeatService, SeatService>();
-builder.Services.AddScoped<ISeatRepository, SeatRepository>();
+builder.Services.AddScoped<IRepository<Seat>, SeatRepository>();
 builder.Services.AddScoped<ISeatAllocationService, SeatAllocationService>();
 builder.Services.AddScoped<ISeatAllocationRepository, SeatAllocationRepository>();
+builder.Services.AddScoped<IRepository<JobExecutionLog>, JobExecutionRepository>();
 builder.Services.AddScoped<RecaptchaEnterprise>();
 builder.Services.AddScoped<TelemetryClient>();
 builder.Services.AddScoped<ITelemetryService, TelemetryService>();
@@ -107,8 +110,10 @@ builder.Services.AddHostedService<SeatAssignmentBackgroundService>();
 builder.Services.AddSingleton(provider =>
 {
     string[] scopes = { "https://graph.microsoft.com/.default" };
-
-    var credential = new ClientSecretCredential(builder.Configuration.GetValue<string>("AzureAd:TenantId"), builder.Configuration.GetValue<string>("AzureAd:ClientId"), builder.Configuration.GetValue<string>("AzureAd:ClientSecret"));
+    var credential = new ClientSecretCredential(
+        builder.Configuration.GetValue<string>("AzureAd:TenantId"),
+        builder.Configuration.GetValue<string>("AzureAd:ClientId"),
+        builder.Configuration.GetValue<string>("AzureAd:ClientSecret"));
 
     return new GraphServiceClient(credential);
 });
@@ -122,7 +127,6 @@ builder.Services.AddApplicationInsightsTelemetry(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddApplicationInsightsTelemetry();
 //swagger
 
 string? openingtime = builder.Configuration["OpeningTime"];

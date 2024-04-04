@@ -4,9 +4,9 @@ using server.Models.Domain;
 using server.Models.DTOs.Internal;
 using server.Models.DTOs.Request;
 using server.Repository;
-using TestServer.Unit;
+using server.Services.Internal;
 
-namespace server.Services.Internal.Tests;
+namespace TestServer.Unit;
 
 public class BookingServiceTests : TestServiceBase<BookingService>
 {
@@ -254,11 +254,7 @@ public class BookingServiceTests : TestServiceBase<BookingService>
         return bookings;
     }
 
-
-
-
-
-    public class TestDateTimeProvider : IDateTimeProvider
+    private class TestDateTimeProvider : IDateTimeProvider
     {
         private readonly DateTime _currentDateTime;
 
@@ -268,6 +264,5 @@ public class BookingServiceTests : TestServiceBase<BookingService>
         }
         public DateTime GetCurrentDateTime() => _currentDateTime;
     }
-
 }
 

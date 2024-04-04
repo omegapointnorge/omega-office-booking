@@ -7,9 +7,9 @@ namespace server.Services.Internal
 {
     public class SeatService : ISeatService
     {
-        private readonly ISeatRepository _seatRepository;
+        private readonly IRepository<Seat> _seatRepository;
 
-        public SeatService(ISeatRepository seatRepository)
+        public SeatService(IRepository<Seat> seatRepository)
         {
             _seatRepository = seatRepository;
         }
