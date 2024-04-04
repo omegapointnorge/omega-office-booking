@@ -24,7 +24,7 @@ export interface HistoryBooking  {
 
 export interface Seat {
   id: number | null;
-  roomId: number | null;
+  roomId: number | null; 
 }
 
 export interface BookingRequest {
@@ -46,7 +46,6 @@ export interface SeatPath {
 }
 export interface SeatInRoom extends SeatPath {
   seatClicked: (e: React.MouseEvent<SVGPathElement>) => void;
-  getSeatClassName: (seatId: number) => string;
   class?: string;
 }
 

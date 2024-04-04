@@ -59,7 +59,9 @@ const OverviewPage = observer(() => {
                 multiple={false}
               />
             ) : (
-              <OverviewMap showSeatInfo={showSeatInfo} />
+              <div>
+                <OverviewMap showSeatInfo={showSeatInfo} />
+              </div>
             )}
           </div>
         </div>

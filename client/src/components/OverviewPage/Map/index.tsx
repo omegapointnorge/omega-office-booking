@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 
 import { useLocation } from "react-router-dom";
-import { useAuthContext } from "@auth/useAuthContext";
 import { observer } from "mobx-react-lite";
 import bookingStore from "@stores/BookingStore";
 import { MapComponent } from "./MapComponent";
@@ -15,16 +14,11 @@ interface OverviewMapProps {
 }
 
 const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
-  const { user } = useAuthContext() ?? {};
-
-  const isEventAdmin = user.claims.role === "EventAdmin";
-  const userId = user.claims.objectidentifier;
-
   const {
     activeBookings,
     displayDate,
     bookEventMode,
-    seatIdSelectedForNewEvent,
+
   } = bookingStore;
 
   const location = useLocation();
@@ -40,44 +34,29 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
     zoomedOutViewBoxParameters
   );
   const [zoomStatus, setZoomStatus] = useState(ZoomStatus.ZoomedOut);
+  const [isSeletedAllSeats, setIsSelectedAllSeats] = useState(false);
+
+  const upddateSeatSelectionForEvent = (roomId: number): void => {
+    const seatsIdsInRoom = bookingStore.allSeats.filter(seat => seat.roomId === roomId).map(seat => seat.id as number);
+    seatsIdsInRoom.forEach(seatId => bookingStore.addSeatToEventSelection(seatId));
+  }
+
+  const handleSelectAllSeats = () => {
+    switch (zoomStatus) {
+      case ZoomStatus.Large:
+        upddateSeatSelectionForEvent(1);
+        break;
+      case ZoomStatus.Small:
+        upddateSeatSelectionForEvent(2);
+        break;
+      default:
+        break;
+    }
+    setIsSelectedAllSeats(!isSeletedAllSeats);
+  }
+
 
   const currentViewBoxRef = useRef(currentViewBox); // useRef to store currentViewBox
-
-  const getSeatClassName = (seatId: number): string => {
-    const bookingForSeat = activeBookings.find(
-      (booking) =>
-        booking.seatId === seatId &&
-        isSameDate(displayDate, booking.bookingDateTime)
-    );
-
-    if (bookEventMode) {
-      if (seatIdSelectedForNewEvent.includes(seatId)) {
-        return "seat-selected-for-event";
-      }
-    }
-
-    if (bookingForSeat) {
-      return bookingForSeat.userId === userId
-        ? "seat-booked-by-user"
-        : "seat-booked";
-    }
-
-    const isAnySeatBookedByUser = activeBookings.some(
-      (booking) =>
-        booking.userId === userId &&
-        isSameDate(displayDate, booking.bookingDateTime)
-    );
-
-    if (isAnySeatBookedByUser && !isEventAdmin) {
-      return "seat-unavailable";
-    }
-
-    if (!bookingStore.hasBookingOpened(displayDate) && !isEventAdmin) {
-      return "seat-available-later";
-    }
-
-    return "seat-available";
-  };
 
   const seatClicked = (e: React.MouseEvent<SVGPathElement>): void => {
     const seatId = e.currentTarget.id;
@@ -219,16 +198,25 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   //--------------- End of zoom functionality -----------------
 
   return (
-    <MapComponent
-      zoomStatus={zoomStatus}
-      currentViewBox={currentViewBox}
-      zoomToRoom={zoomToRoom}
-      activeBookings={activeBookings}
-      getSeatClassName={getSeatClassName}
-      displayDate={displayDate}
-      seatClicked={seatClicked}
-      zoomOut={zoomOut}
-    />
+    <div>
+      <MapComponent
+        zoomStatus={zoomStatus}
+        currentViewBox={currentViewBox}
+        zoomToRoom={zoomToRoom}
+        activeBookings={activeBookings}
+        displayDate={displayDate}
+        seatClicked={seatClicked}
+        zoomOut={zoomOut}
+      />
+      {bookingStore.bookEventMode && (zoomStatus === ZoomStatus.Large || zoomStatus === ZoomStatus.Small) &&
+        <button
+          className="px-4 py-2 mt-1 text-sm font-medium rounded-md bg-blue-500 text-white hover:bg-blue-600"
+          onClick={handleSelectAllSeats}>
+            {isSeletedAllSeats ? 'Velg alle seter' : 'Velg alle seter'}
+        </button>
+        }
+    </div>
+
   );
 });
 
