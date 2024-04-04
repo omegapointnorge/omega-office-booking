@@ -31,14 +31,6 @@ export const BookingSvg = ({
         </g>
 
          <g
-          id={Rooms.Sales}
-          data-testid={Rooms.Sales}
-          fill={highlightedIds.includes(3) ? "red" : "black"}
-        >
-          <path d="m112.43 963.79 41.366 644.88 561.8-5.3033-19.092-641.7" />
-        </g>
-
-         <g
           id={Rooms.Marie}
         data-testid={Rooms.Marie}
           fill={highlightedIds.includes(4) ? "red" : "black"}>

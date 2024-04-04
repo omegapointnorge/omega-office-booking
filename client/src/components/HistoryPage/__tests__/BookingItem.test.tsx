@@ -17,7 +17,6 @@ describe("BookingItem", () => {
     expect(screen.getByTestId(Rooms.Large)).toBeInTheDocument();
     expect(screen.queryByTestId(Rooms.Large)).toHaveAttribute("fill", "red");
     expect(screen.queryByTestId(Rooms.Small)).toHaveAttribute("fill", "black");
-    expect(screen.queryByTestId(Rooms.Sales)).toHaveAttribute("fill", "black");
   });
   it("renders with right date format, seat text seat 2 and room 2 filled", () => {
     render(<BookingItem {...{ ...defaultProps, seatId: 12, roomId: 2 }} />);
@@ -25,7 +24,6 @@ describe("BookingItem", () => {
     expect(screen.getByTestId(Rooms.Large)).toBeInTheDocument();
     expect(screen.queryByTestId(Rooms.Large)).toHaveAttribute("fill", "black");
     expect(screen.queryByTestId(Rooms.Small)).toHaveAttribute("fill", "red");
-    expect(screen.queryByTestId(Rooms.Sales)).toHaveAttribute("fill", "black");
     expect(screen.queryByTestId("delete-btn")).not.toBeInTheDocument();
   });
 

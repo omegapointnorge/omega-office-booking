@@ -3,11 +3,11 @@ import React from "react";
 import { Rooms, ZoomStatus } from "@/shared/types/enums";
 import { ZoomOutIcon } from "../../../shared/assets/icons/zoom-out_outline";
 import { WorkRoom } from "./WorkRoom";
-import { seatsEcon, seatsMarie, seatsLargeRoom, seatsOystein, seatsSales, seatsSmallRoom } from "./SeatPaths";
+import { seatsEcon, seatsMarie, seatsLargeRoom, seatsOystein, seatsSmallRoom } from "./SeatPaths";
 import { Booking } from "@/shared/types/entities";
 import { isSameDate } from "@utils/utils";
 import { ClickableRoom } from "@components/OverviewPage/Map/ClickableRoom";
-import { smallRoomConfig, largeRoomConfig, salesRoomConfig, economyRoomConfig, oysteinRoomConfig, marieRoomConfig } from "@components/OverviewPage/Map/RoomConfig";
+import { smallRoomConfig, largeRoomConfig, economyRoomConfig, oysteinRoomConfig, marieRoomConfig } from "@components/OverviewPage/Map/RoomConfig";
 
 interface MapProps {
   currentViewBox: string;
@@ -72,6 +72,7 @@ export const MapComponent = ({
           <path d="m1539.4 642.76 651.78 0.53033 4.0659-362.75-660.44 2.2981z" />
           <path d="m1695.4 1811.7 2.125-972.95 1138.5-5.25 167.08-378.12-504.17-178.19-294.86 1.4142-1.4142 369.82-673.17 2.8284-6.364-368.4-847.82-2.1213 48.083 1321.6 165.46-0.7071 6.364 217.79z" />
           <path d={marieRoomConfig.roomShapePath} />
+          <path d="m112.43 963.79 41.366 644.88 561.8-5.3033-19.092-641.7z"/> {/* Sales room */}
         </g>
 
         <g className={zoomStatus === ZoomStatus.ZoomedOut ? `zoomed-out-room origin-[55%_90%]` : 'zoomed-in' } onClick={() => zoomToRoom(Rooms.Large)}>
@@ -79,9 +80,6 @@ export const MapComponent = ({
         </g>
         <g className={zoomStatus === ZoomStatus.ZoomedOut ? `zoomed-out-room origin-[85%_20%]` : 'zoomed-in' } onClick={() => zoomToRoom(Rooms.Small)}>
           <ClickableRoom zoomStatus={zoomStatus} countAvailableSeats={countAvailableSeats} roomConfig={smallRoomConfig}/>
-        </g>
-        <g className={zoomStatus === ZoomStatus.ZoomedOut ? `zoomed-out-room origin-[5%_45%]` : 'zoomed-in' } onClick={() => zoomToRoom(Rooms.Sales)}>
-          <ClickableRoom zoomStatus={zoomStatus} countAvailableSeats={countAvailableSeats} roomConfig={salesRoomConfig}/>
         </g>
 
         <g className={zoomStatus === ZoomStatus.ZoomedOut ? `zoomed-out-room origin-[64%_35%]` : 'zoomed-in' } onClick={() => zoomToRoom(Rooms.Oystein)}>
@@ -93,13 +91,6 @@ export const MapComponent = ({
         <g className={zoomStatus === ZoomStatus.ZoomedOut ? `zoomed-out-room origin-[62%_35%]` : 'zoomed-in' } onClick={() => zoomToRoom(Rooms.Econ)}>
           <ClickableRoom zoomStatus={zoomStatus} countAvailableSeats={countAvailableSeats} roomConfig={economyRoomConfig}/>
         </g>
-
-        {/* SALES WORK ROOM */}
-        <WorkRoom
-          className={zoomStatus === ZoomStatus.Sales ? undefined : "hidden"}
-          seats={seatsSales}
-          seatClicked={seatClicked}
-        />
 
         {/* SMALL WORK ROOM */}
         <WorkRoom

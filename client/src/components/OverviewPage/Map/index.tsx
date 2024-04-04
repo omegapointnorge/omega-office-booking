@@ -26,7 +26,6 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
   const zoomedOutViewBoxParameters = "0 0 3725 2712";
   const zoomedToLargeRoomViewBoxParameters = "1750 1400 1200 1500";
   const zoomedToSmallRoomViewBoxParameters = "2700 400 900 900";
-  const zoomedToSalesViewBoxParameters = "0 900 800 800";
   const zoomedToMarieViewBoxParameters = "1600 650 800 700"
   const zoomedToEconOysteinViewBoxParameters = "2050 650 800 700"
 
@@ -93,9 +92,6 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
       case Rooms.Small:
         newViewBox = zoomedToSmallRoomViewBoxParameters;
         break;
-      case Rooms.Sales:
-        newViewBox = zoomedToSalesViewBoxParameters;
-        break;
       case Rooms.Marie:
         newViewBox = zoomedToMarieViewBoxParameters;
         break;
@@ -127,9 +123,6 @@ const OverviewMap = observer(({ showSeatInfo }: OverviewMapProps) => {
           break;
         case (zoomedToSmallRoomViewBoxParameters):
           setZoomStatus(ZoomStatus.Small)
-          break;
-        case (zoomedToSalesViewBoxParameters):
-          setZoomStatus(ZoomStatus.Sales)
           break;
         case (zoomedToMarieViewBoxParameters):
           setZoomStatus(ZoomStatus.Marie)
