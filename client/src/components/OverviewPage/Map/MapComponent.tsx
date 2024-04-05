@@ -71,7 +71,6 @@ export const MapComponent = ({
           <path d="m663.97 283.37 32.652 666.25-584.9 2.8478-19.445-283.9 237.23-0.35355-19.445-384.67z" />
           <path d="m1539.4 642.76 651.78 0.53033 4.0659-362.75-660.44 2.2981z" />
           <path d="m1695.4 1811.7 2.125-972.95 1138.5-5.25 167.08-378.12-504.17-178.19-294.86 1.4142-1.4142 369.82-673.17 2.8284-6.364-368.4-847.82-2.1213 48.083 1321.6 165.46-0.7071 6.364 217.79z" />
-          <path d={marieRoomConfig.roomShapePath} />
         </g>
 
         <g className={zoomStatus === ZoomStatus.ZoomedOut ? `zoomed-out-room origin-[55%_90%]` : 'zoomed-in' } onClick={() => zoomToRoom(Rooms.Large)}>
@@ -92,6 +91,9 @@ export const MapComponent = ({
         </g> */}
         <g className={zoomStatus === ZoomStatus.ZoomedOut ? `zoomed-out-room origin-[62%_35%]` : 'zoomed-in' } onClick={() => zoomToRoom(Rooms.Econ)}>
           <ClickableRoom zoomStatus={zoomStatus} countAvailableSeats={countAvailableSeats} roomConfig={economyRoomConfig}/>
+        </g>
+        <g className={zoomStatus === ZoomStatus.ZoomedOut ? `zoomed-out-room origin-[62%_35%]` : 'zoomed-in' } onClick={() => zoomToRoom(Rooms.Marie)}>
+          <ClickableRoom zoomStatus={zoomStatus} countAvailableSeats={countAvailableSeats} roomConfig={marieRoomConfig}/>
         </g>
 
         {/* SALES WORK ROOM */}
