@@ -82,9 +82,9 @@ public class SeatAssignmentBackgroundService : BackgroundService
         var dueTime = nextRunTime - now;
 
         //runs Every day
-        _timerHandleSeatAllocation = new Timer(HandleSeatAllocation, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+        _timerHandleSeatAllocation = new Timer(HandleSeatAllocation, null, dueTime, TimeSpan.FromDays(1));
         //only run on deployment
-        _timerInitiateSeatAllocation = new Timer(InitiateSeatAllocation, null, TimeSpan.Zero, Timeout.InfiniteTimeSpan);
+        _timerInitiateSeatAllocation = new Timer(InitiateSeatAllocation, null, dueTime, Timeout.InfiniteTimeSpan);
 
         return Task.CompletedTask;
     }
