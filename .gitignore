@@ -405,8 +405,3 @@ FodyWeavers.xsd
 *.sln.iml
 .idea/*
 
-/FunctionSlackIntergration/Properties/ServiceDependencies/AzureFunctions20240307153853 - Zip Deploy
-/FunctionSlackIntergration/Properties/ServiceDependencies/FunctionSlackIntergration20240410125645 - Zip Deploy
-/FunctionSlackIntergration/Properties/serviceDependencies.AzureFunctions20240307153853 - Zip Deploy.json
-/FunctionSlackIntergration/Properties/serviceDependencies.FunctionSlackIntergration20240410125645 - Zip Deploy.json
-/FunctionSlackIntergration/Properties/serviceDependencies.json
