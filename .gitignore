@@ -405,3 +405,4 @@ FodyWeavers.xsd
 *.sln.iml
 .idea/*
 
+/client/playwright-report/index.html
