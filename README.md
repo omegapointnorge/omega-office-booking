@@ -30,7 +30,7 @@ Note: The port numbers exposed are set in the docker-compose.yml file like this:
 ports: 
     - "1450:1433"
 
-The port to the left (1450 in this example) need to match the number of your connection in Azure data studio. 
+The port to the left (1450 in this example) need to match the number of port in Azure data studio as well as the user-secrets for "ConnectionStrings:DefaultConnection"
 
 After the image is pulled and database is connected, you can run the .Net cli "dotnet ef database update" for migration the database to your local machine.
 ##
@@ -42,9 +42,6 @@ After the image is pulled and database is connected, you can run the .Net cli "d
 This application relies on Google reCAPTCHA Enterprise. To use this service, a Google Cloud account has been created. Please note that the account had to be set up with a Gmail account under the domain "omegapoint.no". Thus, the account utilized for this purpose is Nils.Olav.johansen@omegapoint.no. For any changes or adjustments to the Google Cloud settings, please contact Nils Olav Johansen.
 
 ### Permissions and Setup Prerequisites in Azure
-
-## Additional information
-
 Azure setup prerequisites:
 App registration within Microsoft Azure AD.
 Permissions required:
@@ -53,10 +50,17 @@ You will need access to the subscription used for the project, as well as the ac
 Contact a server admin to get that working(@Salah Waisi).
 
 Get the permissions right away to avoid bottlenecks!
+## Updates on release information and changes to requirements
 
-Figma design: https://www.figma.com/file/NC9ZwuocdWNaLCxDIrJkfY/Office-Booking?type=design&node-id=0%3A1&mode=design&t=My2Yu9A58c5mDaE5-1
-Domain design:
-https://www.figma.com/file/CjwlmVQ44uPcXj7ZvyAnWX/OfficeBookingFigJam?type=whiteboard&node-id=1-1464&t=ooToRV3XWPj3qH8A-0
+Original UI design: https://www.figma.com/file/NC9ZwuocdWNaLCxDIrJkfY/Office-Booking?type=design&node-id=0%3A1&mode=design&t=My2Yu9A58c5mDaE5-1
+
+
+- **Summary**: Restructured the booking module and add event module to improve scalability and maintainability.
+- **Objectives**: To simplify event deleting processes. And allow user with different roles can have different access control.
+- **Details**:
+  - Introduced role-based access control (RBAC) for event management. Enable app roles in Service principle in Azure.
+  - Allow for easier integration with external identity providers.
+- **References**: See the updated [Domain Design Diagram (2/29/2024)](https://www.figma.com/file/4uuVYhDKEgQdeXELGNB9R1/Officebooking-Version(2%2F29%2F2024)?type=whiteboard&node-id=0%3A1&t=kmrCmBtajYRKR6Wt-1t=ooToRV3XWPj3qH8A-0) for visual representation.
 
 ## Contributing
 <!-- Anchor for Contributing section -->
